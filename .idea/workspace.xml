@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7419a8ad-e1da-48b2-9d59-aa6830f720d1" name="Default" comment="">
+    <list default="true" id="7419a8ad-e1da-48b2-9d59-aa6830f720d1" name="Default" comment="Add search bar">
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/views/partials/run.html" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/controllers/run.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/app.js" afterPath="$PROJECT_DIR$/public/js/app.js" />
