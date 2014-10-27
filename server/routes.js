@@ -19,9 +19,14 @@ module.exports = function (app, passport, auth) {
         })
     );
 	app.post('/user', controllers.user.create);
-	app.get('/user/me', controllers.user.me);
+	app.get('/user/me', auth.requiresLogin, controllers.user.me);
+
+    app.get('/run', auth.requiresLogin, controllers.run.index);
+    app.post('/run', auth.requiresLogin, controllers.run.create);
+    app.get('/run/create', auth.requiresLogin, controllers.run.form);
+
     app.get('/partials/:name', auth.requiresLogin, controllers.root.partials);
-	
+
 	// For technical purpose
 	app.get('/sync', controllers.root.sync);
 	

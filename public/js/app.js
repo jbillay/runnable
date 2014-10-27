@@ -25,6 +25,10 @@ angular.module('runnable', [
                 templateUrl: 'partials/home',
                 controller: 'AppHome'
             }).
+            when('/run', {
+                templateUrl: 'partials/run',
+                controller: 'AppRun'
+            }).
             when('/', {
                 templateUrl: 'partials/index',
                 controller: 'AppIndex'
