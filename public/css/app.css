@@ -66,3 +66,12 @@ a {
 .blog-footer p:last-child {
   margin-bottom: 0;
 }
+
+/* Google maps */
+#map_canvas {
+	width: 500px;
+	height: 400px;
+	background-color: #CCC;
+	margin-left: 7%;
+	margin-top: 12%;
+}

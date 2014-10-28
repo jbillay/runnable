@@ -2,9 +2,9 @@
 
 <div class="container body">
 	<div class="row spacehead">
-		<div class="col-sm-8 blog-main">
+		<div class="col-sm-8">
 			<div class="blog-post">
-				<h2 class="blog-post-title">Actualités</h2>
+				<h2>Actualités</h2>
 				<hr>
 
 				<p>Cum sociis natoque penatibus et magnis <a href="#">dis parturient montes</a>, nascetur ridiculus mus. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum.</p>
@@ -67,17 +67,7 @@
 
 		</div><!-- /.blog-main -->
 
-		<div class="col-sm-3 col-sm-offset-1 blog-sidebar">
-			<div class="sidebar-module sidebar-module-inset">
-				<h4>Mes amis</h4>
-			</div>
-			<div class="sidebar-module sidebar-module-inset">
-				<h4>Mes courses  <a href="/run/create"><i class="fa fa-plus-circle fa-fw"></i></a></h4>
-			</div>
-			<div class="sidebar-module sidebar-module-inset">
-				<h4>Mes itinéaires <a href="/journey/create"><i class="fa fa-plus-circle fa-fw"></i></a></h4>
-			</div>
-		</div><!-- /.blog-sidebar -->
+		<div ng-include="'partials/sidebar'"></div>
 	</div>
 	<div class="blog-footer">
 		<p>Runnable</p>

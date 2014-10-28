@@ -1,0 +1,26 @@
+<div ng-include="'partials/nav'"></div>
+
+<div class="container body">
+    <div class="row spacehead">
+        <div class="col-sm-8">
+			<h2>Toutes les courses</h2>
+			<hr>
+			<input type="search" ng-model="run_name" placeholder="Filtrer les courses..." />
+			<ul class="example-animate-container">
+				<li class="animate-repeat" ng-repeat="run in listRun | filter:run_name as results">
+					{{run.name}}
+				</li>
+				<li class="animate-repeat" ng-if="results.length == 0">
+					<strong>No results found...</strong>
+				</li>
+			</ul>
+        </div>
+		<div ng-include="'partials/sidebar'"></div>
+    </div>
+	<div class="blog-footer">
+		<p>Runnable</p>
+		<p>
+			<a href="#">Back to top</a>
+		</p>
+	</div>
+</div>
