@@ -23,6 +23,12 @@ module.exports = function (app, passport, auth) {
 
     app.post('/run', auth.requiresLogin, controllers.run.create);
     app.get('/run/list', auth.requiresLogin, controllers.run.list);
+    app.get('/run/:id', auth.requiresLogin, controllers.run.detail);
+
+    app.post('/journey', auth.requiresLogin, controllers.journey.create);
+    app.get('/journey/list', auth.requiresLogin, controllers.journey.list);
+	app.get('/journey/:id', auth.requiresLogin, controllers.journey.detail);
+    app.get('/journey/run/:id', auth.requiresLogin, controllers.journey.listForRun);
 
     app.get('/partials/:name', auth.requiresLogin, controllers.root.partials);
 

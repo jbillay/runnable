@@ -7,7 +7,6 @@
 // Declare app level module which depends on filters, and services
 
 angular.module('runnable', [
-    'google-maps'.ns(),
     'ngRoute',
     'ngCookies',
     'ui.bootstrap',
@@ -26,13 +25,25 @@ angular.module('runnable', [
                 templateUrl: 'partials/home',
                 controller: 'AppHome'
             }).
-            when('/create-run', {
-                templateUrl: 'partials/create_run',
+            when('/run-create', {
+                templateUrl: 'partials/run_create',
                 controller: 'AppRun'
             }).
             when('/run', {
-                templateUrl: 'partials/list_run',
+                templateUrl: 'partials/run_list',
                 controller: 'AppRun'
+            }).
+            when('/run-:runId', {
+                templateUrl: 'partials/run_detail',
+                controller: 'AppRunDetail'
+            }).
+            when('/journey-create', {
+                templateUrl: 'partials/journey_create',
+                controller: 'AppJourney'
+            }).
+            when('/journey', {
+                templateUrl: 'partials/journey_list',
+                controller: 'AppJourney'
             }).
             when('/', {
                 templateUrl: 'partials/index',

@@ -1,0 +1,112 @@
+<div ng-include="'partials/nav'"></div>
+
+<div class="container body" ng-controller="AppJourney">
+    <div class="row spacehead">
+		<div class="col-sm-6">
+			<h2>Créer un parcours</h2>
+			<hr>
+			<form action="/journey" method="post" role="form">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12">
+						<div class="form-group">
+							<select ng-model="run_id" placeholder="Definir la course"
+									name="journey[run_id_selector]" id="run_id_selector" class="form-control"  tabindex="1" 
+									ng-change="selectDestination(run_id)"
+                                    ng-options="run as run.name for run in runList">
+									<option value="">-- Choisir une course --</option>
+                            </select>
+							<input type="hidden" name="journey[run_id]" value="{{run_id.id}}" >
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12">
+						<div class="form-group">
+							<input type="text" ng-model="startSelected" placeholder="Lieu de départ"
+								   typeahead="address for address in getLocation($viewValue)"
+								   typeahead-loading="loadingLocations" name="journey[address_start]" id="address_start"
+								   class="form-control"  tabindex="2" typeahead-on-select='selectSource($item)'>
+							<i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6 col-sm-6 col-md-6">
+						<div class="form-group">
+							<input type="number" name="journey[distance]" id="distance" class="form-control"
+								   placeholder="Distance estimée" readonly>
+						</div>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-6">
+						<div class="form-group">
+							<input type="number" name="journey[duration]" id="duration" class="form-control"
+								   placeholder="Temps estimé" readonly>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6 col-sm-6 col-md-6">
+						<div class="form-group">
+							<input type="date" name="journey[date_start]" id="date_start"
+								   class="form-control" placeholder="Date" tabindex="3">
+						</div>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-6">
+						<div class="form-group">
+							<input type="time" name="journey[time_start]" id="time_start" class="form-control"
+								   placeholder="Heure" tabindex="4">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6 col-sm-6 col-md-6">
+						<div class="form-group">
+							<select class="form-control" name="journey[car_type]" id="car_type"
+								placeholder="Type de course" tabindex="5">
+								<option value="citadine">Citadine</option>
+								<option value="berline">Berline</option>
+								<option value="break">Break</option>
+								<option value="monospace">Monospace</option>
+								<option value="suv">4x4, SUV</option>
+								<option value="coupe">Coupé</option>
+								<option value="cabriolet">Cabriolet</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-6">
+						<div class="form-group">
+							<input type="number" name="journey[nb_space]" id="nb_space" class="form-control"
+								   placeholder="Nombre de place" tabindex="6" min="0">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6 col-sm-6 col-md-6">
+						<div class="form-group">
+							<div class="input-group">
+								<input type="number" name="journey[amount]" id="amount" class="form-control"
+								   placeholder="Montant par personne" tabindex="7" min="0">
+								<span class="input-group-addon">€</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-3 col-md-3 pull-right">
+						<input type="hidden" name="journey[owner_id]" value="{{user.id}}">
+						<input type="submit" value="Créer" class="btn btn-primary btn-block" tabindex="9">
+					</div>
+				</div>
+			</form>
+        </div>
+		<div class="col-sm-5">
+			<div id="map_canvas" ng-init="initMap()"></div>
+        </div>
+    </div>
+	<div class="blog-footer">
+		<p>Runnable</p>
+		<p>
+			<a href="#">Back to top</a>
+		</p>
+	</div>
+</div>

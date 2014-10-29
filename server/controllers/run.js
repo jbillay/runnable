@@ -30,3 +30,18 @@ exports.list = function (req, res) {
 		}
 	});
 };
+
+exports.detail = function (req, res) {
+    "use strict";
+	console.log('Get info on run ' + req.params.id);
+	var id = req.params.id;
+	var run = new Run();
+	run.getById(id, function (err, runDetail) {
+		if (err) {
+			console.log('Not able to get info on the run : ' + err);
+			res.jsonp('{"msg": "ko"}');
+		} else {
+			res.jsonp(runDetail);
+		}
+	});
+};

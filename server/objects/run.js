@@ -72,11 +72,11 @@ run.prototype.getActiveList = function (done) {
 
 run.prototype.getById = function (id, done) {
     'use strict';
-	global.db.models.run.find({id: id}, function (err, user) {
+	global.db.models.run.find({id: id}, function (err, run) {
 		if (err) {
 			done(err, null);
 		}
-        done(null, user[0]);
+        done(null, run[0]);
 	});
 };
 

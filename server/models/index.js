@@ -17,6 +17,7 @@ orm.connect(settings.database, function (err, db) {
 	db.settings.set('instance.returnAllErrors', true);
 	db.models.users = require('./users')(db);
 	db.models.run = require('./run')(db);
+	db.models.journey = require('./journey')(db);
 	global.db = db;
 	console.log('Database loaded !');
 });

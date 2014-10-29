@@ -1,0 +1,37 @@
+<div ng-include="'partials/nav'"></div>
+
+<div class="container body">
+    <div class="row spacehead">
+        <div class="col-sm-8">
+			<h2>Toutes les parcours</h2>
+			<hr>
+			<div class="row">
+				<div class="col-sm-8">
+					<div class="input-group">
+						<input type="text" class="form-control homesearch" ng-model="journey_name" placeholder="Saisissez votre ville...">
+						<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+					</div>
+				</div>
+			</div>
+			<div class="row spacehead">
+				<div class="col-sm-12">
+					<ul class="list-unstyled">
+						<li class="animate-repeat" ng-repeat="journey in journeyList | filter:journey_name as results">
+							<a href="/journey-{{journey.id}}">Départ de {{journey.address_start}} le {{journey.date_start}} à {{journey.time_start}} pour {{journey.amount | currency:'€ '}}</a>
+						</li>
+						<li class="animate-repeat" ng-if="results.length == 0">
+							<strong>Pas de départ depuis cette ville...</strong>
+						</li>
+					</ul>
+				</div>
+			</div>
+        </div>
+		<div ng-include="'partials/sidebar'"></div>
+    </div>
+	<div class="blog-footer">
+		<p>Runnable</p>
+		<p>
+			<a href="#">Back to top</a>
+		</p>
+	</div>
+</div>

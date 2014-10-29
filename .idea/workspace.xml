@@ -2,25 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7419a8ad-e1da-48b2-9d59-aa6830f720d1" name="Default" comment="Add run page">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/views/partials/create_run.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/views/partials/list_run.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/models/run.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/objects/run.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/views/partials/sidebar.html" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/public/views/partials/run.html" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/css/app.css" afterPath="$PROJECT_DIR$/public/css/app.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/controllers/journey.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/models/journey.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/objects/journey.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/views/partials/journey_create.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/views/partials/journey_list.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/views/partials/run_create.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/views/partials/run_detail.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/public/views/partials/run_list.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/app.js" afterPath="$PROJECT_DIR$/public/js/app.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/controllers.js" afterPath="$PROJECT_DIR$/public/js/controllers.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/views/default.html" afterPath="$PROJECT_DIR$/public/views/default.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/views/partials/home.html" afterPath="$PROJECT_DIR$/public/views/partials/home.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/views/index.html" afterPath="$PROJECT_DIR$/public/views/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/models/index.js" afterPath="$PROJECT_DIR$/server/models/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/passport.js" afterPath="$PROJECT_DIR$/server/passport.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/routes.js" afterPath="$PROJECT_DIR$/server/routes.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controllers/run.js" afterPath="$PROJECT_DIR$/server/controllers/run.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/models/run.js" afterPath="$PROJECT_DIR$/server/models/run.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/objects/run.js" afterPath="$PROJECT_DIR$/server/objects/run.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/services.js" afterPath="$PROJECT_DIR$/public/js/services.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/controllers/user.js" afterPath="$PROJECT_DIR$/server/controllers/user.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/objects/user.js" afterPath="$PROJECT_DIR$/server/objects/user.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/views/partials/sidebar.html" afterPath="$PROJECT_DIR$/public/views/partials/sidebar.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="runnable.iws" />
@@ -48,8 +47,8 @@
       <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/js/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="60" max-vertical-offset="795">
-              <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="45" max-vertical-offset="960">
+              <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -88,8 +87,8 @@
       <file leaf-file-name="default.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/views/default.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-13.625" vertical-offset="18" max-vertical-offset="585">
-              <caret line="23" column="35" selection-start-line="23" selection-start-column="35" selection-end-line="23" selection-end-column="35" />
+            <state vertical-scroll-proportion="-12.5" vertical-offset="0" max-vertical-offset="540">
+              <caret line="20" column="35" selection-start-line="20" selection-start-column="35" selection-end-line="20" selection-end-column="35" />
               <folding />
             </state>
           </provider>
@@ -108,9 +107,16 @@
       <file leaf-file-name="controllers.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/js/controllers.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="645">
-              <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-              <folding />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1095" max-vertical-offset="1740">
+              <caret line="112" column="0" selection-start-line="112" selection-start-column="0" selection-end-line="112" selection-end-column="0" />
+              <folding>
+                <marker date="1414619905000" expanded="true" signature="3240:3537" placeholder="{...}" />
+                <marker date="1414619905000" expanded="true" signature="3296:3420" placeholder="{...}" />
+                <marker date="1414619905000" expanded="true" signature="3279:3408" placeholder="{&quot;sensor&quot;: false...}" />
+                <marker date="1414619905000" expanded="true" signature="3445:3495" placeholder="{...}" />
+                <marker date="1414619905000" expanded="true" signature="3481:3495" placeholder="{...}" />
+                <marker date="1414619905000" expanded="true" signature="3652:3717" placeholder="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -118,8 +124,8 @@
       <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/models/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="435">
-              <caret line="14" column="67" selection-start-line="14" selection-start-column="67" selection-end-line="14" selection-end-column="67" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="450">
+              <caret line="16" column="54" selection-start-line="16" selection-start-column="54" selection-end-line="16" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -442,7 +448,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32954547" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32954547" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -455,7 +461,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2494043" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2494043" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28267047" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -563,7 +569,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="108" max-vertical-offset="585">
           <caret line="24" column="67" selection-start-line="24" selection-start-column="67" selection-end-line="24" selection-end-column="67" />
           <folding>
-            <marker date="1414439609000" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1414619780000" expanded="true" signature="-1:-1" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -612,8 +618,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/models/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="420">
-          <caret line="14" column="67" selection-start-line="14" selection-start-column="67" selection-end-line="14" selection-end-column="67" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="450">
+          <caret line="16" column="54" selection-start-line="16" selection-start-column="54" selection-end-line="16" selection-end-column="54" />
           <folding />
         </state>
       </provider>
@@ -628,8 +634,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/views/default.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.625" vertical-offset="18" max-vertical-offset="585">
-          <caret line="23" column="35" selection-start-line="23" selection-start-column="35" selection-end-line="23" selection-end-column="35" />
+        <state vertical-scroll-proportion="-12.5" vertical-offset="0" max-vertical-offset="540">
+          <caret line="20" column="35" selection-start-line="20" selection-start-column="35" selection-end-line="20" selection-end-column="35" />
           <folding />
         </state>
       </provider>
@@ -652,16 +658,23 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/js/controllers.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="645">
-          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1095" max-vertical-offset="1740">
+          <caret line="112" column="0" selection-start-line="112" selection-start-column="0" selection-end-line="112" selection-end-column="0" />
+          <folding>
+            <marker date="1414619905000" expanded="true" signature="3240:3537" placeholder="{...}" />
+            <marker date="1414619905000" expanded="true" signature="3296:3420" placeholder="{...}" />
+            <marker date="1414619905000" expanded="true" signature="3279:3408" placeholder="{&quot;sensor&quot;: false...}" />
+            <marker date="1414619905000" expanded="true" signature="3445:3495" placeholder="{...}" />
+            <marker date="1414619905000" expanded="true" signature="3481:3495" placeholder="{...}" />
+            <marker date="1414619905000" expanded="true" signature="3652:3717" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/public/js/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="60" max-vertical-offset="795">
-          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="45" max-vertical-offset="960">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
           <folding />
         </state>
       </provider>

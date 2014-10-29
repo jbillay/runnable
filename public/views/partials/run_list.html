@@ -1,0 +1,37 @@
+<div ng-include="'partials/nav'"></div>
+
+<div class="container body">
+    <div class="row spacehead">
+        <div class="col-sm-8">
+			<h2>Toutes les courses</h2>
+			<hr>
+			<div class="row">
+				<div class="col-sm-8">
+					<div class="input-group">
+						<input type="text" class="form-control homesearch" ng-model="run_name" placeholder="Saisissez le nom de votre course...">
+						<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+					</div>
+				</div>
+			</div>
+			<div class="row spacehead">
+				<div class="col-sm-12">
+					<ul class="list-unstyled">
+						<li class="animate-repeat" ng-repeat="run in listRun | filter:run_name as results">
+							<a href="/run-{{run.id}}">{{run.name}}</a>
+						</li>
+						<li class="animate-repeat" ng-if="results.length == 0">
+							<strong>Cette course n'existe pas encore... créez la !</strong>
+						</li>
+					</ul>
+				</div>
+			</div>
+        </div>
+		<div ng-include="'partials/sidebar'"></div>
+    </div>
+	<div class="blog-footer">
+		<p>Runnable</p>
+		<p>
+			<a href="#">Back to top</a>
+		</p>
+	</div>
+</div>
