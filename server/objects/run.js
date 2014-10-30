@@ -80,4 +80,14 @@ run.prototype.getById = function (id, done) {
 	});
 };
 
+run.prototype.getResumeById = function (id) {
+    'use strict';
+	global.db.models.run.find({id: id}, function (err, run) {
+		if (err) {
+			done(err, null);
+		}
+        done(null, run[0]);
+	});
+};
+
 module.exports = run;

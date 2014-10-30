@@ -1,10 +1,13 @@
 /* user object */
 
 var db = require('../models');
+var Run = require('./run');
+var async = require('async');
 
 function journey() {
     'use strict';
 	this.id = null;
+	this.run = null;
 	this.run_id = null;
 	this.address_start = null;
 	this.distance = null;
@@ -22,10 +25,16 @@ journey.prototype.get = function () {
 	return this;
 };
 
+journey.prototype.setRun = function (run) {
+	this.run = run;
+};
+
 journey.prototype.set = function (journey) {
     'use strict';
 	if (journey.id) {
 		this.id = journey.id; }
+	if (journey.run) {
+		this.setRun(journey.run); }
 	if (journey.run_id) {
 		this.run_id = journey.run_id; }
 	if (journey.address_start) {

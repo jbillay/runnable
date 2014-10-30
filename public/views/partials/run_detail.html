@@ -21,6 +21,8 @@
 				<dt>Informations</dt>
 				<dd>{{run.info}}</dd>
 			</dl>
+			<button type="button" class="btn btn-primary" ng-if="!followed" ng-click="followRun()">Suivre cette course</button>
+			<button type="button" class="btn btn-success" ng-if="followed" ng-click="removeFollowRun()">Vous suivez cette course</button>
         </div>
 		<div class="col-sm-5">
 			<div id="map_canvas"></div>

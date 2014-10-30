@@ -1,0 +1,47 @@
+<div ng-include="'partials/nav'"></div>
+
+<div class="container body" ng-controller="AppJourneyDetail">
+    <div class="row spacehead">
+        <div class="col-sm-6">
+            <h2>Parcours pour la course {{run.name}}</h2>
+            <hr>
+            <dl class="dl-horizontal">
+                <dt>Point de départ</dt>
+                <dd>{{journey.address_start}}</dd>
+                <dt>Date du départ</dt>
+                <dd>{{journey.date_start}}</dd>
+                <dt>Heure du départ</dt>
+                <dd>{{journey.time_start}}</dd>
+                <dt>Type de voiture</dt>
+                <dd>{{journey.car_type}}</dd>
+                <dt>Nombre de place</dt>
+                <dd>{{journey.nb_space}}</dd>
+                <dt>Montant</dt>
+                <dd>{{journey.amount}}</dd>
+            </dl>
+            <button type="button" class="btn btn-primary" ng-if="!followed" ng-click="followRun()">
+                    Suivre cette course
+            </button>
+            <button type="button" class="btn btn-success" ng-if="followed" ng-click="removeFollowRun()">
+                    Vous suivez cette course
+            </button>
+        </div>
+        <div class="col-sm-5">
+            <div id="map_canvas"></div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row spacehead">
+            <div class="col-sm-6">
+                <h2>Les followers</h2>
+                <hr>
+            </div>
+        </div>
+    </div>
+    <div class="blog-footer">
+        <p>Runnable</p>
+        <p>
+            <a href="#">Back to top</a>
+        </p>
+    </div>
+</div>

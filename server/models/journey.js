@@ -6,7 +6,7 @@ var orm       = require('orm');
 
 module.exports = function (db) {
     "use strict";
-    var Run = db.define("journey",
+    var Journey = db.define("journey",
         {
 			run_id:				Number,
 			address_start:		String,
@@ -26,5 +26,5 @@ module.exports = function (db) {
             }
         }
 	);
-	return Run;
+	return Journey;
 };
