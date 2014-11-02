@@ -33,14 +33,14 @@
 				<div class="row">
 					<div class="col-xs-6 col-sm-6 col-md-6">
 						<div class="form-group">
-							<input type="number" name="journey[distance]" id="distance" class="form-control"
-								   placeholder="Distance estimée" readonly>
+							<input type="text" name="journey[distance]" id="distance" class="form-control"
+								   ng-model="distance" placeholder="Distance estimée" readonly>
 						</div>
 					</div>
 					<div class="col-xs-6 col-sm-6 col-md-6">
 						<div class="form-group">
-							<input type="number" name="journey[duration]" id="duration" class="form-control"
-								   placeholder="Temps estimé" readonly>
+							<input type="text" name="journey[duration]" id="duration" class="form-control"
+								   ng-model="duration" placeholder="Temps estimé" readonly>
 						</div>
 					</div>
 				</div>
@@ -85,7 +85,7 @@
 						<div class="form-group">
 							<div class="input-group">
 								<input type="number" name="journey[amount]" id="amount" class="form-control"
-								   placeholder="Montant par personne" tabindex="7" min="0">
+									   ng-model="amount" placeholder="Montant par personne" tabindex="7" min="0">
 								<span class="input-group-addon">€</span>
 							</div>
 						</div>

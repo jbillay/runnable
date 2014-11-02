@@ -1,6 +1,7 @@
 /* user object */
 
 var db = require('../models');
+var async = require('async');
 var Run = require('./run');
 var Journey = require('./journey');
 var User = require('./user');
@@ -80,26 +81,12 @@ follow.prototype.getMyList = function (id, done) {
 
 follow.prototype.getMyListWithResume = function (id, done) {
     'use strict';
-	/*
 	global.db.models.follow.find({owner_id: id}, function (err, follows) {
 		if (err) {
 			done(err, null);
 		}
-		var run = new Run();
-		var user = new User();
-		var journey = new Journey();
-		follows.forEach(function(element) {
-			if (element.type === 'run') {
-				console.log(run.getResumeById(element.type_id));
-			} else if (element.type === 'user') {
-				console.log(user.getResumeById(element.type_id));
-			} else if (element.type === 'journey') {
-				console.log(journey.getResumeById(element.type_id));
-			}
-		}, this);
-        done(null, follows);
+		done(null, follows);
 	});
-	*/
 };
 
 follow.prototype.getById = function (id, done) {

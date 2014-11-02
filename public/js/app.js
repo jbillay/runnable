@@ -45,6 +45,10 @@ angular.module('runnable', [
                 templateUrl: 'partials/journey_list',
                 controller: 'AppJourney'
             }).
+            when('/journey-:journeyId', {
+                templateUrl: 'partials/journey_detail',
+                controller: 'AppJourneyDetail'
+            }).
             when('/', {
                 templateUrl: 'partials/index',
                 controller: 'AppIndex'

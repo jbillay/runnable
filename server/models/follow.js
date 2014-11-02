@@ -6,6 +6,7 @@ var orm       = require('orm');
 
 module.exports = function (db) {
     "use strict";
+	console.log('Loading models follow');
     var Follow = db.define("follow",
         {
 			owner_id:			Number,

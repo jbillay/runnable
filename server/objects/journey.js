@@ -7,7 +7,6 @@ var async = require('async');
 function journey() {
     'use strict';
 	this.id = null;
-	this.run = null;
 	this.run_id = null;
 	this.address_start = null;
 	this.distance = null;
@@ -26,17 +25,14 @@ journey.prototype.get = function () {
 };
 
 journey.prototype.setRun = function (run) {
-	this.run = run;
+    'use strict';
+	this.run_id = run.id;
 };
 
-journey.prototype.set = function (journey) {
+journey.prototype.setJourney = function (journey) {
     'use strict';
 	if (journey.id) {
 		this.id = journey.id; }
-	if (journey.run) {
-		this.setRun(journey.run); }
-	if (journey.run_id) {
-		this.run_id = journey.run_id; }
 	if (journey.address_start) {
 		this.address_start = journey.address_start; }
 	if (journey.distance) {
@@ -57,9 +53,34 @@ journey.prototype.set = function (journey) {
 		this.owner_id = journey.owner_id; }
 };
 
-journey.prototype.save = function (done) {
+journey.prototype.save = function (journey, done) {
     'use strict';
-	console.log('try to create journey for run: ' + this.run_id);
+	var that = this;
+	async.parallel([
+		function(callback){
+			if (journey.run_id) {
+				global.db.models.run.find({id: journey.run_id}, function (err, run) {
+					if (err) {
+						console.log('Not able to get Run : ' + err);
+					}
+					callback(null, run[0]);
+				});
+			}
+		}
+	],
+	function(err, results){
+		if (err) {
+			console.log('Set journey not working : ' + err);
+		}
+		console.log('Res :' + results);
+		that.setRun(results[0]);
+		that.setJourney(journey);
+		that['_save'](done);
+	});
+};
+
+journey.prototype._save = function (done) {
+    'use strict';
 	global.db.models.journey.create(this, function (err, newJourney) {
 		if (err) {
 			done(err, null);
@@ -81,11 +102,16 @@ journey.prototype.getList = function (done) {
 
 journey.prototype.getListForRun = function (id, done) {
     'use strict';
-	global.db.models.journey.find({run_id: id}, function (err, journeys) {
+	console.log('Id de la course : ' + id);
+	global.db.models.run.find({id: id}, function (err, run) {
 		if (err) {
 			done(err, null);
 		}
-        done(null, journeys);
+		run[0].getJourneys(function (err, journeys) {
+			console.log(journeys);
+			done(null, journeys);
+		});
+        //done(null, journeys);
 	});
 };
 

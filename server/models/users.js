@@ -6,6 +6,7 @@
 
 module.exports = function (db) {
     "use strict";
+	console.log('Loading models users');
     var Users = db.define("users",
         {
 			firstname: 		String,

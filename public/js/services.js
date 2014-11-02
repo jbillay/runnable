@@ -44,6 +44,25 @@ angular.module('runnable.services', ['ngResource']).
 					}
 				});
 			},
+			getDistance: function (source, destination, $scope) {
+				$scope.controller = $scope;
+				$rootScope.DistanceService = new google.maps.DistanceMatrixService();
+				$rootScope.DistanceService.getDistanceMatrix(
+					{
+						origins: [source],
+						destinations: [destination],
+						travelMode: google.maps.TravelMode.DRIVING,
+						avoidHighways: false,
+						avoidTolls: false
+					}, function (response, status) {
+						if (status === google.maps.DistanceMatrixStatus.OK) {
+							$scope.$apply(function () {
+								$scope.controller.distance = response.rows[0].elements[0].distance.text;
+								$scope.controller.duration = response.rows[0].elements[0].duration.text;
+							});
+						}
+				});
+			},
 			showDirection: function (source, destination) {
 				var request = {
 					origin:source,

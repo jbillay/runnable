@@ -3,15 +3,19 @@
 <div class="container body" ng-controller="AppJourneyDetail">
     <div class="row spacehead">
         <div class="col-sm-6">
-            <h2>Parcours pour la course {{run.name}}</h2>
+            <h2>Parcours pour la course {{journey.run.name}}</h2>
             <hr>
             <dl class="dl-horizontal">
                 <dt>Point de départ</dt>
                 <dd>{{journey.address_start}}</dd>
                 <dt>Date du départ</dt>
-                <dd>{{journey.date_start}}</dd>
+                <dd>{{journey.date_start | date: mediumDate}}</dd>
                 <dt>Heure du départ</dt>
                 <dd>{{journey.time_start}}</dd>
+                <dt>Distance estimée</dt>
+                <dd>{{journey.distance}}</dd>
+                <dt>Temps estimé</dt>
+                <dd>{{journey.duration}}</dd>
                 <dt>Type de voiture</dt>
                 <dd>{{journey.car_type}}</dd>
                 <dt>Nombre de place</dt>
@@ -19,11 +23,11 @@
                 <dt>Montant</dt>
                 <dd>{{journey.amount}}</dd>
             </dl>
-            <button type="button" class="btn btn-primary" ng-if="!followed" ng-click="followRun()">
-                    Suivre cette course
+            <button type="button" class="btn btn-primary" ng-if="!followed" ng-click="followJourney()">
+                    Suivre ce parcours
             </button>
-            <button type="button" class="btn btn-success" ng-if="followed" ng-click="removeFollowRun()">
-                    Vous suivez cette course
+            <button type="button" class="btn btn-success" ng-if="followed" ng-click="removeFollowJourney()">
+                    Vous suivez ce parcours
             </button>
         </div>
         <div class="col-sm-5">
