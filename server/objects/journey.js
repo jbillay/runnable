@@ -1,13 +1,12 @@
 /* user object */
 
-var db = require('../models');
+var models = require('../models');
 var Run = require('./run');
 var async = require('async');
 
 function journey() {
     'use strict';
 	this.id = null;
-	this.run_id = null;
 	this.address_start = null;
 	this.distance = null;
 	this.duration = null;
@@ -16,7 +15,7 @@ function journey() {
 	this.car_type = null;
 	this.nb_space = null;
 	this.amount = null;
-	this.owner_id = null;
+	this.run = null;
 }
 
 journey.prototype.get = function () {
@@ -25,8 +24,7 @@ journey.prototype.get = function () {
 };
 
 journey.prototype.setRun = function (run) {
-    'use strict';
-	this.run_id = run.id;
+	this.run = run;
 };
 
 journey.prototype.setJourney = function (journey) {
@@ -49,80 +47,73 @@ journey.prototype.setJourney = function (journey) {
 		this.nb_space = journey.nb_space; }
 	if (journey.amount) {
 		this.amount = journey.amount; }
-	if (journey.owner_id) {
-		this.owner_id = journey.owner_id; }
 };
 
-journey.prototype.save = function (journey, done) {
+journey.prototype.save = function (journey, user, done) {
     'use strict';
 	var that = this;
-	async.parallel([
-		function(callback){
-			if (journey.run_id) {
-				global.db.models.run.find({id: journey.run_id}, function (err, run) {
-					if (err) {
-						console.log('Not able to get Run : ' + err);
-					}
-					callback(null, run[0]);
+	models.User.find({where: {id: user.id}})
+		.success(function (user) {
+			that.setJourney(journey);
+			models.Run.find({where: {id: journey.run_id}})
+				.success(function (run) {
+					models.Journey.create(that)
+						.success(function(newJourney) {
+							newJourney.setRun(run)
+								.success(function () {
+									newJourney.setUser(user)
+										.error(function(err) {
+											done(err, null);
+										})
+										.success(function(newJourney) {
+											done(null, newJourney);
+										});
+								});
+						});
 				});
-			}
-		}
-	],
-	function(err, results){
-		if (err) {
-			console.log('Set journey not working : ' + err);
-		}
-		console.log('Res :' + results);
-		that.setRun(results[0]);
-		that.setJourney(journey);
-		that['_save'](done);
-	});
-};
-
-journey.prototype._save = function (done) {
-    'use strict';
-	global.db.models.journey.create(this, function (err, newJourney) {
-		if (err) {
-			done(err, null);
-		} else {
-			done(null, newJourney);
-		}
-	});
+		});
 };
 
 journey.prototype.getList = function (done) {
     'use strict';
-	global.db.models.journey.find({}, function (err, journeys) {
-		if (err) {
+	var that = this;
+	models.Journey.findAll({include: [models.Run]})
+		.error(function (err) {
 			done(err, null);
-		}
-        done(null, journeys);
-	});
+		})
+		.success(function (journeys) {
+			done(null, journeys);
+		});
 };
 
 journey.prototype.getListForRun = function (id, done) {
     'use strict';
-	console.log('Id de la course : ' + id);
-	global.db.models.run.find({id: id}, function (err, run) {
-		if (err) {
+	models.Run.find({where: {id: id}})
+		.error(function (err) {
 			done(err, null);
-		}
-		run[0].getJourneys(function (err, journeys) {
-			console.log(journeys);
-			done(null, journeys);
+		})
+		.success(function (run) {
+			run.getJourneys().success(function (journeys) {
+				done(null, journeys);
+			});
 		});
-        //done(null, journeys);
-	});
 };
 
 journey.prototype.getById = function (id, done) {
     'use strict';
-	global.db.models.journey.find({id: id}, function (err, journey) {
-		if (err) {
+	var that = this;
+	models.Journey.find({where: {id: id}})
+		.error(function (err) {
 			done(err, null);
-		}
-        done(null, journey[0]);
-	});
+		})
+		.success(function (journey) {
+			that.setJourney(journey);
+			journey.getRun().success(function (run) {
+				console.log(run);
+				that.setRun(run);
+				done(null, that);
+			});
+		});
 };
 
 module.exports = journey;

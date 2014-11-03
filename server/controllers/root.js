@@ -1,5 +1,5 @@
 
-var db = require('../models');
+var models = require('../models');
 
 /*jslint node: true */
 
@@ -42,18 +42,12 @@ exports.login = function (req, res) {
 // for dev purpose only -- To be removed
 exports.sync = function (req, res) {
     "use strict";
-	global.db.drop(function (err) {
-		if (err) {
+	models.sequelize.sync({force: true})
+		.error(function (err) {
 			console.log('Error on sync db : ' + err);
-		}
-		!err && console.log("Database no longer exists!");
-		global.db.sync(function (err) {
-			if (err) {
-				console.log('Error on sync db : ' + err);
-			}
-			!err && console.log("New database created !");
+		}).success(function() {
+			console.log("New database created !");
 		});
-	});
 	res.redirect('/');
 };
 

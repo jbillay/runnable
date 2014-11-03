@@ -5,7 +5,7 @@ exports.create = function (req, res) {
     "use strict";
 	console.log('Create a journey for run : ' + req.body.journey.run_id);
 	var journey = new Journey();
-	journey.save(req.body.journey, function (err, journey) {
+	journey.save(req.body.journey, req.user, function (err, journey) {
 		if (err) {
 			console.log('Journey not created ' + err);
 			res.redirect('/journey');
@@ -25,6 +25,7 @@ exports.list = function (req, res) {
 			console.log('Not able to get journey list : ' + err);
 			res.jsonp('{"msg": "ko"}');
 		} else {
+			console.log('List of journeys : ' + journeys);
 			res.jsonp(journeys);
 		}
 	});

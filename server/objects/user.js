@@ -1,6 +1,6 @@
 /* user object */
 
-var db = require('../models');
+var models = require('../models');
 
 function user() {
     'use strict';
@@ -43,36 +43,38 @@ user.prototype.set = function (user) {
 	console.log(this.firstname + ' ' + this.lastname);
 };
 
-user.prototype.save = function (next) {
+user.prototype.save = function (done) {
     'use strict';
 	console.log('try to create user : ' + this.email);
-	global.db.models.users.create(this, function (err, newUser) {
-		if (err) {
-			next(err, null);
-		} else {
-			next(null, newUser);
-		}
-	});
+	models.User.create(this)
+		.error(function (err) {
+			done(err, null);
+		})
+		.success(function (newUser) {
+			done(null, newUser);
+		});
 };
 
 user.prototype.getById = function (id, done) {
     'use strict';
-	global.db.models.users.find({id: id}, function (err, user) {
-		if (err) {
+	models.User.find({ where: {id: id}})
+		.error(function (err) {
 			done(err, null);
-		}
-        done(null, user[0]);
-	});
+		})
+		.success(function (user) {
+			done(null, user);
+		});
 };
 
 user.prototype.getByEmail = function (email, done) {
     'use strict';
-	global.db.models.users.find({email: email}, function (err, user) {
-		if (err) {
+	models.User.find({ where: {email: email}})
+		.error(function (err) {
 			done(err, null);
-		}
-        done(null, user[0]);
-	});
+		})
+		.success(function (user) {
+			done(null, user);
+		});
 };
 
 module.exports = user;

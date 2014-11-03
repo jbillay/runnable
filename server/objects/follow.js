@@ -1,10 +1,6 @@
 /* user object */
 
-var db = require('../models');
-var async = require('async');
-var Run = require('./run');
-var Journey = require('./journey');
-var User = require('./user');
+var models = require('../models');
 
 function follow() {
     'use strict';
@@ -46,57 +42,60 @@ follow.prototype.setTypeId = function (id) {
 follow.prototype.save = function (done) {
     'use strict';
 	console.log('try to create follow for the ' + this.type + ' on id ' + this.type_id);
-	global.db.models.follow.create(this, function (err, newFollow) {
-		if (err) {
+	models.Follow.create(this)
+		.error(function (err) {
 			done(err, null);
-		} else {
+		})
+		.success(function (newFollow) {
 			done(null, newFollow);
-		}
-	});
+		});
 };
 
 follow.prototype.remove = function (done) {
    'use strict';
 	console.log('try to remove follow for the ' + this.type + ' on id ' + this.type_id);
-	global.db.models.follow.find({owner_id: this.owner_id, type: this.type, type_id: this.type_id}).
-		remove(function (err) {
-			if (err) {
-				done(err);
-			} else {
-				done(null);
-			}
+	models.Follow.find({where: {owner_id: this.owner_id, type: this.type, type_id: this.type_id}})
+		.destroy()
+		.error(function (err) {
+			done(err);
+		})
+		.success(function () {
+			done(null);
 		});
 
 }
 
 follow.prototype.getMyList = function (id, done) {
     'use strict';
-	global.db.models.follow.find({owner_id: id}, function (err, follows) {
-		if (err) {
+	models.User.find({where: {id: id}, include: [ models.Follow ]})
+		.error(function (err) {
 			done(err, null);
-		}
-        done(null, follows);
-	});
+		})
+		.success(function (user) {
+			done(null, user.Follows);
+		});
 };
 
 follow.prototype.getMyListWithResume = function (id, done) {
     'use strict';
-	global.db.models.follow.find({owner_id: id}, function (err, follows) {
-		if (err) {
+	models.User.find({where: {id: id}, include: [ models.Follow ]})
+		.error(function (err) {
 			done(err, null);
-		}
-		done(null, follows);
-	});
+		})
+		.success(function (user) {
+			done(null, user.Follows);
+		});
 };
 
 follow.prototype.getById = function (id, done) {
     'use strict';
-	global.db.models.follow.find({id: id}, function (err, follow) {
-		if (err) {
+	models.Follow.find({where: {id: id}})
+		.error(function (err) {
 			done(err, null);
-		}
-        done(null, follow[0]);
-	});
+		})
+		.success(function (follow) {
+			done(null, follow);
+		});
 };
 
 module.exports = follow;

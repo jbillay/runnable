@@ -148,7 +148,6 @@ angular.module('runnable.controllers', []).
         all.then(function (res) {
 			$scope.runList = res[0];
 			$scope.journeyList = res[1];
-			console.log($scope.journeyList);
 			$scope.followList = res[2];
 		});
 		$scope.getLocation = function(val) {

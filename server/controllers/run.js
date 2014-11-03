@@ -5,7 +5,7 @@ exports.create = function (req, res) {
     "use strict";
 	console.log('Create the run : ' + req.body.run.name);
 	var run = new Run();
-	run.set(req.body.run);
+	run.set(req.body.run, req.user);
 	run.save(function (err, run) {
 		if (err) {
 			console.log('Run not created ' + err);

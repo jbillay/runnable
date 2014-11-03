@@ -1,6 +1,6 @@
 /* user object */
 
-var db = require('../models');
+var models = require('../models');
 
 function run() {
     'use strict';
@@ -14,7 +14,7 @@ function run() {
 	this.elevations = null;
 	this.info = null;
 	this.is_active = null;
-	this.owner_id = null;
+	this.user_id = null;
 }
 
 run.prototype.get = function () {
@@ -22,7 +22,7 @@ run.prototype.get = function () {
 	return this;
 };
 
-run.prototype.set = function (run) {
+run.prototype.set = function (run, user) {
     'use strict';
 	if (run.id) {
 		this.id = run.id; }
@@ -44,50 +44,60 @@ run.prototype.set = function (run) {
 		this.info = run.info; }
 	if (run.is_active) {
 		this.is_active = run.is_active; }
-	if (run.owner_id) {
-		this.owner_id = run.owner_id; }
+	if (user.id) {
+		this.user_id = user.id; }
 };
 
 run.prototype.save = function (done) {
     'use strict';
+	var that = this;
 	console.log('try to create run : ' + this.name);
-	global.db.models.run.create(this, function (err, newRun) {
-		if (err) {
-			done(err, null);
-		} else {
-			done(null, newRun);
-		}
-	});
+	models.User.find({where: {id: this.user_id}})
+		.success(function (user) {
+			models.Run.create(that)
+				.success(function(newRun) {
+					newRun.setUser(user)
+						.error(function(err) {
+							done(err, null);
+						})
+						.success(function(newRun) {
+							done(null, newRun);
+						});
+				});
+		});
 };
 
 run.prototype.getActiveList = function (done) {
     'use strict';
-	global.db.models.run.find({is_active: true}, function (err, runs) {
-		if (err) {
+	models.Run.findAll({where: {is_active: true}}).
+		error(function (err) {
 			done(err, null);
-		}
-        done(null, runs);
-	});
+		})
+		.success(function (runs) {
+			done(null, runs);
+		});
 };
 
 run.prototype.getById = function (id, done) {
     'use strict';
-	global.db.models.run.find({id: id}, function (err, run) {
-		if (err) {
+	models.Run.find({where: {id: id}})
+		.error(function (err) {
 			done(err, null);
-		}
-        done(null, run[0]);
-	});
+		})
+		.success(function (run) {
+			done(null, run);
+		});
 };
 
 run.prototype.getResumeById = function (id) {
     'use strict';
-	global.db.models.run.find({id: id}, function (err, run) {
-		if (err) {
+	models.Run.find({where: {id: id}})
+		.error(function (err) {
 			done(err, null);
-		}
-        done(null, run[0]);
-	});
+		})
+		.success(function (run) {
+			done(null, run);
+		});
 };
 
 module.exports = run;
