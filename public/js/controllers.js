@@ -106,36 +106,72 @@ angular.module('runnable.controllers', []).
 			});
 		}
     }).
-	controller('AppJourneyDetail', function ($scope, $cookies, $q, $routeParams, Run, Journey, GoogleMapApi, Follow) {
+	controller('AppJourneyDetail', function ($scope, $cookies, $q, $routeParams, Run, Journey, Join, GoogleMapApi, Follow) {
 		'use strict';
 		$scope.page = 'Journey';
 		$scope.user = angular.fromJson($cookies.user);
 		$scope.journeyId = $routeParams.journeyId;
 		var journeyPromise = Journey.getDetail($scope.journeyId),
+			joinPromise = Join.getListForJourney($scope.journeyId),
 			followPromise = Follow.getMyFollow(),
-			all = $q.all([journeyPromise, followPromise]);
+			all = $q.all([journeyPromise, followPromise, joinPromise]);
 		all.then(function (res) {
 			$scope.journey = res[0];
 			$scope.followList = res[1];
+			$scope.joinList = res[2];
 			$scope.followed = 0;
 			angular.forEach($scope.followList, function (follow) {
-				if (follow.type_id == $scope.journeyId && follow.type === "journey") {
+				if (follow.type_id == $scope.journeyId && follow.type === "journey" && follow.UserId === $scope.user.id) {
 					console.log('Journey followed');
 					$scope.followed = 1;
 				}
 			});
+			$scope.joined = 0;
+			$scope.reserved = 0;
+			angular.forEach($scope.joinList, function (join) {
+				$scope.reserved += join.nb_place;
+				if (join.JourneyId == $scope.journeyId && join.UserId === $scope.user.id) {
+					console.log('Journey joined');
+					$scope.joined = 1;
+				}
+			});
+			$scope.nbFreeSpaceList = $scope.getFreeSpace();
 			console.log($scope.journey.run.name);
 			GoogleMapApi.initMap();
 			GoogleMapApi.showDirection($scope.journey.address_start, $scope.journey.run.address_start);
+			$scope.nbFreeSpace = function () {
+				return parseInt($scope.journey.nb_space) - parseInt($scope.reserved);
+			}
 		});
+		$scope.getFreeSpace = function() {
+			var result = [],
+				start = 1,
+				end = parseInt($scope.journey.nb_space) - parseInt($scope.reserved);
+			for (var i = start; i <= end; i++) {
+				result.push(i);
+			}
+			return result;
+		};
 		$scope.followJourney = function () {
 			Follow.addFollow($scope.journeyId, 'journey');
 			$scope.followed = 1;
-		}
+		};
 		$scope.removeFollowJourney = function () {
 			Follow.removeFollow($scope.journeyId, 'journey');
 			$scope.followed = 0;
-		}
+		};
+		$scope.showJoinForm = function () {
+			angular.element('#clientModal').modal('show');
+		};
+		$scope.joinJourney = function () {
+			$scope.joined = 1;
+			$scope.reserved = $scope.reserved + $scope.place;
+			console.log('Reservation pour ' + $scope.place);
+			Join.addJoin($scope.journeyId, $scope.place);
+		};
+		$scope.removeJoinJourney = function () {
+			$scope.joined = 0;
+		};
 	}).
 	controller('AppJourney', function ($scope, $cookies, $q, $http, Run, Journey, GoogleMapApi, Follow) {
         'use strict';

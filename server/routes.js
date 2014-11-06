@@ -30,6 +30,11 @@ module.exports = function (app, passport, auth) {
 	app.get('/journey/:id', auth.requiresLogin, controllers.journey.detail);
     app.get('/journey/run/:id', auth.requiresLogin, controllers.journey.listForRun);
 
+    app.post('/join', auth.requiresLogin, controllers.join.create);
+	app.get('/join/:id', auth.requiresLogin, controllers.join.detail);
+    app.get('/join/journey/:id', auth.requiresLogin, controllers.join.listForJourney);
+	app.get('/join/remove/:id', auth.requiresLogin, controllers.join.remove);
+
 	app.get('/follow/me', auth.requiresLogin, controllers.follow.me);
 	app.get('/follow/me/resume', auth.requiresLogin, controllers.follow.meResume);
 	app.get('/follow/add/:type/:id', auth.requiresLogin, controllers.follow.add);

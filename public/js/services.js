@@ -126,6 +126,35 @@ angular.module('runnable.services', ['ngResource']).
 			}
         };
     }).
+    factory('Join', function ($q, $http) {
+        'use strict';
+        return {
+			addJoin: function (id, nbSpace) {
+				var info = {journey_id: id, nb_place: nbSpace};
+				$http.post("/join", info).
+					success(function (result) {
+						console.log('Journey joined');
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+			},
+			getListForJourney: function (journey_id) {
+				var deferred = $q.defer();
+                $http({method: "GET", url: "/join/journey/" + journey_id}).
+					success(function (result) {
+						console.log('Result : ' + result);
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+                return deferred.promise;
+			},
+			removeJoin: function (id) {
+			}
+        };
+    }).
     factory('Run', function ($q, $http) {
         'use strict';
         return {

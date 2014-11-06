@@ -45,7 +45,8 @@
 					<div class="col-sm-12">
 						<ul class="list-unstyled">
 							<li class="animate-repeat" ng-repeat="journey in journeyList | filter:journey_start as results">
-								Départ de {{journey.address_start}} le {{journey.date_start | date: mediumDate}}
+								Départ de <a href="/journey-{{journey.id}}">{{journey.address_start}}</a>
+								le {{journey.date_start | date: mediumDate}}
 								à {{journey.time_start}} pour <strong>{{journey.amount | currency:'€ '}}</strong>
 							</li>
 							<li class="animate-repeat" ng-if="results.length == 0">

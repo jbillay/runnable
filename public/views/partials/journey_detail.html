@@ -1,6 +1,30 @@
 <div ng-include="'partials/nav'"></div>
-
 <div class="container body" ng-controller="AppJourneyDetail">
+	<div class="modal fade bs-example-modal-lg" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="clientModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span>
+						<span class="sr-only">Close</span></button>
+					<h4 class="modal-title" id="myModalLabel">Validation de la participation au voyage pour la course {{journey.run.name}}</h4>
+				</div>
+				<div class="row">
+					<div class="modal-body">
+						<div class="col-md-12">
+							Vous allez souhaité participer au voyage au départ de {{journey.address_start}} pour la course {{journey.run.name}} 
+							se déroulant à {{journey.run.address_start}}.<br/>
+							Combien de place souhaitez vous réserver :<br/>
+							<select ng-model="place" ng-options="place for place in nbFreeSpaceList"></select><br>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="joinJourney()">Procéder au paiement</button>
+				</div>
+			</div>
+		</div>
+	</div>
     <div class="row spacehead">
         <div class="col-sm-6">
             <h2>Parcours pour la course {{journey.run.name}}</h2>
@@ -18,17 +42,29 @@
                 <dd>{{journey.duration}}</dd>
                 <dt>Type de voiture</dt>
                 <dd>{{journey.car_type}}</dd>
-                <dt>Nombre de place</dt>
-                <dd>{{journey.nb_space}}</dd>
+                <dt>Nombre de place restant</dt>
+                <dd>{{journey.nb_space - reserved}}</dd>
                 <dt>Montant</dt>
-                <dd>{{journey.amount}}</dd>
+                <dd>{{journey.amount | currency:'€ '}}</dd>
             </dl>
-            <button type="button" class="btn btn-primary" ng-if="!followed" ng-click="followJourney()">
-                    Suivre ce parcours
-            </button>
-            <button type="button" class="btn btn-success" ng-if="followed" ng-click="removeFollowJourney()">
-                    Vous suivez ce parcours
-            </button>
+			<div class="pull-right">
+				<div>
+					<button type="button" class="btn btn-primary" ng-if="!followed" ng-click="followJourney()">
+							Suivre ce parcours
+					</button>
+					<button type="button" class="btn btn-success" ng-if="followed" ng-click="removeFollowJourney()">
+							Vous suivez ce parcours
+					</button>
+				</div>
+				<div ng-if="nbFreeSpace()">
+					<button type="button" class="btn btn-primary" ng-if="!joined" ng-click="showJoinForm()">
+							Participer à ce voyage
+					</button>
+				</div>
+					<button type="button" class="btn btn-success" ng-if="joined" ng-click="removeJoinJourney()">
+							Je participe à ce voyage
+					</button>
+			</div>
         </div>
         <div class="col-sm-5">
             <div id="map_canvas"></div>
