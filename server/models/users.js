@@ -14,7 +14,7 @@ module.exports = function(sequelize, DataTypes) {
 		password: 		{ type: DataTypes.STRING, allowNull: false },
 		hashedPassword: DataTypes.STRING,
 		provider: 		DataTypes.STRING,
-		salt: 			DataTypes.STRING, 
+		salt: 			DataTypes.STRING,
 		facebookUserId: DataTypes.INTEGER,
 		twitterUserId: 	DataTypes.INTEGER,
 		twitterKey: 	DataTypes.STRING,
