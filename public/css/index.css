@@ -9,7 +9,7 @@ license: MIT
 author: bootply.com
 */
 
-html,body {
+html,body,.runnable_root {
     height:100%;
     background:center no-repeat fixed url('/img/home.jpg');
     background-size: cover;
@@ -27,11 +27,15 @@ section {
 
 .v-center {
     padding-top:3%;
-    font-size:70px;
+    font-size:50px;
 }
 
 .well {
     border-color:transparent;
+}
+
+.navbar {
+    background-color: #fff;
 }
 
 a.list-group-item.active,[class*='-info'] {

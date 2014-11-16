@@ -8,7 +8,7 @@ module.exports = function (app, passport, auth) {
     "use strict";
 	console.log('Init Routes');
     // serve index and view partials
-    app.get('/', controllers.root.index);
+    app.get('/', controllers.root.default);
     app.get('/logout', controllers.root.logout);
     app.get('/login', controllers.root.login);
     app.post('/login', passport.authenticate('local',
@@ -40,7 +40,7 @@ module.exports = function (app, passport, auth) {
 	app.get('/follow/add/:type/:id', auth.requiresLogin, controllers.follow.add);
 	app.get('/follow/remove/:type/:id', auth.requiresLogin, controllers.follow.remove);
 	
-    app.get('/partials/:name', auth.requiresLogin, controllers.root.partials);
+    app.get('/partials/:name', controllers.root.partials);
 
 	// For technical purpose
 	app.get('/sync', controllers.root.sync);
