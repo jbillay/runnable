@@ -1,0 +1,29 @@
+<div class="modal fade bs-example-modal-lg" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span>
+					<span class="sr-only">Close</span></button>
+				<h4 class="modal-title" id="myModalLabel">Authentification pour le site Runnable</h4>
+			</div>
+			<div class="row">
+				<div class="modal-body">
+					<div class="col-sm-4 col-sm-offset-4 text-center">
+						<form action="/login" method="post">
+							<div class="input-group margin-bottom-sm">
+								<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+								<input class="form-control" type="text" name="email" placeholder="Email">
+							</div>
+							<div class="input-group">
+								<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+								<input class="form-control" type="password" name="password" placeholder="Mot de passe">
+							</div>
+							<button type="submit" class="btn btn-default">Connection</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

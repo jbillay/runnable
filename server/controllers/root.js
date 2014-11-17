@@ -28,7 +28,7 @@ exports.logout = function (req, res) {
 exports.logon = function (req) {
     "use strict";
     req.passport.authenticate('local', {
-        successRedirect : '/home',
+        successRedirect : '/',
         failureRedirect : '/login',
         failureFlash : true
     });

@@ -8,10 +8,21 @@
 // Demonstrate how to register services
 // In this case it is a simple value service.
 angular.module('runnable.services', ['ngResource']).
-    factory('UserInfo', function ($resource) {
+    factory('User', function ($q, $http) {
         'use strict';
-        return $resource('/get/user/:id', {id: '@_id.$oid'},
-            {'query':  {method: 'GET', isArray: false}});
+		return {
+			getUser: function () {
+                var deferred = $q.defer();
+                $http.get("/user/me").
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+                return deferred.promise;
+            }
+		}
     }).
     factory('GoogleMapApi', function ($rootScope) {
         'use strict';

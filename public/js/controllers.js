@@ -11,25 +11,25 @@ angular.module('runnable.controllers', []).
         'use strict';
         $scope.page = 'Index';
     }).
-    controller('AppHome', function ($scope, $cookies, Follow) {
+    controller('RunnableNavController', function ($scope, $q, User) {
         'use strict';
-        $scope.page = 'Home';
-        $scope.user = angular.fromJson($cookies.user);
-    }).
-    controller('AppSidebar', function (Follow, $q) {
-        'use strict';
-		/*
-		var followPromise = Follow.getMyFollowResume(),
-			all = $q.all([followPromise]);
-        all.then(function (res) {
-			$scope.followResumeList = res[0];
+        $scope.page = 'Nav';
+		var userPromise = User.getUser(),
+			all = $q.all([userPromise]);
+		all.then(function (res) {
+			$scope.user = res[0];
+			$scope.auth = false;
+			if ($scope.user.email) {
+				$scope.auth = true;
+			}
 		});
-		*/
+		$scope.login = function () {
+			angular.element('#loginModal').modal('show');
+		};
     }).
 	controller('AppRunDetail', function ($scope, $cookies, $q, $routeParams, Run, Journey, GoogleMapApi, Follow) {
         'use strict';
         $scope.page = 'Run';
-        $scope.user = angular.fromJson($cookies.user);
 		$scope.runId = $routeParams.runId;
 		var runPromise = Run.getDetail($scope.runId),
 			journeyPromise = Journey.getListForRun($scope.runId),
@@ -60,7 +60,6 @@ angular.module('runnable.controllers', []).
     controller('AppRun', function ($scope, $cookies, $q, $http, Run, Follow) {
         'use strict';
         $scope.page = 'Run';
-        $scope.user = angular.fromJson($cookies.user);
 		var runPromise = Run.getActiveList(),
 			followPromise = Follow.getMyFollow(),
             all = $q.all([runPromise, followPromise]);
@@ -109,7 +108,6 @@ angular.module('runnable.controllers', []).
 	controller('AppJourneyDetail', function ($scope, $cookies, $q, $routeParams, Run, Journey, Join, GoogleMapApi, Follow) {
 		'use strict';
 		$scope.page = 'Journey';
-		$scope.user = angular.fromJson($cookies.user);
 		$scope.journeyId = $routeParams.journeyId;
 		var journeyPromise = Journey.getDetail($scope.journeyId),
 			joinPromise = Join.getListForJourney($scope.journeyId),
@@ -176,7 +174,6 @@ angular.module('runnable.controllers', []).
 	controller('AppJourney', function ($scope, $cookies, $q, $http, Run, Journey, GoogleMapApi, Follow) {
         'use strict';
         $scope.page = 'Journey';
-        $scope.user = angular.fromJson($cookies.user);
 		var runPromise = Run.getActiveList(),
 			journeyPromise = Journey.getList(),
 			followPromise = Follow.getMyFollow(),
