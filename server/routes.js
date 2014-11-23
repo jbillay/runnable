@@ -24,6 +24,7 @@ module.exports = function (app, passport, auth) {
     app.post('/run', controllers.run.create);
     app.get('/run/list', controllers.run.list);
     app.get('/run/:id', controllers.run.detail);
+    app.get('/run/next/:nb', controllers.run.next);
 
     app.post('/journey', controllers.journey.create);
     app.get('/journey/list', controllers.journey.list);

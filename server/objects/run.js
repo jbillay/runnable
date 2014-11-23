@@ -78,6 +78,17 @@ run.prototype.getActiveList = function (done) {
 		});
 };
 
+run.prototype.getNextList = function (nb, done) {
+    'use strict';
+	models.Run.findAll({limit: nb, where: {is_active: true}, order: 'updatedAt ASC '}).
+		error(function (err) {
+			done(err, null);
+		})
+		.success(function (runs) {
+			done(null, runs);
+		});
+};
+
 run.prototype.getById = function (id, done) {
     'use strict';
 	models.Run.find({where: {id: id}})

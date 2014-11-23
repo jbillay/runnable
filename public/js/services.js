@@ -88,55 +88,6 @@ angular.module('runnable.services', ['ngResource']).
 			}
 		};
     }).
-    factory('Follow', function ($q, $http) {
-        'use strict';
-        return {
-			addFollow: function (id, type) {
-				$http({method: "GET", url: "/follow/add/" + type + '/' + id}).
-					success(function (result) {
-						console.log('Followed added');
-					}).
-					error(function(data, status) {
-						console.log('Error : ' + status);
-					});
-
-			},
-			removeFollow: function (id, type) {
-				$http({method: "GET", url: "/follow/remove/" + type + '/' + id}).
-					success(function (result) {
-						console.log('Followed removed');
-					}).
-					error(function(data, status) {
-						console.log('Error : ' + status);
-					});
-
-			},
-			getMyFollow: function () {
-				var deferred = $q.defer();
-                $http({method: "GET", url: "/follow/me"}).
-					success(function (result) {
-						console.log('Result : ' + result);
-						deferred.resolve(result);
-					}).
-					error(function(data, status) {
-						console.log('Error : ' + status);
-					});
-                return deferred.promise;
-			},
-			getMyFollowResume: function () {
-				var deferred = $q.defer();
-                $http({method: "GET", url: "/follow/me/resume"}).
-					success(function (result) {
-						console.log('Result : ' + result);
-						deferred.resolve(result);
-					}).
-					error(function(data, status) {
-						console.log('Error : ' + status);
-					});
-                return deferred.promise;
-			}
-        };
-    }).
     factory('Join', function ($q, $http) {
         'use strict';
         return {
@@ -192,7 +143,19 @@ angular.module('runnable.services', ['ngResource']).
 						console.log('Error : ' + status);
 					});
                 return deferred.promise;
-            }
+            },
+			getNextList: function (nb) {
+				var deferred = $q.defer();
+                $http({method: "GET", url: "/run/next/" + nb}).
+					success(function (result) {
+						console.log('Result : ' + result);
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+                return deferred.promise;
+			}
         };
     }).
     factory('Journey', function ($q, $http) {

@@ -7,9 +7,22 @@
 /*jshint undef:true */
 
 angular.module('runnable.controllers', []).
-    controller('AppIndex', function ($scope) {
+    controller('RunnableIndexController', function ($scope, $q, Run, User) {
         'use strict';
         $scope.page = 'Index';
+		$scope.nbRunItems = 4;
+		$scope.nbJourneyItems = 4;
+		var runPromise = Run.getNextList($scope.nbRunItems),
+			userPromise = User.getUser(),
+			all = $q.all([runPromise, userPromise]);
+		all.then(function (res) {
+			$scope.listRun = res[0];
+			$scope.user = res[1];
+			$scope.auth = false;
+			if ($scope.user.email) {
+				$scope.auth = true;
+			}
+		});
     }).
     controller('RunnableNavController', function ($scope, $q, User) {
         'use strict';
@@ -27,45 +40,26 @@ angular.module('runnable.controllers', []).
 			angular.element('#loginModal').modal('show');
 		};
     }).
-	controller('AppRunDetail', function ($scope, $cookies, $q, $routeParams, Run, Journey, GoogleMapApi, Follow) {
+	controller('AppRunDetail', function ($scope, $cookies, $q, $routeParams, Run, Journey, GoogleMapApi) {
         'use strict';
         $scope.page = 'Run';
 		$scope.runId = $routeParams.runId;
 		var runPromise = Run.getDetail($scope.runId),
 			journeyPromise = Journey.getListForRun($scope.runId),
-			followPromise = Follow.getMyFollow(),
-            all = $q.all([runPromise, journeyPromise, followPromise]);
+            all = $q.all([runPromise, journeyPromise]);
         all.then(function (res) {
 			$scope.run = res[0];
 			$scope.journeyList = res[1];
-			$scope.followList = res[2];
-			$scope.followed = 0;
-			angular.forEach($scope.followList, function (follow) {
-				if (follow.type_id == $scope.runId && follow.type === "run") {
-					console.log('Run followed');
-					$scope.followed = 1;
-				}
-			});
 			GoogleMapApi.initMap($scope.run.address_start);
 		});
-		$scope.followRun = function () {
-			Follow.addFollow($scope.runId, 'run');
-			$scope.followed = 1;
-		};
-		$scope.removeFollowRun = function () {
-			Follow.removeFollow($scope.runId, 'run');
-			$scope.followed = 0;
-		};
     }).
-    controller('AppRun', function ($scope, $cookies, $q, $http, Run, Follow) {
+    controller('AppRun', function ($scope, $cookies, $q, $http, Run) {
         'use strict';
         $scope.page = 'Run';
 		var runPromise = Run.getActiveList(),
-			followPromise = Follow.getMyFollow(),
-            all = $q.all([runPromise, followPromise]);
+            all = $q.all([runPromise]);
         all.then(function (res) {
 			$scope.listRun = res[0];
-			$scope.followList = res[1];
 		});
         $scope.getLocation = function(val) {
             return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
@@ -105,25 +99,16 @@ angular.module('runnable.controllers', []).
 			});
 		}
     }).
-	controller('AppJourneyDetail', function ($scope, $cookies, $q, $routeParams, Run, Journey, Join, GoogleMapApi, Follow) {
+	controller('AppJourneyDetail', function ($scope, $cookies, $q, $routeParams, Run, Journey, Join, GoogleMapApi) {
 		'use strict';
 		$scope.page = 'Journey';
 		$scope.journeyId = $routeParams.journeyId;
 		var journeyPromise = Journey.getDetail($scope.journeyId),
 			joinPromise = Join.getListForJourney($scope.journeyId),
-			followPromise = Follow.getMyFollow(),
-			all = $q.all([journeyPromise, followPromise, joinPromise]);
+			all = $q.all([journeyPromise, joinPromise]);
 		all.then(function (res) {
 			$scope.journey = res[0];
-			$scope.followList = res[1];
-			$scope.joinList = res[2];
-			$scope.followed = 0;
-			angular.forEach($scope.followList, function (follow) {
-				if (follow.type_id == $scope.journeyId && follow.type === "journey" && follow.UserId === $scope.user.id) {
-					console.log('Journey followed');
-					$scope.followed = 1;
-				}
-			});
+			$scope.joinList = res[1];
 			$scope.joined = 0;
 			$scope.reserved = 0;
 			angular.forEach($scope.joinList, function (join) {
@@ -134,7 +119,6 @@ angular.module('runnable.controllers', []).
 				}
 			});
 			$scope.nbFreeSpaceList = $scope.getFreeSpace();
-			console.log($scope.journey.run.name);
 			GoogleMapApi.initMap();
 			GoogleMapApi.showDirection($scope.journey.address_start, $scope.journey.run.address_start);
 			$scope.nbFreeSpace = function () {
@@ -150,14 +134,6 @@ angular.module('runnable.controllers', []).
 			}
 			return result;
 		};
-		$scope.followJourney = function () {
-			Follow.addFollow($scope.journeyId, 'journey');
-			$scope.followed = 1;
-		};
-		$scope.removeFollowJourney = function () {
-			Follow.removeFollow($scope.journeyId, 'journey');
-			$scope.followed = 0;
-		};
 		$scope.showJoinForm = function () {
 			angular.element('#clientModal').modal('show');
 		};
@@ -171,17 +147,15 @@ angular.module('runnable.controllers', []).
 			$scope.joined = 0;
 		};
 	}).
-	controller('AppJourney', function ($scope, $cookies, $q, $http, Run, Journey, GoogleMapApi, Follow) {
+	controller('AppJourney', function ($scope, $cookies, $q, $http, Run, Journey, GoogleMapApi) {
         'use strict';
         $scope.page = 'Journey';
 		var runPromise = Run.getActiveList(),
 			journeyPromise = Journey.getList(),
-			followPromise = Follow.getMyFollow(),
-            all = $q.all([runPromise, journeyPromise, followPromise]);
+            all = $q.all([runPromise, journeyPromise]);
         all.then(function (res) {
 			$scope.runList = res[0];
 			$scope.journeyList = res[1];
-			$scope.followList = res[2];
 		});
 		$scope.getLocation = function(val) {
             return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {

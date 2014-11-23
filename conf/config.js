@@ -4,22 +4,15 @@
 
 /*jslint node: true */
 
-var path       = require('path');
+var _          = require('lodash');
 
-var settings = {
-    path        : path.normalize(path.join(__dirname, '..')),
-	name		: 'Runnable',
-    port        : process.env.NODE_PORT || 9615,
-    env         : 'DEV',
-    database    : {
-        protocol    : "mysql",
-        query       : { pool: true },
-        host        : "localhost",
-        database    : "runnable",
-        user        : "root",
-        password    : "root",
-        port        : 3306
-    }
-};
+if (!process.env.NODE_ENV) {
+    process.env.NODE_ENV = "development";
+}
 
-module.exports = settings;
+console.log('Load environment ' + process.env.NODE_ENV + ' configuration');
+
+module.exports = _.extend(
+    require('./all'),
+    require('./' + process.env.NODE_ENV) || {}
+);

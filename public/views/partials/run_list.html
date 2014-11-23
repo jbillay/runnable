@@ -3,8 +3,6 @@
 <div class="container body">
     <div class="row spacehead">
         <div class="col-sm-8">
-			<h2>Toutes les courses</h2>
-			<hr>
 			<div class="row">
 				<div class="col-sm-8">
 					<div class="input-group">
@@ -13,17 +11,17 @@
 					</div>
 				</div>
 			</div>
-			<div class="row spacehead">
-				<div class="col-sm-12">
-					<ul class="list-unstyled">
-						<li class="animate-repeat" ng-repeat="run in listRun | filter:run_name as results">
-							<a href="/run-{{run.id}}">{{run.name}}</a>
-						</li>
-						<li class="animate-repeat" ng-if="results.length == 0">
-							<strong>Cette course n'existe pas encore... créez la !</strong>
-						</li>
-					</ul>
-				</div>
+			<div class="row run_list">
+				<div class="col-xs-3 run_poster" ng-repeat="run in listRun | filter:run_name as results">
+					<a href="/run-{{run.id}}"><img src="/img/run_default.jpg" class="run_img" alt="Responsive image"></a>
+					<div class="run_title"><a href="/run-{{run.id}}">{{run.name | capitalize}}</a></div>
+					<div class="run_desc">
+						<p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize}}</p>
+						<p><i class="glyphicon glyphicon-calendar"></i> {{run.date_start}}</p>
+						<p><i class="glyphicon glyphicon-text-width"></i> {{run.distances}}</p>
+						<p><i class="glyphicon glyphicon-road"></i> {{run.type | capitalize}}</p>
+					</div>
+				</div>				
 			</div>
         </div>
     </div>

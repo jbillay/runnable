@@ -51,7 +51,7 @@ angular.module('runnable', [
             }).
             when('/', {
                 templateUrl: 'partials/index',
-                controller: 'AppIndex'
+                controller: 'RunnableIndexController'
             }).
             otherwise({
                 redirectTo: '/'

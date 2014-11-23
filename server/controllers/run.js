@@ -45,3 +45,17 @@ exports.detail = function (req, res) {
 		}
 	});
 };
+
+exports.next = function (req, res) {
+    "use strict";
+	console.log('Get list of next run limited to ' + req.params.nb);
+	var run = new Run();
+	run.getNextList(req.params.nb, function (err, runs) {
+		if (err) {
+			console.log('Not able to get active list : ' + err);
+			res.jsonp('{"msg": "ko"}');
+		} else {
+			res.jsonp(runs);
+		}
+	});
+};
