@@ -99,6 +99,17 @@ journey.prototype.getListForRun = function (id, done) {
 		});
 };
 
+journey.prototype.getNextList = function (nb, done) {
+    'use strict';
+	models.Journey.findAll({limit: nb, order: 'updatedAt ASC ', include: [models.Run]}).
+		error(function (err) {
+			done(err, null);
+		})
+		.success(function (runs) {
+			done(null, runs);
+		});
+};
+
 journey.prototype.getById = function (id, done) {
     'use strict';
 	var that = this;

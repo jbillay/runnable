@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
 		name:			DataTypes.STRING,
 		type: 			{ type: DataTypes.ENUM, values: ['trail', 'ultra', '10k', '20k', 'semi', 'marathon'] },
 		address_start:	DataTypes.STRING,
-		date_start: 	DataTypes.STRING,
+		date_start: 	DataTypes.DATE,
 		time_start: 	DataTypes.STRING,
 		distances: 		DataTypes.STRING,
 		elevations: 	DataTypes.STRING,

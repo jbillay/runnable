@@ -60,3 +60,17 @@ exports.detail = function (req, res) {
 		}
 	});
 };
+
+exports.next = function (req, res) {
+    "use strict";
+	console.log('Get list of next journey limited to ' + req.params.nb);
+	var journey = new Journey();
+	journey.getNextList(req.params.nb, function (err, runs) {
+		if (err) {
+			console.log('Not able to get journey list : ' + err);
+			res.jsonp('{"msg": "ko"}');
+		} else {
+			res.jsonp(runs);
+		}
+	});
+};

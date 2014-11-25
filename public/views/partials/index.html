@@ -70,12 +70,12 @@
             <h1>Nos dernières courses</h1>
             <br>
 			<div class="row run_list">
-				<div class="col-xs-3 run_poster" ng-repeat="run in listRun">
+				<div class="col-xs-3 run_poster_home" ng-repeat="run in listRun">
 					<a href="/run-{{run.id}}"><img src="/img/run_default.jpg" class="run_img" alt="Responsive image"></a>
-					<div class="run_title"><a href="/run-{{run.id}}">{{run.name | capitalize}}</a></div>
+					<div class="run_title"><a href="/run-{{run.id}}">{{run.name | capitalize | limitTo:22}}</a></div>
 					<div class="run_desc">
-						<p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize}}</p>
-						<p><i class="glyphicon glyphicon-calendar"></i> {{run.date_start}}</p>
+						<p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize | limitTo:21}}</p>
+						<p><i class="glyphicon glyphicon-calendar"></i> {{run.date_start | date:'dd / MM / yyyy'}}</p>
 						<p><i class="glyphicon glyphicon-text-width"></i> {{run.distances}}</p>
 						<p><i class="glyphicon glyphicon-road"></i> {{run.type | capitalize}}</p>
 					</div>
@@ -87,18 +87,22 @@
 </section>
 
 <section class="container-fluid" id="itineraire">
-    <h1 class="text-center">Bootstrap is Responsive</h1>
     <div class="row">
-        <div class="col-sm-6 col-sm-offset-3">
-            <h3 class="text-center">Vertical scrolling has become a popular and lasting trend in Web design.</h3>
-            <div class="row">
-                <div class="col-xs-4 col-xs-offset-1">Some brand-tacular designs even have home page content that is taller that 12,000 pixels. That's a lotta content.</div>
-                <div class="col-xs-2"></div>
-                <div class="col-xs-4 text-right">Anyhoo, this is just some random blurb of text, and Bootply.com is a playground and code editor for Bootstrap.</div>
-            </div>
-            <p class="text-center">
-                <img src="/assets/example/img_mtnpeople.png" class="img-responsive center-block ">
-            </p>
+        <div class="col-sm-8 col-sm-offset-2 text-center">
+            <h1>Nos derniers itinéraires</h1>
+            <br>
+			<div class="row journey_list">
+				<div class="col-xs-3 journey_poster_home" ng-repeat="journey in listJourney">
+					<a href="/journey-{{journey.id}}"><img src="/img/journey_default.jpg" class="journey_img" alt="Responsive image"></a>
+					<div class="journey_title"><a href="/journey-{{journey.id}}">{{journey.Run.name | capitalize | limitTo:22}}</a></div>
+					<div class="journey_desc">
+						<p><i class="glyphicon glyphicon-map-marker"></i> {{journey.address_start | capitalize | limitTo:21}}</p>
+						<p><i class="glyphicon glyphicon-calendar"></i> {{journey.date_start | date:'dd / MM / yyyy'}}</p>
+						<p><i class="glyphicon glyphicon-time"></i> {{journey.duration}}</p>
+						<p><i class="glyphicon glyphicon-road"></i> {{journey.distance}}</p>
+					</div>
+				</div>				
+			</div>
 			<a href="/journey" class="btn btn-primary btn-lg btn-block" role="button">Trouver votre itinéraire</a>
         </div>
     </div>

@@ -7,17 +7,19 @@
 /*jshint undef:true */
 
 angular.module('runnable.controllers', []).
-    controller('RunnableIndexController', function ($scope, $q, Run, User) {
+    controller('RunnableIndexController', function ($scope, $q, Run, User, Journey) {
         'use strict';
         $scope.page = 'Index';
 		$scope.nbRunItems = 4;
 		$scope.nbJourneyItems = 4;
 		var runPromise = Run.getNextList($scope.nbRunItems),
+			journeyPromise = Journey.getNextList($scope.nbJourneyItems),
 			userPromise = User.getUser(),
-			all = $q.all([runPromise, userPromise]);
+			all = $q.all([runPromise, journeyPromise, userPromise]);
 		all.then(function (res) {
 			$scope.listRun = res[0];
-			$scope.user = res[1];
+			$scope.listJourney = res[1];
+			$scope.user = res[2];
 			$scope.auth = false;
 			if ($scope.user.email) {
 				$scope.auth = true;
@@ -53,53 +55,43 @@ angular.module('runnable.controllers', []).
 			GoogleMapApi.initMap($scope.run.address_start);
 		});
     }).
-    controller('AppRun', function ($scope, $cookies, $q, $http, Run) {
+    controller('AppRun', function ($scope, $q, Run, GoogleMapApi) {
         'use strict';
         $scope.page = 'Run';
 		var runPromise = Run.getActiveList(),
             all = $q.all([runPromise]);
         all.then(function (res) {
 			$scope.listRun = res[0];
+			GoogleMapApi.initMap();
 		});
         $scope.getLocation = function(val) {
-            return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
-                params: {
-                    address: val,
-                    sensor: false
-                }
-            }).then(function(response){
-                return response.data.results.map(function(item){
-                    return item.formatted_address;
-                });
-            });
-        };
-		$scope.initMap = function (address) {
-			var mapOptions = {
-			  center: { lat: 46.22764, lng: 2.21375},
-			  zoom: 5
-			};
-			$scope.geocoder = new google.maps.Geocoder();
-			$scope.map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
-			if (address) {
-				$scope.selectedAddress(address);
-			}
+			return GoogleMapApi.getLocation(val);
 		}
-		$scope.selectedAddress = function ($item) {
-			$scope.geocoder.geocode( { 'address': $item}, function(results, status) {
-				if (status == google.maps.GeocoderStatus.OK) {
-					$scope.map.setCenter(results[0].geometry.location);
-					if ($scope.marker) {
-						$scope.marker.setMap(null); }
-					$scope.marker = new google.maps.Marker({
-						map: $scope.map,
-						position: results[0].geometry.location
-					});
-					$scope.map.setZoom(8);
-				}
-			});
+		$scope.selectedAddress = function (address) {
+			GoogleMapApi.selectedAddress(address);
 		}
+		$scope.today = function() {
+			$scope.dt = new Date();
+		};
+		$scope.clear = function () {
+			$scope.dt = null;
+		};
+		$scope.toggleMin = function() {
+			$scope.minDate = $scope.minDate ? null : new Date();
+		};
+		$scope.toggleMin();
+		$scope.openCal = function($event) {
+			$event.preventDefault();
+			$event.stopPropagation();
+			$scope.calOpened = true;
+		};
+		$scope.dateOptions = {
+			formatYear: 'yy',
+			startingDay: 1
+		};
+		$scope.calFormat = 'dd/MM/yyyy';
     }).
-	controller('AppJourneyDetail', function ($scope, $cookies, $q, $routeParams, Run, Journey, Join, GoogleMapApi) {
+	controller('AppJourneyDetail', function ($scope, $q, $routeParams, Run, Journey, Join, GoogleMapApi) {
 		'use strict';
 		$scope.page = 'Journey';
 		$scope.journeyId = $routeParams.journeyId;
@@ -114,7 +106,6 @@ angular.module('runnable.controllers', []).
 			angular.forEach($scope.joinList, function (join) {
 				$scope.reserved += join.nb_place;
 				if (join.JourneyId == $scope.journeyId && join.UserId === $scope.user.id) {
-					console.log('Journey joined');
 					$scope.joined = 1;
 				}
 			});
@@ -158,20 +149,9 @@ angular.module('runnable.controllers', []).
 			$scope.journeyList = res[1];
 		});
 		$scope.getLocation = function(val) {
-            return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
-                params: {
-                    address: val,
-                    sensor: false
-                }
-            }).then(function(response){
-                return response.data.results.map(function(item){
-                    return item.formatted_address;
-                });
-            });
-        };
-		$scope.initMap = function () {
-			GoogleMapApi.initMap();
-		};
+			return GoogleMapApi.getLocation(val);
+		}
+		$scope.initMap = GoogleMapApi.initMap();
 		$scope.showMapInfo = function () {
 			GoogleMapApi.showDirection($scope.source, $scope.destination);
 			GoogleMapApi.getDistance($scope.source, $scope.destination, $scope);

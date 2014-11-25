@@ -2,23 +2,30 @@
 
 <div class="container body">
     <div class="row spacehead">
-        <div class="col-sm-8">
+        <div class="col-sm-12">
 			<div class="row">
-				<div class="col-sm-8">
+				<div class="col-sm-4">
 					<div class="input-group">
 						<input type="text" class="form-control homesearch" ng-model="run_name" placeholder="Saisissez le nom de votre course...">
 						<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
 					</div>
+					<div class="input-group">
+						<input type="text" class="form-control" datepicker-popup="{{calFormat}}" ng-model="run_dt" is-open="calOpened" 
+						min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" close-text="Close" />
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-default" ng-click="openCal($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+						</span>
+					</div>
 				</div>
 			</div>
 			<div class="row run_list">
-				<div class="col-xs-3 run_poster" ng-repeat="run in listRun | filter:run_name as results">
+				<div class="col-sm-2 run_poster" ng-repeat="run in listRun | filter:{name:run_name} | filter:{date_start:run_dt}">
 					<a href="/run-{{run.id}}"><img src="/img/run_default.jpg" class="run_img" alt="Responsive image"></a>
-					<div class="run_title"><a href="/run-{{run.id}}">{{run.name | capitalize}}</a></div>
+					<div class="run_title"><a href="/run-{{run.id}}">{{run.name | capitalize | limitTo:25}}</a></div>
 					<div class="run_desc">
-						<p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize}}</p>
-						<p><i class="glyphicon glyphicon-calendar"></i> {{run.date_start}}</p>
-						<p><i class="glyphicon glyphicon-text-width"></i> {{run.distances}}</p>
+						<p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize | limitTo:21}}</p>
+						<p><i class="glyphicon glyphicon-calendar"></i> {{run.date_start | date:'dd/MM/yyyy'}}</p>
+						<p><i class="glyphicon glyphicon-text-width"></i> {{run.distances | limitTo:21}}</p>
 						<p><i class="glyphicon glyphicon-road"></i> {{run.type | capitalize}}</p>
 					</div>
 				</div>				

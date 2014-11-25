@@ -18,23 +18,24 @@ module.exports = function (app, passport, auth) {
             failureFlash: true
         })
     );
-	app.post('/user', controllers.user.create);
-	app.get('/user/me', auth.requiresLogin, controllers.user.me);
+	app.post('/api/user', controllers.user.create);
+	app.get('/api/user/me', auth.requiresLogin, controllers.user.me);
 
-    app.post('/run', controllers.run.create);
-    app.get('/run/list', controllers.run.list);
-    app.get('/run/:id', controllers.run.detail);
-    app.get('/run/next/:nb', controllers.run.next);
+    app.post('/api/run', auth.requiresLogin, controllers.run.create);
+    app.get('/api/run/list', controllers.run.list);
+    app.get('/api/run/:id', controllers.run.detail);
+    app.get('/api/run/next/:nb', controllers.run.next);
 
-    app.post('/journey', controllers.journey.create);
-    app.get('/journey/list', controllers.journey.list);
-	app.get('/journey/:id', controllers.journey.detail);
-    app.get('/journey/run/:id', controllers.journey.listForRun);
+    app.post('/api/journey', auth.requiresLogin, controllers.journey.create);
+    app.get('/api/journey/list', controllers.journey.list);
+	app.get('/api/journey/:id', controllers.journey.detail);
+    app.get('/api/journey/run/:id', controllers.journey.listForRun);
+    app.get('/api/journey/next/:nb', controllers.journey.next);
 
-    app.post('/join', auth.requiresLogin, controllers.join.create);
-	app.get('/join/:id', auth.requiresLogin, controllers.join.detail);
-    app.get('/join/journey/:id', auth.requiresLogin, controllers.join.listForJourney);
-	app.get('/join/remove/:id', auth.requiresLogin, controllers.join.remove);
+    app.post('/api/join', auth.requiresLogin, controllers.join.create);
+	app.get('/api/join/:id', auth.requiresLogin, controllers.join.detail);
+    app.get('/api/join/journey/:id', auth.requiresLogin, controllers.join.listForJourney);
+	app.get('/api/join/remove/:id', auth.requiresLogin, controllers.join.remove);
 
     app.get('/partials/:name', controllers.root.partials);
 
