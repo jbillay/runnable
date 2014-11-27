@@ -179,9 +179,9 @@ a.list-group-item.active,[class*='-info'] {
 	padding-bottom: 30px;
 }
 
-.journey_img {
+.journey_map {
 	width: 100%;
-	height: 100%;
+	height: 179px;
 	border-top-style: solid;
 	border-top-width: 1px;
 	border-top-color: black;

@@ -27,19 +27,20 @@ angular.module('runnable.services', ['ngResource']).
     factory('GoogleMapApi', function ($rootScope, $http) {
         'use strict';
 		return {
-			initMap: function (address) {
+			initMap: function (object, address) {
+				$rootScope[object] = [];
 				var mapOptions = {
 				  center: { lat: 46.22764, lng: 2.21375},
 				  zoom: 5
 				};
-				$rootScope.geocoder = new google.maps.Geocoder();
-				$rootScope.map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+				$rootScope[object].geocoder = new google.maps.Geocoder();
+				$rootScope[object].map = new google.maps.Map(document.getElementById(object), mapOptions);
 				if (address) {
 					this.selectedAddress(address);
 				}
-				$rootScope.directionsService = new google.maps.DirectionsService();
-				$rootScope.directionsDisplay = new google.maps.DirectionsRenderer();
-				$rootScope.directionsDisplay.setMap($rootScope.map);
+				$rootScope[object].directionsService = new google.maps.DirectionsService();
+				$rootScope[object].directionsDisplay = new google.maps.DirectionsRenderer();
+				$rootScope[object].directionsDisplay.setMap($rootScope[object].map);
 			},
 			getLocation: function (val) {
 				return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
@@ -53,24 +54,24 @@ angular.module('runnable.services', ['ngResource']).
 					});
 				});
 			},
-			selectedAddress: function (address) {
-				$rootScope.geocoder.geocode( { 'address': address}, function(results, status) {
+			selectedAddress: function (object, address) {
+				$rootScope[object].geocoder.geocode( { 'address': address}, function(results, status) {
 					if (status == google.maps.GeocoderStatus.OK) {
-						$rootScope.map.setCenter(results[0].geometry.location);
-						if ($rootScope.marker) {
-							$rootScope.marker.setMap(null); }
-						$rootScope.marker = new google.maps.Marker({
-							map: $rootScope.map,
+						$rootScope[object].map.setCenter(results[0].geometry.location);
+						if ($rootScope[object].marker) {
+							$rootScope[object].marker.setMap(null); }
+						$rootScope[object].marker = new google.maps.Marker({
+							map: $rootScope[object].map,
 							position: results[0].geometry.location
 						});
-						$rootScope.map.setZoom(8);
+						$rootScope[object].map.setZoom(8);
 					}
 				});
 			},
-			getDistance: function (source, destination, $scope) {
+			getDistance: function (object, source, destination, $scope) {
 				$scope.controller = $scope;
-				$rootScope.DistanceService = new google.maps.DistanceMatrixService();
-				$rootScope.DistanceService.getDistanceMatrix(
+				$rootScope[object].DistanceService = new google.maps.DistanceMatrixService();
+				$rootScope[object].DistanceService.getDistanceMatrix(
 					{
 						origins: [source],
 						destinations: [destination],
@@ -86,15 +87,15 @@ angular.module('runnable.services', ['ngResource']).
 						}
 				});
 			},
-			showDirection: function (source, destination) {
+			showDirection: function (object, source, destination) {
 				var request = {
 					origin:source,
 					destination:destination,
 					travelMode: google.maps.TravelMode.DRIVING
 				};
-				$rootScope.directionsService.route(request, function(response, status) {
+				$rootScope[object].directionsService.route(request, function(response, status) {
 					if (status == google.maps.DirectionsStatus.OK) {
-						$rootScope.directionsDisplay.setDirections(response);
+						$rootScope[object].directionsDisplay.setDirections(response);
 					}
 				});
 			}
@@ -117,7 +118,6 @@ angular.module('runnable.services', ['ngResource']).
 				var deferred = $q.defer();
                 $http({method: "GET", url: "/api/join/journey/" + journey_id}).
 					success(function (result) {
-						console.log('Result : ' + result);
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
@@ -136,7 +136,6 @@ angular.module('runnable.services', ['ngResource']).
 				var deferred = $q.defer();
                 $http({method: "GET", url: "/api/run/" + id}).
 					success(function (result) {
-						console.log('Result : ' + result);
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
@@ -148,7 +147,6 @@ angular.module('runnable.services', ['ngResource']).
                 var deferred = $q.defer();
                 $http({method: "GET", url: "/api/run/list"}).
 					success(function (result) {
-						console.log('Result : ' + result);
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
@@ -160,7 +158,6 @@ angular.module('runnable.services', ['ngResource']).
 				var deferred = $q.defer();
                 $http({method: "GET", url: "/api/run/next/" + nb}).
 					success(function (result) {
-						console.log('Result : ' + result);
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
@@ -177,7 +174,6 @@ angular.module('runnable.services', ['ngResource']).
 				var deferred = $q.defer();
                 $http({method: "GET", url: "/api/journey/" + id}).
 					success(function (result) {
-						console.log('Result : ' + result);
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
@@ -189,11 +185,9 @@ angular.module('runnable.services', ['ngResource']).
                 var deferred = $q.defer();
                 $http({method: "GET", url: "/api/journey/list"}).
 					success(function (result) {
-						console.log('Result : ' + result);
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
 					});
                 return deferred.promise;
             },
@@ -201,7 +195,6 @@ angular.module('runnable.services', ['ngResource']).
                 var deferred = $q.defer();
                 $http({method: "GET", url: "/api/journey/run/" + id}).
 					success(function (result) {
-						console.log('Result : ' + result);
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
@@ -213,7 +206,6 @@ angular.module('runnable.services', ['ngResource']).
 				var deferred = $q.defer();
                 $http({method: "GET", url: "/api/journey/next/" + nb}).
 					success(function (result) {
-						console.log('Result : ' + result);
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {

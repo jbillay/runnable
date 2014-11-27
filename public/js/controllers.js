@@ -7,7 +7,7 @@
 /*jshint undef:true */
 
 angular.module('runnable.controllers', []).
-    controller('RunnableIndexController', function ($scope, $q, Run, User, Journey) {
+    controller('RunnableIndexController', function ($scope, $q, $timeout, Run, User, Journey, GoogleMapApi) {
         'use strict';
         $scope.page = 'Index';
 		$scope.nbRunItems = 4;
@@ -21,9 +21,14 @@ angular.module('runnable.controllers', []).
 			$scope.listJourney = res[1];
 			$scope.user = res[2];
 			$scope.auth = false;
-			if ($scope.user.email) {
-				$scope.auth = true;
-			}
+			if ($scope.user.email) $scope.auth = true;
+			$timeout( function() {
+				angular.forEach($scope.listJourney, function (journey) {
+					var value = 'map_canvas_' + journey.id;
+					GoogleMapApi.initMap(value);
+					GoogleMapApi.showDirection(value, journey.address_start, journey.Run.address_start);
+				});
+			});
 		});
     }).
     controller('RunnableNavController', function ($scope, $q, User) {
@@ -52,7 +57,7 @@ angular.module('runnable.controllers', []).
         all.then(function (res) {
 			$scope.run = res[0];
 			$scope.journeyList = res[1];
-			GoogleMapApi.initMap($scope.run.address_start);
+			GoogleMapApi.initMap('map_canvas', $scope.run.address_start);
 		});
     }).
     controller('AppRun', function ($scope, $q, Run, GoogleMapApi) {
@@ -62,14 +67,14 @@ angular.module('runnable.controllers', []).
             all = $q.all([runPromise]);
         all.then(function (res) {
 			$scope.listRun = res[0];
-			GoogleMapApi.initMap();
+			GoogleMapApi.initMap('map_canvas');
 		});
         $scope.getLocation = function(val) {
 			return GoogleMapApi.getLocation(val);
-		}
+		};
 		$scope.selectedAddress = function (address) {
-			GoogleMapApi.selectedAddress(address);
-		}
+			GoogleMapApi.selectedAddress('map_canvas', address);
+		};
 		$scope.today = function() {
 			$scope.dt = new Date();
 		};
@@ -91,16 +96,18 @@ angular.module('runnable.controllers', []).
 		};
 		$scope.calFormat = 'dd/MM/yyyy';
     }).
-	controller('AppJourneyDetail', function ($scope, $q, $routeParams, Run, Journey, Join, GoogleMapApi) {
+	controller('AppJourneyDetail', function ($scope, $q, $routeParams, Run, Journey, Join, User, GoogleMapApi) {
 		'use strict';
 		$scope.page = 'Journey';
 		$scope.journeyId = $routeParams.journeyId;
 		var journeyPromise = Journey.getDetail($scope.journeyId),
 			joinPromise = Join.getListForJourney($scope.journeyId),
-			all = $q.all([journeyPromise, joinPromise]);
+			userPromise = User.getUser(),
+			all = $q.all([journeyPromise, joinPromise, userPromise]);
 		all.then(function (res) {
 			$scope.journey = res[0];
 			$scope.joinList = res[1];
+			$scope.user = res[2];
 			$scope.joined = 0;
 			$scope.reserved = 0;
 			angular.forEach($scope.joinList, function (join) {
@@ -110,8 +117,8 @@ angular.module('runnable.controllers', []).
 				}
 			});
 			$scope.nbFreeSpaceList = $scope.getFreeSpace();
-			GoogleMapApi.initMap();
-			GoogleMapApi.showDirection($scope.journey.address_start, $scope.journey.run.address_start);
+			GoogleMapApi.initMap('map_canvas');
+			GoogleMapApi.showDirection('map_canvas', $scope.journey.address_start, $scope.journey.run.address_start);
 			$scope.nbFreeSpace = function () {
 				return parseInt($scope.journey.nb_space) - parseInt($scope.reserved);
 			}
@@ -147,14 +154,14 @@ angular.module('runnable.controllers', []).
         all.then(function (res) {
 			$scope.runList = res[0];
 			$scope.journeyList = res[1];
+			GoogleMapApi.initMap('map_canvas');
 		});
 		$scope.getLocation = function(val) {
 			return GoogleMapApi.getLocation(val);
-		}
-		$scope.initMap = GoogleMapApi.initMap();
+		};
 		$scope.showMapInfo = function () {
-			GoogleMapApi.showDirection($scope.source, $scope.destination);
-			GoogleMapApi.getDistance($scope.source, $scope.destination, $scope);
+			GoogleMapApi.showDirection('map_canvas', $scope.source, $scope.destination);
+			GoogleMapApi.getDistance('map_canvas', $scope.source, $scope.destination, $scope);
 		};
 		$scope.selectDestination = function (run) {
 			$scope.destination = run.address_start;

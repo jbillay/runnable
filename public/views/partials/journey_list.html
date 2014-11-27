@@ -13,6 +13,22 @@
 					</div>
 				</div>
 			</div>
+			<div class="row journey_list">
+				<div class="col-xs-3 journey_poster_home" ng-repeat="journey in journeyList">
+					<a href="/journey-{{journey.id}}">
+						<div id="map_canvas_{{journey.id}}" class="journey_map"></div>
+					</a>
+					<div class="journey_title"><a href="/journey-{{journey.id}}">{{journey.Run.name | capitalize | limitTo:20}}</a></div>
+					<div class="journey_desc">
+						<p><i class="glyphicon glyphicon-map-marker"></i> {{journey.address_start | capitalize | limitTo:19}}</p>
+						<p><i class="glyphicon glyphicon-calendar"></i> {{journey.date_start | date:'dd / MM / yyyy'}}</p>
+						<p><i class="glyphicon glyphicon-time"></i> {{journey.duration}}</p>
+						<p><i class="glyphicon glyphicon-road"></i> {{journey.distance}}</p>
+					</div>
+				</div>
+			</div>
+
+			<!--
 			<div class="row spacehead">
 				<div class="col-sm-12">
 					<ul class="list-unstyled">
@@ -28,6 +44,7 @@
 					</ul>
 				</div>
 			</div>
+			-->
         </div>
     </div>
 </div>
