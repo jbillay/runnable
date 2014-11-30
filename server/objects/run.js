@@ -53,15 +53,15 @@ run.prototype.save = function (done) {
 	var that = this;
 	console.log('try to create run : ' + this.name);
 	models.User.find({where: {id: this.user_id}})
-		.success(function (user) {
+		.then(function (user) {
 			models.Run.create(that)
-				.success(function(newRun) {
+				.then(function(newRun) {
 					newRun.setUser(user)
-						.error(function(err) {
-							done(err, null);
-						})
-						.success(function(newRun) {
+						.then(function(newRun) {
 							done(null, newRun);
+						})
+						.catch(function(err) {
+							done(err, null);
 						});
 				});
 		});
@@ -69,45 +69,45 @@ run.prototype.save = function (done) {
 
 run.prototype.getActiveList = function (done) {
     'use strict';
-	models.Run.findAll({where: {is_active: true}}).
-		error(function (err) {
-			done(err, null);
-		})
-		.success(function (runs) {
+	models.Run.findAll({where: {is_active: true}})
+		.then(function (runs) {
 			done(null, runs);
+		})
+		.catch(function (err) {
+			done(err, null);
 		});
 };
 
 run.prototype.getNextList = function (nb, done) {
     'use strict';
-	models.Run.findAll({limit: nb, where: {is_active: true}, order: 'updatedAt ASC '}).
-		error(function (err) {
-			done(err, null);
-		})
-		.success(function (runs) {
+	models.Run.findAll({limit: nb, where: {is_active: true}, order: 'updatedAt ASC '})
+		.then(function (runs) {
 			done(null, runs);
+		})
+		.catch(function (err) {
+			done(err, null);
 		});
 };
 
 run.prototype.getById = function (id, done) {
     'use strict';
 	models.Run.find({where: {id: id}})
-		.error(function (err) {
-			done(err, null);
-		})
-		.success(function (run) {
+		.then(function (run) {
 			done(null, run);
+		})
+		.catch(function (err) {
+			done(err, null);
 		});
 };
 
 run.prototype.getResumeById = function (id) {
     'use strict';
 	models.Run.find({where: {id: id}})
-		.error(function (err) {
-			done(err, null);
-		})
-		.success(function (run) {
+		.then(function (run) {
 			done(null, run);
+		})
+		.catch(function (err) {
+			done(err, null);
 		});
 };
 

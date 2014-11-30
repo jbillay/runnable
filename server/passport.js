@@ -29,12 +29,12 @@ passport.use(new LocalStrategy({
 		var user = new User();
 		user.getByEmail(email, function (err, user) {
 			if (err) {
-				done(null, false, req.flash('loginMessage', 'Sorry database problem !!'));
+				done(null, false, req.flash('loginMessage', 'Désolé nous avons un problème technique !!'));
 			}
 			if (!user) {
-				done(null, false, req.flash('loginMessage', 'No user found.'));
-			} else if (!user.validPassword(password)) {
-				done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
+				done(null, false, req.flash('loginMessage', "Cette utilisateur n'existe pas."));
+			} else if (!user.authenticate(password)) {
+				done(null, false, req.flash('loginMessage', 'Oops! Votre compte est peut être pas encore activé.'));
 			} else {
 				console.log('Login (local) : { id: ' + user.id + ', email ' + user.email + ' }');
 				done(null, user);

@@ -1,12 +1,10 @@
 <div ng-include="'partials/nav'"></div>
 
 <div class="container body">
-    <div class="row spacehead">
-        <div class="col-sm-8">
-			<h2>Toutes les parcours</h2>
-			<hr>
+	<div class="row spacehead">
+		<div class="col-sm-12">
 			<div class="row">
-				<div class="col-sm-8">
+				<div class="col-sm-4">
 					<div class="input-group">
 						<input type="text" class="form-control homesearch" ng-model="journey_name" placeholder="Saisissez votre ville...">
 						<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
@@ -14,37 +12,19 @@
 				</div>
 			</div>
 			<div class="row journey_list">
-				<div class="col-xs-3 journey_poster_home" ng-repeat="journey in journeyList">
+				<div class="col-sm-2 journey_poster" ng-repeat="journey in journeyList">
 					<a href="/journey-{{journey.id}}">
 						<div id="map_canvas_{{journey.id}}" class="journey_map"></div>
 					</a>
-					<div class="journey_title"><a href="/journey-{{journey.id}}">{{journey.Run.name | capitalize | limitTo:20}}</a></div>
+					<div class="journey_title"><a href="/journey-{{journey.id}}">{{journey.Run.name | capitalize | limitTo:25}}</a></div>
 					<div class="journey_desc">
-						<p><i class="glyphicon glyphicon-map-marker"></i> {{journey.address_start | capitalize | limitTo:19}}</p>
+						<p><i class="glyphicon glyphicon-map-marker"></i> {{journey.address_start | capitalize | limitTo:21}}</p>
 						<p><i class="glyphicon glyphicon-calendar"></i> {{journey.date_start | date:'dd / MM / yyyy'}}</p>
 						<p><i class="glyphicon glyphicon-time"></i> {{journey.duration}}</p>
 						<p><i class="glyphicon glyphicon-road"></i> {{journey.distance}}</p>
 					</div>
 				</div>
 			</div>
-
-			<!--
-			<div class="row spacehead">
-				<div class="col-sm-12">
-					<ul class="list-unstyled">
-						<li class="animate-repeat" ng-repeat="journey in journeyList | filter:journey_name as results">
-							Départ de <a href="/journey-{{journey.id}}">{{journey.address_start}}</a> pour la course
-							<a href="/run-{{journey.Run.id}}">{{journey.Run.name}}</a>
-							le {{journey.date_start | date: mediumDate}} à
-							{{journey.time_start}} pour <strong>{{journey.amount | currency:'€ '}}</strong>
-						</li>
-						<li class="animate-repeat" ng-if="results.length == 0">
-							<strong>Pas de départ depuis cette ville...</strong>
-						</li>
-					</ul>
-				</div>
-			</div>
-			-->
         </div>
     </div>
 </div>

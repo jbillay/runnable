@@ -21,7 +21,18 @@ angular.module('runnable.services', ['ngResource']).
 						console.log('Error : ' + status);
 					});
                 return deferred.promise;
-            }
+            },
+			getItraRuns: function () {
+				var deferred = $q.defer();
+				$http.get("/api/user/runs").
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+				return deferred.promise;
+			}
 		}
     }).
     factory('GoogleMapApi', function ($rootScope, $http) {

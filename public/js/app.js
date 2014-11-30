@@ -9,6 +9,7 @@
 angular.module('runnable', [
     'ngRoute',
     'ngCookies',
+    'ngSanitize',
     'ui.bootstrap',
     'runnable.filters',
     'runnable.services',
@@ -20,10 +21,6 @@ angular.module('runnable', [
             when('/login', {
                 templateUrl: 'partials/login',
                 controller: 'AppLogin'
-            }).
-            when('/home', {
-                templateUrl: 'partials/home',
-                controller: 'AppHome'
             }).
             when('/run-create', {
                 templateUrl: 'partials/run_create',
@@ -48,6 +45,10 @@ angular.module('runnable', [
             when('/journey-:journeyId', {
                 templateUrl: 'partials/journey_detail',
                 controller: 'AppJourneyDetail'
+            }).
+            when('/profile', {
+                templateUrl: 'partials/profile',
+                controller: 'RunnableProfileController'
             }).
             when('/', {
                 templateUrl: 'partials/index',

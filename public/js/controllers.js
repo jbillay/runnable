@@ -7,9 +7,9 @@
 /*jshint undef:true */
 
 angular.module('runnable.controllers', []).
-    controller('RunnableIndexController', function ($scope, $q, $timeout, Run, User, Journey, GoogleMapApi) {
-        'use strict';
-        $scope.page = 'Index';
+	controller('RunnableIndexController', function ($scope, $q, $timeout, Run, User, Journey, GoogleMapApi) {
+		'use strict';
+		$scope.page = 'Index';
 		$scope.nbRunItems = 4;
 		$scope.nbJourneyItems = 4;
 		var runPromise = Run.getNextList($scope.nbRunItems),
@@ -30,7 +30,24 @@ angular.module('runnable.controllers', []).
 				});
 			});
 		});
-    }).
+	}).
+	controller('RunnableProfileController', function ($scope, $q, $location, $sce, User) {
+		'use strict';
+		$scope.page = 'Profile';
+		var userPromise = User.getUser(),
+			userItraRunPromise = User.getItraRuns(),
+			all = $q.all([userPromise, userItraRunPromise]);
+		all.then(function (res) {
+			$scope.user = res[0];
+			$scope.itraRuns = $sce.trustAsHtml(res[1]);
+			$scope.auth = false;
+			if ($scope.user.email) {
+				$scope.auth = true;
+			} else {
+				$location.path('/');
+			}
+		});
+	}).
     controller('RunnableNavController', function ($scope, $q, User) {
         'use strict';
         $scope.page = 'Nav';

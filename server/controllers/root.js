@@ -43,10 +43,11 @@ exports.login = function (req, res) {
 exports.sync = function (req, res) {
     "use strict";
 	models.sequelize.sync({force: true})
-		.error(function (err) {
+        .then(function() {
+            console.log("New database created !");
+        })
+        .catch(function (err) {
 			console.log('Error on sync db : ' + err);
-		}).success(function() {
-			console.log("New database created !");
 		});
 	res.redirect('/');
 };

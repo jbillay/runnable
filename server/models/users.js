@@ -4,6 +4,8 @@
 
 "use strict";
 
+var crypto = require('crypto');
+
 module.exports = function(sequelize, DataTypes) {
     "use strict";
 	var User = sequelize.define("User", {
@@ -15,12 +17,9 @@ module.exports = function(sequelize, DataTypes) {
 		hashedPassword: DataTypes.STRING,
 		provider: 		DataTypes.STRING,
 		salt: 			DataTypes.STRING,
-		facebookUserId: DataTypes.INTEGER,
-		twitterUserId: 	DataTypes.INTEGER,
-		twitterKey: 	DataTypes.STRING,
-		twitterSecret: 	DataTypes.STRING,
-		github: 		DataTypes.STRING,
-		openId: 		DataTypes.STRING
+		itra:			DataTypes.STRING,
+		isActive:		{ type: DataTypes.BOOLEAN, defaultValue: false },
+		isAdmin:		{ type: DataTypes.BOOLEAN, defaultValue: false }
 	}, {
 		classMethods: {
 			associate: function(models) {
@@ -32,13 +31,14 @@ module.exports = function(sequelize, DataTypes) {
 			validPassword: function (password) {
 				return this.password === password;
 			},
-			makeSalt: function() {
+			makeSalt: function () {
 				return crypto.randomBytes(16).toString('base64'); 
 			},
-			authenticate: function(plainText){
+			authenticate: function (plainText){
+				if (!this.isActive) return false;
 				return this.encryptPassword(plainText, this.salt) === this.hashedPassword;
 			},
-			encryptPassword: function(password, salt) {
+			encryptPassword: function (password, salt) {
 				if (!password || !salt) return '';
 				salt = new Buffer(salt, 'base64');
 				return crypto.pbkdf2Sync(password, salt, 10000, 64).toString('base64');

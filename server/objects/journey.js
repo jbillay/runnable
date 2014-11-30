@@ -53,20 +53,20 @@ journey.prototype.save = function (journey, user, done) {
     'use strict';
 	var that = this;
 	models.User.find({where: {id: user.id}})
-		.success(function (user) {
+		.then(function (user) {
 			that.setJourney(journey);
 			models.Run.find({where: {id: journey.run_id}})
-				.success(function (run) {
+				.then(function (run) {
 					models.Journey.create(that)
-						.success(function(newJourney) {
+						.then(function(newJourney) {
 							newJourney.setRun(run)
-								.success(function () {
+								.then(function () {
 									newJourney.setUser(user)
-										.error(function(err) {
-											done(err, null);
-										})
-										.success(function(newJourney) {
+										.then(function(newJourney) {
 											done(null, newJourney);
+										})
+										.catch(function(err) {
+											done(err, null);
 										});
 								});
 						});
@@ -78,35 +78,35 @@ journey.prototype.getList = function (done) {
     'use strict';
 	var that = this;
 	models.Journey.findAll({include: [models.Run]})
-		.error(function (err) {
-			done(err, null);
-		})
-		.success(function (journeys) {
+		.then(function (journeys) {
 			done(null, journeys);
+		})
+		.catch(function (err) {
+			done(err, null);
 		});
 };
 
 journey.prototype.getListForRun = function (id, done) {
     'use strict';
 	models.Run.find({where: {id: id}})
-		.error(function (err) {
-			done(err, null);
-		})
-		.success(function (run) {
-			run.getJourneys().success(function (journeys) {
+		.then(function (run) {
+			run.getJourneys().then(function (journeys) {
 				done(null, journeys);
 			});
+		})
+		.catch(function (err) {
+			done(err, null);
 		});
 };
 
 journey.prototype.getNextList = function (nb, done) {
     'use strict';
-	models.Journey.findAll({limit: nb, order: 'updatedAt ASC ', include: [models.Run]}).
-		error(function (err) {
-			done(err, null);
-		})
-		.success(function (runs) {
+	models.Journey.findAll({limit: nb, order: 'updatedAt ASC ', include: [models.Run]})
+		.then(function (runs) {
 			done(null, runs);
+		})
+		.catch(function (err) {
+			done(err, null);
 		});
 };
 
@@ -114,16 +114,16 @@ journey.prototype.getById = function (id, done) {
     'use strict';
 	var that = this;
 	models.Journey.find({where: {id: id}})
-		.error(function (err) {
-			done(err, null);
-		})
-		.success(function (journey) {
+		.then(function (journey) {
 			that.setJourney(journey);
-			journey.getRun().success(function (run) {
+			journey.getRun().then(function (run) {
 				console.log(run);
 				that.setRun(run);
 				done(null, that);
 			});
+		})
+		.catch(function (err) {
+			done(err, null);
 		});
 };
 

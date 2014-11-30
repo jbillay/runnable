@@ -43,21 +43,21 @@ join.prototype.save = function (join, user, done) {
 	console.log('try to join for the journey : ' + that.journey_id);
 	this.set(join);
 	models.User.find({where: {id: user.id}})
-		.success(function (user) {
+		.then(function (user) {
 			that.setUser(user);
 			models.Journey.find({where: {id: that.journey_id}})
-				.success(function (journey) {
+				.then(function (journey) {
 					that.setJourney(journey);
 					models.Join.create(that)
-						.success(function(newJoin) {
+						.then(function(newJoin) {
 							newJoin.setJourney(journey)
-								.success(function () {
+								.then(function () {
 									newJoin.setUser(user)
-										.error(function(err) {
-											done(err, null);
-										})
-										.success(function(newJoin) {
+										.then(function(newJoin) {
 											done(null, newJoin);
+										})
+										.catch(function(err) {
+											done(err, null);
 										});
 								});
 						});
@@ -68,11 +68,11 @@ join.prototype.save = function (join, user, done) {
 join.prototype.getById = function (id, done) {
     'use strict';
 	models.Join.find({ where: {id: id}})
-		.error(function (err) {
-			done(err, null);
-		})
-		.success(function (join) {
+		.then(function (join) {
 			done(null, join);
+		})
+		.catch(function (err) {
+			done(err, null);
 		});
 };
 
@@ -80,16 +80,16 @@ join.prototype.getByUser = function (userId, done) {
     'use strict';
 	var that = this;
 	models.User.find({where: {id: userId}})
-		.error(function (err) {
-			done(err, null);
-		})
-		.success(function (user) {
+		.then(function (user) {
 			that.setUser(user);
-			user.getJoins().success(function (join) {
+			user.getJoins().then(function (join) {
 				console.log(join);
 				that.set(join);
 				done(null, that);
 			});
+		})
+		.catch(function (err) {
+			done(err, null);
 		});
 };
 
@@ -97,14 +97,14 @@ join.prototype.getByJourney = function (journeyId, done) {
     'use strict';
 	var that = this;
 	models.Journey.find({ where: {id: journeyId}})
-		.error(function (err) {
-			done(err, null);
-		})
-		.success(function (journey) {
-			journey.getJoins().success(function (joins) {
+		.then(function (journey) {
+			journey.getJoins().then(function (joins) {
 				console.log(joins);
 				done(null, joins);
 			});
+		})
+		.catch(function (err) {
+			done(err, null);
 		});
 };
 
