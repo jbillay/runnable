@@ -2,6 +2,8 @@
 /*jslint node: true */
 
 var User = require('../objects/user');
+var Journey = require('../objects/journey');
+var Join = require('../objects/join');
 var Mail = require('../objects/mail');
 
 exports.create = function(req, res) {
@@ -23,8 +25,12 @@ exports.create = function(req, res) {
 				console.log('Account created');
 				req.flash('indexMessage', "Vous allez recevoir un email pour l'activation de votre compte!");
 				user.getItraCode(function (err, code) {
-					newUser.itra = code;
-					newUser.save();
+					if (err) {
+						console.log('ITRA cannot be retrieve');
+					} else {
+						newUser.itra = code;
+						newUser.save();
+					}
 				});
 				mail.setTo(user.email);
 				mail.setSubject("Activation de votre compte runnable");
@@ -72,6 +78,40 @@ exports.showRuns = function(req, res) {
 	"user strict";
 	var user = new User();
 	user.getRuns(req.user, function (err, runs) {
-		res.jsonp(runs);
+		if (err) {
+			res.jsonp('Impossible de récupérer les informations sur le site i-tra.org');
+		} else {
+			res.jsonp(runs);
+		}
+	});
+};
+
+exports.showJourneys = function (req, res) {
+	"user strict";
+	var id = req.user.id;
+	var journey = new Journey();
+	journey.getByUser(id, function (err, journeyList) {
+		if (err) {
+			console.log('Not able to get user journey : ' + err);
+			res.jsonp('{"msg": "ko"}');
+		} else {
+			console.log(journeyList);
+			res.jsonp(journeyList);
+		}
+	});
+};
+
+exports.showJoins = function (req, res) {
+	"user strict";
+	var id = req.user.id;
+	var join = new Join();
+	join.getByUser(id, function (err, joinList) {
+		if (err) {
+			console.log('Not able to get user join : ' + err);
+			res.jsonp('{"msg": "ko"}');
+		} else {
+			console.log(joinList);
+			res.jsonp(joinList);
+		}
 	});
 };

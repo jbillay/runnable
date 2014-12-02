@@ -22,6 +22,8 @@ module.exports = function (app, passport, auth) {
     app.get('/api/active/:id/:hash', controllers.user.active);
 	app.get('/api/user/me', auth.requiresLogin, controllers.user.me);
     app.get('/api/user/runs', auth.requiresLogin, controllers.user.showRuns);
+    app.get('/api/user/journeys', auth.requiresLogin, controllers.user.showJourneys);
+    app.get('/api/user/joins', auth.requiresLogin, controllers.user.showJoins);
 
     app.post('/api/run', auth.requiresLogin, controllers.run.create);
     app.get('/api/run/list', controllers.run.list);

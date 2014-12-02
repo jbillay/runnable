@@ -105,8 +105,9 @@ user.prototype.getRuns = function (user, done) {
 	itra.getRuns(function (err, runs) {
 		if (err) {
 			done(err, null);
+		} else {
+			done(null, runs);
 		}
-		done(null, runs);
 	})
 };
 

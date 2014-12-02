@@ -30,15 +30,18 @@ itra.prototype.getCode = function (done) {
     var url = this.urlBase + "?nom=" + this.lastname,
         itraObject = this;
     request(url, function (error, response, body) {
-        if (error) done(error, null);
-        var parsedHTML = cheerio.load(itraObject.getElementsByTagName(body, "tbody")),
-            matchUser = itraObject.firstname.toUpperCase() + " " + itraObject.lastname.toUpperCase();
-        parsedHTML('a').map(function(i, link) {
-            link = cheerio(link);
-            if (matchUser === link.text().toUpperCase()) {
-                done(null, cheerio(link).attr('href'));
-            }
-        });
+        if (error) {
+			done(error, null);
+		} else {
+			var parsedHTML = cheerio.load(itraObject.getElementsByTagName(body, "tbody")),
+				matchUser = itraObject.firstname.toUpperCase() + " " + itraObject.lastname.toUpperCase();
+			parsedHTML('a').map(function(i, link) {
+				link = cheerio(link);
+				if (matchUser === link.text().toUpperCase()) {
+					done(null, cheerio(link).attr('href'));
+				}
+			});
+		}
     });
 };
 
@@ -46,10 +49,13 @@ itra.prototype.getRuns = function (done) {
     var url = this.urlBase + this.code,
         itraObject = this;
     request(url, function (error, response, body) {
-        if (error) done(error, null);
-        var parsedHTML = cheerio.load(body),
-            returnHtml = parsedHTML('table[class=palmares]').html();
-        done(null, returnHtml);
+        if (error) {
+			done(error, null);
+		} else {
+			var parsedHTML = cheerio.load(body),
+				returnHtml = parsedHTML('table[class=palmares]').html();
+			done(null, returnHtml);
+		}
     });
 };
 

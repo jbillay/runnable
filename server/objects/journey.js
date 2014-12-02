@@ -127,4 +127,21 @@ journey.prototype.getById = function (id, done) {
 		});
 };
 
+journey.prototype.getByUser = function (id, done) {
+	'use strict';
+	var that = this;
+	models.Journey.find({where: {userId: id}})
+		.then(function (journey) {
+			that.setJourney(journey);
+			journey.getRun().then(function (run) {
+				console.log(run);
+				that.setRun(run);
+				done(null, that);
+			});
+		})
+		.catch(function (err) {
+			done(err, null);
+		});
+};
+
 module.exports = journey;
