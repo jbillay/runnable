@@ -76,17 +76,15 @@ join.prototype.getById = function (id, done) {
 		});
 };
 
-join.prototype.getByUser = function (userId, done) {
+join.prototype.getByUser = function (id, done) {
     'use strict';
-	var that = this;
-	models.User.find({where: {id: userId}})
-		.then(function (user) {
-			that.setUser(user);
-			user.getJoins().then(function (join) {
-				console.log(join);
-				that.set(join);
-				done(null, that);
-			});
+	models.Join.findAll({where: {userId: id}, include: [{
+                        model: models.Journey,
+                        as: "Journey",
+                        include: [ models.Run ]
+                    }]})
+		.then(function (joins) {
+			done(null, joins);
 		})
 		.catch(function (err) {
 			done(err, null);

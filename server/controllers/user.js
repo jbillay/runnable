@@ -2,9 +2,9 @@
 /*jslint node: true */
 
 var User = require('../objects/user');
+var Mail = require('../objects/mail');
 var Journey = require('../objects/journey');
 var Join = require('../objects/join');
-var Mail = require('../objects/mail');
 
 exports.create = function(req, res) {
     "use strict";
@@ -95,7 +95,6 @@ exports.showJourneys = function (req, res) {
 			console.log('Not able to get user journey : ' + err);
 			res.jsonp('{"msg": "ko"}');
 		} else {
-			console.log(journeyList);
 			res.jsonp(journeyList);
 		}
 	});
@@ -108,7 +107,7 @@ exports.showJoins = function (req, res) {
 	join.getByUser(id, function (err, joinList) {
 		if (err) {
 			console.log('Not able to get user join : ' + err);
-			res.jsonp('{"msg": "ko"}');
+			res.jsonp('{"msg": ' + err + '}');
 		} else {
 			console.log(joinList);
 			res.jsonp(joinList);

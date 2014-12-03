@@ -32,7 +32,29 @@ angular.module('runnable.services', ['ngResource']).
 						console.log('Error : ' + status);
 					});
 				return deferred.promise;
-			}
+			},
+			getJourney: function () {
+                var deferred = $q.defer();
+                $http.get("/api/user/journeys").
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+                return deferred.promise;
+			},
+			getJoin: function () {
+                var deferred = $q.defer();
+                $http.get("/api/user/joins").
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+                return deferred.promise;
+			},
 		}
     }).
     factory('GoogleMapApi', function ($rootScope, $http) {

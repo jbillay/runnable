@@ -29,14 +29,48 @@
                         <tbody ng-bind-html="itraRuns"></tbody>
                     </table>
                 </tab>
-                <tab heading="Vos itinéraire">
+				<tab heading="Vos itinéraire">
                     <table class="col-sm-12 journey">
-                        Liste de vos itinéraires
+						<table class="table myjourney">
+							<tr>
+								<th>Course</th>
+								<th>Lieu de départ</th>
+								<th>Nombre place proposé</th>
+								<th>Nombre place disponible</th>
+							</tr>
+							<tbody ng-repeat="journey in userJourney">
+								<tr>
+									<td><a href="/run-{{journey.Run.id}}">{{journey.Run.name}}</a></td>
+									<td><a href="/journey-{{journey.id}}">{{journey.address_start}}</a></td>
+									<td>{{journey.nb_space}}</td>
+									<td>{{journey.nb_free_space}}</td>
+								</tr>
+							</tbody>
+						</table>
                     </table>
                 </tab>
                 <tab heading="Vos parcours">
                     <table class="col-sm-12 join">
-                        Liste de vos parcours
+						<table class="table myjoin">
+							<tr>
+								<th>Course</th>
+								<th>Lieu de départ</th>
+								<th>Date de départ</th>
+								<th>Heure de départ</th>
+								<th>Distance</th>
+								<th>Durée</th>
+							</tr>
+							<tbody ng-repeat="join in userJoin">
+								<tr>
+									<td><a href="/run-{{join.Journey.Run.id}}">{{join.Journey.Run.name}}</a></td>
+									<td><a href="/journey-{{join.Journey.id}}">{{join.Journey.address_start}}</a></td>
+									<td>{{join.Journey.date_start}}</td>
+									<td>{{join.Journey.time_start}}</td>
+									<td>{{join.Journey.distance}}</td>
+									<td>{{join.Journey.duration}}</td>
+								</tr>
+							</tbody>
+						</table>
                     </table>
                 </tab>
             </tabset>

@@ -117,7 +117,6 @@ journey.prototype.getById = function (id, done) {
 		.then(function (journey) {
 			that.setJourney(journey);
 			journey.getRun().then(function (run) {
-				console.log(run);
 				that.setRun(run);
 				done(null, that);
 			});
@@ -129,15 +128,9 @@ journey.prototype.getById = function (id, done) {
 
 journey.prototype.getByUser = function (id, done) {
 	'use strict';
-	var that = this;
-	models.Journey.find({where: {userId: id}})
-		.then(function (journey) {
-			that.setJourney(journey);
-			journey.getRun().then(function (run) {
-				console.log(run);
-				that.setRun(run);
-				done(null, that);
-			});
+	models.Journey.findAll({where: {userId: id}, include: [models.Run, models.Join]})
+		.then(function (journeys) {
+			done(null, journeys);
 		})
 		.catch(function (err) {
 			done(err, null);

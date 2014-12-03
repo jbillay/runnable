@@ -36,10 +36,21 @@ angular.module('runnable.controllers', []).
 		$scope.page = 'Profile';
 		var userPromise = User.getUser(),
 			userItraRunPromise = User.getItraRuns(),
-			all = $q.all([userPromise, userItraRunPromise]);
+			userJourneyPromise = User.getJourney(),
+			userJoinPromise = User.getJoin(),
+			all = $q.all([userPromise, userItraRunPromise, userJourneyPromise, userJoinPromise]);
 		all.then(function (res) {
 			$scope.user = res[0];
 			$scope.itraRuns = $sce.trustAsHtml(res[1]);
+			$scope.userJourney = res[2];
+			angular.forEach($scope.userJourney, function (journey) {
+				var nb_free_place = journey.nb_space;
+				angular.forEach(journey.Joins, function (join) {
+					nb_free_place = nb_free_place - join.nb_place
+				});
+				journey.nb_free_space = nb_free_place;
+			});
+			$scope.userJoin = res[3];
 			$scope.auth = false;
 			if ($scope.user.email) {
 				$scope.auth = true;
