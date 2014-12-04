@@ -22,6 +22,10 @@ angular.module('runnable', [
                 templateUrl: 'partials/login',
                 controller: 'AppLogin'
             }).
+            when('/admin', {
+                templateUrl: 'partials/admin',
+                controller: 'RunnableAdminController'
+            }).
             when('/run-create', {
                 templateUrl: 'partials/run_create',
                 controller: 'AppRun'

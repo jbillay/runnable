@@ -67,14 +67,27 @@ angular.module('runnable.controllers', []).
 		all.then(function (res) {
 			$scope.user = res[0];
 			$scope.auth = false;
-			if ($scope.user.email) {
+			$scope.admin = false;
+			if ($scope.user.isActive) {
 				$scope.auth = true;
+			}
+			if ($scope.user.isAdmin) {
+				$scope.admin = true;
 			}
 		});
 		$scope.login = function () {
 			angular.element('#loginModal').modal('show');
 		};
     }).
+	controller('RunnableAdminController', function ($scope, $q, User) {
+		'use strict';
+		$scope.page = 'Admin';
+		var userPromise = User.getUser(),
+			all = $q.all([userPromise]);
+		all.then(function (res) {
+			$scope.user = res[0];
+		});
+	}).
 	controller('AppRunDetail', function ($scope, $cookies, $q, $routeParams, Run, Journey, GoogleMapApi) {
         'use strict';
         $scope.page = 'Run';
