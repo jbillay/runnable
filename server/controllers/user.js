@@ -32,15 +32,16 @@ exports.create = function(req, res) {
 						newUser.save();
 					}
 				});
+				var url = req.get('host');
 				mail.setTo(user.email);
 				mail.setSubject("Activation de votre compte runnable");
 				html = "Vous venez de créer un compte sur notre site runnable<br/>" +
 					"Pour l'activer veuillez cliquer sur le lien suivant :<br/>" +
-					"http://localhost:9615/api/active/" + newUser.id + "/" + newUser.hashedPassword +
+					"http://" + url + "/api/active/" + newUser.id + "/" + newUser.hashedPassword +
 					"<br/> Merci l'intérêt que vous porter à notre site";
 				text = "Vous venez de créer un compte sur notre site runnable. " +
 					"Pour l'activer veuillez copiez/coller le lien suivant dans votre navigateur" +
-					"http://localhost:9615/api/active/" + newUser.id + "/" + newUser.hashedPassword +
+					"http://" + url + "/api/active/" + newUser.id + "/" + newUser.hashedPassword +
 					" Merci l'intérêt que vous porter à notre site";
 				mail.setContentHtml(html);
 				mail.setText(text);
