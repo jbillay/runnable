@@ -43,6 +43,11 @@ angular.module('runnable.controllers', []).
 			$scope.user = res[0];
 			$scope.itraRuns = $sce.trustAsHtml(res[1]);
 			$scope.userJourney = res[2];
+			if ($scope.user.isActive) {
+				$scope.auth = true;
+			} else {
+				$location.path('/');
+			}
 			angular.forEach($scope.userJourney, function (journey) {
 				var nb_free_place = journey.nb_space;
 				angular.forEach(journey.Joins, function (join) {
@@ -52,11 +57,6 @@ angular.module('runnable.controllers', []).
 			});
 			$scope.userJoin = res[3];
 			$scope.auth = false;
-			if ($scope.user.email) {
-				$scope.auth = true;
-			} else {
-				$location.path('/');
-			}
 		});
 	}).
     controller('RunnableNavController', function ($scope, $q, User) {
@@ -79,26 +79,72 @@ angular.module('runnable.controllers', []).
 			angular.element('#loginModal').modal('show');
 		};
     }).
-	controller('RunnableAdminController', function ($scope, $q, User) {
+	controller('RunnableAdminController', function ($scope, $q, $location, User, Run, Journey, Join) {
 		'use strict';
 		$scope.page = 'Admin';
 		var userPromise = User.getUser(),
-			all = $q.all([userPromise]);
+			userListPromise = User.getList(),
+			runListPromise = Run.getList(),
+			journeyListPromise = Journey.getList(),
+			joinListPromise = Join.getList(),
+			all = $q.all([userPromise, userListPromise, runListPromise, journeyListPromise, joinListPromise]);
 		all.then(function (res) {
 			$scope.user = res[0];
+			$scope.userList = res[1];
+			$scope.runList = res[2];
+			$scope.journeyList = res[3];
+			$scope.joinList = res[4];
+			$scope.auth = false;
+			$scope.admin = false;
+			if ($scope.user.isAdmin && $scope.user.isActive) {
+				$scope.auth = true;
+				$scope.admin = true;
+			} else {
+				$location.path('/');
+			}
 		});
+		$scope.userToggleActive = function(user) {
+			console.log('Toggle active for user : ' + user.id);
+			User.userToggleActive(user.id);
+			if (user.isActive) {
+				user.isActive = false;
+			} else {
+				user.isActive = true;
+			}
+		};
+		$scope.userToggleAdmin = function(user) {
+			console.log('Toggle admin for user : ' + user.id);
+			User.userToggleAdmin(user.id);
+			if (user.isAdmin) {
+				user.isAdmin = false;
+			} else {
+				user.isAdmin = true;
+			}
+		};
+		$scope.runToggleActive = function(run) {
+			console.log('Toggle active for run : ' + run.id);
+			Run.toogleActive(run.id);
+			if (run.is_active) {
+				run.is_active = false;
+			} else {
+				run.is_active = true;
+			}
+		};
 	}).
-	controller('AppRunDetail', function ($scope, $cookies, $q, $routeParams, Run, Journey, GoogleMapApi) {
+	controller('RunnableRunDetailController', function ($scope, $cookies, $q, $routeParams, Run, Journey, User, GoogleMapApi) {
         'use strict';
         $scope.page = 'Run';
 		$scope.runId = $routeParams.runId;
 		var runPromise = Run.getDetail($scope.runId),
 			journeyPromise = Journey.getListForRun($scope.runId),
-            all = $q.all([runPromise, journeyPromise]);
+			userPromise = User.getUser(),
+            all = $q.all([runPromise, journeyPromise, userPromise]);
         all.then(function (res) {
 			$scope.run = res[0];
 			$scope.journeyList = res[1];
-			GoogleMapApi.initMap('map_canvas', $scope.run.address_start);
+			$scope.user = res[2];
+			GoogleMapApi.initMap('map_canvas_run', $scope.run.address_start);
+			GoogleMapApi.initMap('map_canvas_journey', $scope.run.address_start);
 		});
     }).
     controller('AppRun', function ($scope, $q, Run, GoogleMapApi) {

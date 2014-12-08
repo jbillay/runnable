@@ -29,6 +29,14 @@ section {
     min-height:calc(100% - 1px);
 }
 
+.green {
+	color: green;
+}
+
+.red {
+	color: red;
+}
+
 .v-center {
     padding-top:3%;
     font-size:50px;
@@ -226,12 +234,10 @@ a.list-group-item.active,[class*='-info'] {
 }
 
 /* Google maps */
-#map_canvas {
-	width: 500px;
-	height: 400px;
+.map {
+	min-height: 400px;
 	background-color: #CCC;
-	margin-left: 7%;
-	margin-top: 12%;
+	margin-bottom: 20px;
 }
 
 .profile {

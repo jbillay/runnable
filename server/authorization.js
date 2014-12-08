@@ -3,7 +3,7 @@
  */
 exports.requiresLogin = function(req, res, next) {
     if (!req.isAuthenticated()) {
-        return res.redirect('/');
+        return res.redirect('login');
     }
 	res.cookie('user', JSON.stringify({
 		'id' : req.user.id,

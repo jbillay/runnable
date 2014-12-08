@@ -36,7 +36,7 @@ angular.module('runnable', [
             }).
             when('/run-:runId', {
                 templateUrl: 'partials/run_detail',
-                controller: 'AppRunDetail'
+                controller: 'RunnableRunDetailController'
             }).
             when('/journey-create', {
                 templateUrl: 'partials/journey_create',

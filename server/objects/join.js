@@ -106,4 +106,19 @@ join.prototype.getByJourney = function (journeyId, done) {
 		});
 };
 
+join.prototype.getList = function (done) {
+	'use strict';
+	models.Join.findAll({include: [{
+							model: models.Journey,
+							as: "Journey",
+							include: [ models.Run ]
+						}, models.User]})
+		.then(function (joins) {
+			done(null, joins);
+		})
+		.catch(function (err) {
+			done(err, null);
+		});
+};
+
 module.exports = join;

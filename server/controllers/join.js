@@ -50,3 +50,17 @@ exports.detail = function (req, res) {
 		}
 	});
 };
+
+exports.list = function (req, res) {
+	"use strict";
+	console.log('Get list of joins');
+	var join = new Join();
+	join.getList(function (err, joins) {
+		if (err) {
+			console.log('Not able to get join list : ' + err);
+			res.jsonp('{"msg": ' + err + '}');
+		} else {
+			res.jsonp(joins);
+		}
+	});
+};

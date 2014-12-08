@@ -55,6 +55,39 @@ angular.module('runnable.services', ['ngResource']).
 					});
                 return deferred.promise;
 			},
+			getList: function () {
+                var deferred = $q.defer();
+                $http.get("/api/admin/users").
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+                return deferred.promise;
+			},
+			userToggleActive: function (id) {
+                var deferred = $q.defer();
+                $http.post("/api/admin/user/active", {"id": id}).
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+				return deferred.promise;
+			},
+			userToggleAdmin: function (id) {
+                var deferred = $q.defer();
+                $http.post("/api/admin/user/admin", {"id": id}).
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+                return deferred.promise;
+			}
 		}
     }).
     factory('GoogleMapApi', function ($rootScope, $http) {
@@ -69,7 +102,7 @@ angular.module('runnable.services', ['ngResource']).
 				$rootScope[object].geocoder = new google.maps.Geocoder();
 				$rootScope[object].map = new google.maps.Map(document.getElementById(object), mapOptions);
 				if (address) {
-					this.selectedAddress(address);
+					this.selectedAddress(object, address);
 				}
 				$rootScope[object].directionsService = new google.maps.DirectionsService();
 				$rootScope[object].directionsDisplay = new google.maps.DirectionsRenderer();
@@ -158,7 +191,17 @@ angular.module('runnable.services', ['ngResource']).
 					});
                 return deferred.promise;
 			},
-			removeJoin: function (id) {
+			getList: function () {
+				var deferred = $q.defer();
+				$http.get("/api/admin/joins").
+					success(function (result) {
+						console.log('Get list of Join : ' + result);
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+				return deferred.promise;
 			}
         };
     }).
@@ -190,6 +233,28 @@ angular.module('runnable.services', ['ngResource']).
 			getNextList: function (nb) {
 				var deferred = $q.defer();
                 $http({method: "GET", url: "/api/run/next/" + nb}).
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+                return deferred.promise;
+			},
+			getList: function () {
+                var deferred = $q.defer();
+                $http.get("/api/admin/runs").
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+                return deferred.promise;
+			},
+			toogleActive: function (id) {
+                var deferred = $q.defer();
+                $http.post("/api/admin/run/active", {"id": id}).
 					success(function (result) {
 						deferred.resolve(result);
 					}).

@@ -57,7 +57,7 @@ exports.create = function(req, res) {
 };
 
 exports.active = function(req, res) {
-	"user strict";
+	"use strict";
 	console.log('Try to activate account ' + req.params.id);
 	var user = new User();
 	user.activate(req.params.id, req.params.hash, function (err) {
@@ -71,12 +71,12 @@ exports.active = function(req, res) {
 };
 
 exports.me = function(req, res) {
-	"user strict";
+	"use strict";
 	res.jsonp(req.user || null);
 };
 
 exports.showRuns = function(req, res) {
-	"user strict";
+	"use strict";
 	var user = new User();
 	user.getRuns(req.user, function (err, runs) {
 		if (err) {
@@ -88,7 +88,7 @@ exports.showRuns = function(req, res) {
 };
 
 exports.showJourneys = function (req, res) {
-	"user strict";
+	"use strict";
 	var id = req.user.id;
 	var journey = new Journey();
 	journey.getByUser(id, function (err, journeyList) {
@@ -102,7 +102,7 @@ exports.showJourneys = function (req, res) {
 };
 
 exports.showJoins = function (req, res) {
-	"user strict";
+	"use strict";
 	var id = req.user.id;
 	var join = new Join();
 	join.getByUser(id, function (err, joinList) {
@@ -112,6 +112,49 @@ exports.showJoins = function (req, res) {
 		} else {
 			console.log(joinList);
 			res.jsonp(joinList);
+		}
+	});
+};
+
+exports.list = function(req, res) {
+	"use strict";
+	var user = new User();
+	user.getList(function (err, users) {
+		if (err) {
+			console.log('Not able to get user list : ' + err);
+			res.jsonp('{"msg": ' + err + '}');
+		} else {
+			res.jsonp(users);
+		}
+	});
+};
+
+exports.toggleActive = function (req, res) {
+	"use strict";
+	console.log('Toggle active for user ' + req.body.id);
+	var id = req.body.id,
+		user = new User();
+	user.toggleActive(id, function (err) {
+		if (err) {
+			console.log('Not able to toggle active flag for user : ' + err);
+			res.jsonp('{"msg": ' + err + '}');
+		} else {
+			res.jsonp('{"msg": "done"}');
+		}
+	});
+};
+
+exports.toggleAdmin = function (req, res) {
+	"use strict";
+	console.log('Toggle admin for user ' + req.body.id);
+	var id = req.body.id,
+		user = new User();
+	user.toggleAdmin(id, function (err) {
+		if (err) {
+			console.log('Not able to toggle admin flag for user : ' + err);
+			res.jsonp('{"msg": ' + err + '}');
+		} else {
+			res.jsonp('{"msg": "done"}');
 		}
 	});
 };

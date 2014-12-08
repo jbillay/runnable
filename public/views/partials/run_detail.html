@@ -1,64 +1,70 @@
 <div ng-include="'partials/nav'"></div>
 
-<div class="container body" ng-controller="AppRunDetail">
+<div class="container body" ng-controller="RunnableRunDetailController">
     <div class="row spacehead">
-		<div class="col-sm-6">
-			<h2>{{run.name}}</h2>
-			<hr>
-			<dl class="dl-horizontal">
-				<dt>Type de course</dt>
-				<dd>{{run.type}}</dd>
-				<dt>Lieu de départ</dt>
-				<dd>{{run.address_start}}</dd>
-				<dt>Date du départ</dt>
-				<dd>{{run.date_start}}</dd>
-				<dt>Heure du départ</dt>
-				<dd>{{run.time_start}}</dd>
-				<dt>Distance(s)</dt>
-				<dd>{{run.distances}}</dd>
-				<dt>Dénivelé(s)</dt>
-				<dd>{{run.elevations}}</dd>
-				<dt>Informations</dt>
-				<dd>{{run.info}}</dd>
-			</dl>
-        </div>
 		<div class="col-sm-5">
-			<div id="map_canvas"></div>
-        </div>
-    </div>
-	<div class="container">
-		<div class="row spacehead">
-			<div class="col-sm-8">
-				<h2>Les parcours <a href="/journey-create"><i class="fa fa-plus-circle fa-fw"></i></a></h2>
-				<hr>
-				<div class="row">
-					<div class="col-sm-8">
-						<div class="input-group">
-							<input type="text" class="form-control homesearch" ng-model="journey_start" placeholder="Filter sur les points de départ">
-							<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
-						</div>
-					</div>
-				</div>
-				<div class="row spacehead">
-					<div class="col-sm-12">
-						<ul class="list-unstyled">
-							<li class="animate-repeat" ng-repeat="journey in journeyList | filter:journey_start as results">
-								Départ de <a href="/journey-{{journey.id}}">{{journey.address_start}}</a>
-								le {{journey.date_start | date: mediumDate}}
-								à {{journey.time_start}} pour <strong>{{journey.amount | currency:'€ '}}</strong>
-							</li>
-							<li class="animate-repeat" ng-if="results.length == 0">
-								<strong>Pas encore de parcours... créez en un en quelques secondes !</strong>
-							</li>
-						</ul>
-					</div>
-				</div>
+			<h2>{{run.name}}</h2>
+		</div>
+		<div class="col-sm-7">
+			<div class="col-sm-4">
+				<p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize | limitTo:21}}</p>
+				<p><i class="glyphicon glyphicon-calendar"></i> {{run.date_start | date:'dd / MM / yyyy'}}</p>
+				<p><i class="glyphicon glyphicon-time"></i> {{run.time_start}}</p>
 			</div>
 			<div class="col-sm-4">
-				<h2>Les followers</h2>
-				<hr>
+				<p><i class="glyphicon glyphicon-road"></i> {{run.type}}</p>
+				<p><i class="glyphicon glyphicon-text-width"></i> {{run.distances}}</p>
+				<p><i class="fa-area-chart"></i> {{run.elevations}}</p>
+			</div>
+			<div class="col-sm-4">
+				<p>{{run.info}}</p>
 			</div>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col-sm-7">
+			<h3>Les parcours <a href="/journey-create"><i class="fa fa-plus-circle fa-fw"></i></a></h3>
+			<div class="row">
+				<div class="col-sm-8">
+					<div class="input-group">
+						<input type="text" class="form-control homesearch" ng-model="journey_start" placeholder="Filter sur les points de départ">
+						<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<table class="col-sm-12 join">
+					<table class="table myjoin">
+						<tr>
+							<th>Lieu de départ</th>
+							<th>Date de départ</th>
+							<th>Heure de départ</th>
+							<th>Distance</th>
+							<th>Durée</th>
+						</tr>
+						<tbody ng-repeat="journey in journeyList | filter:journey_start as results">
+							<tr>
+								<td><a href="/journey-{{journey.id}}">{{journey.address_start}}</a></td>
+								<td>{{journey.date_start}}</td>
+								<td>{{journey.time_start}}</td>
+								<td>{{journey.distance}}</td>
+								<td>{{journey.duration}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</table>
+			</div>
+		</div>
+		<div class="col-sm-5">
+			<tabset>
+				<tab heading="Course">
+					<div id="map_canvas_run" class="map"></div>
+				</tab>
+				<tab heading="Parcours">
+					<div id="map_canvas_journey" class="map"></div>
+				</tab>
+			</tabset>
+		</div>
+    </div>
 </div>
 <div ng-include="'partials/footer'"></div>

@@ -2,7 +2,139 @@
 
 <div class="container body" ng-controller="RunnableAdminController">
     <div class="row spacehead">
-        <h1>ADMIN</h1>
+        <div class="col-sm-12">
+            <tabset>
+                <tab heading="Utilisateurs">
+					<table class="col-sm-12 user">
+						<table class="table userlist">
+							<tr>
+								<th>Prénom</th>
+								<th>Nom</th>
+								<th>Email</th>
+								<th>Adresse</th>
+								<th>Provider</th>
+								<th>Itra Code</th>
+								<th>Active</th>
+								<th>Admin</th>
+								<th>Création</th>
+							</tr>
+							<tbody ng-repeat="user in userList">
+								<tr>
+									<td>{{user.firstname}}</td>
+									<td>{{user.lastname}}</td>
+									<td>{{user.email}}</td>
+									<td>{{user.address}}</td>
+									<td>{{user.provider}}</td>
+									<td>{{user.itra}}</td>
+									<td>
+										<span class="glyphicon glyphicon-ok green" ng-if=user.isActive ng-click=userToggleActive(user)></span>
+										<span class="glyphicon glyphicon-remove red" ng-if=!user.isActive ng-click=userToggleActive(user)></span>
+									</td>
+									<td>
+										<span class="glyphicon glyphicon-ok green" ng-if=user.isAdmin ng-click=userToggleAdmin(user)></span>
+										<span class="glyphicon glyphicon-remove red" ng-if=!user.isAdmin ng-click=userToggleAdmin(user)></span>
+									</td>
+									<td>{{user.createdAt | date:'dd/MM/yyyy'}}</td>
+								</tr>
+							</tbody>
+						</table>
+                    </table>
+				</tab>
+                <tab heading="Courses">
+					<table class="col-sm-12 user">
+						<table class="table runlist">
+							<tr>
+								<th>Nom</th>
+								<th>Type</th>
+								<th>Lieu départ</th>
+								<th>Date</th>
+								<th>Heure</th>
+								<th>Distance(s)</th>
+								<th>Elévation(s)</th>
+								<th>Active</th>
+								<th>Création</th>
+							</tr>
+							<tbody ng-repeat="run in runList">
+								<tr>
+									<td><a href="/run-{{run.id}}">{{run.name}}</a></td>
+									<td>{{run.type}}</td>
+									<td>{{run.address_start}}</td>
+									<td>{{run.date_start | date:'dd/MM/yyyy'}}</td>
+									<td>{{run.time_start}}</td>
+									<td>{{run.distances}}</td>
+									<td>{{run.elevations}}</td>
+									<td>
+										<span class="glyphicon glyphicon-ok green" ng-if=run.is_active ng-click=runToggleActive(run)></span>
+										<span class="glyphicon glyphicon-remove red" ng-if=!run.is_active ng-click=runToggleActive(run)></span>
+									</td>
+									<td>{{run.createdAt | date:'dd/MM/yyyy'}}</td>
+								</tr>
+							</tbody>
+						</table>
+                    </table>
+				</tab>
+                <tab heading="Itinéraires">
+					<table class="col-sm-12 user">
+						<table class="table journeyList">
+							<tr>
+								<th>Course</th>
+								<th>Lieu départ</th>
+								<th>Date</th>
+								<th>Heure</th>
+								<th>Distance</th>
+								<th>Duration</th>
+								<th>Type de voiture</th>
+								<th>Nb de place</th>
+								<th>Montant</th>
+								<th>Création</th>
+							</tr>
+							<tbody ng-repeat="journey in journeyList">
+							<tr>
+								<td><a href="/run-{{journey.Run.id}}">{{journey.Run.name}}</a></td>
+								<td>{{journey.address_start}}</td>
+								<td>{{journey.date_start | date:'dd/MM/yyyy'}}</td>
+								<td>{{journey.time_start}}</td>
+								<td>{{journey.distance}}</td>
+								<td>{{journey.duration}}</td>
+								<td>{{journey.car_type}}</td>
+								<td>{{journey.nb_space}}</td>
+								<td>{{journey.amount | currency:'€ '}}</td>
+								<td>{{journey.createdAt | date:'dd/MM/yyyy'}}</td>
+							</tr>
+							</tbody>
+						</table>
+					</table>
+				</tab>
+				<tab heading="Parcours">
+					<table class="col-sm-12 user">
+						<table class="table journeyList">
+							<tr>
+								<th>Utilisateur</th>
+								<th>Course</th>
+								<th>Lieu départ</th>
+								<th>Date</th>
+								<th>Heure</th>
+								<th>Nb de place</th>
+								<th>Statut</th>
+								<th>Création</th>
+							</tr>
+							<tbody ng-repeat="join in joinList">
+							<tr>
+								<td>{{join.User.email}}</td>
+								<td><a href="/run-{{join.Journey.Run.id}}">{{join.Journey.Run.name}}</a></td>
+								<td><a href="/journey-{{join.Journey.id}}">{{join.Journey.address_start}}</a></td>
+								<td>{{join.Journey.date_start | date:'dd/MM/yyyy'}}</td>
+								<td>{{join.Journey.time_start}}</td>
+								<td>{{join.nb_place}}</td>
+								<td>{{join.status}}</td>
+								<td>{{join.createdAt | date:'dd/MM/yyyy'}}</td>
+							</tr>
+							</tbody>
+						</table>
+					</table>
+				</tab>
+            </tabset>
+        </div>
     </div>
 </div>
 

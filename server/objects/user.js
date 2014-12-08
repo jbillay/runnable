@@ -133,4 +133,50 @@ user.prototype.getByEmail = function (email, done) {
 		});
 };
 
+user.prototype.getList = function (done) {
+    'use strict';
+	models.User.findAll()
+		.then(function (users) {
+			done(null, users);
+		})
+		.catch(function (err) {
+			done(err, null);
+		});
+};
+
+user.prototype.toggleActive = function (id, done) {
+	models.User.find({where: {id: id}})
+		.then(function (user) {
+			if (user.isActive === true) {
+				user.isActive = false;
+				user.isAdmin = false;
+			} else {
+				user.isActive = true;
+			}
+			user.save().success(function () {
+				done(null);
+			});
+		})
+		.catch(function (err) {
+			done(err);
+		});
+};
+
+user.prototype.toggleAdmin = function (id, done) {
+	models.User.find({where: {id: id}})
+		.then(function (user) {
+			if (user.isAdmin === true) {
+				user.isAdmin = false;
+			} else {
+				user.isAdmin = true;
+			}
+			user.save().success(function () {
+				done(null);
+			});
+		})
+		.catch(function (err) {
+			done(err);
+		});
+};
+
 module.exports = user;

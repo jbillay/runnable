@@ -23,7 +23,7 @@
                 </div>
             </form>
             <ul class="nav navbar-nav navbar-right">
-                <li ng-class="{active: page=='Admin'}" ng-if="!admin" ><a href="/admin">Admin</a></li>
+				<li ng-class="{active: page=='Admin'}" ng-if="admin" ><a href="/admin">Admin</a></li>
                 <button type="button" class="btn btn-primary btn-block btn-sm picthome" ng-if="!auth" ng-click="login()">Connection</button>
 				<li class="dropdown" ng-if="auth">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">

@@ -26,7 +26,7 @@ module.exports = function (app, passport, auth) {
     app.get('/api/user/joins', auth.requiresLogin, controllers.user.showJoins);
 
     app.post('/api/run', auth.requiresLogin, controllers.run.create);
-    app.get('/api/run/list', controllers.run.list);
+    app.get('/api/run/list', controllers.run.activeList);
     app.get('/api/run/:id', controllers.run.detail);
     app.get('/api/run/next/:nb', controllers.run.next);
 
@@ -40,6 +40,13 @@ module.exports = function (app, passport, auth) {
 	app.get('/api/join/:id', auth.requiresLogin, controllers.join.detail);
     app.get('/api/join/journey/:id', controllers.join.listForJourney);
 	app.get('/api/join/remove/:id', auth.requiresLogin, controllers.join.remove);
+	
+	app.get('/api/admin/users', auth.requireAdmin, controllers.user.list);
+	app.get('/api/admin/runs', auth.requireAdmin, controllers.run.list);
+	app.get('/api/admin/joins', auth.requireAdmin, controllers.join.list);
+	app.post('/api/admin/run/active', auth.requireAdmin, controllers.run.toggleActive);
+	app.post('/api/admin/user/active', auth.requireAdmin, controllers.user.toggleActive);
+	app.post('/api/admin/user/admin', auth.requireAdmin, controllers.user.toggleAdmin);
 
     app.get('/partials/:name', controllers.root.partials);
 

@@ -67,6 +67,9 @@ run.prototype.save = function (done) {
 		});
 };
 
+run.prototype.update = function (done) {
+};
+
 run.prototype.getActiveList = function (done) {
     'use strict';
 	models.Run.findAll({where: {is_active: true}})
@@ -108,6 +111,34 @@ run.prototype.getResumeById = function (id) {
 		})
 		.catch(function (err) {
 			done(err, null);
+		});
+};
+
+run.prototype.getList = function (done) {
+    'use strict';
+	models.Run.findAll()
+		.then(function (runs) {
+			done(null, runs);
+		})
+		.catch(function (err) {
+			done(err, null);
+		});
+};
+
+run.prototype.toggleActive = function (id, done) {
+	models.Run.find({where: {id: id}})
+		.then(function (run) {
+			if (run.is_active === true) {
+				run.is_active = false;
+			} else {
+				run.is_active = true;
+			}
+			run.save().success(function () {
+				done(null);
+			});
+		})
+		.catch(function (err) {
+			done(err);
 		});
 };
 

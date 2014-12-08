@@ -17,7 +17,7 @@ exports.create = function (req, res) {
 	});
 };
 
-exports.list = function (req, res) {
+exports.activeList = function (req, res) {
     "use strict";
 	console.log('Get list of active run');
 	var run = new Run();
@@ -52,10 +52,39 @@ exports.next = function (req, res) {
 	var run = new Run();
 	run.getNextList(req.params.nb, function (err, runs) {
 		if (err) {
-			console.log('Not able to get active list : ' + err);
-			res.jsonp('{"msg": "ko"}');
+			console.log('Not able to get active run list : ' + err);
+			res.jsonp('{"msg": ' + err + '}');
 		} else {
 			res.jsonp(runs);
+		}
+	});
+};
+
+exports.list = function (req, res) {
+    "use strict";
+	console.log('Get list of run');
+	var run = new Run();
+	run.getList(function (err, runs) {
+		if (err) {
+			console.log('Not able to get run list : ' + err);
+			res.jsonp('{"msg": ' + err + '}');
+		} else {
+			res.jsonp(runs);
+		}
+	});
+};
+
+exports.toggleActive = function (req, res) {
+    "use strict";
+	console.log('Toggle active for run ' + req.body.id);
+	var id= req.body.id,
+		run = new Run();
+	run.toggleActive(id, function (err) {
+		if (err) {
+			console.log('Not able to get info on the run : ' + err);
+			res.jsonp('{"msg": ' + err + '}');
+		} else {
+			res.jsonp('{"msg": "done"}');
 		}
 	});
 };
