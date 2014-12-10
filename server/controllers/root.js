@@ -39,6 +39,12 @@ exports.login = function (req, res) {
     res.render('login.html', { message: req.flash('loginMessage') });
 };
 
+exports.auth = function (req, res) {
+    "use strict";
+    console.log('Req : ' + req);
+    console.log('Res : ' + res);
+};
+
 // for dev purpose only -- To be removed
 exports.sync = function (req, res) {
     "use strict";

@@ -12,6 +12,7 @@ angular.module('runnable', [
     'ngSanitize',
     'ui.bootstrap',
     'runnable.filters',
+    'runnable.constant',
     'runnable.services',
     'runnable.directives',
     'runnable.controllers'

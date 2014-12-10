@@ -7,6 +7,20 @@
 /*jshint undef:true */
 
 angular.module('runnable.controllers', []).
+	controller('RunnableLoginController', function ($scope, $rootScope, AUTH_EVENTS, AuthService) {
+		$scope.credentials = {
+			username: '',
+			password: ''
+		};
+		$scope.login = function (credentials) {
+			AuthService.login(credentials).then(function (user) {
+				$rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+				$scope.setCurrentUser(user);
+			}, function () {
+				$rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+			});
+		};
+	}).
 	controller('RunnableIndexController', function ($scope, $q, $timeout, Run, User, Journey, GoogleMapApi) {
 		'use strict';
 		$scope.page = 'Index';
@@ -22,6 +36,7 @@ angular.module('runnable.controllers', []).
 			$scope.user = res[2];
 			$scope.auth = false;
 			if ($scope.user.email) $scope.auth = true;
+			//timeout in order to wait the page to be loaded
 			$timeout( function() {
 				angular.forEach($scope.listJourney, function (journey) {
 					var value = 'map_canvas_' + journey.id;

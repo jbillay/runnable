@@ -16,7 +16,7 @@ module.exports = function (app, passport, auth) {
             successRedirect: '/',
             failureRedirect: '/login',
             failureFlash: true
-        })
+        }, controllers.root.auth)
     );
 	app.post('/api/user', controllers.user.create);
     app.get('/api/active/:id/:hash', controllers.user.active);
