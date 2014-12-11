@@ -7,6 +7,29 @@
 /*jshint undef:true */
 
 angular.module('runnable.controllers', []).
+	controller('RunnableMainController', function ($scope, $rootScope, $q, USER_ROLES, AUTH_EVENTS, AuthService, User) {	 
+		$rootScope.currentUser = null;
+		$rootScope.userRoles = USER_ROLES;
+		$rootScope.isAuthenticated = false;
+		$rootScope.isAdmin = false;
+		$rootScope.isAuthorized = AuthService.isAuthorized;
+
+		$scope.setCurrentUser = function (user) {
+			$rootScope.isAuthenticated = user.isActive;
+			$rootScope.isAdmin = user.isAdmin;
+			$rootScope.currentUser = user;
+		};
+
+		var userPromise = User.getUser(),
+			all = $q.all([userPromise]);
+		all.then(function (res) {
+			$scope.setCurrentUser(res[0]);
+		});
+		
+		$scope.login = function () {
+			angular.element('#loginModal').modal('show');
+		};
+	}).
 	controller('RunnableLoginController', function ($scope, $rootScope, AUTH_EVENTS, AuthService) {
 		$scope.credentials = {
 			username: '',
@@ -14,11 +37,12 @@ angular.module('runnable.controllers', []).
 		};
 		$scope.login = function (credentials) {
 			AuthService.login(credentials).then(function (user) {
-				$rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
 				$scope.setCurrentUser(user);
+				$rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
 			}, function () {
 				$rootScope.$broadcast(AUTH_EVENTS.loginFailed);
 			});
+			angular.element('#loginModal').modal('hide');
 		};
 	}).
 	controller('RunnableIndexController', function ($scope, $q, $timeout, Run, User, Journey, GoogleMapApi) {
@@ -28,14 +52,10 @@ angular.module('runnable.controllers', []).
 		$scope.nbJourneyItems = 4;
 		var runPromise = Run.getNextList($scope.nbRunItems),
 			journeyPromise = Journey.getNextList($scope.nbJourneyItems),
-			userPromise = User.getUser(),
-			all = $q.all([runPromise, journeyPromise, userPromise]);
+			all = $q.all([runPromise, journeyPromise]);
 		all.then(function (res) {
 			$scope.listRun = res[0];
 			$scope.listJourney = res[1];
-			$scope.user = res[2];
-			$scope.auth = false;
-			if ($scope.user.email) $scope.auth = true;
 			//timeout in order to wait the page to be loaded
 			$timeout( function() {
 				angular.forEach($scope.listJourney, function (journey) {
@@ -46,21 +66,17 @@ angular.module('runnable.controllers', []).
 			});
 		});
 	}).
-	controller('RunnableProfileController', function ($scope, $q, $location, $sce, User) {
+	controller('RunnableProfileController', function ($scope, $q, $rootScope, $location, $sce, User) {
 		'use strict';
 		$scope.page = 'Profile';
-		var userPromise = User.getUser(),
-			userItraRunPromise = User.getItraRuns(),
+		var userItraRunPromise = User.getItraRuns(),
 			userJourneyPromise = User.getJourney(),
 			userJoinPromise = User.getJoin(),
-			all = $q.all([userPromise, userItraRunPromise, userJourneyPromise, userJoinPromise]);
+			all = $q.all([userItraRunPromise, userJourneyPromise, userJoinPromise]);
 		all.then(function (res) {
-			$scope.user = res[0];
-			$scope.itraRuns = $sce.trustAsHtml(res[1]);
-			$scope.userJourney = res[2];
-			if ($scope.user.isActive) {
-				$scope.auth = true;
-			} else {
+			$scope.itraRuns = $sce.trustAsHtml(res[0]);
+			$scope.userJourney = res[1];
+			if (!$rootScope.isAuthenticated) {
 				$location.path('/');
 			}
 			angular.forEach($scope.userJourney, function (journey) {
@@ -71,50 +87,22 @@ angular.module('runnable.controllers', []).
 				journey.nb_free_space = nb_free_place;
 			});
 			$scope.userJoin = res[3];
-			$scope.auth = false;
 		});
 	}).
-    controller('RunnableNavController', function ($scope, $q, User) {
-        'use strict';
-        $scope.page = 'Nav';
-		var userPromise = User.getUser(),
-			all = $q.all([userPromise]);
-		all.then(function (res) {
-			$scope.user = res[0];
-			$scope.auth = false;
-			$scope.admin = false;
-			if ($scope.user.isActive) {
-				$scope.auth = true;
-			}
-			if ($scope.user.isAdmin) {
-				$scope.admin = true;
-			}
-		});
-		$scope.login = function () {
-			angular.element('#loginModal').modal('show');
-		};
-    }).
-	controller('RunnableAdminController', function ($scope, $q, $location, User, Run, Journey, Join) {
+	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, User, Run, Journey, Join) {
 		'use strict';
 		$scope.page = 'Admin';
-		var userPromise = User.getUser(),
-			userListPromise = User.getList(),
+		var userListPromise = User.getList(),
 			runListPromise = Run.getList(),
 			journeyListPromise = Journey.getList(),
 			joinListPromise = Join.getList(),
-			all = $q.all([userPromise, userListPromise, runListPromise, journeyListPromise, joinListPromise]);
+			all = $q.all([userListPromise, runListPromise, journeyListPromise, joinListPromise]);
 		all.then(function (res) {
-			$scope.user = res[0];
-			$scope.userList = res[1];
-			$scope.runList = res[2];
-			$scope.journeyList = res[3];
-			$scope.joinList = res[4];
-			$scope.auth = false;
-			$scope.admin = false;
-			if ($scope.user.isAdmin && $scope.user.isActive) {
-				$scope.auth = true;
-				$scope.admin = true;
-			} else {
+			$scope.userList = res[0];
+			$scope.runList = res[1];
+			$scope.journeyList = res[2];
+			$scope.joinList = res[3];
+			if (!($rootScope.isAdmin && $rootScope.isAuthenticated)) {
 				$location.path('/');
 			}
 		});
@@ -136,6 +124,12 @@ angular.module('runnable.controllers', []).
 				user.isAdmin = true;
 			}
 		};
+		$scope.userEdit = function (user) {
+			console.log('Edit user ' + user.id);
+		};
+		$scope.userTrash = function (user) {
+			console.log('Trash the user ' + user.id);
+		};
 		$scope.runToggleActive = function(run) {
 			console.log('Toggle active for run : ' + run.id);
 			Run.toogleActive(run.id);
@@ -146,23 +140,21 @@ angular.module('runnable.controllers', []).
 			}
 		};
 	}).
-	controller('RunnableRunDetailController', function ($scope, $cookies, $q, $routeParams, Run, Journey, User, GoogleMapApi) {
+	controller('RunnableRunDetailController', function ($scope, $cookies, $q, $routeParams, Run, Journey, GoogleMapApi) {
         'use strict';
         $scope.page = 'Run';
 		$scope.runId = $routeParams.runId;
 		var runPromise = Run.getDetail($scope.runId),
 			journeyPromise = Journey.getListForRun($scope.runId),
-			userPromise = User.getUser(),
-            all = $q.all([runPromise, journeyPromise, userPromise]);
+            all = $q.all([runPromise, journeyPromise]);
         all.then(function (res) {
 			$scope.run = res[0];
 			$scope.journeyList = res[1];
-			$scope.user = res[2];
 			GoogleMapApi.initMap('map_canvas_run', $scope.run.address_start);
 			GoogleMapApi.initMap('map_canvas_journey', $scope.run.address_start);
 		});
     }).
-    controller('AppRun', function ($scope, $q, Run, GoogleMapApi) {
+    controller('RunnableRunController', function ($scope, $q, Run, GoogleMapApi) {
         'use strict';
         $scope.page = 'Run';
 		var runPromise = Run.getActiveList(),
@@ -198,23 +190,21 @@ angular.module('runnable.controllers', []).
 		};
 		$scope.calFormat = 'dd/MM/yyyy';
     }).
-	controller('AppJourneyDetail', function ($scope, $q, $routeParams, Run, Journey, Join, User, GoogleMapApi) {
+	controller('RunnableJourneyDetailController', function ($scope, $q, $routeParams, $rootScope, Run, Journey, Join, GoogleMapApi) {
 		'use strict';
 		$scope.page = 'Journey';
 		$scope.journeyId = $routeParams.journeyId;
 		var journeyPromise = Journey.getDetail($scope.journeyId),
 			joinPromise = Join.getListForJourney($scope.journeyId),
-			userPromise = User.getUser(),
-			all = $q.all([journeyPromise, joinPromise, userPromise]);
+			all = $q.all([journeyPromise, joinPromise]);
 		all.then(function (res) {
 			$scope.journey = res[0];
 			$scope.joinList = res[1];
-			$scope.user = res[2];
 			$scope.joined = 0;
 			$scope.reserved = 0;
 			angular.forEach($scope.joinList, function (join) {
 				$scope.reserved += join.nb_place;
-				if (join.JourneyId == $scope.journeyId && join.UserId === $scope.user.id) {
+				if (join.JourneyId == $scope.journeyId && join.UserId === $rootScope.currentUser.id) {
 					$scope.joined = 1;
 				}
 			});
@@ -247,7 +237,7 @@ angular.module('runnable.controllers', []).
 			$scope.joined = 0;
 		};
 	}).
-	controller('AppJourney', function ($scope, $cookies, $q, $http, Run, Journey, GoogleMapApi) {
+	controller('RunnableJourneyController', function ($scope, $cookies, $q, $http, Run, Journey, GoogleMapApi) {
         'use strict';
         $scope.page = 'Journey';
 		var runPromise = Run.getActiveList(),

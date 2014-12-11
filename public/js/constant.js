@@ -17,5 +17,5 @@ angular.module('runnable.constant', []).
         all: '*',
         admin: 'admin',
         editor: 'editor',
-        guest: 'guest'
+        user: 'user'
     });

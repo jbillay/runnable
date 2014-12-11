@@ -13,13 +13,13 @@ module.exports = function(sequelize, DataTypes) {
 		lastname: 		DataTypes.STRING,
 		address:		DataTypes.STRING,
 		email: 			{ type: DataTypes.STRING, unique: true, allowNull: false },
-		password: 		{ type: DataTypes.STRING, allowNull: false },
-		hashedPassword: DataTypes.STRING,
+		hashedPassword: { type: DataTypes.STRING, allowNull: false },
 		provider: 		DataTypes.STRING,
-		salt: 			DataTypes.STRING,
+		salt: 			{ type: DataTypes.STRING, allowNull: false },
 		itra:			DataTypes.STRING,
 		isActive:		{ type: DataTypes.BOOLEAN, defaultValue: false },
-		isAdmin:		{ type: DataTypes.BOOLEAN, defaultValue: false }
+		isAdmin:		{ type: DataTypes.BOOLEAN, defaultValue: false },
+		role:			{ type: DataTypes.ENUM, values: ['user', 'editor', 'admin'] },
 	}, {
 		classMethods: {
 			associate: function(models) {

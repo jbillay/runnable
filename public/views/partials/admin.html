@@ -16,7 +16,9 @@
 								<th>Itra Code</th>
 								<th>Active</th>
 								<th>Admin</th>
+								<th>Role</th>
 								<th>Création</th>
+								<th>Actions</th>
 							</tr>
 							<tbody ng-repeat="user in userList">
 								<tr>
@@ -34,7 +36,12 @@
 										<span class="glyphicon glyphicon-ok green" ng-if=user.isAdmin ng-click=userToggleAdmin(user)></span>
 										<span class="glyphicon glyphicon-remove red" ng-if=!user.isAdmin ng-click=userToggleAdmin(user)></span>
 									</td>
+									<td>{{user.role}}</td>
 									<td>{{user.createdAt | date:'dd/MM/yyyy'}}</td>
+									<td>
+										<span class="glyphicon glyphicon-pencil" ng-click=userEdit(user)></span>
+										<span class="glyphicon glyphicon-trash" ng-click=userTrash(user)></span>
+									</td>
 								</tr>
 							</tbody>
 						</table>

@@ -41,8 +41,7 @@ exports.login = function (req, res) {
 
 exports.auth = function (req, res) {
     "use strict";
-    console.log('Req : ' + req);
-    console.log('Res : ' + res);
+	res.jsonp(req.user || null);
 };
 
 // for dev purpose only -- To be removed

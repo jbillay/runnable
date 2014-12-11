@@ -9,14 +9,26 @@
 // In this case it is a simple value service.
 angular.module('runnable.services', ['ngResource']).
 	service('Session', function () {
-		this.create = function (sessionId, userId, userRole) {
-			this.id = sessionId;
-			this.userId = userId;
-			this.userRole = userRole;
+		this.create = function (user) {
+			this.userId = user.id;
+			this.userFirstname = user.firstname;
+			this.userLastname = user.lastname;
+			this.userAddress = user.address;
+			this.userEmail = user.email;
+			this.userItra = user.itra;
+			this.userIsActive = user.isActive;
+			this.userIsAdmin = user.isAdmin;
+			this.userRole = user.role;
 		};
 		this.destroy = function () {
-			this.id = null;
 			this.userId = null;
+			this.userFirstname = null;
+			this.userLastname = null;
+			this.userAddress = null;
+			this.userEmail = null;
+			this.userItra = null;
+			this.userIsActive = null;
+			this.userIsAdmin = null;
 			this.userRole = null;
 		};
 		return this;
@@ -28,10 +40,8 @@ angular.module('runnable.services', ['ngResource']).
 			return $http
 				.post('/login', credentials)
 				.then(function (res) {
-					console.log(res);
-					Session.create(res.data.id, res.data.user.id,
-						res.data.user.role);
-					return res.data.user;
+					Session.create(res.data);
+					return res.data;
 				});
 		};
 
@@ -40,6 +50,8 @@ angular.module('runnable.services', ['ngResource']).
 		};
 
 		authService.isAuthorized = function (authorizedRoles) {
+			console.log(authorizedRoles);
+			console.log(Session.userRole);
 			if (!angular.isArray(authorizedRoles)) {
 				authorizedRoles = [authorizedRoles];
 			}

@@ -10,12 +10,13 @@ function user() {
 	this.lastname = null;
 	this.address = null;
     this.email = null;
-    this.password = null;
+	this.password = null;
 	this.hashedPassword = null;
 	this.provider = null;
 	this.salt = null;
 	this.isActive = null;
 	this.isAdmin = null;
+	this.role = null;
 }
 
 user.prototype.get = function () {
@@ -46,6 +47,11 @@ user.prototype.set = function (user) {
 		this.isAdmin = user.isAdmin; }
 	else {
 		this.isAdmin = false;
+	}
+	if (user.role) {
+		this.role = user.role; }
+	else {
+		this.role = 'user';
 	}
 	console.log(this.firstname + ' ' + this.lastname);
 };
@@ -124,7 +130,7 @@ user.prototype.getById = function (id, done) {
 
 user.prototype.getByEmail = function (email, done) {
     'use strict';
-	models.User.find({ where: {email: email}})
+	models.User.find({ 	where: {email: email}})
 		.then(function (user) {
 			done(null, user);
 		})

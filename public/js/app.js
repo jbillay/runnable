@@ -29,11 +29,11 @@ angular.module('runnable', [
             }).
             when('/run-create', {
                 templateUrl: 'partials/run_create',
-                controller: 'AppRun'
+                controller: 'RunnableRunController'
             }).
             when('/run', {
                 templateUrl: 'partials/run_list',
-                controller: 'AppRun'
+                controller: 'RunnableRunController'
             }).
             when('/run-:runId', {
                 templateUrl: 'partials/run_detail',
@@ -41,15 +41,15 @@ angular.module('runnable', [
             }).
             when('/journey-create', {
                 templateUrl: 'partials/journey_create',
-                controller: 'AppJourney'
+                controller: 'RunnableJourneyController'
             }).
             when('/journey', {
                 templateUrl: 'partials/journey_list',
-                controller: 'AppJourney'
+                controller: 'RunnableJourneyController'
             }).
             when('/journey-:journeyId', {
                 templateUrl: 'partials/journey_detail',
-                controller: 'AppJourneyDetail'
+                controller: 'RunnableJourneyDetailController'
             }).
             when('/profile', {
                 templateUrl: 'partials/profile',

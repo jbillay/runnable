@@ -29,13 +29,17 @@ passport.use(new LocalStrategy({
 		var user = new User();
 		user.getByEmail(email, function (err, user) {
 			if (err) {
-				done(null, false, req.flash('loginMessage', 'Désolé nous avons un problème technique !!'));
+				console.log('Err : ' + err);
+				done(err, false);
 			}
 			if (!user) {
-				done(null, false, req.flash('loginMessage', "Cette utilisateur n'existe pas."));
+				console.log("Cette utilisateur n'existe pas : " + err);
+				done(err, false);
 			} else if (!user.authenticate(password)) {
-				done(null, false, req.flash('loginMessage', 'Oops! Votre compte est peut être pas encore activé.'));
+				console.log("Oops! Votre compte est peut être pas encore activé : " + err);
+				done(err, false);
 			} else {
+				user.salt = user.hashedPassword = user.provider = null;
 				console.log('Login (local) : { id: ' + user.id + ', email ' + user.email + ' }');
 				done(null, user);
 			}

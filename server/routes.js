@@ -11,13 +11,7 @@ module.exports = function (app, passport, auth) {
     app.get('/', controllers.root.default);
     app.get('/logout', controllers.root.logout);
     app.get('/login', controllers.root.login);
-    app.post('/login', passport.authenticate('local',
-            {
-            successRedirect: '/',
-            failureRedirect: '/login',
-            failureFlash: true
-        }, controllers.root.auth)
-    );
+	app.post('/login', passport.authenticate('local'), controllers.root.auth);
 	app.post('/api/user', controllers.user.create);
     app.get('/api/active/:id/:hash', controllers.user.active);
 	app.get('/api/user/me', auth.requiresLogin, controllers.user.me);

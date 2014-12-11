@@ -72,6 +72,7 @@ exports.active = function(req, res) {
 
 exports.me = function(req, res) {
 	"use strict";
+	req.user.salt = req.user.hashedPassword = req.user.provider = null;
 	res.jsonp(req.user || null);
 };
 
