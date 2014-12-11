@@ -1,0 +1,32 @@
+<div class="modal fade bs-example-modal-lg" id="userEditModal" tabindex="-1" role="dialog"
+     aria-labelledby="userEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edition utilisateur {{userEdited.email}}</h4>
+            </div>
+            <div class="row">
+                <div class="modal-body">
+                    <div class="col-sm-12 text-center">
+                        <form name="loginForm" ng-submit="userSave(userEdited)" novalidate>
+                            <div class="input-group">
+                                <input class="form-control" type="text" ng-model="userEdited.firstname"
+                                       placeholder="Prénom">
+                            </div>
+                            <div class="input-group">
+                                <input class="form-control" type="text" ng-model="userEdited.lastname"
+                                       placeholder="Nom">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Connection</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

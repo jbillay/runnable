@@ -128,7 +128,14 @@ angular.module('runnable.controllers', []).
 		};
 		$scope.userEdit = function (user) {
 			console.log('Edit user ' + user.id);
+			$scope.userEdited = user;
+			angular.element('#userEditModal').modal('show');
 		};
+		$scope.userSave = function (user) {
+			console.log('Save edited user ' + user.firstname);
+			angular.element('#userEditModal').modal('hide');
+			$scope.userEdited = null;
+		}
 		$scope.userTrash = function (user) {
 			console.log('Trash the user ' + user.id);
 		};
