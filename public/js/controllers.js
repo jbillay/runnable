@@ -7,7 +7,8 @@
 /*jshint undef:true */
 
 angular.module('runnable.controllers', []).
-	controller('RunnableMainController', function ($scope, $rootScope, $q, USER_ROLES, AUTH_EVENTS, AuthService, User) {	 
+	controller('RunnableMainController', function ($scope, $rootScope, $q, USER_ROLES, AUTH_EVENTS,
+												   AuthService, User, Session) {
 		$rootScope.currentUser = null;
 		$rootScope.userRoles = USER_ROLES;
 		$rootScope.isAuthenticated = false;
@@ -18,6 +19,7 @@ angular.module('runnable.controllers', []).
 			$rootScope.isAuthenticated = user.isActive;
 			$rootScope.isAdmin = user.isAdmin;
 			$rootScope.currentUser = user;
+			Session.create(user);
 		};
 
 		var userPromise = User.getUser(),
