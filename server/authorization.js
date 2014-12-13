@@ -16,8 +16,8 @@ exports.requireAdmin = function(req, res, next) {
     if (!req.isAuthenticated()) {
         return res.redirect('/');
     }
-    if (!req.user.isAdmin) {
-        return res.redirect('/')
+    if (!req.user.role === 'admin') {
+        return res.redirect('/');
     }
     res.cookie('user', JSON.stringify({
         'id' : req.user.id,

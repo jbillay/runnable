@@ -15,7 +15,6 @@ function user() {
 	this.provider = null;
 	this.salt = null;
 	this.isActive = null;
-	this.isAdmin = null;
 	this.role = null;
 }
 
@@ -42,11 +41,6 @@ user.prototype.set = function (user) {
 		this.isActive = user.isActive; }
 	else {
 		this.isActive = false;
-	}
-	if (user.isAdmin) {
-		this.isAdmin = user.isAdmin; }
-	else {
-		this.isAdmin = false;
 	}
 	if (user.role) {
 		this.role = user.role; }
@@ -155,26 +149,8 @@ user.prototype.toggleActive = function (id, done) {
 		.then(function (user) {
 			if (user.isActive === true) {
 				user.isActive = false;
-				user.isAdmin = false;
 			} else {
 				user.isActive = true;
-			}
-			user.save().success(function () {
-				done(null);
-			});
-		})
-		.catch(function (err) {
-			done(err);
-		});
-};
-
-user.prototype.toggleAdmin = function (id, done) {
-	models.User.find({where: {id: id}})
-		.then(function (user) {
-			if (user.isAdmin === true) {
-				user.isAdmin = false;
-			} else {
-				user.isAdmin = true;
 			}
 			user.save().success(function () {
 				done(null);

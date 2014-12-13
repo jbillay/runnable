@@ -17,7 +17,7 @@ angular.module('runnable', [
     'runnable.directives',
     'runnable.controllers'
 ]).
-    config(function ($routeProvider, $locationProvider) {
+    config(function ($routeProvider, $locationProvider, USER_ROLES) {
         $routeProvider.
             when('/login', {
                 templateUrl: 'partials/login',
@@ -25,11 +25,17 @@ angular.module('runnable', [
             }).
             when('/admin', {
                 templateUrl: 'partials/admin',
-                controller: 'RunnableAdminController'
+                controller: 'RunnableAdminController',
+				data: {
+					authorizedRoles: [USER_ROLES.admin]
+				}
             }).
             when('/run-create', {
                 templateUrl: 'partials/run_create',
-                controller: 'RunnableRunController'
+                controller: 'RunnableRunController',
+				data: {
+					authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor]
+				}
             }).
             when('/run', {
                 templateUrl: 'partials/run_list',
@@ -53,7 +59,10 @@ angular.module('runnable', [
             }).
             when('/profile', {
                 templateUrl: 'partials/profile',
-                controller: 'RunnableProfileController'
+                controller: 'RunnableProfileController',
+				data: {
+					authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user]
+				}
             }).
             when('/', {
                 templateUrl: 'partials/index',
@@ -66,4 +75,26 @@ angular.module('runnable', [
             enabled: true,
             requireBase: false
         });
-    });
+    }).
+	run(function ($rootScope, AUTH_EVENTS, AuthService, $location) {
+		$rootScope.$on('$routeChangeStart', function (event, next) {
+			AuthService.init().then(function () {
+				if (next.data) {
+					var authorizedRoles = next.data.authorizedRoles;
+					if (!AuthService.isAuthorized(authorizedRoles)) {
+						event.preventDefault();
+						if (AuthService.isAuthenticated()) {
+							// user is not allowed
+							console.log(AUTH_EVENTS.notAuthorized);
+							$rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
+						} else {
+							// user is not logged in
+							console.log(AUTH_EVENTS.notAuthenticated);
+							$rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
+						}
+						$location.path('/');
+					}
+				}
+			});
+		});
+	});

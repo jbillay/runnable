@@ -17,7 +17,6 @@ angular.module('runnable.services', ['ngResource']).
 			this.userEmail = user.email;
 			this.userItra = user.itra;
 			this.userIsActive = user.isActive;
-			this.userIsAdmin = user.isAdmin;
 			this.userRole = user.role;
 		};
 		this.destroy = function () {
@@ -28,14 +27,20 @@ angular.module('runnable.services', ['ngResource']).
 			this.userEmail = null;
 			this.userItra = null;
 			this.userIsActive = null;
-			this.userIsAdmin = null;
 			this.userRole = null;
 		};
 		return this;
 	}).
-	factory('AuthService', function ($http, Session) {
+	factory('AuthService', function ($http, $q, Session, User) {
 		var authService = {};
-
+		
+		authService.init = function () {
+			return User.getUser().then(function (res) {
+				Session.create(res);
+				return res.data;
+			});
+		};
+		
 		authService.login = function (credentials) {
 			return $http
 				.post('/login', credentials)
@@ -50,8 +55,6 @@ angular.module('runnable.services', ['ngResource']).
 		};
 
 		authService.isAuthorized = function (authorizedRoles) {
-			console.log(authorizedRoles);
-			console.log(Session.userRole);
 			if (!angular.isArray(authorizedRoles)) {
 				authorizedRoles = [authorizedRoles];
 			}
@@ -129,17 +132,6 @@ angular.module('runnable.services', ['ngResource']).
 						console.log('Error : ' + status);
 					});
 				return deferred.promise;
-			},
-			userToggleAdmin: function (id) {
-                var deferred = $q.defer();
-                $http.post("/api/admin/user/admin", {"id": id}).
-					success(function (result) {
-						deferred.resolve(result);
-					}).
-					error(function(data, status) {
-						console.log('Error : ' + status);
-					});
-                return deferred.promise;
 			}
 		}
     }).
@@ -248,7 +240,6 @@ angular.module('runnable.services', ['ngResource']).
 				var deferred = $q.defer();
 				$http.get("/api/admin/joins").
 					success(function (result) {
-						console.log('Get list of Join : ' + result);
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {

@@ -16,10 +16,10 @@ angular.module('runnable.controllers', []).
 		$rootScope.isAuthorized = AuthService.isAuthorized;
 
 		$scope.setCurrentUser = function (user) {
-			$rootScope.isAuthenticated = user.isActive;
-			$rootScope.isAdmin = user.isAdmin;
-			$rootScope.currentUser = user;
 			Session.create(user);
+			$rootScope.isAuthenticated = user.isActive;
+			$rootScope.isAdmin = AuthService.isAuthorized([USER_ROLES.admin]);
+			$rootScope.currentUser = user;
 		};
 
 		var userPromise = User.getUser(),
@@ -104,9 +104,6 @@ angular.module('runnable.controllers', []).
 			$scope.runList = res[1];
 			$scope.journeyList = res[2];
 			$scope.joinList = res[3];
-			if (!($rootScope.isAdmin && $rootScope.isAuthenticated)) {
-				$location.path('/');
-			}
 		});
 		$scope.userToggleActive = function(user) {
 			console.log('Toggle active for user : ' + user.id);
@@ -115,15 +112,6 @@ angular.module('runnable.controllers', []).
 				user.isActive = false;
 			} else {
 				user.isActive = true;
-			}
-		};
-		$scope.userToggleAdmin = function(user) {
-			console.log('Toggle admin for user : ' + user.id);
-			User.userToggleAdmin(user.id);
-			if (user.isAdmin) {
-				user.isAdmin = false;
-			} else {
-				user.isAdmin = true;
 			}
 		};
 		$scope.userEdit = function (user) {
@@ -149,7 +137,7 @@ angular.module('runnable.controllers', []).
 			}
 		};
 	}).
-	controller('RunnableRunDetailController', function ($scope, $cookies, $q, $routeParams, Run, Journey, GoogleMapApi) {
+	controller('RunnableRunDetailController', function ($scope, $cookies, $q, $timeout, $routeParams, Run, Journey, GoogleMapApi) {
         'use strict';
         $scope.page = 'Run';
 		$scope.runId = $routeParams.runId;
@@ -159,18 +147,22 @@ angular.module('runnable.controllers', []).
         all.then(function (res) {
 			$scope.run = res[0];
 			$scope.journeyList = res[1];
-			GoogleMapApi.initMap('map_canvas_run', $scope.run.address_start);
-			GoogleMapApi.initMap('map_canvas_journey', $scope.run.address_start);
+			$timeout( function() {
+				GoogleMapApi.initMap('map_canvas_run', $scope.run.address_start);
+				GoogleMapApi.initMap('map_canvas_journey', $scope.run.address_start);
+			});
 		});
     }).
-    controller('RunnableRunController', function ($scope, $q, Run, GoogleMapApi) {
+    controller('RunnableRunController', function ($scope, $q, $timeout, Run, GoogleMapApi) {
         'use strict';
         $scope.page = 'Run';
 		var runPromise = Run.getActiveList(),
             all = $q.all([runPromise]);
         all.then(function (res) {
 			$scope.listRun = res[0];
-			GoogleMapApi.initMap('map_canvas');
+			$timeout( function() {
+				GoogleMapApi.initMap('map_canvas');
+			});
 		});
         $scope.getLocation = function(val) {
 			return GoogleMapApi.getLocation(val);
@@ -199,7 +191,7 @@ angular.module('runnable.controllers', []).
 		};
 		$scope.calFormat = 'dd/MM/yyyy';
     }).
-	controller('RunnableJourneyDetailController', function ($scope, $q, $routeParams, $rootScope, Run, Journey, Join, GoogleMapApi) {
+	controller('RunnableJourneyDetailController', function ($scope, $q, $routeParams, $rootScope, $timeout, Run, Journey, Join, GoogleMapApi) {
 		'use strict';
 		$scope.page = 'Journey';
 		$scope.journeyId = $routeParams.journeyId;
@@ -218,8 +210,10 @@ angular.module('runnable.controllers', []).
 				}
 			});
 			$scope.nbFreeSpaceList = $scope.getFreeSpace();
-			GoogleMapApi.initMap('map_canvas');
-			GoogleMapApi.showDirection('map_canvas', $scope.journey.address_start, $scope.journey.run.address_start);
+			$timeout( function() {
+				GoogleMapApi.initMap('map_canvas');
+				GoogleMapApi.showDirection('map_canvas', $scope.journey.address_start, $scope.journey.run.address_start);
+			});
 			$scope.nbFreeSpace = function () {
 				return parseInt($scope.journey.nb_space) - parseInt($scope.reserved);
 			}
@@ -246,7 +240,7 @@ angular.module('runnable.controllers', []).
 			$scope.joined = 0;
 		};
 	}).
-	controller('RunnableJourneyController', function ($scope, $cookies, $q, $http, Run, Journey, GoogleMapApi) {
+	controller('RunnableJourneyController', function ($scope, $cookies, $q, $http, $timeout, Run, Journey, GoogleMapApi) {
         'use strict';
         $scope.page = 'Journey';
 		var runPromise = Run.getActiveList(),
@@ -255,7 +249,13 @@ angular.module('runnable.controllers', []).
         all.then(function (res) {
 			$scope.runList = res[0];
 			$scope.journeyList = res[1];
-			GoogleMapApi.initMap('map_canvas');
+			$timeout( function() {
+				angular.forEach($scope.journeyList, function (journey) {
+					var value = 'map_canvas_' + journey.id;
+					GoogleMapApi.initMap(value);
+					GoogleMapApi.showDirection(value, journey.address_start, journey.Run.address_start);
+				});
+			});
 		});
 		$scope.getLocation = function(val) {
 			return GoogleMapApi.getLocation(val);

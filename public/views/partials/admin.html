@@ -31,10 +31,6 @@
 										<span class="glyphicon glyphicon-ok green" ng-if=user.isActive ng-click=userToggleActive(user)></span>
 										<span class="glyphicon glyphicon-remove red" ng-if=!user.isActive ng-click=userToggleActive(user)></span>
 									</td>
-									<td>
-										<span class="glyphicon glyphicon-ok green" ng-if=user.isAdmin ng-click=userToggleAdmin(user)></span>
-										<span class="glyphicon glyphicon-remove red" ng-if=!user.isAdmin ng-click=userToggleAdmin(user)></span>
-									</td>
 									<td>{{user.role}}</td>
 									<td>{{user.createdAt | date:'dd/MM/yyyy'}}</td>
 									<td>

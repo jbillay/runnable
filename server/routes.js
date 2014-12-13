@@ -40,7 +40,6 @@ module.exports = function (app, passport, auth) {
 	app.get('/api/admin/joins', auth.requireAdmin, controllers.join.list);
 	app.post('/api/admin/run/active', auth.requireAdmin, controllers.run.toggleActive);
 	app.post('/api/admin/user/active', auth.requireAdmin, controllers.user.toggleActive);
-	app.post('/api/admin/user/admin', auth.requireAdmin, controllers.user.toggleAdmin);
 
     app.get('/partials/:name', controllers.root.partials);
 

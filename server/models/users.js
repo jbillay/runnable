@@ -18,7 +18,6 @@ module.exports = function(sequelize, DataTypes) {
 		salt: 			{ type: DataTypes.STRING, allowNull: false },
 		itra:			DataTypes.STRING,
 		isActive:		{ type: DataTypes.BOOLEAN, defaultValue: false },
-		isAdmin:		{ type: DataTypes.BOOLEAN, defaultValue: false },
 		role:			{ type: DataTypes.ENUM, values: ['user', 'editor', 'admin'] },
 	}, {
 		classMethods: {
