@@ -78,6 +78,7 @@ angular.module('runnable.controllers', []).
 		all.then(function (res) {
 			$scope.itraRuns = $sce.trustAsHtml(res[0]);
 			$scope.userJourney = res[1];
+			$scope.userJoin = res[2];
 			if (!$rootScope.isAuthenticated) {
 				$location.path('/');
 			}
