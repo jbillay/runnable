@@ -10,6 +10,7 @@ angular.module('runnable', [
     'ngRoute',
     'ngCookies',
     'ngSanitize',
+    'ngMessages',
     'ui.bootstrap',
     'runnable.filters',
     'runnable.constant',

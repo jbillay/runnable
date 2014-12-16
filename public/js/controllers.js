@@ -27,8 +27,13 @@ angular.module('runnable.controllers', []).
 		all.then(function (res) {
 			$scope.setCurrentUser(res[0]);
 		});
-		
+		$scope.switchLoginToReset = function () {
+			$scope.forLogin = false;
+			$scope.forReset = true;
+		};
 		$scope.login = function () {
+			$scope.forLogin = true;
+			$scope.forReset = false;
 			angular.element('#loginModal').modal('show');
 		};
 	}).
@@ -44,6 +49,10 @@ angular.module('runnable.controllers', []).
 			}, function () {
 				$rootScope.$broadcast(AUTH_EVENTS.loginFailed);
 			});
+			angular.element('#loginModal').modal('hide');
+		};
+		$scope.reset = function (email) {
+			AuthService.reset(email);
 			angular.element('#loginModal').modal('hide');
 		};
 	}).
@@ -91,8 +100,14 @@ angular.module('runnable.controllers', []).
 			});
 			$scope.userJoin = res[3];
 		});
+		$scope.updatePassword = function (passwords) {
+			console.log('TO BE IMPLEMENTED : Update user password');
+		};
+		$scope.updateUserInfo = function (userInfo) {
+			console.log('TO BE IMPLEMENTED : Update user info');
+		};
 	}).
-	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, User, Run, Journey, Join) {
+	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run, Journey, Join) {
 		'use strict';
 		$scope.page = 'Admin';
 		var userListPromise = User.getList(),
@@ -125,6 +140,9 @@ angular.module('runnable.controllers', []).
 			angular.element('#userEditModal').modal('hide');
 			$scope.userEdited = null;
 		}
+		$scope.userResetPassword = function (user) {
+			AuthService.reset(user.email);
+		};
 		$scope.userTrash = function (user) {
 			console.log('Trash the user ' + user.id);
 		};

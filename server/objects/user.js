@@ -57,7 +57,8 @@ user.prototype.save = function (done) {
 	user.provider = 'local';
 	user.salt = user.makeSalt();
 	user.hashedPassword = user.encryptPassword(this.password, user.salt);
-	console.log('New User (local) : { id: ' + user.id + ' email: ' + user.email + ' }');
+	console.log('New User (local) : { id: ' + user.id + ' email: ' + 
+					user.email + ' }');
 	user.save()
 		.then(function (newUser) {
 			done(null, newUser);
@@ -140,6 +141,27 @@ user.prototype.getList = function (done) {
 			done(null, users);
 		})
 		.catch(function (err) {
+			done(err, null);
+		});
+};
+
+user.prototype.resetMdp = function (email, password, done) {
+    'use strict';
+	models.User.find({ where: {email: email}})
+		.then(function(user) {
+			user.salt = user.makeSalt();
+			user.hashedPassword = user.encryptPassword(password, user.salt);
+			console.log('User (' + user.provider + ') Password reset : { email: ' + user.email + ' password: ' + password + ' }');
+			user.save()
+				.then(function (newUser) {
+					done(null, newUser);
+				})
+				.catch(function (err) {
+					done(err, null);
+				})
+		})
+		.catch(function (err) {
+			console.log('Reset password : ' + err);
 			done(err, null);
 		});
 };

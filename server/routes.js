@@ -12,13 +12,16 @@ module.exports = function (app, passport, auth) {
     app.get('/logout', controllers.root.logout);
     app.get('/login', controllers.root.login);
 	app.post('/login', passport.authenticate('local'), controllers.root.auth);
+	
 	app.post('/api/user', controllers.user.create);
-    app.get('/api/active/:id/:hash', controllers.user.active);
+	app.post('/api/user/mdp/reset', controllers.user.resetMdp);
+    app.get('/api/user/active/:id/:hash', controllers.user.active);
+    app.get('/api/user/:id/:hash', controllers.user.active);
 	app.get('/api/user/me', auth.requiresLogin, controllers.user.me);
     app.get('/api/user/runs', auth.requiresLogin, controllers.user.showRuns);
     app.get('/api/user/journeys', auth.requiresLogin, controllers.user.showJourneys);
     app.get('/api/user/joins', auth.requiresLogin, controllers.user.showJoins);
-
+    
     app.post('/api/run', auth.requiresLogin, controllers.run.create);
     app.get('/api/run/list', controllers.run.activeList);
     app.get('/api/run/:id', controllers.run.detail);

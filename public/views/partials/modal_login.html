@@ -11,7 +11,7 @@
 				<div class="modal-body">
 					<div class="col-sm-12 text-center">
 						<form name="loginForm" ng-controller="RunnableLoginController"
-							  ng-submit="login(credentials)" novalidate>
+							  ng-submit="login(credentials)" novalidate ng-if='forLogin'>
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
 								<input class="form-control" type="text" ng-model="credentials.email"
@@ -22,10 +22,25 @@
 								<input class="form-control" type="password" ng-model="credentials.password"
 									   placeholder="Mot de passe">
 							</div>
+							<div>
+								<a href="" ng-click="switchLoginToReset()">Vous avez perdu votre mot de passe ?</a>
+							</div>
 							<div class="modal-footer">
 								<button type="submit" class="btn btn-primary">Connection</button>
 							</div>
 						</form>
+						<form name="loginForm" ng-controller="RunnableLoginController"
+							  ng-submit="reset(reset.email)" novalidate ng-if='forReset'>
+							<div class="input-group">
+								<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+								<input class="form-control" type="text" ng-model="reset.email"
+									   placeholder="Email">
+							</div>
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-primary">Reset</button>
+							</div>
+						</form>
+
 					</div>
 				</div>
 			</div>

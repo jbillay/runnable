@@ -37,11 +37,11 @@ exports.create = function(req, res) {
 				mail.setSubject("Activation de votre compte runnable");
 				html = "Vous venez de créer un compte sur notre site runnable<br/>" +
 					"Pour l'activer veuillez cliquer sur le lien suivant :<br/>" +
-					"http://" + url + "/api/active/" + newUser.id + "/" + newUser.hashedPassword +
+					"http://" + url + "/api/user/active/" + newUser.id + "/" + newUser.hashedPassword +
 					"<br/> Merci l'intérêt que vous porter à notre site";
 				text = "Vous venez de créer un compte sur notre site runnable. " +
 					"Pour l'activer veuillez copiez/coller le lien suivant dans votre navigateur" +
-					"http://" + url + "/api/active/" + newUser.id + "/" + newUser.hashedPassword +
+					"http://" + url + "/api/user/active/" + newUser.id + "/" + newUser.hashedPassword +
 					" Merci l'intérêt que vous porter à notre site";
 				mail.setContentHtml(html);
 				mail.setText(text);
@@ -54,20 +54,6 @@ exports.create = function(req, res) {
 		req.flash('indexMessage', "Attention, les deux mots de passe sont différents");
 		res.redirect('/');
 	}
-};
-
-exports.active = function(req, res) {
-	"use strict";
-	console.log('Try to activate account ' + req.params.id);
-	var user = new User();
-	user.activate(req.params.id, req.params.hash, function (err) {
-		if (err) {
-			req.flash('indexMessage', "Votre compte n'a pas pu être activé");
-			res.redirect('/');
-		}
-		req.flash('indexMessage', "Votre compte vient d'être activé");
-		res.redirect('/');
-	});
 };
 
 exports.me = function(req, res) {
@@ -117,6 +103,41 @@ exports.showJoins = function (req, res) {
 	});
 };
 
+// should be in a tool file
+createMdp = function (size, phrase) {
+	var index = (Math.random() * (phrase.length - 1)).toFixed(0);
+	return size > 0 ? phrase[index] + createMdp(size - 1, phrase) : '';
+};
+
+exports.resetMdp = function (req, res) {
+	"use strict";
+	var email = req.body.email,
+		password = createMdp(8, 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890#{[\@]}&"(-_)=+/-*'),
+		html,
+		text,
+		mail = new Mail();
+	var user = new User();
+	user.resetMdp(email, password, function (err, newUser) {
+		if (err) {
+			console.log('Not able to reset password : ' + err);
+			res.jsonp('{"msg": ' + err + '}');
+		} else { 
+			mail.setTo(newUser.email);
+			mail.setSubject("Génération d'un nouveau mot de passe pour votre compte MyRunTrip");
+			html = "Vous venez de demander la génération d'un nouveau mot de passe sur notre site MyRunTrip.fr<br/>" +
+				"Voici votre nouveau mot de passe :" + password + "<br/>" +
+				"<br/> Merci l'intérêt que vous porter à notre site";
+			text = "Vous venez de demander la génération d'un nouveau mot de passe sur notre site MyRunTrip.fr. " +
+					"Voici votre nouveau mot de passe :" + password + "." +
+					" Merci l'intérêt que vous porter à notre site";
+			mail.setContentHtml(html);
+			mail.setText(text);
+			mail.send();
+			res.redirect('/');
+		}
+	});
+};
+
 exports.list = function(req, res) {
 	"use strict";
 	var user = new User();
@@ -142,6 +163,20 @@ exports.toggleActive = function (req, res) {
 		} else {
 			res.jsonp('{"msg": "done"}');
 		}
+	});
+};
+
+exports.active = function(req, res) {
+	"use strict";
+	console.log('Try to activate account ' + req.params.id);
+	var user = new User();
+	user.activate(req.params.id, req.params.hash, function (err) {
+		if (err) {
+			req.flash('indexMessage', "Votre compte n'a pas pu être activé");
+			res.redirect('/');
+		}
+		req.flash('indexMessage', "Votre compte vient d'être activé");
+		res.redirect('/');
 	});
 };
 

@@ -41,7 +41,12 @@ angular.module('runnable.services', ['ngResource']).
 			});
 		};
 		
+		authService.reset = function (email) {
+			return $http.post('/api/user/mdp/reset', {email: email});
+		};
+
 		authService.login = function (credentials) {
+			console.log(credentials);
 			return $http
 				.post('/login', credentials)
 				.then(function (res) {
