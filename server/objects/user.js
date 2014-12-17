@@ -145,8 +145,9 @@ user.prototype.getList = function (done) {
 		});
 };
 
-user.prototype.resetMdp = function (email, password, done) {
+user.prototype.updatePassword = function (email, password, done) {
     'use strict';
+	console.log('Try to udpate password');
 	models.User.find({ where: {email: email}})
 		.then(function(user) {
 			user.salt = user.makeSalt();

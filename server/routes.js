@@ -14,7 +14,8 @@ module.exports = function (app, passport, auth) {
 	app.post('/login', passport.authenticate('local'), controllers.root.auth);
 	
 	app.post('/api/user', controllers.user.create);
-	app.post('/api/user/mdp/reset', controllers.user.resetMdp);
+	app.post('/api/user/password/reset', controllers.user.resetPassword);
+	app.post('/api/user/password/update', controllers.user.updatePassword);
     app.get('/api/user/active/:id/:hash', controllers.user.active);
     app.get('/api/user/:id/:hash', controllers.user.active);
 	app.get('/api/user/me', auth.requiresLogin, controllers.user.me);

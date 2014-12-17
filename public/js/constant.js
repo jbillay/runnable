@@ -18,4 +18,11 @@ angular.module('runnable.constant', []).
         admin: 'admin',
         editor: 'editor',
         user: 'user'
-    });
+    }).
+	constant('USER_MSG', {
+		passwordReseted:	"Un nouveau mot de passe vient de vous être envoyé",
+		passwordUpdated:	"Votre mot de passe a été mis à jour",
+		passwordWrong:		"Vous avez fait une erreur dans la saisie de votre mot de passe",
+		userAuthFailed:		"Problème d'authentification, votre compte n'est peut être pas acitvé",
+		userUnknow:			"Cet utilisateur n'existe pas"
+	});

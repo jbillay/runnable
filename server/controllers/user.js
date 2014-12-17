@@ -97,7 +97,6 @@ exports.showJoins = function (req, res) {
 			console.log('Not able to get user join : ' + err);
 			res.jsonp('{"msg": ' + err + '}');
 		} else {
-			console.log(joinList);
 			res.jsonp(joinList);
 		}
 	});
@@ -109,7 +108,7 @@ createMdp = function (size, phrase) {
 	return size > 0 ? phrase[index] + createMdp(size - 1, phrase) : '';
 };
 
-exports.resetMdp = function (req, res) {
+exports.resetPassword = function (req, res) {
 	"use strict";
 	var email = req.body.email,
 		password = createMdp(8, 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890#{[\@]}&"(-_)=+/-*'),
@@ -117,7 +116,7 @@ exports.resetMdp = function (req, res) {
 		text,
 		mail = new Mail();
 	var user = new User();
-	user.resetMdp(email, password, function (err, newUser) {
+	user.updatePassword(email, password, function (err, newUser) {
 		if (err) {
 			console.log('Not able to reset password : ' + err);
 			res.jsonp('{"msg": ' + err + '}');
@@ -134,6 +133,37 @@ exports.resetMdp = function (req, res) {
 			mail.setText(text);
 			mail.send();
 			res.redirect('/');
+		}
+	});
+};
+
+exports.updatePassword = function (req, res) {
+	"use strict";
+	var oldPassword = req.body.passwords.old,
+		newPassword = req.body.passwords.new,
+		newPasswordConfirm = req.body.passwords.newConfirm,
+		user = new User();
+	user.getByEmail(req.user.email, function (err, currentUser) {
+		if (err) {
+			res.jsonp('{"msg": ' + err + ', "type": "error"}');
+		} else if (!currentUser) {
+			console.log('User does not exist');
+			res.jsonp('{"msg": "userUnknow", "type": "error"}');
+		} else if (!currentUser.authenticate(oldPassword)) {
+			console.log('Old password not good');
+			res.jsonp('{"msg": "passwordWrong", "type": "error"}');
+		} else if (currentUser.authenticate(oldPassword)) {
+			if (newPassword === newPasswordConfirm) {
+				user.updatePassword(req.user.email, newPassword, function (err, newUser) {
+					if (err) {
+						console.log('Not able to reset password : ' + err);
+						res.jsonp('{"msg": ' + err + ', "type": "error"}');
+					} else { 
+						console.log('Password reseted');
+						res.jsonp('{"msg": "passwordUpdated", "type": "success"}');
+					}
+				});
+			}
 		}
 	});
 };

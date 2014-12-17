@@ -8,7 +8,7 @@
 
 angular.module('runnable.controllers', []).
 	controller('RunnableMainController', function ($scope, $rootScope, $q, USER_ROLES, AUTH_EVENTS,
-												   AuthService, User, Session) {
+												   AuthService, USER_MSG, User, Session) {
 		$rootScope.currentUser = null;
 		$rootScope.userRoles = USER_ROLES;
 		$rootScope.isAuthenticated = false;
@@ -36,6 +36,31 @@ angular.module('runnable.controllers', []).
 			$scope.forReset = false;
 			angular.element('#loginModal').modal('show');
 		};
+		
+		$rootScope.$on('USER_MSG', function (event, msg) {
+			var obj_msg = angular.fromJson(msg);
+			var text = USER_MSG[obj_msg.msg];
+			if (!text) {
+				text = obj_msg.msg; }
+			noty({
+					layout: 'top',
+					theme: 'defaultTheme',
+					type: obj_msg.type,
+					text: text, // can be html or string
+					dismissQueue: true, // If you want to use queue feature set this true
+					template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>',
+					animation: {
+						open: {height: 'toggle'},
+						close: {height: 'toggle'},
+						easing: 'swing',
+						speed: 500 // opening & closing animation speed
+					},
+					timeout: 5000, // delay for closing event. Set false for sticky notifications
+					maxVisible: 5, // you can set max visible notification for dismissQueue true option,
+					killer: false, // for close all notifications before show
+					closeWith: ['click'] // ['click', 'button', 'hover']
+				});
+		});
 	}).
 	controller('RunnableLoginController', function ($scope, $rootScope, AUTH_EVENTS, AuthService) {
 		$scope.credentials = {
@@ -88,6 +113,7 @@ angular.module('runnable.controllers', []).
 			$scope.itraRuns = $sce.trustAsHtml(res[0]);
 			$scope.userJourney = res[1];
 			$scope.userJoin = res[2];
+			$scope.passwords = {};
 			if (!$rootScope.isAuthenticated) {
 				$location.path('/');
 			}
@@ -100,8 +126,13 @@ angular.module('runnable.controllers', []).
 			});
 			$scope.userJoin = res[3];
 		});
-		$scope.updatePassword = function (passwords) {
-			console.log('TO BE IMPLEMENTED : Update user password');
+		$scope.updatePassword = function (passwords, form) {
+			if (form) {
+				form.$setPristine();
+				form.$setUntouched();
+			}
+			User.updatePassword(passwords);
+			$scope.passwords = {};
 		};
 		$scope.updateUserInfo = function (userInfo) {
 			console.log('TO BE IMPLEMENTED : Update user info');

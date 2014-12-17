@@ -42,7 +42,7 @@ angular.module('runnable.services', ['ngResource']).
 		};
 		
 		authService.reset = function (email) {
-			return $http.post('/api/user/mdp/reset', {email: email});
+			return $http.post('/api/user/password/reset', {email: email});
 		};
 
 		authService.login = function (credentials) {
@@ -69,7 +69,7 @@ angular.module('runnable.services', ['ngResource']).
 
 		return authService;
 	}).
-    factory('User', function ($q, $http) {
+    factory('User', function ($q, $http, $rootScope) {
         'use strict';
 		return {
 			getUser: function () {
@@ -131,6 +131,18 @@ angular.module('runnable.services', ['ngResource']).
                 var deferred = $q.defer();
                 $http.post("/api/admin/user/active", {"id": id}).
 					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+				return deferred.promise;
+			},
+			updatePassword: function (passwords) {
+				var deferred = $q.defer();
+                $http.post("/api/user/password/update", {"passwords": passwords}).
+					success(function (result) {
+						$rootScope.$broadcast('USER_MSG', result);
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
