@@ -189,9 +189,9 @@ exports.toggleActive = function (req, res) {
 	user.toggleActive(id, function (err) {
 		if (err) {
 			console.log('Not able to toggle active flag for user : ' + err);
-			res.jsonp('{"msg": ' + err + '}');
+			res.jsonp('{"msg": ' + err + ', "type": "error"}');
 		} else {
-			res.jsonp('{"msg": "done"}');
+			res.jsonp('{"msg": "userToggleActive", "type": "success"}');
 		}
 	});
 };

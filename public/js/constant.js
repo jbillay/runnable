@@ -24,5 +24,6 @@ angular.module('runnable.constant', []).
 		passwordUpdated:	"Votre mot de passe a été mis à jour",
 		passwordWrong:		"Vous avez fait une erreur dans la saisie de votre mot de passe",
 		userAuthFailed:		"Problème d'authentification, votre compte n'est peut être pas acitvé",
-		userUnknow:			"Cet utilisateur n'existe pas"
+		userUnknow:			"Cet utilisateur n'existe pas",
+        userToggleActive:   "Le status de l'utilisateur a bien été changé"
 	});

@@ -33,8 +33,10 @@ module.exports = function(sequelize, DataTypes) {
 			makeSalt: function () {
 				return crypto.randomBytes(16).toString('base64'); 
 			},
+			isActivated: function () {
+				return this.isActive;
+			},
 			authenticate: function (plainText){
-				if (!this.isActive) return false;
 				return this.encryptPassword(plainText, this.salt) === this.hashedPassword;
 			},
 			encryptPassword: function (password, salt) {

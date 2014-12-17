@@ -162,7 +162,7 @@ user.prototype.updatePassword = function (email, password, done) {
 				})
 		})
 		.catch(function (err) {
-			console.log('Reset password : ' + err);
+			console.log('Password not updated : ' + err);
 			done(err, null);
 		});
 };
@@ -175,12 +175,13 @@ user.prototype.toggleActive = function (id, done) {
 			} else {
 				user.isActive = true;
 			}
-			user.save().success(function () {
-				done(null);
-			});
+			user.save()
+				.then(function (newUser) {
+					done(null, newUser);
+				});
 		})
 		.catch(function (err) {
-			done(err);
+			done(err, null);
 		});
 };
 

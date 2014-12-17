@@ -41,6 +41,7 @@ exports.login = function (req, res) {
 
 exports.auth = function (req, res) {
     "use strict";
+    console.log('Flash : ' + req.flash);
 	res.jsonp(req.user || null);
 };
 
