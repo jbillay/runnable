@@ -237,9 +237,48 @@ a.list-group-item.active,[class*='-info'] {
 	color: black;
 }
 
+.journey_head_price {
+	margin-top: 10px;
+}
+
+.journey_price {
+	font-size: 20px;
+	font-weight: bold;
+	color: green;
+}
+
+.journey_price_journey {
+	font-size: 36px;
+	font-weight: bold;
+	color: green;
+	margin-top: 5px;
+}
+
+div.journey_price_journey {
+	padding-right: 0px;
+}
+
+.journey_space_positive {
+	font-size: 15px;
+	font-weight: bold;
+	color: dodgerblue;
+}
+
+.journey_space_zero {
+	font-size: 15px;
+	font-weight: bold;
+	color: red;
+}
+
 /* Google maps */
 .map {
 	min-height: 400px;
+	background-color: #CCC;
+	margin-bottom: 20px;
+}
+
+.map_run {
+	min-height: 600px;
 	background-color: #CCC;
 	margin-bottom: 20px;
 }

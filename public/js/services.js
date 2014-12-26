@@ -188,7 +188,7 @@ angular.module('runnable.services', ['ngResource']).
 			}
 		}
 	}).
-    factory('GoogleMapApi', function ($rootScope, $http) {
+    factory('GoogleMapApi', function ($rootScope, $http, $q) {
         'use strict';
 		return {
 			initMap: function (object, address) {
@@ -232,10 +232,10 @@ angular.module('runnable.services', ['ngResource']).
 					}
 				});
 			},
-			getDistance: function (object, source, destination, $scope) {
-				$scope.controller = $scope;
-				$rootScope[object].DistanceService = new google.maps.DistanceMatrixService();
-				$rootScope[object].DistanceService.getDistanceMatrix(
+			getDistance: function (source, destination) {
+				var deferred = $q.defer();
+				$rootScope.DistanceServicePromise = new google.maps.DistanceMatrixService();
+				$rootScope.DistanceServicePromise.getDistanceMatrix(
 					{
 						origins: [source],
 						destinations: [destination],
@@ -244,12 +244,13 @@ angular.module('runnable.services', ['ngResource']).
 						avoidTolls: false
 					}, function (response, status) {
 						if (status === google.maps.DistanceMatrixStatus.OK) {
-							$scope.$apply(function () {
-								$scope.controller.distance = response.rows[0].elements[0].distance.text;
-								$scope.controller.duration = response.rows[0].elements[0].duration.text;
-							});
+							var result = {};
+							result.distance = response.rows[0].elements[0].distance.text;
+							result.duration = response.rows[0].elements[0].duration.text;
+							deferred.resolve(result);
 						}
-				});
+					});
+				return deferred.promise;
 			},
 			showDirection: function (object, source, destination) {
 				var request = {

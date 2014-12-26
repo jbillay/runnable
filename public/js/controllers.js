@@ -189,7 +189,8 @@ angular.module('runnable.controllers', []).
 			}
 		};
 	}).
-	controller('RunnableRunDetailController', function ($scope, $cookies, $q, $timeout, $routeParams, Run, Journey, GoogleMapApi) {
+	controller('RunnableRunDetailController', function ($scope, $q, $timeout, $routeParams,
+														Run, Journey, GoogleMapApi, Session) {
         'use strict';
         $scope.page = 'Run';
 		$scope.runId = $routeParams.runId;
@@ -200,9 +201,20 @@ angular.module('runnable.controllers', []).
 			$scope.run = res[0];
 			$scope.journeyList = res[1];
 			$timeout( function() {
-				GoogleMapApi.initMap('map_canvas_run', $scope.run.address_start);
-				GoogleMapApi.initMap('map_canvas_journey', $scope.run.address_start);
+				var obj = 'map_canvas_run';
+				GoogleMapApi.initMap(obj, $scope.run.address_start);
+				angular.forEach($scope.journeyList, function (journey) {
+					console.log(journey.address_start);
+					GoogleMapApi.showDirection(obj, journey.address_start, $scope.run.address_start);
+				});
 			});
+			if (Session.userAddress) {
+				angular.forEach($scope.journeyList, function (journey) {
+					GoogleMapApi.getDistance(Session.userAddress, journey.address_start).then(function (result) {
+						journey.userDistance = result;
+					});
+				});
+			}
 		});
     }).
     controller('RunnableRunController', function ($scope, $q, $timeout, Run, GoogleMapApi) {
@@ -363,7 +375,10 @@ angular.module('runnable.controllers', []).
 		};
 		$scope.showMapInfo = function () {
 			GoogleMapApi.showDirection('map_canvas', $scope.source, $scope.destination);
-			GoogleMapApi.getDistance('map_canvas', $scope.source, $scope.destination, $scope);
+			GoogleMapApi.getDistance($scope.source, $scope.destination).then(function (result) {
+				$scope.distance = result.distance;
+				$scope.duration = result.duration;
+			});
 		};
 		$scope.selectDestination = function (run) {
 			$scope.destination = run.address_start;

@@ -2,68 +2,65 @@
 
 <div class="container body" ng-controller="RunnableRunDetailController">
     <div class="row spacehead">
-		<div class="col-sm-5">
-			<h2>{{run.name}}</h2>
-		</div>
-		<div class="col-sm-7">
-			<div class="col-sm-4">
-				<p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize | limitTo:21}}</p>
-				<p><i class="glyphicon glyphicon-calendar"></i> {{run.date_start | date:'dd / MM / yyyy'}}</p>
-				<p><i class="glyphicon glyphicon-time"></i> {{run.time_start}}</p>
+		<div class="panel panel-default">
+			<div class="panel-heading clearfix">
+				<h3 class="pull-left">{{run.name}}</h3>
+				<div class="pull-right"><a class="btn btn-sm btn-success" href="/journey-create" role="button">Proposer un parcours</a></div>
 			</div>
-			<div class="col-sm-4">
-				<p><i class="glyphicon glyphicon-road"></i> {{run.type}}</p>
-				<p><i class="glyphicon glyphicon-text-width"></i> {{run.distances}}</p>
-				<p><i class="fa-area-chart"></i> {{run.elevations}}</p>
-			</div>
-			<div class="col-sm-4">
-				<p>{{run.info}}</p>
+			<div class="panel-body">
+				<div class="col-sm-4">
+					<p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize | limitTo:21}}</p>
+					<p><i class="glyphicon glyphicon-calendar"></i> {{run.date_start | date:'dd / MM / yyyy'}}</p>
+					<p><i class="glyphicon glyphicon-time"></i> {{run.time_start}}</p>
+				</div>
+				<div class="col-sm-4">
+					<p><i class="glyphicon glyphicon-road"></i> {{run.type}}</p>
+					<p><i class="glyphicon glyphicon-text-width"></i> {{run.distances}}</p>
+					<p><i class="fa-area-chart"></i> {{run.elevations}}</p>
+				</div>
+				<div class="col-sm-4">
+					<p>{{run.info}}</p>
+				</div>
 			</div>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-7">
-			<h3>Les parcours <a href="/journey-create"><i class="fa fa-plus-circle fa-fw"></i></a></h3>
+		<div class="col-md-6">
 			<div class="row">
-				<div class="col-sm-8">
-					<div class="input-group">
-						<input type="text" class="form-control homesearch" ng-model="journey_start" placeholder="Filter sur les points de départ">
-						<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+				<div ng-if="journeyList.length === 0">
+					<p>Aucun parcours pour cette course actuellement.<br>N'hésitez pas à en proposer un en quelques secondes !</p>
+					<a class="btn btn-success" href="/journey-create" role="button">Proposer un parcours</a>
+				</div>
+				<div ng-repeat="journey in journeyList">
+					<div class="panel panel-default">
+						<div class="panel-heading clearfix">
+							<h6 class="panel-title pull-left"><a href="/journey-{{journey.id}}">Départ de {{journey.address_start}}</a></h6>
+							<div class="pull-right">{{journey.journey_type | capitalize}}</div>
+						</div>
+						<div class="panel-body">
+							<div class="clearfix" ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'aller'">
+								<strong>Aller </strong>
+								<span>{{journey.date_start_outward | date:'dd/MM/yyyy'}} {{journey.time_start_outward}}</span>
+								<span class="pull-right journey_space_positive">{{journey.nb_space_outward}} place(s)</span>
+							</div>
+							<div class="clearfix" ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'retour'">
+								<strong>Retour </strong>
+								<span>{{journey.date_start_return | date:'dd/MM/yyyy'}} {{journey.time_start_return}}</span>
+								<span class="pull-right journey_space_positive">{{journey.nb_space_return}} place(s)</span>
+							</div>
+							<div class="clearfix journey_head_price">
+								<div class="pull-left" ng-if="journey.userDistance">
+									Distance de chez vous {{journey.userDistance.distance}}
+								</div>
+								<div class="pull-right journey_price">{{journey.amount | currency:'€ '}}</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<table class="col-sm-12 join">
-					<table class="table myjoin">
-						<tr>
-							<th>Lieu de départ</th>
-							<th>Date de départ</th>
-							<th>Heure de départ</th>
-							<th>Distance</th>
-							<th>Durée</th>
-						</tr>
-						<tbody ng-repeat="journey in journeyList | filter:journey_start as results">
-							<tr>
-								<td><a href="/journey-{{journey.id}}">{{journey.address_start}}</a></td>
-								<td>{{journey.date_start}}</td>
-								<td>{{journey.time_start}}</td>
-								<td>{{journey.distance}}</td>
-								<td>{{journey.duration}}</td>
-							</tr>
-						</tbody>
-					</table>
-				</table>
-			</div>
 		</div>
-		<div class="col-sm-5">
-			<tabset>
-				<tab heading="Course">
-					<div id="map_canvas_run" class="map"></div>
-				</tab>
-				<tab heading="Parcours">
-					<div id="map_canvas_journey" class="map"></div>
-				</tab>
-			</tabset>
+		<div class="col-sm-6">
+			<div id="map_canvas_run" class="map_run"></div>
 		</div>
     </div>
 </div>

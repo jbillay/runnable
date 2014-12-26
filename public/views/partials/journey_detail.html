@@ -85,32 +85,48 @@
             <hr>
 		</div>
         <div class="col-sm-6">
-            <dl class="dl-horizontal">
-                <dt>Point de départ</dt>
-                <dd>{{journey.address_start}}</dd>
-                <dt>Type de parcours</dt>
-                <dd>{{journey.journey_type | capitalize}}</dd>
-                <dt>Date du départ</dt>
-                <dd>{{journey.date_start_outward | date: mediumDate}}</dd>
-                <dt>Heure du départ</dt>
-                <dd>{{journey.time_start_outward}}</dd>
-                <dt>Place aller restante </dt>
-                <dd>{{journey.nb_space_outward - reserved_outward}}</dd>
-                <dt>Date du retour</dt>
-                <dd>{{journey.date_start_return | date: mediumDate}}</dd>
-                <dt>Heure du retour</dt>
-                <dd>{{journey.time_start_return}}</dd>
-                <dt>Place retour restante</dt>
-                <dd>{{journey.nb_space_return - reserved_return}}</dd>
-                <dt>Distance estimée</dt>
-                <dd>{{journey.distance}}</dd>
-                <dt>Temps estimé</dt>
-                <dd>{{journey.duration}}</dd>
-                <dt>Type de voiture</dt>
-                <dd>{{journey.car_type}}</dd>
-                <dt>Montant</dt>
-                <dd>{{journey.amount | currency:'€ '}}</dd>
-            </dl>
+			<div class="panel panel-default">
+				<div class="panel-heading clearfix">
+					<span class="pull-left"><strong>Départ de {{journey.address_start}}</strong></span>
+					<div class="pull-right">{{journey.journey_type | capitalize}}</div>
+				</div>
+				<div class="panel-body">
+					<div class="col-sm-6">
+						<p><i class="fa fa-arrows-h"></i> {{journey.distance}}</p>
+						<p><i class="fa fa-history"></i> {{journey.duration}}</p>
+						<p><i class="fa fa-car"></i> {{journey.car_type | capitalize}}</p>
+					</div>
+					<div class="col-sm-6 journey_price_journey">
+						<div class="pull-right journey_price_journey">{{journey.amount | currency:'€ '}}</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading clearfix">
+					<span class="pull-left"><strong>Aller</strong></span>
+				</div>
+				<div class="panel-body">
+					<div class="col-sm-6">
+						<i class="glyphicon glyphicon-calendar"></i> {{journey.date_start_outward | date:'dd/MM/yyyy'}} {{journey.time_start_outward}}
+					</div>
+					<div class="col-sm-6">
+						<span class="pull-right journey_space_positive">{{journey.nb_space_outward - reserved_outward}} place(s)</span>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading clearfix">
+					<span class="pull-left"><strong>Retour</strong></span>
+				</div>
+				<div class="panel-body">
+					<div class="col-sm-6">
+						<i class="glyphicon glyphicon-calendar"></i> {{journey.date_start_return | date:'dd/MM/yyyy'}} {{journey.time_start_return}}
+					</div>
+					<div class="col-sm-6">
+						<span class="pull-right journey_space_positive">{{journey.nb_space_return - reserved_return}} place(s)</span>
+					</div>
+				</div>
+			</div>
 			<div class="pull-right">
 				<div ng-if="nbFreeSpace()">
 					<button type="button" class="btn btn-primary" ng-if="!joined" ng-click="showJoinForm()">
