@@ -41,7 +41,8 @@ exports.login = function (req, res) {
 
 exports.auth = function (req, res) {
     "use strict";
-    console.log('Flash : ' + req.flash);
+	console.log('ICI DANS AUTH');
+    console.log('Status : ' + req.login.status);
 	res.jsonp(req.user || null);
 };
 

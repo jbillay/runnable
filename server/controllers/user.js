@@ -103,15 +103,15 @@ exports.showJoins = function (req, res) {
 };
 
 // should be in a tool file
-createMdp = function (size, phrase) {
+createPassword = function (size, phrase) {
 	var index = (Math.random() * (phrase.length - 1)).toFixed(0);
-	return size > 0 ? phrase[index] + createMdp(size - 1, phrase) : '';
+	return size > 0 ? phrase[index] + createPassword(size - 1, phrase) : '';
 };
 
 exports.resetPassword = function (req, res) {
 	"use strict";
 	var email = req.body.email,
-		password = createMdp(8, 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890#{[\@]}&"(-_)=+/-*'),
+		password = createPassword(8, 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890#{[\@]}&"(-_)=+/-*'),
 		html,
 		text,
 		mail = new Mail();

@@ -10,10 +10,14 @@ function journey() {
 	this.address_start = null;
 	this.distance = null;
 	this.duration = null;
-    this.date_start= null;
-    this.time_start = null;
+	this.journey_type = null;
+    this.date_start_outward= null;
+    this.time_start_outward = null;
+	this.nb_space_outward = null;
+    this.date_start_return = null;
+    this.time_start_return = null;
+	this.nb_space_return = null;
 	this.car_type = null;
-	this.nb_space = null;
 	this.amount = null;
 	this.run = null;
 }
@@ -37,14 +41,22 @@ journey.prototype.setJourney = function (journey) {
 		this.distance = journey.distance; }
 	if (journey.duration) {
 		this.duration = journey.duration; }
-	if (journey.date_start) {
-		this.date_start = journey.date_start; }
-	if (journey.time_start) {
-		this.time_start = journey.time_start; }
+	if (journey.journey_type) {
+		this.journey_type = journey.journey_type; }
+	if (journey.date_start_outward) {
+		this.date_start_outward = journey.date_start_outward; }
+	if (journey.time_start_outward) {
+		this.time_start_outward = journey.time_start_outward; }
+	if (journey.nb_space_outward) {
+		this.nb_space_outward = journey.nb_space_outward; }
+	if (journey.date_start_return) {
+		this.date_start_return = journey.date_start_return; }
+	if (journey.time_start_return) {
+		this.time_start_return = journey.time_start_return; }
+	if (journey.nb_space_return) {
+		this.nb_space_return = journey.nb_space_return; }
 	if (journey.car_type) {
 		this.car_type = journey.car_type; }
-	if (journey.nb_space) {
-		this.nb_space = journey.nb_space; }
 	if (journey.amount) {
 		this.amount = journey.amount; }
 };

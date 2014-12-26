@@ -1,10 +1,14 @@
 <div ng-include="'partials/nav'"></div>
 
-<div class="container body" ng-controller="RunnableJourneyController">
+<div class="container body">
     <div class="row spacehead">
-		<div class="col-sm-6">
-			<h2>Créer un parcours</h2>
-			<hr>
+		<div class="row">
+			<div class="col-sm-6">
+				<h2>Créer un parcours</h2>
+				<hr>
+			</div>
+		</div>
+		<div class="col-sm-6 spacedown">
 			<form action="/api/journey" method="post" role="form">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12">
@@ -47,14 +51,54 @@
 				<div class="row">
 					<div class="col-xs-6 col-sm-6 col-md-6">
 						<div class="form-group">
-							<input type="date" name="journey[date_start]" id="date_start"
-								   class="form-control" placeholder="Date" tabindex="3">
+							<select class="form-control" name="journey[journey_type_select]" id="journey_type_select"
+								placeholder="Type de parcours" tabindex="3" ng-model="journey.journey_type" 
+								ng-options="parcoursMode.code as parcoursMode.name for parcoursMode in parcoursModeList" 
+								ng-change="journeyTypeChange()">
+							</select>
 						</div>
 					</div>
-					<div class="col-xs-6 col-sm-6 col-md-6">
+					<input type="hidden" name="journey[journey_type]" id="journey_type" value="{{journey.journey_type}}" >
+				</div>
+				<p ng-if=outward>Aller</p>
+				<div class="row outward" ng-if=outward>
+					<div class="col-xs-4 col-sm-4 col-md-4">
 						<div class="form-group">
-							<input type="time" name="journey[time_start]" id="time_start" class="form-control"
-								   placeholder="Heure" tabindex="4">
+							<input type="date" name="journey[date_start_outward]" id="date_start_outward"
+								   class="form-control" placeholder="Date" tabindex="4">
+						</div>
+					</div>
+					<div class="col-xs-4 col-sm-4 col-md-4">
+						<div class="form-group">
+							<input type="time" name="journey[time_start_outward]" id="time_start_outward" class="form-control"
+								   placeholder="Heure" tabindex="5">
+						</div>
+					</div>
+					<div class="col-xs-4 col-sm-4 col-md-4">
+						<div class="form-group">
+							<input type="number" name="journey[nb_space_outward]" id="nb_space_outward" class="form-control"
+								   placeholder="Nombre de place" tabindex="6" min="0">
+						</div>
+					</div>
+				</div>
+				<p ng-if=return>Retour</p>
+				<div class="row return" ng-if=return>
+					<div class="col-xs-4 col-sm-4 col-md-4">
+						<div class="form-group">
+							<input type="date" name="journey[date_start_return]" id="date_start_return"
+								   class="form-control" placeholder="Date" tabindex="7">
+						</div>
+					</div>
+					<div class="col-xs-4 col-sm-4 col-md-4">
+						<div class="form-group">
+							<input type="time" name="journey[time_start_return]" id="time_start_return" class="form-control"
+								   placeholder="Heure" tabindex="8">
+						</div>
+					</div>
+					<div class="col-xs-4 col-sm-4 col-md-4">
+						<div class="form-group">
+							<input type="number" name="journey[nb_space_return]" id="nb_space_return" class="form-control"
+								   placeholder="Nombre de place" tabindex="9" min="0">
 						</div>
 					</div>
 				</div>
@@ -62,7 +106,7 @@
 					<div class="col-xs-6 col-sm-6 col-md-6">
 						<div class="form-group">
 							<select class="form-control" name="journey[car_type]" id="car_type"
-								placeholder="Type de course" tabindex="5">
+								placeholder="Type de course" tabindex="10">
 								<option value="citadine">Citadine</option>
 								<option value="berline">Berline</option>
 								<option value="break">Break</option>
@@ -75,17 +119,9 @@
 					</div>
 					<div class="col-xs-6 col-sm-6 col-md-6">
 						<div class="form-group">
-							<input type="number" name="journey[nb_space]" id="nb_space" class="form-control"
-								   placeholder="Nombre de place" tabindex="6" min="0">
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-6 col-sm-6 col-md-6">
-						<div class="form-group">
 							<div class="input-group">
 								<input type="number" name="journey[amount]" id="amount" class="form-control"
-									   ng-model="amount" placeholder="Montant par personne" tabindex="7" min="0">
+									   ng-model="amount" placeholder="Montant par place" tabindex="11" min="0">
 								<span class="input-group-addon">€</span>
 							</div>
 						</div>
@@ -94,7 +130,7 @@
 				<div class="row">
 					<div class="col-xs-3 col-md-3 pull-right">
 						<input type="hidden" name="journey[owner_id]" value="{{user.id}}">
-						<input type="submit" value="Créer" class="btn btn-primary btn-block" tabindex="9">
+						<input type="submit" value="Créer" class="btn btn-primary btn-block" tabindex="12">
 					</div>
 				</div>
 			</form>

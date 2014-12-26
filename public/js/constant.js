@@ -22,8 +22,7 @@ angular.module('runnable.constant', []).
 	constant('USER_MSG', {
 		passwordReseted:	"Un nouveau mot de passe vient de vous être envoyé",
 		passwordUpdated:	"Votre mot de passe a été mis à jour",
-		passwordWrong:		"Vous avez fait une erreur dans la saisie de votre mot de passe",
-		userAuthFailed:		"Problème d'authentification, votre compte n'est peut être pas acitvé",
-		userUnknow:			"Cet utilisateur n'existe pas",
+		userAuthFailed:		"Problème d'authentification, votre compte n'est peut être pas activé",
+		notAuthenticated:	"Cette action nécessite une authentification, veuillez vous identifier",
         userToggleActive:   "Le status de l'utilisateur a bien été changé"
 	});

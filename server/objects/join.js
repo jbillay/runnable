@@ -5,7 +5,8 @@ var models = require('../models');
 function join() {
     'use strict';
 	this.id = null;
-	this.nb_place = null;
+	this.nb_place_outward = null;
+	this.nb_place_return = null;
 	this.journey = null;
 	this.user = null;
 	this.journey_id = null;
@@ -20,8 +21,10 @@ join.prototype.set = function (join) {
     'use strict';
 	if (join.id) {
 		this.id = join.id; }
-	if (join.nb_place) {
-		this.nb_place = join.nb_place; }
+	if (join.nb_place_outward) {
+		this.nb_place_outward = join.nb_place_outward; }
+	if (join.nb_place_return) {
+		this.nb_place_return = join.nb_place_return; }
 	if (join.journey_id) {
 		this.journey_id = join.journey_id; }
 };

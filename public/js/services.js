@@ -31,7 +31,7 @@ angular.module('runnable.services', ['ngResource']).
 		};
 		return this;
 	}).
-	factory('AuthService', function ($http, $q, Session, User) {
+	factory('AuthService', function ($http, $q, $rootScope, Session, User) {
 		var authService = {};
 		
 		authService.init = function () {
@@ -46,12 +46,18 @@ angular.module('runnable.services', ['ngResource']).
 		};
 
 		authService.login = function (credentials) {
-			console.log(credentials);
 			return $http
 				.post('/login', credentials)
 				.then(function (res) {
 					Session.create(res.data);
 					return res.data;
+				})
+				.catch(function (err) {
+					var obj_msg = {
+						"msg" : "userAuthFailed",
+						"type" : "error" };
+					$rootScope.$broadcast('USER_MSG', obj_msg);
+					return err;
 				});
 		};
 
@@ -79,7 +85,8 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+						console.log('Error : ', data);
+						deferred.resolve(data);
 					});
                 return deferred.promise;
             },
@@ -152,6 +159,35 @@ angular.module('runnable.services', ['ngResource']).
 			}
 		}
     }).
+	factory('MyRunTripFees', function () {
+		'use strict';
+		var feesMap = [
+			{timeMin: 259200, 	timeMax: null, 		fixed: 0.66, variable: 7.92},
+			{timeMin: 172800, 	timeMax: 259201, 	fixed: 0.95, variable: 10.68},
+			{timeMin: 86400, 	timeMax: 172801, 	fixed: 1.07, variable: 11.88},
+			{timeMin: null,		timeMax: 86401, 	fixed: 1.19, variable: 12.48}
+		];
+		return {
+			getTimeBeforeStart: function (startDate, startHour) {
+				var dateTime = startDate + ' ' + startHour,
+					start = Date.parse(dateTime),
+					now = Date.now();
+				return start - now;
+			},
+			getFees: function (startDate, startHour, amount) {
+				var timeBeforeStart = this.getTimeBeforeStart(startDate, startHour),
+					fees = 0;
+				angular.forEach(feesMap, function (feesStep) {
+					if (timeBeforeStart > feesStep.timeMin || feesStep.timeMin === null) {
+						if (timeBeforeStart < feesStep.timeMax || feesStep.timeMax === null) {
+							fees = feesStep.fixed + (amount * (feesStep.variable / 100));
+						}
+					}
+				});
+				return fees;
+			}
+		}
+	}).
     factory('GoogleMapApi', function ($rootScope, $http) {
         'use strict';
 		return {
@@ -232,8 +268,8 @@ angular.module('runnable.services', ['ngResource']).
     factory('Join', function ($q, $http) {
         'use strict';
         return {
-			addJoin: function (id, nbSpace) {
-				var info = {journey_id: id, nb_place: nbSpace};
+			addJoin: function (id, nbSpaceOutward, nbSpaceReturn) {
+				var info = {journey_id: id, nb_place_outward: nbSpaceOutward, nb_place_return: nbSpaceReturn};
 				$http.post("/api/join", info).
 					success(function (result) {
 						console.log('Journey joined');

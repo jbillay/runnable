@@ -36,7 +36,7 @@ angular.module('runnable.controllers', []).
 			$scope.forReset = false;
 			angular.element('#loginModal').modal('show');
 		};
-		
+
 		$rootScope.$on('USER_MSG', function (event, msg) {
 			var obj_msg = angular.fromJson(msg);
 			var text = USER_MSG[obj_msg.msg];
@@ -118,13 +118,15 @@ angular.module('runnable.controllers', []).
 				$location.path('/');
 			}
 			angular.forEach($scope.userJourney, function (journey) {
-				var nb_free_place = journey.nb_space;
+				var nb_free_place_outward = journey.nb_space_outward,
+					nb_free_place_return = journey.nb_space_return;
 				angular.forEach(journey.Joins, function (join) {
-					nb_free_place = nb_free_place - join.nb_place
+					nb_free_place_outward = nb_free_place_outward - join.nb_place_outward;
+					nb_free_place_return = nb_free_place_return - join.nb_place_return;
 				});
-				journey.nb_free_space = nb_free_place;
+				journey.nb_free_space_outward = nb_free_place_outward;
+				journey.nb_free_space_return = nb_free_place_return;
 			});
-			$scope.userJoin = res[3];
 		});
 		$scope.updatePassword = function (passwords, form) {
 			if (form) {
@@ -170,7 +172,7 @@ angular.module('runnable.controllers', []).
 			console.log('Save edited user ' + user.firstname);
 			angular.element('#userEditModal').modal('hide');
 			$scope.userEdited = null;
-		}
+		};
 		$scope.userResetPassword = function (user) {
 			AuthService.reset(user.email);
 		};
@@ -241,7 +243,8 @@ angular.module('runnable.controllers', []).
 		};
 		$scope.calFormat = 'dd/MM/yyyy';
     }).
-	controller('RunnableJourneyDetailController', function ($scope, $q, $routeParams, $rootScope, $timeout, Run, Journey, Join, GoogleMapApi) {
+	controller('RunnableJourneyDetailController', function ($scope, $q, $routeParams, $rootScope, $timeout,
+															Run, Journey, Join, GoogleMapApi, MyRunTripFees) {
 		'use strict';
 		$scope.page = 'Journey';
 		$scope.journeyId = $routeParams.journeyId;
@@ -252,61 +255,109 @@ angular.module('runnable.controllers', []).
 			$scope.journey = res[0];
 			$scope.joinList = res[1];
 			$scope.joined = 0;
-			$scope.reserved = 0;
+			$scope.reserved_outward = 0;
+			$scope.reserved_return = 0;
 			angular.forEach($scope.joinList, function (join) {
-				$scope.reserved += join.nb_place;
+				$scope.reserved_outward += join.nb_place_outward;
+				$scope.reserved_return += join.nb_place_return;
 				if (join.JourneyId == $scope.journeyId && join.UserId === $rootScope.currentUser.id) {
 					$scope.joined = 1;
 				}
 			});
-			$scope.nbFreeSpaceList = $scope.getFreeSpace();
 			$timeout( function() {
-				GoogleMapApi.initMap('map_canvas');
-				GoogleMapApi.showDirection('map_canvas', $scope.journey.address_start, $scope.journey.run.address_start);
+				var obj = "map_canvas";
+				GoogleMapApi.initMap(obj);
+				GoogleMapApi.showDirection(obj, $scope.journey.address_start, $scope.journey.run.address_start);
 			});
+			$scope.nbFreeSpaceOutward = function () {
+				return parseInt($scope.journey.nb_space_outward) - parseInt($scope.reserved_outward);
+			};
+			$scope.nbFreeSpaceReturn = function () {
+				return parseInt($scope.journey.nb_space_return) - parseInt($scope.reserved_return);
+			};
 			$scope.nbFreeSpace = function () {
-				return parseInt($scope.journey.nb_space) - parseInt($scope.reserved);
-			}
+				return $scope.nbFreeSpaceOutward + $scope.nbFreeSpaceReturn;
+			};
+			$scope.getFreeSpaceOutward = function() {
+				var result = [], start = 1,
+					end = parseInt($scope.journey.nb_space_outward) - parseInt($scope.reserved_outward);
+				for (var i = start; i <= end; i++) {
+					result.push({id: i});
+				}
+				return result;
+			};
+			$scope.getFreeSpaceReturn = function() {
+				var result = [], start = 1,
+					end = parseInt($scope.journey.nb_space_return) - parseInt($scope.reserved_return);
+				for (var i = start; i <= end; i++) {
+					result.push({id: i});
+				}
+				return result;
+			};
+			$scope.nbFreeSpaceListOutward = $scope.getFreeSpaceOutward();
+			$scope.nbFreeSpaceListReturn = $scope.getFreeSpaceReturn();
 		});
-		$scope.getFreeSpace = function() {
-			var result = [],
-				start = 1,
-				end = parseInt($scope.journey.nb_space) - parseInt($scope.reserved);
-			for (var i = start; i <= end; i++) {
-				result.push(i);
-			}
-			return result;
+		$scope.selectNbPlaceOutward = function () {
+
 		};
 		$scope.showJoinForm = function () {
 			angular.element('#clientModal').modal('show');
 		};
 		$scope.joinJourney = function () {
 			$scope.joined = 1;
-			$scope.reserved = $scope.reserved + $scope.place;
-			console.log('Reservation pour ' + $scope.place);
-			Join.addJoin($scope.journeyId, $scope.place);
+			$scope.reserved_outward = $scope.reserved_outward + $scope.selectedPlaceOutward;
+			$scope.reserved_return = $scope.reserved_return + $scope.selectedPlaceReturn;
+			Join.addJoin($scope.journeyId, $scope.selectedPlaceOutward, $scope.selectedPlaceReturn);
 		};
 		$scope.removeJoinJourney = function () {
 			$scope.joined = 0;
 		};
+		$scope.calculateFees = function () {
+			var fees = 0;
+			if ($scope.selectedPlaceOutward) {
+				fees += $scope.selectedPlaceOutward * MyRunTripFees.getFees($scope.journey.date_start_outward,
+																			$scope.journey.time_start_outward,
+																			$scope.journey.amount);
+			}
+			if ($scope.selectedPlaceReturn) {
+				fees += $scope.selectedPlaceReturn * MyRunTripFees.getFees($scope.journey.date_start_return,
+																			$scope.journey.time_start_return,
+																			$scope.journey.amount);
+			}
+			return fees;
+		};
 	}).
-	controller('RunnableJourneyController', function ($scope, $cookies, $q, $http, $timeout, Run, Journey, GoogleMapApi) {
+	controller('RunnableJourneyCreateController', function ($scope, $q, $timeout, Run, GoogleMapApi) {
         'use strict';
         $scope.page = 'Journey';
 		var runPromise = Run.getActiveList(),
-			journeyPromise = Journey.getList(),
-            all = $q.all([runPromise, journeyPromise]);
+            all = $q.all([runPromise]);
         all.then(function (res) {
 			$scope.runList = res[0];
-			$scope.journeyList = res[1];
+			$scope.outward = true;
+			$scope.return = true;
+			$scope.parcoursModeList = [
+				{code: 'aller-retour', name: 'Aller-Retour'},
+				{code: 'aller', name: 'Aller'},
+				{code: 'retour', name: 'Retour'} ];
+			$scope.journey = {};
+			$scope.journey.journey_type = $scope.parcoursModeList[0].code;
 			$timeout( function() {
-				angular.forEach($scope.journeyList, function (journey) {
-					var value = 'map_canvas_' + journey.id;
-					GoogleMapApi.initMap(value);
-					GoogleMapApi.showDirection(value, journey.address_start, journey.Run.address_start);
-				});
+				GoogleMapApi.initMap('map_canvas');
 			});
 		});
+		$scope.journeyTypeChange = function () {
+			if ($scope.journey.journey_type ===  'aller-retour') {
+				$scope.outward = true;
+				$scope.return = true;
+			} else if ($scope.journey.journey_type ===  'aller') {
+				$scope.outward = true;
+				$scope.return = false;
+			} else if ($scope.journey.journey_type ===  'retour') {
+				$scope.outward = false;
+				$scope.return = true;
+			}
+		};
 		$scope.getLocation = function(val) {
 			return GoogleMapApi.getLocation(val);
 		};
@@ -326,4 +377,20 @@ angular.module('runnable.controllers', []).
 				$scope.showMapInfo();
 			}
 		}
+	}).
+	controller('RunnableJourneyController', function ($scope, $q, $http, $timeout, Run, Journey, GoogleMapApi) {
+        'use strict';
+        $scope.page = 'Journey';
+		var journeyPromise = Journey.getList(),
+            all = $q.all([journeyPromise]);
+        all.then(function (res) {
+			$scope.journeyList = res[0];
+			$timeout( function() {
+				angular.forEach($scope.journeyList, function (journey) {
+					var value = 'map_canvas_' + journey.id;
+					GoogleMapApi.initMap(value);
+					GoogleMapApi.showDirection(value, journey.address_start, journey.Run.address_start);
+				});
+			});
+		});
 	});

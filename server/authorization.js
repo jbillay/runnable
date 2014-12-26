@@ -3,7 +3,10 @@
  */
 exports.requiresLogin = function(req, res, next) {
     if (!req.isAuthenticated()) {
-        return res.redirect('login');
+        return res.send(401, {
+			"msg": "notAuthenticated", 
+			"type": "error"
+		});
     }
 	res.cookie('user', JSON.stringify({
 		'id' : req.user.id,
@@ -14,10 +17,16 @@ exports.requiresLogin = function(req, res, next) {
 
 exports.requireAdmin = function(req, res, next) {
     if (!req.isAuthenticated()) {
-        return res.redirect('/');
+        return res.send(401, {
+			"msg": "notAuthenticated", 
+			"type": "error"
+		});
     }
     if (!req.user.role === 'admin') {
-        return res.redirect('/');
+        return res.send(401, {
+			"msg": "notAuthorized", 
+			"type": "error"
+		});
     }
     res.cookie('user', JSON.stringify({
         'id' : req.user.id,

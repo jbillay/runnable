@@ -6,14 +6,18 @@
 module.exports = function(sequelize, DataTypes) {
     "use strict";
 	var Journey = sequelize.define("Journey", {
-		address_start:	{ type: DataTypes.STRING, allowNull: false },
-		distance: 		DataTypes.STRING,
-		duration: 		DataTypes.STRING,
-		date_start: 	DataTypes.STRING,
-		time_start: 	DataTypes.STRING,
-		car_type: 		{ type: DataTypes.ENUM, values: ['citadine', 'berline', 'break', 'monospace', 'suv', 'coupe', 'cabriolet'] },
-		nb_space: 		DataTypes.INTEGER,
-		amount: 		DataTypes.FLOAT
+		address_start:		{ type: DataTypes.STRING, allowNull: false },
+		distance: 			DataTypes.STRING,
+		duration: 			DataTypes.STRING,
+		journey_type:		{ type: DataTypes.ENUM, values: ['aller-retour', 'aller', 'retour'] },
+		date_start_outward:	DataTypes.STRING,
+		time_start_outward: DataTypes.STRING,
+		nb_space_outward: 	DataTypes.INTEGER,
+		date_start_return:	DataTypes.STRING,
+		time_start_return:	DataTypes.STRING,
+		nb_space_return:	DataTypes.INTEGER,
+		car_type: 			{ type: DataTypes.ENUM, values: ['citadine', 'berline', 'break', 'monospace', 'suv', 'coupe', 'cabriolet'] },
+		amount: 			DataTypes.FLOAT
 	}, {
 		classMethods: {
 			associate: function(models) {

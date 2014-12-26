@@ -27,6 +27,7 @@ passport.use(new LocalStrategy({
 	function(req, email, password, done) {
 		console.log('Try authentificate user : ' + email);
 		var user = new User();
+		req.login = {};
 		user.getByEmail(email, function (err, user) {
 			if (err) {
 				console.log("Problème d'authetification : " + err);
@@ -40,7 +41,8 @@ passport.use(new LocalStrategy({
 				done(err, false);
 			} else if (!user.authenticate(password)) {
 				console.log("Erreur avec votre mot de passe");
-				req.flash("error", "Erreur avec votre mot de passe");
+				req.login.status = "error"
+				req.login.msg = "Erreur avec votre mot de passe";
 				done(err, false);
 			} else {
 				user.salt = user.hashedPassword = user.provider = null;

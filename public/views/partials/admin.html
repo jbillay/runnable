@@ -80,13 +80,17 @@
 						<table class="table journeyList">
 							<tr>
 								<th>Course</th>
+								<th>Type parcours</th>
 								<th>Lieu départ</th>
-								<th>Date</th>
-								<th>Heure</th>
+								<th>Date Aller</th>
+								<th>Heure Aller</th>
+								<th>Nb de place Aller</th>
+								<th>Date Retour</th>
+								<th>Heure Retour</th>
+								<th>Nb de place Retour</th>
 								<th>Distance</th>
 								<th>Duration</th>
 								<th>Type de voiture</th>
-								<th>Nb de place</th>
 								<th>Montant</th>
 								<th>Création</th>
 							</tr>
@@ -94,12 +98,16 @@
 							<tr>
 								<td><a href="/run-{{journey.Run.id}}">{{journey.Run.name}}</a></td>
 								<td>{{journey.address_start}}</td>
-								<td>{{journey.date_start | date:'dd/MM/yyyy'}}</td>
-								<td>{{journey.time_start}}</td>
+								<td>{{journey.journey_type}}</td>
+								<td>{{journey.date_start_outward | date:'dd/MM/yyyy'}}</td>
+								<td>{{journey.time_start_outward}}</td>
+								<td>{{journey.nb_space_outward}}</td>
+								<td>{{journey.date_start_return | date:'dd/MM/yyyy'}}</td>
+								<td>{{journey.time_start_return}}</td>
+								<td>{{journey.nb_space_return}}</td>
 								<td>{{journey.distance}}</td>
 								<td>{{journey.duration}}</td>
 								<td>{{journey.car_type}}</td>
-								<td>{{journey.nb_space}}</td>
 								<td>{{journey.amount | currency:'€ '}}</td>
 								<td>{{journey.createdAt | date:'dd/MM/yyyy'}}</td>
 							</tr>
@@ -114,9 +122,8 @@
 								<th>Utilisateur</th>
 								<th>Course</th>
 								<th>Lieu départ</th>
-								<th>Date</th>
-								<th>Heure</th>
-								<th>Nb de place</th>
+								<th>Nb de place Aller</th>
+								<th>Nb de place Retour</th>
 								<th>Statut</th>
 								<th>Création</th>
 							</tr>
@@ -125,9 +132,8 @@
 								<td>{{join.User.email}}</td>
 								<td><a href="/run-{{join.Journey.Run.id}}">{{join.Journey.Run.name}}</a></td>
 								<td><a href="/journey-{{join.Journey.id}}">{{join.Journey.address_start}}</a></td>
-								<td>{{join.Journey.date_start | date:'dd/MM/yyyy'}}</td>
-								<td>{{join.Journey.time_start}}</td>
-								<td>{{join.nb_place}}</td>
+								<td>{{join.nb_place_outward}}</td>
+								<td>{{join.nb_place_return}}</td>
 								<td>{{join.status}}</td>
 								<td>{{join.createdAt | date:'dd/MM/yyyy'}}</td>
 							</tr>

@@ -5,12 +5,13 @@
 module.exports = function(sequelize, DataTypes) {
     "use strict";
 	var Join = sequelize.define("Join", {
-		nb_place: DataTypes.INTEGER,
+		nb_place_outward: DataTypes.INTEGER,
+		nb_place_return: DataTypes.INTEGER,
 		status:	{ 
 			type: DataTypes.ENUM, 
 			values: ['pending', 'payed', 'cancelled', 'refused', 'done'],
 			defaultValue: 'pending'
-			},
+			}
 	}, {
 		classMethods: {
 			associate: function(models) {
