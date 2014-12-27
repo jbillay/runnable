@@ -203,19 +203,19 @@ angular.module('runnable.services', ['ngResource']).
 					this.selectedAddress(object, address);
 				}
 				$rootScope[object].directionsService = new google.maps.DirectionsService();
-				$rootScope[object].directionsDisplay = new google.maps.DirectionsRenderer();
-				$rootScope[object].directionsDisplay.setMap($rootScope[object].map);
 			},
-			getLocation: function (val) {
-				return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
-					params: {
-						address: val,
-						sensor: false
+			showDirection: function (object, source, destination) {
+				var request = {
+					origin:source,
+					destination:destination,
+					travelMode: google.maps.TravelMode.DRIVING
+				};
+				$rootScope[object].directionsService.route(request, function(response, status) {
+					if (status == google.maps.DirectionsStatus.OK) {
+						var directionsRenderer = new google.maps.DirectionsRenderer;
+						directionsRenderer.setMap($rootScope[object].map);
+						directionsRenderer.setDirections(response);
 					}
-				}).then(function(response){
-					return response.data.results.map(function(item){
-						return item.formatted_address;
-					});
 				});
 			},
 			selectedAddress: function (object, address) {
@@ -230,6 +230,18 @@ angular.module('runnable.services', ['ngResource']).
 						});
 						$rootScope[object].map.setZoom(8);
 					}
+				});
+			},
+			getLocation: function (val) {
+				return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
+					params: {
+						address: val,
+						sensor: false
+					}
+				}).then(function(response){
+					return response.data.results.map(function(item){
+						return item.formatted_address;
+					});
 				});
 			},
 			getDistance: function (source, destination) {
@@ -251,18 +263,6 @@ angular.module('runnable.services', ['ngResource']).
 						}
 					});
 				return deferred.promise;
-			},
-			showDirection: function (object, source, destination) {
-				var request = {
-					origin:source,
-					destination:destination,
-					travelMode: google.maps.TravelMode.DRIVING
-				};
-				$rootScope[object].directionsService.route(request, function(response, status) {
-					if (status == google.maps.DirectionsStatus.OK) {
-						$rootScope[object].directionsDisplay.setDirections(response);
-					}
-				});
 			}
 		};
     }).

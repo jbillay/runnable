@@ -15,14 +15,18 @@
 							<p>Vous allez participer au voyage au départ de {{journey.address_start}} pour la course {{journey.run.name}}
 							se déroulant à {{journey.run.address_start}}.</p>
 							<p>Combien de place souhaitez vous réserver :</p>
-							<p>Pour l'aller <select ng-model="selectedPlaceOutward"
+							<p ng-show="journey.journey_type === 'aller-retour' || journey.journey_type === 'aller'">
+								Pour l'aller <select ng-model="selectedPlaceOutward"
 													ng-options="placeOutward.id as placeOutward.id for placeOutward in nbFreeSpaceListOutward">
 											</select>
-								place(s)</p>
-							<p>Pour le retour <select ng-model="selectedPlaceReturn"
+								place(s)
+							</p>
+							<p ng-show="journey.journey_type === 'aller-retour' || journey.journey_type === 'retour'">
+								Pour le retour <select ng-model="selectedPlaceReturn"
 													  ng-options="placeReturn.id as placeReturn.id for placeReturn in nbFreeSpaceListReturn">
 												</select>
-								place(s)</p>
+								place(s)
+							</p>
 							<hr>
 							<div class="col-md-12">
 								<table class="table table-striped">
@@ -101,7 +105,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="panel panel-default">
+			<div class="panel panel-default" ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'aller'">
 				<div class="panel-heading clearfix">
 					<span class="pull-left"><strong>Aller</strong></span>
 				</div>
@@ -114,7 +118,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="panel panel-default">
+			<div class="panel panel-default" ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'retour'">
 				<div class="panel-heading clearfix">
 					<span class="pull-left"><strong>Retour</strong></span>
 				</div>
