@@ -20,7 +20,7 @@
 					<div class="journey_desc">
 						<p><i class="glyphicon glyphicon-map-marker"></i> {{journey.address_start | capitalize | limitTo:21}}</p>
 						<p><i class="glyphicon glyphicon-sort"></i> {{journey.journey_type | capitalize}}</p>
-						<p><i class="glyphicon glyphicon-flag"></i> {{journey.date_start_outward | date:'dd / MM / yyyy'}}</p>
+						<p><i class="glyphicon glyphicon-flag"></i> {{journey.startDate | date:'dd / MM / yyyy'}}</p>
 						<p><i class="glyphicon glyphicon-time"></i> {{journey.duration}}</p>
 						<p><i class="glyphicon glyphicon-road"></i> {{journey.distance}}</p>
 					</div>

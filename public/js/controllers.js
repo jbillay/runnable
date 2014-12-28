@@ -406,6 +406,11 @@ angular.module('runnable.controllers', []).
 			$timeout( function() {
 				angular.forEach($scope.journeyList, function (journey) {
 					var value = 'map_canvas_' + journey.id;
+					if (journey.date_start_outward) {
+						journey.startDate = journey.date_start_outward;
+					} else {
+						journey.startDate = journey.date_start_return;
+					}
 					GoogleMapApi.initMap(value);
 					GoogleMapApi.showDirection(value, journey.address_start, journey.Run.address_start);
 				});
