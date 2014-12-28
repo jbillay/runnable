@@ -204,6 +204,11 @@ angular.module('runnable.services', ['ngResource']).
 				}
 				$rootScope[object].directionsService = new google.maps.DirectionsService();
 			},
+			resetDirection: function (object) {
+				if ($rootScope[object].directionsRenderer) {
+					$rootScope[object].directionsRenderer.setMap(null);
+				}
+			},
 			showDirection: function (object, source, destination) {
 				var request = {
 					origin:source,
@@ -212,9 +217,9 @@ angular.module('runnable.services', ['ngResource']).
 				};
 				$rootScope[object].directionsService.route(request, function(response, status) {
 					if (status == google.maps.DirectionsStatus.OK) {
-						var directionsRenderer = new google.maps.DirectionsRenderer;
-						directionsRenderer.setMap($rootScope[object].map);
-						directionsRenderer.setDirections(response);
+						$rootScope[object].directionsRenderer = new google.maps.DirectionsRenderer;
+						$rootScope[object].directionsRenderer.setMap($rootScope[object].map);
+						$rootScope[object].directionsRenderer.setDirections(response);
 					}
 				});
 			},

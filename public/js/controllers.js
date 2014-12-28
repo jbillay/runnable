@@ -374,6 +374,7 @@ angular.module('runnable.controllers', []).
 			return GoogleMapApi.getLocation(val);
 		};
 		$scope.showMapInfo = function () {
+			GoogleMapApi.resetDirection('map_canvas');
 			GoogleMapApi.showDirection('map_canvas', $scope.source, $scope.destination);
 			GoogleMapApi.getDistance($scope.source, $scope.destination).then(function (result) {
 				$scope.distance = result.distance;
@@ -381,9 +382,11 @@ angular.module('runnable.controllers', []).
 			});
 		};
 		$scope.selectDestination = function (run) {
-			$scope.destination = run.address_start;
-			if ($scope.source) {
-				$scope.showMapInfo();
+			if (run) {
+				$scope.destination = run.address_start;
+				if ($scope.source) {
+					$scope.showMapInfo();
+				}
 			}
 		};
 		$scope.selectSource = function (address) {

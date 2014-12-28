@@ -9,27 +9,39 @@
 			</div>
 		</div>
 		<div class="col-sm-6 spacedown">
-			<form action="/api/journey" method="post" role="form">
+			<form action="/api/journey" method="post" role="form" name="createJourney">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12">
-						<div class="form-group">
+						<div class="form-group" ng-class="{ 'has-success' : createJourney.run_id_selector.$valid && createJourney.run_id_selector.$dirty,
+							'has-error' : createJourney.run_id_selector.$invalid && createJourney.run_id_selector.$dirty }">
 							<select ng-model="run_id" placeholder="Definir la course"
 									name="journey[run_id_selector]" id="run_id_selector" class="form-control"  tabindex="1" 
 									ng-change="selectDestination(run_id)"
-                                    ng-options="run as run.name for run in runList">
+                                    ng-options="run as run.name for run in runList" required>
 									<option value="">-- Choisir une course --</option>
                             </select>
+							<div class="help-block text-danger"
+								 ng-if="createJourney.run_id_selector.$dirty"
+								 ng-messages="createJourney.run_id_selector.$error">
+								<div ng-message="required">Définir la course est obligatoire.</div>
+							</div>
 							<input type="hidden" name="journey[run_id]" value="{{run_id.id}}" >
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12">
-						<div class="form-group">
+						<div class="form-group" ng-class="{ 'has-success' : createJourney.address_start.$valid && createJourney.address_start.$dirty,
+							'has-error' : createJourney.address_start.$invalid && createJourney.address_start.$dirty }">
 							<input type="text" ng-model="startSelected" placeholder="Lieu de départ"
 								   typeahead="address for address in getLocation($viewValue)"
 								   typeahead-loading="loadingLocations" name="journey[address_start]" id="address_start"
-								   class="form-control"  tabindex="2" typeahead-on-select='selectSource($item)'>
+								   class="form-control"  tabindex="2" typeahead-on-select='selectSource($item)' required>
+							<div class="help-block text-danger"
+								 ng-if="createJourney.address_start.$dirty"
+								 ng-messages="createJourney.address_start.$error">
+								<div ng-message="required">Définir le lieu de départ est obligatoire.</div>
+							</div>
 							<i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
 						</div>
 					</div>
@@ -50,12 +62,18 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-6 col-sm-6 col-md-6">
-						<div class="form-group">
+						<div class="form-group" ng-class="{ 'has-success' : createJourney.journey_type_select.$valid && createJourney.journey_type_select.$dirty,
+							'has-error' : createJourney.journey_type_select.$invalid && createJourney.journey_type_select.$dirty }">
 							<select class="form-control" name="journey[journey_type_select]" id="journey_type_select"
 								placeholder="Type de parcours" tabindex="3" ng-model="journey.journey_type" 
 								ng-options="parcoursMode.code as parcoursMode.name for parcoursMode in parcoursModeList" 
-								ng-change="journeyTypeChange()">
+								ng-change="journeyTypeChange()" required>
 							</select>
+							<div class="help-block text-danger"
+								 ng-if="createJourney.address_start.$dirty"
+								 ng-messages="createJourney.address_start.$error">
+								<div ng-message="required">Définir le type de parcours est obligatoire.</div>
+							</div>
 						</div>
 					</div>
 					<input type="hidden" name="journey[journey_type]" id="journey_type" value="{{journey.journey_type}}" >
@@ -63,50 +81,61 @@
 				<p ng-if=outward>Aller</p>
 				<div class="row outward" ng-if=outward>
 					<div class="col-xs-4 col-sm-4 col-md-4">
-						<div class="form-group">
+						<div class="form-group" ng-class="{ 'has-success' : createJourney.date_start_outward.$valid && createJourney.date_start_outward.$dirty,
+							'has-error' : createJourney.date_start_outward.$invalid && createJourney.date_start_outward.$dirty }">
 							<input type="date" name="journey[date_start_outward]" id="date_start_outward"
-								   class="form-control" placeholder="Date" tabindex="4">
+								   class="form-control" placeholder="Date" tabindex="4" required>
 						</div>
 					</div>
 					<div class="col-xs-4 col-sm-4 col-md-4">
-						<div class="form-group">
+						<div class="form-group" ng-class="{ 'has-success' : createJourney.time_start_outward.$valid && createJourney.time_start_outward.$dirty,
+							'has-error' : createJourney.time_start_outward.$invalid && createJourney.time_start_outward.$dirty }">
 							<input type="time" name="journey[time_start_outward]" id="time_start_outward" class="form-control"
-								   placeholder="Heure" tabindex="5">
+								   placeholder="Heure" tabindex="5" required>
 						</div>
 					</div>
 					<div class="col-xs-4 col-sm-4 col-md-4">
-						<div class="form-group">
+						<div class="form-group" ng-class="
+						{ 	'has-success' : createJourney.nb_space_outward.$valid && createJourney.nb_space_outward.$dirty,
+							'has-error' : createJourney.nb_space_outward.$invalid && createJourney.nb_space_outward.$dirty }">
 							<input type="number" name="journey[nb_space_outward]" id="nb_space_outward" class="form-control"
-								   placeholder="Nombre de place" tabindex="6" min="0">
+								   placeholder="Nombre de place" tabindex="6" min="0" required>
 						</div>
 					</div>
 				</div>
 				<p ng-if=return>Retour</p>
 				<div class="row return" ng-if=return>
 					<div class="col-xs-4 col-sm-4 col-md-4">
-						<div class="form-group">
+						<div class="form-group" ng-class="
+						{ 	'has-success' : createJourney.date_start_return.$valid && createJourney.date_start_return.$dirty,
+							'has-error' : createJourney.date_start_return.$invalid && createJourney.date_start_return.$dirty }">
 							<input type="date" name="journey[date_start_return]" id="date_start_return"
-								   class="form-control" placeholder="Date" tabindex="7">
+								   class="form-control" placeholder="Date" tabindex="7" required>
 						</div>
 					</div>
 					<div class="col-xs-4 col-sm-4 col-md-4">
-						<div class="form-group">
+						<div class="form-group" ng-class="
+						{ 	'has-success' : createJourney.time_start_return.$valid && createJourney.time_start_return.$dirty,
+							'has-error' : createJourney.time_start_return.$invalid && createJourney.time_start_return.$dirty }">
 							<input type="time" name="journey[time_start_return]" id="time_start_return" class="form-control"
-								   placeholder="Heure" tabindex="8">
+								   placeholder="Heure" tabindex="8" required>
 						</div>
 					</div>
 					<div class="col-xs-4 col-sm-4 col-md-4">
-						<div class="form-group">
+						<div class="form-group" ng-class="
+						{ 	'has-success' : createJourney.nb_space_return.$valid && createJourney.nb_space_return.$dirty,
+							'has-error' : createJourney.nb_space_return.$invalid && createJourney.nb_space_return.$dirty }">
 							<input type="number" name="journey[nb_space_return]" id="nb_space_return" class="form-control"
-								   placeholder="Nombre de place" tabindex="9" min="0">
+								   placeholder="Nombre de place" tabindex="9" min="0" required>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-6 col-sm-6 col-md-6">
-						<div class="form-group">
+						<div class="form-group" ng-class="{ 'has-success' : createJourney.car_type.$valid && createJourney.car_type.$dirty,
+							'has-error' : createJourney.car_type.$invalid && createJourney.car_type.$dirty }">
 							<select class="form-control" name="journey[car_type]" id="car_type"
-								placeholder="Type de course" tabindex="10">
+								placeholder="Type de course" tabindex="10" required>
 								<option value="citadine">Citadine</option>
 								<option value="berline">Berline</option>
 								<option value="break">Break</option>
@@ -115,14 +144,25 @@
 								<option value="coupe">Coupé</option>
 								<option value="cabriolet">Cabriolet</option>
 							</select>
+							<div class="help-block text-danger"
+								 ng-if="createJourney.car_type.$dirty"
+								 ng-messages="createJourney.car_type.$error">
+								<div ng-message="required">Définir le type de véhicule est obligatoire.</div>
+							</div>
 						</div>
 					</div>
 					<div class="col-xs-6 col-sm-6 col-md-6">
 						<div class="form-group">
-							<div class="input-group">
+							<div class="input-group" ng-class="{ 'has-success' : createJourney.amount.$valid && createJourney.amount.$dirty,
+							'has-error' : createJourney.amount.$invalid && createJourney.amount.$dirty }">
 								<input type="number" name="journey[amount]" id="amount" class="form-control"
-									   ng-model="amount" placeholder="Montant par place" tabindex="11" min="0">
+									   ng-model="amount" placeholder="Montant par place" tabindex="11" min="0" required>
 								<span class="input-group-addon">€</span>
+								<div class="help-block text-danger"
+									 ng-if="createJourney.amount.$dirty"
+									 ng-messages="createJourney.amount.$error">
+									<div ng-message="required">Définir le montant par place est obligatoire.</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -130,7 +170,9 @@
 				<div class="row">
 					<div class="col-xs-3 col-md-3 pull-right">
 						<input type="hidden" name="journey[owner_id]" value="{{user.id}}">
-						<input type="submit" value="Créer" class="btn btn-primary btn-block" tabindex="12">
+						<button type="submit" class="btn btn-primary btn-block" tabindex="12">
+							Publier
+						</button>
 					</div>
 				</div>
 			</form>
