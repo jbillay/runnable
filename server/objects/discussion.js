@@ -3,8 +3,8 @@
  */
 
 var models = require('../models');
-var Journey = require('./Journey');
-var Join = require('./Join');
+var Journey = require('./journey');
+var Join = require('./join');
 
 function discussion() {
     'use strict';

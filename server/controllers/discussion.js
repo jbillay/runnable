@@ -4,7 +4,7 @@
 
 'use strict';
 
-var Discussion= require('../objects/discussion');
+var Discussion = require('../objects/discussion');
 
 exports.getUsers = function (req, res) {
     "use strict";
