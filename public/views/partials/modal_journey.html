@@ -1,0 +1,118 @@
+<div class="modal fade bs-example-modal-lg" id="journeyModal" tabindex="-1" role="dialog"
+     aria-labelledby="journeyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Parcours pour la course {{selectedJoin.Journey.Run.name}}</h4>
+            </div>
+            <div class="row">
+                <div class="modal-body">
+                    <div class="col-sm-12 text-center">
+                        <tabset>
+                            <tab heading="Voyage">
+                                <div class="col-sm-12 discussion_tab">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading clearfix">
+                                            <span class="pull-left"><strong>Départ de {{selectedJoin.Journey.address_start}}</strong></span>
+                                            <div class="pull-right">{{selectedJoin.Journey.journey_type | capitalize}}</div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="col-sm-6">
+                                                <p class="pull-left"><i class="fa fa-arrows-h "></i> {{selectedJoin.Journey.distance}}</p>
+                                                <div class="clearfix"></div>
+                                                <p class="pull-left"><i class="fa fa-history"></i> {{selectedJoin.Journey.duration}}</p>
+                                                <div class="clearfix"></div>
+                                                <p class="pull-left"><i class="fa fa-car"></i> {{selectedJoin.Journey.car_type | capitalize}}</p>
+                                            </div>
+                                            <div class="col-sm-6 journey_price_journey">
+                                                <div class="pull-right journey_price_journey">{{selectedJoin.Journey.amount | currency:'€ '}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-default" ng-if="selectedJoin.Journey.journey_type === 'aller-retour' || selectedJoin.Journey.journey_type === 'aller'">
+                                        <div class="panel-heading clearfix">
+                                            <span class="pull-left"><strong>Aller</strong></span>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="col-sm-6">
+                                                <p class="pull-left"><i class="glyphicon glyphicon-calendar"></i> {{selectedJoin.Journey.date_start_outward | date:'dd/MM/yyyy'}} {{selectedJoin.Journey.time_start_outward}}</p>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <span class="pull-right journey_space_positive">{{selectedJoin.nb_place_outward}} place(s) réservée(s)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-default" ng-if="selectedJoin.Journey.journey_type === 'aller-retour' || selectedJoin.Journey.journey_type === 'retour'">
+                                        <div class="panel-heading clearfix">
+                                            <span class="pull-left"><strong>Retour</strong></span>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="col-sm-6">
+                                                <p class="pull-left"><i class="glyphicon glyphicon-calendar"></i> {{selectedJoin.Journey.date_start_return | date:'dd/MM/yyyy'}} {{selectedJoin.Journey.time_start_return}}</p>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <span class="pull-right journey_space_positive">{{selectedJoin.nb_place_return}} place(s) réservée(s)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading clearfix">
+                                            <span class="pull-left"><strong>Conducteur</strong></span>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="col-sm-6">
+                                                <p class="pull-left"><i class="fa fa-automobile"></i> {{selectedJoin.Journey.User.firstname}} {{selectedJoin.Journey.User.lastname}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </tab>
+                            <tab heading="Carte">
+                                <div class="col-sm-12 discussion_tab">
+                                    <div id="map_canvas" class="map"></div>
+                                </div>
+                            </tab>
+                            <tab heading="Discussion">
+                                <div class="col-sm-3 discussion_tab">
+                                    <ul class="list-group">
+                                        <li class="list-group-item" ng-repeat="user in discussionUsers">
+                                            {{user.firstname}} {{user.lastname}}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-9 discussion_tab">
+                                    <div class="panel panel-default">
+                                        <div class="panel-body discussion_board">
+                                            <div class="panel panel-default col-sm-9 pull-left discussion_message_panel">
+                                                <div class="panel-body discussion_message">
+                                                    <p class="discussion_message_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+                                                    <span class="discussion_message_info pull-right">03/01/14 12:30 by Jeremy Billay</span>
+                                                </div>
+                                            </div>
+                                            <div class="panel panel-default col-sm-9 pull-right">
+                                                <div class="panel-body discussion_message">
+                                                    <div class="panel-body discussion_message">
+                                                        <p class="discussion_message_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+                                                        <span class="discussion_message_info pull-right">03/01/14 12:45 by Richard Couret</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Entrer votre message">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="button">Envoyer</button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </tab>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

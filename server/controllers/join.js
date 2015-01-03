@@ -23,7 +23,7 @@ exports.remove = function (req, res) {
 
 exports.listForJourney = function (req, res) {
     "use strict";
-	console.log('Get list of join for a journey' + req.params.id);
+	console.log('Get list of join for a journey ' + req.params.id);
 	var join = new Join();
 	join.getByJourney(req.params.id, function (err, joins) {
 		if (err) {

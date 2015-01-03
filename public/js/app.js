@@ -57,6 +57,13 @@ angular.module('runnable', [
                 templateUrl: 'partials/journey_list',
                 controller: 'RunnableJourneyController'
             }).
+            when('/myjourney', {
+                templateUrl: 'partials/my_journey',
+                controller: 'RunnableMyJourneyController',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user]
+                }
+            }).
             when('/journey-:journeyId', {
                 templateUrl: 'partials/journey_detail',
                 controller: 'RunnableJourneyDetailController'

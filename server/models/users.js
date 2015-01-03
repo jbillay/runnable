@@ -18,7 +18,7 @@ module.exports = function(sequelize, DataTypes) {
 		salt: 			{ type: DataTypes.STRING, allowNull: false },
 		itra:			DataTypes.STRING,
 		isActive:		{ type: DataTypes.BOOLEAN, defaultValue: false },
-		role:			{ type: DataTypes.ENUM, values: ['user', 'editor', 'admin'] },
+		role:			{ type: DataTypes.ENUM, values: ['user', 'editor', 'admin'] }
 	}, {
 		classMethods: {
 			associate: function(models) {
@@ -27,9 +27,6 @@ module.exports = function(sequelize, DataTypes) {
 			}
 		},
 		instanceMethods: {
-			validPassword: function (password) {
-				return this.password === password;
-			},
 			makeSalt: function () {
 				return crypto.randomBytes(16).toString('base64'); 
 			},

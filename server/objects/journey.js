@@ -140,7 +140,7 @@ journey.prototype.getById = function (id, done) {
 
 journey.prototype.getByUser = function (id, done) {
 	'use strict';
-	models.Journey.findAll({where: {userId: id}, include: [models.Run, models.Join]})
+	models.Journey.findAll({where: {userId: id}, include: [models.Run, models.Join, models.User]})
 		.then(function (journeys) {
 			done(null, journeys);
 		})

@@ -396,6 +396,33 @@ angular.module('runnable.controllers', []).
 			}
 		}
 	}).
+	controller('RunnableMyJourneyController', function ($scope, $q, $timeout, User, Discussion, GoogleMapApi) {
+		'use strict';
+		$scope.page = 'MyJourney';
+		var userJourneyPromise = User.getJourney(),
+			userJoinPromise = User.getJoin(),
+			all = $q.all([userJourneyPromise, userJoinPromise]);
+		all.then(function (res) {
+			$scope.userJourney = res[0];
+			$scope.userJoin = res[1];
+		});
+		$scope.showJourneyModal = function (selectedJoin) {
+			var discussionUsersPromise = Discussion.getUsers(selectedJoin.Journey.id),
+				all = $q.all([discussionUsersPromise]);
+			all.then(function (res) {
+				$scope.discussionUsers = res[0];
+				$scope.selectedJoin = selectedJoin;
+				$timeout(function () {
+					var obj = "map_canvas";
+					GoogleMapApi.initMap(obj);
+					GoogleMapApi.showDirection(obj, $scope.selectedJoin.Journey.address_start,
+						$scope.selectedJoin.Journey.run.address_start);
+				});
+				angular.element('#journeyModal').modal('show');
+			});
+		};
+
+	}).
 	controller('RunnableJourneyController', function ($scope, $q, $http, $timeout, Run, Journey, GoogleMapApi) {
         'use strict';
         $scope.page = 'Journey';

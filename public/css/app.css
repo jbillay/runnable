@@ -254,6 +254,14 @@ a.list-group-item.active,[class*='-info'] {
 	margin-top: 5px;
 }
 
+.journey_table {
+	margin-bottom: 5px;
+}
+
+.my_journey_more {
+	margin-top: 15px;
+}
+
 div.journey_price_journey {
 	padding-right: 0px;
 }
@@ -268,6 +276,31 @@ div.journey_price_journey {
 	font-size: 15px;
 	font-weight: bold;
 	color: red;
+}
+
+.discussion_tab {
+	padding: 15px;
+}
+
+.discussion_board {
+	height: 400px;
+}
+
+.discussion_message_panel {
+	margin-bottom: 10px;
+	text-align: left;
+}
+
+.discussion_message {
+	padding: 2px;
+}
+
+.discussion_message_text {
+	text-align: left;
+}
+
+.discussion_message_info {
+	color: #808080;
 }
 
 /* Google maps */

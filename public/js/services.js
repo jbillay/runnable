@@ -367,6 +367,23 @@ angular.module('runnable.services', ['ngResource']).
                 return deferred.promise;
 			}
         };
+	}).
+	factory('Discussion', function ($q, $http) {
+		'use strict';
+		return {
+			getUsers: function (journeyId) {
+				var deferred = $q.defer();
+				$http.get("/api/discussion/users/" + journeyId).
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ', data);
+						deferred.resolve(data);
+					});
+				return deferred.promise;
+			}
+		};
     }).
     factory('Journey', function ($q, $http) {
         'use strict';

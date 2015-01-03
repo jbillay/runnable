@@ -23,14 +23,18 @@
                 </div>
             </form>
             <ul class="nav navbar-nav navbar-right">
-                <li ng-class="{active: page=='CreateRun'}" ng-if="isAuthorized([userRoles.admin, userRoles.editor])" ><a href="/run-create">Créer un course</a></li>
-                <li ng-class="{active: page=='Admin'}" ng-if="isAuthorized(userRoles.admin)" ><a href="/admin">Admin</a></li>
                 <button type="button" class="btn btn-primary btn-block btn-sm picthome" ng-if="!isAuthenticated" ng-click="login()">Connection</button>
-				<li class="dropdown" ng-if="isAuthenticated">
+                <li ng-if="isAuthenticated"><a href="/myjourney"><i class="fa fa-road"></i></a></li>
+                <li ng-if="isAuthenticated"><a href="/inbox"><i class="fa fa-inbox"></i></a></li>
+                <li class="dropdown" ng-if="isAuthenticated">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-user fa-fw"></i> {{ currentUser.email }} <b class="caret"></b></a>
+                        <i class="fa fa-user fa-fw"></i><b class="caret"></b>
+                    </a>
                     <ul class="dropdown-menu">
                         <li><a target="_self" href="/profile"><span class="glyphicon glyphicon-user"></span> Profil</a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li ng-if="isAuthorized([userRoles.admin, userRoles.editor])" ><a href="/run-create">Créer une course</a></li>
+                        <li ng-if="isAuthorized(userRoles.admin)" ><a href="/admin">Admin</a></li>
                         <li role="presentation" class="divider"></li>
                         <li><a target="_self" href="/logout"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
                     </ul>

@@ -84,7 +84,7 @@ join.prototype.getByUser = function (id, done) {
 	models.Join.findAll({where: {userId: id}, include: [{
                         model: models.Journey,
                         as: "Journey",
-                        include: [ models.Run ]
+                        include: [ models.Run, models.User ]
                     }]})
 		.then(function (joins) {
 			done(null, joins);
@@ -96,11 +96,9 @@ join.prototype.getByUser = function (id, done) {
 
 join.prototype.getByJourney = function (journeyId, done) {
     'use strict';
-	var that = this;
 	models.Journey.find({ where: {id: journeyId}})
 		.then(function (journey) {
 			journey.getJoins().then(function (joins) {
-				console.log(joins);
 				done(null, joins);
 			});
 		})

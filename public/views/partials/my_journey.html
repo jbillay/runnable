@@ -1,0 +1,89 @@
+<div ng-include="'partials/nav'"></div>
+<div class="container body">
+    <div class="row spacehead">
+        <div class="col-sm-12">
+            <div class="bs-example" data-example-id="collapse-accordion">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    <i class="fa fa-users"></i> Voyages en tant que participant
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <div ng-repeat="join in userJoin">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading clearfix">
+                                            <h6 class="panel-title pull-left"><a href="/journey-{{join.Journey.id}}">Départ de {{join.Journey.address_start}}</a></h6>
+                                            <div class="pull-right">{{join.status | capitalize}}</div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="col-md-8">
+                                                <table class="table journey_table">
+                                                    <tr>
+                                                        <td><strong>Aller </strong></td>
+                                                        <td><i class="fa fa-calendar"></i> {{join.Journey.date_start_outward | date:'dd/MM/yyyy'}}</td>
+                                                        <td><i class="fa fa-clock-o"></i> {{join.Journey.time_start_outward}}</td>
+                                                        <td>{{join.nb_place_outward}} place(s) réservée(s)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>Retour </strong></td>
+                                                        <td><i class="fa fa-calendar"></i> {{join.Journey.date_start_return | date:'dd/MM/yyyy'}}</td>
+                                                        <td><i class="fa fa-clock-o"></i> {{join.Journey.time_start_return}}</td>
+                                                        <td>{{join.nb_place_return}} place(s) réservée(s)</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span class="pull-right"><i class="fa fa-automobile"></i> {{join.Journey.User.firstname}} {{join.Journey.User.lastname}}</span><br>
+                                                <button class="btn btn-success pull-right my_journey_more" ng-click="showJourneyModal(join)">En savoir +</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingTwo">
+                            <h4 class="panel-title">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    <i class="fa fa-automobile"></i> Voyages en tant que conducteur
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                            <div class="panel-body">
+                                <div ng-repeat="journey in userJourney">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading clearfix">
+                                            <h6 class="panel-title pull-left"><a href="/journey-{{journey.id}}">Départ de {{journey.address_start}}</a></h6>
+                                            <div class="pull-right">{{journey.journey_type | capitalize}}</div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="clearfix" ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'aller'">
+                                                <strong>Aller </strong>
+                                                <span>{{journey.date_start_outward | date:'dd/MM/yyyy'}} {{journey.time_start_outward}}</span>
+                                                <span class="pull-right journey_space_positive">{{journey.nb_space_outward}} place(s)</span>
+                                            </div>
+                                            <div class="clearfix" ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'retour'">
+                                                <strong>Retour </strong>
+                                                <span>{{journey.date_start_return | date:'dd/MM/yyyy'}} {{journey.time_start_return}}</span>
+                                                <span class="pull-right journey_space_positive">{{journey.nb_space_return}} place(s)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-include="'partials/modal_journey'"></div>
+    </div>
+</div>
+<div ng-include="'partials/footer'"></div>
