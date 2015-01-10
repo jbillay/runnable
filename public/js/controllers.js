@@ -405,18 +405,33 @@ angular.module('runnable.controllers', []).
 		all.then(function (res) {
 			$scope.userJourney = res[0];
 			$scope.userJoin = res[1];
+			angular.forEach($scope.userJourney, function (journey) {
+				var freeSpace = User.getJourneyFreeSpace(journey);
+				journey.nb_free_place_outward = freeSpace.nb_free_place_outward;
+				journey.nb_free_place_return = freeSpace.nb_free_place_return;
+			});
+			angular.forEach($scope.userJoin, function (join) {
+				var freeSpace = User.getJourneyFreeSpace(join.Journey);
+				join.Journey.nb_free_place_outward = freeSpace.nb_free_place_outward;
+				join.Journey.nb_free_place_return = freeSpace.nb_free_place_return;
+			});
 		});
-		$scope.showJourneyModal = function (selectedJoin) {
-			var discussionUsersPromise = Discussion.getUsers(selectedJoin.Journey.id),
+		$scope.showJourneyModal = function (journey, join) {
+			var discussionUsersPromise = Discussion.getUsers(journey.id),
 				all = $q.all([discussionUsersPromise]);
+			$scope.selectedJourney = journey;
+			if (join) {
+				$scope.selectedJoin = join;
+			} else {
+				$scope.selectedJoin = null;
+			}
 			all.then(function (res) {
 				$scope.discussionUsers = res[0];
-				$scope.selectedJoin = selectedJoin;
 				$timeout(function () {
 					var obj = "map_canvas";
 					GoogleMapApi.initMap(obj);
-					GoogleMapApi.showDirection(obj, $scope.selectedJoin.Journey.address_start,
-						$scope.selectedJoin.Journey.run.address_start);
+					GoogleMapApi.showDirection(obj, $scope.selectedJourney.address_start,
+						$scope.selectedJourney.Run.address_start);
 				});
 				angular.element('#journeyModal').modal('show');
 			});

@@ -11,6 +11,17 @@ var db        = {};
 
 console.log('Init Database');
 
+sequelize
+  .authenticate()
+  .complete(function(err) {
+    if (!!err) {
+	  console.log('Unable to connect to the database: Exiting.');
+	  process.exit(0);
+    } else {
+      console.log('Connection has been established successfully.')
+    }
+  });
+
 fs
   .readdirSync(__dirname)
   .filter(function(file) {

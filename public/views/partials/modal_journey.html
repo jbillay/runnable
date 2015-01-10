@@ -6,7 +6,7 @@
                 <button type="button" class="close" data-dismiss="modal">
                     <span aria-hidden="true">&times;</span>
                     <span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel">Parcours pour la course {{selectedJoin.Journey.Run.name}}</h4>
+                <h4 class="modal-title" id="myModalLabel">Parcours pour la course {{selectedJourney.Run.name}}</h4>
             </div>
             <div class="row">
                 <div class="modal-body">
@@ -16,45 +16,51 @@
                                 <div class="col-sm-12 discussion_tab">
                                     <div class="panel panel-default">
                                         <div class="panel-heading clearfix">
-                                            <span class="pull-left"><strong>Départ de {{selectedJoin.Journey.address_start}}</strong></span>
-                                            <div class="pull-right">{{selectedJoin.Journey.journey_type | capitalize}}</div>
+                                            <span class="pull-left"><strong>Départ de {{selectedJourney.address_start}}</strong></span>
+                                            <div class="pull-right">{{selectedJourney.journey_type | capitalize}}</div>
                                         </div>
                                         <div class="panel-body">
                                             <div class="col-sm-6">
-                                                <p class="pull-left"><i class="fa fa-arrows-h "></i> {{selectedJoin.Journey.distance}}</p>
+                                                <p class="pull-left"><i class="fa fa-arrows-h "></i> {{selectedJourney.distance}}</p>
                                                 <div class="clearfix"></div>
-                                                <p class="pull-left"><i class="fa fa-history"></i> {{selectedJoin.Journey.duration}}</p>
+                                                <p class="pull-left"><i class="fa fa-history"></i> {{selectedJourney.duration}}</p>
                                                 <div class="clearfix"></div>
-                                                <p class="pull-left"><i class="fa fa-car"></i> {{selectedJoin.Journey.car_type | capitalize}}</p>
+                                                <p class="pull-left"><i class="fa fa-car"></i> {{selectedJourney.car_type | capitalize}}</p>
                                             </div>
                                             <div class="col-sm-6 journey_price_journey">
-                                                <div class="pull-right journey_price_journey">{{selectedJoin.Journey.amount | currency:'€ '}}</div>
+                                                <div class="pull-right journey_price_journey">{{selectedJourney.amount | currency:'€ '}}</div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="panel panel-default" ng-if="selectedJoin.Journey.journey_type === 'aller-retour' || selectedJoin.Journey.journey_type === 'aller'">
+                                    <div class="panel panel-default" ng-if="selectedJourney.journey_type === 'aller-retour' || selectedJourney.journey_type === 'aller'">
                                         <div class="panel-heading clearfix">
                                             <span class="pull-left"><strong>Aller</strong></span>
                                         </div>
                                         <div class="panel-body">
                                             <div class="col-sm-6">
-                                                <p class="pull-left"><i class="glyphicon glyphicon-calendar"></i> {{selectedJoin.Journey.date_start_outward | date:'dd/MM/yyyy'}} {{selectedJoin.Journey.time_start_outward}}</p>
+                                                <p class="pull-left"><i class="glyphicon glyphicon-calendar"></i> {{selectedJourney.date_start_outward | date:'dd/MM/yyyy'}} {{selectedJourney.time_start_outward}}</p>
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-6" ng-if="selectedJoin">
                                                 <span class="pull-right journey_space_positive">{{selectedJoin.nb_place_outward}} place(s) réservée(s)</span>
+                                            </div>
+                                            <div class="col-sm-6" ng-if="selectedJourney.nb_free_place_outward != null">
+												<span class="pull-right journey_space_positive">{{selectedJourney.nb_free_place_outward}} place(s) restantes(s)</span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="panel panel-default" ng-if="selectedJoin.Journey.journey_type === 'aller-retour' || selectedJoin.Journey.journey_type === 'retour'">
+                                    <div class="panel panel-default" ng-if="selectedJourney.journey_type === 'aller-retour' || selectedJourney.journey_type === 'retour'">
                                         <div class="panel-heading clearfix">
                                             <span class="pull-left"><strong>Retour</strong></span>
                                         </div>
                                         <div class="panel-body">
                                             <div class="col-sm-6">
-                                                <p class="pull-left"><i class="glyphicon glyphicon-calendar"></i> {{selectedJoin.Journey.date_start_return | date:'dd/MM/yyyy'}} {{selectedJoin.Journey.time_start_return}}</p>
+                                                <p class="pull-left"><i class="glyphicon glyphicon-calendar"></i> {{selectedJourney.date_start_return | date:'dd/MM/yyyy'}} {{selectedJourney.time_start_return}}</p>
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-6" ng-if="selectedJoin">
                                                 <span class="pull-right journey_space_positive">{{selectedJoin.nb_place_return}} place(s) réservée(s)</span>
+                                            </div>
+                                            <div class="col-sm-6" ng-if="selectedJourney.nb_free_place_return != null">
+												<span class="pull-right journey_space_positive">{{selectedJourney.nb_free_place_return}} place(s) restantes(s)</span>
                                             </div>
                                         </div>
                                     </div>
@@ -64,7 +70,7 @@
                                         </div>
                                         <div class="panel-body">
                                             <div class="col-sm-6">
-                                                <p class="pull-left"><i class="fa fa-automobile"></i> {{selectedJoin.Journey.User.firstname}} {{selectedJoin.Journey.User.lastname}}</p>
+                                                <p class="pull-left"><i class="fa fa-automobile"></i> {{selectedJourney.User.firstname}} {{selectedJourney.User.lastname}}</p>
                                             </div>
                                         </div>
                                     </div>

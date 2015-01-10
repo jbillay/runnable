@@ -112,6 +112,17 @@ angular.module('runnable.services', ['ngResource']).
 					});
                 return deferred.promise;
 			},
+			getJourneyFreeSpace: function (journey) {
+				var ret = {
+						nb_free_place_outward: journey.nb_space_outward,
+						nb_free_place_return: journey.nb_space_return
+					};
+				angular.forEach(journey.Joins, function (join) {
+					ret.nb_free_place_outward = ret.nb_free_place_outward - join.nb_place_outward;
+					ret.nb_free_place_return = ret.nb_free_place_return - join.nb_place_return;
+				});
+				return ret;
+			},
 			getJoin: function () {
                 var deferred = $q.defer();
                 $http.get("/api/user/joins").
