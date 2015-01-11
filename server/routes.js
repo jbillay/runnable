@@ -35,6 +35,8 @@ module.exports = function (app, passport, auth) {
     app.get('/api/journey/next/:nb', controllers.journey.next);
 
     app.get('/api/discussion/users/:id', auth.requiresLogin, controllers.discussion.getUsers);
+    app.get('/api/discussion/messages/:id', auth.requiresLogin, controllers.discussion.getMessages);
+    app.post('/api/discussion/msg', auth.requiresLogin, controllers.discussion.addMessage);
 
     app.post('/api/join', auth.requiresLogin, controllers.join.create);
 	app.get('/api/join/:id', auth.requiresLogin, controllers.join.detail);

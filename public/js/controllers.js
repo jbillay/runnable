@@ -396,7 +396,7 @@ angular.module('runnable.controllers', []).
 			}
 		}
 	}).
-	controller('RunnableMyJourneyController', function ($scope, $q, $timeout, User, Discussion, GoogleMapApi) {
+	controller('RunnableMyJourneyController', function ($scope, $q, $timeout, User, Discussion, GoogleMapApi, Socket) {
 		'use strict';
 		$scope.page = 'MyJourney';
 		var userJourneyPromise = User.getJourney(),
@@ -418,7 +418,8 @@ angular.module('runnable.controllers', []).
 		});
 		$scope.showJourneyModal = function (journey, join) {
 			var discussionUsersPromise = Discussion.getUsers(journey.id),
-				all = $q.all([discussionUsersPromise]);
+				discussionMessagesPromise = Discussion.getMessages(journey.id),
+				all = $q.all([discussionUsersPromise, discussionMessagesPromise]);
 			$scope.selectedJourney = journey;
 			if (join) {
 				$scope.selectedJoin = join;
@@ -427,11 +428,16 @@ angular.module('runnable.controllers', []).
 			}
 			all.then(function (res) {
 				$scope.discussionUsers = res[0];
+				$scope.discussionMessages = res[1];
+				console.log($scope.discussionMessages);
 				$timeout(function () {
 					var obj = "map_canvas";
 					GoogleMapApi.initMap(obj);
 					GoogleMapApi.showDirection(obj, $scope.selectedJourney.address_start,
 						$scope.selectedJourney.Run.address_start);
+				});
+				Socket.on('send:message', function (message) {
+					console.log(message);
 				});
 				angular.element('#journeyModal').modal('show');
 			});

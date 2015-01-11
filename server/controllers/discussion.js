@@ -20,3 +20,22 @@ exports.getUsers = function (req, res) {
         }
     });
 };
+
+exports.getMessages = function (req, res) {
+    "use strict";
+    var discussion = new Discussion(),
+        journeyId = req.params.id;
+    console.log('Get discussion messages for journey : ' + journeyId);
+    discussion.getMessages(journeyId, function(err, messages) {
+        if (err) {
+            console.log('Not able to get discussion messsages for journey : ' + err);
+            res.jsonp('{"msg": "ko"}');
+        } else {
+            res.jsonp(messages);
+        }
+    });
+};
+
+exports.addMessage = function (req, res) {
+   "use strict";
+};

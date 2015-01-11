@@ -47,7 +47,8 @@
     "supertest": "~0.15.0",
     "should": "~4.3.0",
     "chai": "~1.10.0",
-    "cheerio": "~0.17.0"
+    "cheerio": "~0.17.0",
+    "socket.io": "~1.2.1"
   },
   "devDependencies": {
     "mocha": "~1.21.3",

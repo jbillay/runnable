@@ -57,4 +57,15 @@ discussion.prototype.getUsers = function (journeyId, done) {
         });
 };
 
+discussion.prototype.getMessages = function (journeyId, done) {
+    'use strict';
+    models.Discussion.findAll({where: {JourneyId: journeyId}, include: [models.User]})
+        .then(function (messages) {
+            done(null, messages);
+        })
+        .catch(function (err) {
+            done(err, null);
+        });
+};
+
 module.exports = discussion;

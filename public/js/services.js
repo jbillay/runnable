@@ -379,12 +379,47 @@ angular.module('runnable.services', ['ngResource']).
 			}
         };
 	}).
+	factory('Socket', function ($rootScope) {
+		var socket = io.connect();
+		return {
+			on: function (eventName, callback) {
+				socket.on(eventName, function () {
+					var args = arguments;
+					$rootScope.$apply(function () {
+						callback.apply(socket, args);
+					});
+				});
+			},
+			emit: function (eventName, data, callback) {
+				socket.emit(eventName, data, function () {
+					var args = arguments;
+					$rootScope.$apply(function () {
+						if (callback) {
+							callback.apply(socket, args);
+						}
+					});
+				})
+			}
+		};
+	}).
 	factory('Discussion', function ($q, $http) {
 		'use strict';
 		return {
 			getUsers: function (journeyId) {
 				var deferred = $q.defer();
 				$http.get("/api/discussion/users/" + journeyId).
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ', data);
+						deferred.resolve(data);
+					});
+				return deferred.promise;
+			},
+			getMessages: function (journeyId) {
+				var deferred = $q.defer();
+				$http.get("/api/discussion/messages/" + journeyId).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
