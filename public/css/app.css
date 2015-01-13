@@ -283,7 +283,8 @@ div.journey_price_journey {
 }
 
 .discussion_board {
-	height: 400px;
+	max-height: 400px;
+    overflow-y:auto;
 }
 
 .discussion_message_panel {

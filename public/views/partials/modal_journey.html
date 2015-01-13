@@ -70,7 +70,7 @@
                                         </div>
                                         <div class="panel-body">
                                             <div class="col-sm-6">
-                                                <p class="pull-left"><i class="fa fa-automobile"></i> {{selectedJourney.User.firstname}} {{selectedJourney.User.lastname}}</p>
+                                                <p class="pull-left"><i class="fa fa-automobile"></i> {{selectedJourney.User.firstname | capitalize}} {{selectedJourney.User.lastname | capitalize}}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -92,28 +92,24 @@
                                 <div class="col-sm-9 discussion_tab">
                                     <div class="panel panel-default">
                                         <div class="panel-body discussion_board">
-                                            <div class="panel panel-default col-sm-9 pull-left discussion_message_panel">
-                                                <div class="panel-body discussion_message">
-                                                    <p class="discussion_message_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                                                    <span class="discussion_message_info pull-right">03/01/14 12:30 by Jeremy Billay</span>
-                                                </div>
-                                            </div>
-                                            <div class="panel panel-default col-sm-9 pull-right">
+											<div class="panel panel-default col-sm-9" ng-class-odd="'pull-left'" ng-class-even="'pull-right'" ng-repeat="message in discussionMessages">
                                                 <div class="panel-body discussion_message">
                                                     <div class="panel-body discussion_message">
-                                                        <p class="discussion_message_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-                                                        <span class="discussion_message_info pull-right">03/01/14 12:45 by Richard Couret</span>
+                                                        <p class="discussion_message_text">{{message.message}}</p>
+                                                        <span class="discussion_message_info pull-right">{{message.createdAt | date:'medium'}} by {{message.User.firstname | capitalize}} {{message.User.lastname | capitalize}}</span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Entrer votre message">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default" type="button">Envoyer</button>
-                                        </span>
-                                    </div>
+									<form name="discussionForm" ng-controller="RunnableMyJourneyController" ng-submit='sendMessage()'>
+										<div class="input-group">
+											<input type="text" class="form-control" placeholder="Entrer votre message" ng-model="newMessageEntry">
+											<span class="input-group-btn">
+												<button class="btn btn-default" type="submit">Envoyer</button>
+											</span>
+										</div>
+									</form>
                                 </div>
                             </tab>
                     </div>

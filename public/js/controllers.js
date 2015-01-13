@@ -442,7 +442,12 @@ angular.module('runnable.controllers', []).
 				angular.element('#journeyModal').modal('show');
 			});
 		};
-
+		$scope.sendMessage = function () {
+			var text = String($scope.newMessageEntry).replace(/<[^>]+>/gm, '');
+			$scope.newMessageEntry = '';
+			$scope.discussionMessages.unshift({"message": text, "createdAt": Date.now(), "User": {"firstname": "test", "lastname": "tests"}});
+			Discussion.addMessage(text, $scope.selectedJourney.id);
+		};
 	}).
 	controller('RunnableJourneyController', function ($scope, $q, $http, $timeout, Run, Journey, GoogleMapApi) {
         'use strict';

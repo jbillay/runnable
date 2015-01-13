@@ -59,13 +59,38 @@ discussion.prototype.getUsers = function (journeyId, done) {
 
 discussion.prototype.getMessages = function (journeyId, done) {
     'use strict';
-    models.Discussion.findAll({where: {JourneyId: journeyId}, include: [models.User]})
+    models.Discussion.findAll({where: {JourneyId: journeyId}, include: [models.User], order: 'createdAt DESC',})
         .then(function (messages) {
             done(null, messages);
         })
         .catch(function (err) {
             done(err, null);
         });
+};
+
+discussion.prototype.addMessage = function (message, journeyId, user, done) {
+	var that = this;
+	that.message = message;
+	console.log('try to add message to journey run : ' + journeyId);
+	models.Journey.find({where: {id: journeyId}})
+        .then(function (journey) {
+			models.User.find({where: {id: user.id}})
+				.then(function(user) {
+					models.Discussion.create(that)
+						.then(function (newDiscussion) {
+							newDiscussion.setUser(user)
+								.then(function(newDiscussion) {
+									newDiscussion.setJourney(journey)
+										.then(function (newDiscussion) {
+											done(null, newRun);
+										})
+										.catch(function(err) {
+											done(err, null);
+										});
+								});
+						});
+				});
+		});
 };
 
 module.exports = discussion;

@@ -37,5 +37,17 @@ exports.getMessages = function (req, res) {
 };
 
 exports.addMessage = function (req, res) {
-   "use strict";
+	"use strict";
+	var discussion = new Discussion(),
+        journeyId = req.body.journeyId,
+		message = req.body.message,
+		user = req.user;
+	discussion.addMessage(message, journeyId, user, function(err, messages) {
+        if (err) {
+            console.log('Not able to add discussion messsage for journey : ' + err);
+            res.jsonp('{"msg": "ko"}');
+        } else {
+            res.jsonp('{"msg": "ok"}');
+        }
+    });
 };

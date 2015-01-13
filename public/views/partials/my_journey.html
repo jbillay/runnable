@@ -16,10 +16,13 @@
                                 <div ng-repeat="join in userJoin">
                                     <div class="panel panel-default">
                                         <div class="panel-heading clearfix">
-                                            <h6 class="panel-title pull-left"><a href="/journey-{{join.Journey.id}}">Départ de {{join.Journey.address_start}}</a></h6>
+                                            <h6 class="panel-title pull-left"><a href="/journey-{{join.Journey.id}}">Pour la course {{join.Journey.Run.name}}</a></h6>
                                             <div class="pull-right">{{join.status | capitalize}}</div>
                                         </div>
                                         <div class="panel-body">
+                                            <div class="col-md-12">
+												<p><strong>Départ :</strong> {{join.Journey.address_start}} - <strong>Arrivée :</strong> {{join.Journey.Run.address_start}}</p>
+											</div>
                                             <div class="col-md-8">
                                                 <table class="table journey_table">
                                                     <tr ng-if="join.Journey.journey_type === 'aller-retour' || join.Journey.journey_type === 'aller'">
@@ -59,10 +62,13 @@
                                 <div ng-repeat="journey in userJourney">
                                     <div class="panel panel-default">
                                         <div class="panel-heading clearfix">
-                                            <h6 class="panel-title pull-left"><a href="/journey-{{journey.id}}">Départ de {{journey.address_start}}</a></h6>
+                                            <h6 class="panel-title pull-left"><a href="/journey-{{journey.id}}">Pour la course {{journey.Run.name}}</a></h6>
                                             <div class="pull-right">{{journey.journey_type | capitalize}}</div>
                                         </div>
                                         <div class="panel-body">
+                                            <div class="col-md-12">
+												<p><strong>Départ :</strong> {{journey.address_start}} - <strong>Arrivée :</strong> {{journey.Run.address_start}}</p>
+											</div>
 											<div class="col-md-8">
                                                 <table class="table journey_table">
                                                     <tr ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'aller'">
