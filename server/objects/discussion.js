@@ -82,7 +82,7 @@ discussion.prototype.addMessage = function (message, journeyId, user, done) {
 								.then(function(newDiscussion) {
 									newDiscussion.setJourney(journey)
 										.then(function (newDiscussion) {
-											done(null, newRun);
+											done(null, newDiscussion);
 										})
 										.catch(function(err) {
 											done(err, null);

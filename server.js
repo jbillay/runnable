@@ -18,7 +18,7 @@ require('./server/express')(app, passport);
 // Init Routes
 require('./server/routes')(app, passport, auth);
 
-app.listen(settings.port, function () {
+var server = app.listen(settings.port, function () {
     "use strict";
     console.log(("Listening on port " + settings.port));
 }).on('error', function (e) {
@@ -27,6 +27,9 @@ app.listen(settings.port, function () {
         console.log('Address in use. Is the server already running?');
     }
 });
+
+// Init Socket.io
+require('./server/socket')(server);
 
 //expose app
 exports = module.exports = app;

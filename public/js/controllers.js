@@ -445,9 +445,21 @@ angular.module('runnable.controllers', []).
 		$scope.sendMessage = function () {
 			var text = String($scope.newMessageEntry).replace(/<[^>]+>/gm, '');
 			$scope.newMessageEntry = '';
-			$scope.discussionMessages.unshift({"message": text, "createdAt": Date.now(), "User": {"firstname": "test", "lastname": "tests"}});
+			Socket.emit('discussion:newMessage',
+				{"message": text, "createdAt": Date.now(), "User": {"firstname": "test", "lastname": "tests"}});
+			$scope.discussionMessages.unshift(
+				{"message": text, "createdAt": Date.now(), "User": {"firstname": "test", "lastname": "tests"}});
 			Discussion.addMessage(text, $scope.selectedJourney.id);
 		};
+		Socket.on('discussion:newMessage', function (data) {
+			$scope.discussionMessages.unshift(
+				{	"message": data.message,
+					"createdAt": data.createdAt,
+					"User":
+						{	"firstname": data.User.firstname,
+							"lastname": data.User.lastname}
+				});
+		});
 	}).
 	controller('RunnableJourneyController', function ($scope, $q, $http, $timeout, Run, Journey, GoogleMapApi) {
         'use strict';
