@@ -1,0 +1,35 @@
+<div class="modal fade" id="modalInviteFriends" tabindex="-1" role="dialog" aria-labelledby="modalInviteFriendsLabel" aria-hidden="true">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span>
+					<span class="sr-only">Close</span></button>
+				<h4 class="modal-title" id="myModalLabel">Invitez vos amis à rejoindre notre communauté</h4>
+			</div>
+			<div class="row">
+				<div class="modal-body">
+					<div class="col-md-12">
+						<h4>Message d'invitation</h4>
+						<hr>
+						<form name="inviteForm" ng-controller="RunnableSharedController" ng-submit="inviteFriends(credentials)" novalidate>
+							<div class="input-group invite_margin">
+								<label class="control-label" for="inviteEmails">Adresses e-mail (séparées par des virgules)</label>
+								<textarea class="form-control" ng-model="inviteEmails" id="inviteEmails">
+								</textarea>
+							</div>
+							<div class="input-group invite_margin">
+								<label class="control-label" for="inviteMessage">Message</label>
+								<textarea class="form-control" ng-model="inviteMessage" id="inviteMessage">
+								</textarea>
+							</div>
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-primary">Inviter</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

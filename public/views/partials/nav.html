@@ -1,4 +1,5 @@
 <div ng-include="'partials/modal_login'"></div>
+<div ng-include="'partials/modal_invite_friends'"></div>
 <nav class="navbar navbar-trans navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
@@ -26,6 +27,7 @@
                 <button type="button" class="btn btn-primary btn-block btn-sm picthome" ng-if="!isAuthenticated" ng-click="login()">Connection</button>
                 <li ng-if="isAuthenticated"><a href="/myjourney"><i class="fa fa-road"></i></a></li>
                 <li ng-if="isAuthenticated"><a href="/inbox"><i class="fa fa-inbox"></i></a></li>
+				<li ng-if="isAuthenticated"><a href="#" ng-click="inviteFriend()"><i class="fa fa-comments-o"></i></a></li>
                 <li class="dropdown" ng-if="isAuthenticated">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-user fa-fw"></i><b class="caret"></b>

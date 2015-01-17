@@ -12,6 +12,7 @@ angular.module('runnable', [
     'ngSanitize',
     'ngMessages',
     'ui.bootstrap',
+    'btford.socket-io',
     'runnable.filters',
     'runnable.constant',
     'runnable.services',

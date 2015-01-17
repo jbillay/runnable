@@ -36,7 +36,9 @@ angular.module('runnable.controllers', []).
 			$scope.forReset = false;
 			angular.element('#loginModal').modal('show');
 		};
-
+		$scope.inviteFriend = function () {
+			angular.element('#modalInviteFriends').modal('show');
+		};
 		$rootScope.$on('USER_MSG', function (event, msg) {
 			var obj_msg = angular.fromJson(msg);
 			var text = USER_MSG[obj_msg.msg];
@@ -61,6 +63,15 @@ angular.module('runnable.controllers', []).
 					closeWith: ['click'] // ['click', 'button', 'hover']
 				});
 		});
+	}).
+	controller('RunnableSharedController', function ($scope, Session) {
+		$scope.inviteMessage = "J’utilise My Run Trip pour suivre mes organiser mon transport " +
+			"jusqu'aux différentes courses. Cela me permet de faire des économies à jusqu'une de mes courses. " +
+			"Je pense que tu devrais t’inscrire pour que nous puissions, chacun, voyager ensemble pour " +
+			"notre prochaine course.- " + Session.userFirstname;
+		$scope.inviteFriends = function (inviteData) {
+			angular.element('#modalInviteFriends').modal('hide');
+		};
 	}).
 	controller('RunnableLoginController', function ($scope, $rootScope, AUTH_EVENTS, AuthService) {
 		$scope.credentials = {
@@ -396,7 +407,8 @@ angular.module('runnable.controllers', []).
 			}
 		}
 	}).
-	controller('RunnableMyJourneyController', function ($scope, $q, $timeout, User, Discussion, GoogleMapApi, Socket) {
+	controller('RunnableMyJourneyController', function ($scope, $q, $timeout, User, Discussion,
+														GoogleMapApi, Socket, Session) {
 		'use strict';
 		$scope.page = 'MyJourney';
 		var userJourneyPromise = User.getJourney(),
@@ -446,9 +458,9 @@ angular.module('runnable.controllers', []).
 			var text = String($scope.newMessageEntry).replace(/<[^>]+>/gm, '');
 			$scope.newMessageEntry = '';
 			Socket.emit('discussion:newMessage',
-				{"message": text, "createdAt": Date.now(), "User": {"firstname": "test", "lastname": "tests"}});
-			$scope.discussionMessages.unshift(
-				{"message": text, "createdAt": Date.now(), "User": {"firstname": "test", "lastname": "tests"}});
+				{"message": text, "createdAt": Date.now(), "User":
+					{"firstname": Session.userFirstname, "lastname": Session.userLastname}
+				});
 			Discussion.addMessage(text, $scope.selectedJourney.id);
 		};
 		Socket.on('discussion:newMessage', function (data) {
