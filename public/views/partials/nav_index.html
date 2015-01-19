@@ -13,15 +13,16 @@
         </div>
         <div class="navbar-collapse collapse" id="navbar-collapsible">
             <ul class="nav navbar-nav navbar-left">
-                <li><a href="#inscription">Acceuil</a></li>
+                <li ng-if="isAuthenticated"><a href="#inscription">Accueil</a></li>
+                <li ng-if="!isAuthenticated"><a href="#inscription">Inscription</a></li>
                 <li><a href="#course">Courses</a></li>
                 <li><a href="#itineraire">Itinéraires</a></li>
                 <li><a href="#fonctionnement">Fonctionnement</a></li>
                 <li><a href="#apropos">A propos</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <button type="button" class="btn btn-primary btn-block btn-sm picthome" ng-if="!isAuthenticated" ng-click="login()">Connection</button>
-                <li ng-if="isAuthenticated"><a href="/myjourney"><i class="fa fa-road"></i></a></li>
+                <button type="button" class="btn btn-primary btn-block btn-sm picthome" ng-if="!isAuthenticated" ng-click="showLogin()">Connection</button>
+                <li ng-if="isAuthenticated"><a href="/myjourney" alt="Mes parcours"><i class="fa fa-road"></i></a></li>
                 <li ng-if="isAuthenticated"><a href="/inbox"><i class="fa fa-inbox"></i></a></li>
 				<li ng-if="isAuthenticated"><a href="#" ng-click="inviteFriend()"><i class="fa fa-comments-o"></i></a></li>
                 <li class="dropdown" ng-if="isAuthenticated">

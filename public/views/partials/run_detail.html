@@ -5,7 +5,7 @@
 		<div class="panel panel-default">
 			<div class="panel-heading clearfix">
 				<h3 class="pull-left">{{run.name}}</h3>
-				<div class="pull-right"><a class="btn btn-sm btn-success" href="/journey-create" role="button">Proposer un parcours</a></div>
+				<div class="pull-right"><a class="btn btn-sm btn-success" ng-click="createJourney()" role="button">Proposer un parcours</a></div>
 			</div>
 			<div class="panel-body">
 				<div class="col-sm-4">
@@ -29,7 +29,7 @@
 			<div class="row">
 				<div ng-if="journeyList.length === 0">
 					<p>Aucun parcours pour cette course actuellement.<br>N'hésitez pas à en proposer un en quelques secondes !</p>
-					<a class="btn btn-success" href="/journey-create" role="button">Proposer un parcours</a>
+					<a class="btn btn-success" href="#" ng-click="createJourney()" role="button">Proposer un parcours</a>
 				</div>
 				<div ng-repeat="journey in journeyList">
 					<div class="panel panel-default">

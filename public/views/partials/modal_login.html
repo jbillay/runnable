@@ -1,4 +1,4 @@
-<div class="modal fade bs-example-modal-lg" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+<div class="modal fade" id="loginModal" tabindex="-1" ng-controller="RunnableLoginController" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-sm">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -10,8 +10,7 @@
 			<div class="row">
 				<div class="modal-body">
 					<div class="col-sm-12 text-center">
-						<form name="loginForm" ng-controller="RunnableLoginController"
-							  ng-submit="login(credentials)" novalidate ng-if='forLogin'>
+						<form name="loginForm" ng-submit="login(credentials)" novalidate ng-if='forLogin'>
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
 								<input class="form-control" type="text" ng-model="credentials.email"
@@ -26,7 +25,7 @@
 								<button type="submit" class="btn btn-primary">Connection</button>
 							</div>
 						</form>
-						<form name="loginForm" ng-controller="RunnableLoginController"
+						<form name="loginForm"
 							  ng-submit="reset(reset.email)" novalidate ng-if='forReset'>
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>

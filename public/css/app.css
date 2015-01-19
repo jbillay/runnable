@@ -326,6 +326,19 @@ div.journey_price_journey {
 	margin-bottom: 15px;
 }
 
+.invite_email {
+	width: 480px;
+}
+
+.invite_message_label {
+	width: 480px;
+}
+
+.invite_message {
+	width: 480px !important;
+	height: 150px !important;
+}
+
 table.palmares {
 	margin-top: 20px;
 	margin-bottom: 35px;

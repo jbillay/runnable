@@ -31,7 +31,7 @@ angular.module('runnable.controllers', []).
 			$scope.forLogin = false;
 			$scope.forReset = true;
 		};
-		$scope.login = function () {
+		$scope.showLogin = function () {
 			$scope.forLogin = true;
 			$scope.forReset = false;
 			angular.element('#loginModal').modal('show');
@@ -64,13 +64,18 @@ angular.module('runnable.controllers', []).
 				});
 		});
 	}).
-	controller('RunnableSharedController', function ($scope, Session) {
-		$scope.inviteMessage = "J’utilise My Run Trip pour suivre mes organiser mon transport " +
-			"jusqu'aux différentes courses. Cela me permet de faire des économies à jusqu'une de mes courses. " +
-			"Je pense que tu devrais t’inscrire pour que nous puissions, chacun, voyager ensemble pour " +
-			"notre prochaine course.- " + Session.userFirstname;
+	controller('RunnableSharedController', function ($scope, Session, User) {
+		$scope.invitForm = {
+			"inviteMessage": "J’utilise My Run Trip pour organiser mes voyages jusqu'aux différentes courses. " +
+			"Cela me permet de faire des économies sur tous mes trajets. " +
+			"Je pense que tu devrais t’inscrire pour que nous puissions organiser ensemble notre voyage " +
+			"jusqu'à la prochaine course.- " + Session.userFirstname,
+			"inviteEmails": ""
+		};
 		$scope.inviteFriends = function (inviteData) {
 			angular.element('#modalInviteFriends').modal('hide');
+			User.inviteFriends(inviteData);
+			inviteData.inviteEmails = "";
 		};
 	}).
 	controller('RunnableLoginController', function ($scope, $rootScope, AUTH_EVENTS, AuthService) {
@@ -201,7 +206,7 @@ angular.module('runnable.controllers', []).
 		};
 	}).
 	controller('RunnableRunDetailController', function ($scope, $q, $timeout, $routeParams,
-														Run, Journey, GoogleMapApi, Session) {
+														Run, Journey, GoogleMapApi, Session, $location) {
         'use strict';
         $scope.page = 'Run';
 		$scope.runId = $routeParams.runId;
@@ -227,6 +232,14 @@ angular.module('runnable.controllers', []).
 				});
 			}
 		});
+		$scope.createJourney = function () {
+			console.log('Email user : ' + Session.userEmail);
+			if (!Session.userEmail) {
+				$scope.showLogin();
+			} else {
+				$location.path('/create-journey');
+			}
+		};
     }).
     controller('RunnableRunController', function ($scope, $q, $timeout, Run, GoogleMapApi) {
         'use strict';
@@ -267,7 +280,7 @@ angular.module('runnable.controllers', []).
 		$scope.calFormat = 'dd/MM/yyyy';
     }).
 	controller('RunnableJourneyDetailController', function ($scope, $q, $routeParams, $rootScope, $timeout,
-															Run, Journey, Join, GoogleMapApi, MyRunTripFees) {
+															Run, Journey, Join, GoogleMapApi, MyRunTripFees, Session) {
 		'use strict';
 		$scope.page = 'Journey';
 		$scope.journeyId = $routeParams.journeyId;
@@ -324,7 +337,11 @@ angular.module('runnable.controllers', []).
 
 		};
 		$scope.showJoinForm = function () {
-			angular.element('#clientModal').modal('show');
+			if (!Session.userEmail) {
+				$scope.showLogin();
+			} else {
+				angular.element('#clientModal').modal('show');
+			}
 		};
 		$scope.joinJourney = function () {
 			$scope.joined = 1;

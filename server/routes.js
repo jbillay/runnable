@@ -16,6 +16,7 @@ module.exports = function (app, passport, auth) {
 	app.post('/api/user', controllers.user.create);
 	app.post('/api/user/password/reset', controllers.user.resetPassword);
 	app.post('/api/user/password/update', controllers.user.updatePassword);
+	app.post('/api/user/invite', controllers.user.invite);
     app.get('/api/user/active/:id/:hash', controllers.user.active);
     app.get('/api/user/:id/:hash', controllers.user.active);
 	app.get('/api/user/me', auth.requiresLogin, controllers.user.me);

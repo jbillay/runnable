@@ -12,15 +12,15 @@
 					<div class="col-md-12">
 						<h4>Message d'invitation</h4>
 						<hr>
-						<form name="inviteForm" ng-controller="RunnableSharedController" ng-submit="inviteFriends(credentials)" novalidate>
+						<form name="inviteForm" ng-controller="RunnableSharedController" ng-submit="inviteFriends(invitForm)" novalidate>
 							<div class="input-group invite_margin">
 								<label class="control-label" for="inviteEmails">Adresses e-mail (séparées par des virgules)</label>
-								<textarea class="form-control" ng-model="inviteEmails" id="inviteEmails">
+								<textarea class="form-control invite_email" ng-model="invitForm.inviteEmails" id="inviteEmails">
 								</textarea>
 							</div>
 							<div class="input-group invite_margin">
-								<label class="control-label" for="inviteMessage">Message</label>
-								<textarea class="form-control" ng-model="inviteMessage" id="inviteMessage">
+								<label class="control-label invite_message_label" for="inviteMessage">Message</label>
+								<textarea class="form-control invite_message" ng-model="invitForm.inviteMessage" id="inviteMessage">
 								</textarea>
 							</div>
 							<div class="modal-footer">

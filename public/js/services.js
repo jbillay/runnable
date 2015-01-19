@@ -167,6 +167,18 @@ angular.module('runnable.services', ['ngResource']).
 						console.log('Error : ' + status);
 					});
 				return deferred.promise;
+			},
+			inviteFriends: function (inviteData) {
+				var deferred = $q.defer();
+				$http.post("/api/user/invite", {"data": inviteData}).
+					success(function (result) {
+						$rootScope.$broadcast('USER_MSG', result);
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+				return deferred.promise;
 			}
 		}
     }).

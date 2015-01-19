@@ -1,10 +1,20 @@
 
 /*jslint node: true */
 
+var settings = require('../../conf/config');
 var User = require('../objects/user');
 var Mail = require('../objects/mail');
 var Journey = require('../objects/journey');
 var Join = require('../objects/join');
+
+exports.invite = function(req, res) {
+	"use strict";
+	var html,
+		text,
+		mail = new Mail();
+	console.log('Inivite person: ' + req.body.data.inviteEmails);
+	res.jsonp('{"msg": "done"}');
+};
 
 exports.create = function(req, res) {
     "use strict";
@@ -32,7 +42,7 @@ exports.create = function(req, res) {
 						newUser.save();
 					}
 				});
-				var url = req.get('host');
+				var url = settings.domain;
 				mail.setTo(user.email);
 				mail.setSubject("Activation de votre compte runnable");
 				html = "Vous venez de créer un compte sur notre site runnable<br/>" +
