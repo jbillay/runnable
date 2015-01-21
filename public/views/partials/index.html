@@ -6,48 +6,49 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-4 col-sm-offset-4 text-center inscription-form" ng-if="!isAuthenticated">
-                <form action="/api/user" method="post" role="form">
+                <form name="userCreateFrom" role="form" ng-submit="createUser(userCreate)">
                     <div class="row">
                         <div class="col-xs-6 col-sm-6 col-md-6 inscription-form-left">
                             <div class="form-group inscription-form-group">
-                                <input type="text" name="user[firstname]" id="firstname"
+                                <input type="text" name="user[firstname]" id="firstname" ng-model="userCreate.firstname"
                                        class="form-control input-sm" placeholder="Prénom" tabindex="1">
                             </div>
                         </div>
                         <div class="col-xs-6 col-sm-6 col-md-6 inscription-form-right">
                             <div class="form-group inscription-form-group">
-                                <input type="text" name="user[lastname]" id="lastname" class="form-control input-sm"
-                                       placeholder="Nom" tabindex="2">
+                                <input type="text" name="user[lastname]" id="lastname" ng-model="userCreate.lastname"
+									class="form-control input-sm" placeholder="Nom" tabindex="2">
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <div class="form-group inscription-form-group">
-                                <input type="text" name="user[address]" id="address" class="form-control input-sm"
-                                       placeholder="Adresse" tabindex="3">
+                                <input type="text" name="user[address]" id="address" ng-model="userCreate.address"
+									class="form-control input-sm" placeholder="Adresse" tabindex="3">
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <div class="form-group inscription-form-group">
-                                <input type="email" name="user[email]" id="email" class="form-control input-sm"
-                                       placeholder="Email" tabindex="4">
+                                <input type="email" name="user[email]" id="email" ng-model="userCreate.email"
+									class="form-control input-sm" placeholder="Email" tabindex="4">
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-6 col-sm-6 col-md-6 inscription-form-left">
                             <div class="form-group inscription-form-group">
-                                <input type="password" name="user[password]" id="password"
+                                <input type="password" name="user[password]" id="password" ng-model="userCreate.password"
                                        class="form-control input-sm" placeholder="Mot de passe" tabindex="5">
                             </div>
                         </div>
                         <div class="col-xs-6 col-sm-6 col-md-6 inscription-form-right">
                             <div class="form-group inscription-form-group">
                                 <input type="password" name="user[password_confirmation]" id="password_confirmation"
-                                       class="form-control input-sm" placeholder="Confirmation" tabindex="6">
+									ng-model="userCreate.password_confirmation" class="form-control input-sm" 
+									placeholder="Confirmation" tabindex="6">
                             </div>
                         </div>
                     </div>

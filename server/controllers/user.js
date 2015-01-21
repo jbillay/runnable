@@ -6,14 +6,29 @@ var User = require('../objects/user');
 var Mail = require('../objects/mail');
 var Journey = require('../objects/journey');
 var Join = require('../objects/join');
+var _ = require('lodash');
 
 exports.invite = function(req, res) {
 	"use strict";
 	var html,
 		text,
+		emails = [],
 		mail = new Mail();
-	console.log('Inivite person: ' + req.body.data.inviteEmails);
-	res.jsonp('{"msg": "done"}');
+	console.log('Invite person: %j', req.body);
+	emails = req.body.emails.split(",");
+	emails = _.compact(emails);
+	emails.forEach(function(email) {
+		email = email.trim();
+		mail.setTo(req.user.email);
+		mail.setSubject("Rejoins moi sur My Run Trip");
+		html = req.body.message;
+		text = req.body.message;
+		mail.setContentHtml(html);
+		mail.setText(text);
+		mail.send();
+		console.log('Invite sent to : ' + email);
+	});
+	res.jsonp('{"msg": "Invitation(s) envoyée(s)"}');
 };
 
 exports.create = function(req, res) {
@@ -21,19 +36,16 @@ exports.create = function(req, res) {
 	var html,
 		text,
 		mail = new Mail();
-	console.log('Add user : ' + req.body.user.email);
-	if (req.body.user.password === req.body.user.password_confirmation) {
+	console.log('Add user : ' + req.body.email);
+	if (req.body.password === req.body.password_confirmation) {
 		var user = new User();
-		user.set(req.body.user);
+		user.set(req.body);
 		user.save(function (err, newUser) {
 			if (err) {
 				console.log('Account not created ' + err);
-				req.flash('indexMessage',
-					"Désolé votre compte n'a pas pu être créé car votre adresse email existe déjà !");
-				res.redirect('/');
+				res.jsonp('{"msg": "existingAccount", "type": "error"}');
 			} else {
 				console.log('Account created');
-				req.flash('indexMessage', "Vous allez recevoir un email pour l'activation de votre compte!");
 				user.getItraCode(function (err, code) {
 					if (err) {
 						console.log('ITRA cannot be retrieve');
@@ -42,27 +54,27 @@ exports.create = function(req, res) {
 						newUser.save();
 					}
 				});
-				var url = settings.domain;
+				var url = settings.domain,
+					timekey = new Date(newUser.createdAt).getTime();
 				mail.setTo(user.email);
 				mail.setSubject("Activation de votre compte runnable");
 				html = "Vous venez de créer un compte sur notre site runnable<br/>" +
 					"Pour l'activer veuillez cliquer sur le lien suivant :<br/>" +
-					"http://" + url + "/api/user/active/" + newUser.id + "/" + newUser.hashedPassword +
+					"http://" + url + "/api/user/active/" + newUser.id + "/" + timekey +
 					"<br/> Merci l'intérêt que vous porter à notre site";
 				text = "Vous venez de créer un compte sur notre site runnable. " +
 					"Pour l'activer veuillez copiez/coller le lien suivant dans votre navigateur" +
-					"http://" + url + "/api/user/active/" + newUser.id + "/" + newUser.hashedPassword +
+					"http://" + url + "/api/user/active/" + newUser.id + "/" + timekey +
 					" Merci l'intérêt que vous porter à notre site";
 				mail.setContentHtml(html);
 				mail.setText(text);
 				mail.send();
-				res.redirect('/');
+				res.jsonp('{"msg": "accountCreated", "type": "success"}');
 			}
 		});
 	} else {
-		console.log('Problem de mot de passe');
-		req.flash('indexMessage', "Attention, les deux mots de passe sont différents");
-		res.redirect('/');
+		console.log('Two passwords are different');
+		res.jsonp('{"msg": "wrongPassword", "type": "error"}');
 	}
 };
 
@@ -210,7 +222,7 @@ exports.active = function(req, res) {
 	"use strict";
 	console.log('Try to activate account ' + req.params.id);
 	var user = new User();
-	user.activate(req.params.id, req.params.hash, function (err) {
+	user.activate(req.params.id, req.params.hash, function (err, data) {
 		if (err) {
 			req.flash('indexMessage', "Votre compte n'a pas pu être activé");
 			res.redirect('/');
@@ -230,7 +242,7 @@ exports.toggleAdmin = function (req, res) {
 			console.log('Not able to toggle admin flag for user : ' + err);
 			res.jsonp('{"msg": ' + err + '}');
 		} else {
-			res.jsonp('{"msg": "done"}');
+			res.jsonp('{"msg": "Modification effectuée", "type": "success"}');
 		}
 	});
 };

@@ -68,12 +68,14 @@ angular.module('runnable.controllers', []).
 		$scope.invitForm = {
 			"inviteMessage": "J’utilise My Run Trip pour organiser mes voyages jusqu'aux différentes courses. " +
 			"Cela me permet de faire des économies sur tous mes trajets. " +
-			"Je pense que tu devrais t’inscrire pour que nous puissions organiser ensemble notre voyage " +
+			"Rejoins moi en t’inscrivant sur http://www.myruntrip.fr pour que nous puissions organiser ensemble notre voyage " +
 			"jusqu'à la prochaine course.- " + Session.userFirstname,
 			"inviteEmails": ""
 		};
 		$scope.inviteFriends = function (inviteData) {
 			angular.element('#modalInviteFriends').modal('hide');
+			console.log('Data for email invitation');
+			console.log(inviteData);
 			User.inviteFriends(inviteData);
 			inviteData.inviteEmails = "";
 		};
@@ -117,6 +119,10 @@ angular.module('runnable.controllers', []).
 				});
 			});
 		});
+		$scope.createUser = function (user) {
+			console.log(user);
+			User.create(user);
+		};
 	}).
 	controller('RunnableProfileController', function ($scope, $q, $rootScope, $location, $sce, User) {
 		'use strict';

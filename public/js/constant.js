@@ -24,5 +24,8 @@ angular.module('runnable.constant', []).
 		passwordUpdated:	"Votre mot de passe a été mis à jour",
 		userAuthFailed:		"Problème d'authentification, votre compte n'est peut être pas activé",
 		notAuthenticated:	"Cette action nécessite une authentification, veuillez vous identifier",
-        userToggleActive:   "Le status de l'utilisateur a bien été changé"
+        userToggleActive:   "Le status de l'utilisateur a bien été changé",
+		wrongPassword:		"Les deux mots de passe sont différents",
+		existingAccount:	"Désolé votre compte n'a pas pu être créé car votre adresse email existe déjà",
+		accountCreated:		"Vous allez recevoir un email pour l'activation de votre compte"
 	});

@@ -71,21 +71,23 @@ user.prototype.save = function (done) {
 user.prototype.activate = function (id, hash, done) {
 	models.User.find({ where: {id: id}})
 		.then(function (user) {
+			console.log(hash);
+			console.log(user.createdAt);
 			if (hash === user.hashedPassword) {
 				user.isActive = true;
 				user.save()
 					.then(function (newUser) {
-						done(null);
+						done(null, null);
 					})
 					.catch(function (err) {
-						done(err);
+						done(err, null);
 					})
 			} else {
-				done(err);
+				done(err, null);
 			}
 		})
 		.catch(function (err) {
-			done(err);
+			done(err, null);
 		});
 };
 
