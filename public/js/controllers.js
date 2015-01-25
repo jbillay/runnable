@@ -208,8 +208,8 @@ angular.module('runnable.controllers', []).
 			}
 		};
 	}).
-	controller('RunnableRunDetailController', function ($scope, $q, $timeout, $routeParams,
-														Run, Journey, GoogleMapApi, Session, $location) {
+	controller('RunnableRunDetailController', function ($scope, $q, $timeout, $routeParams, $location,
+														Run, Journey, GoogleMapApi, Session, Participate) {
         'use strict';
         $scope.page = 'Run';
 		$scope.runId = $routeParams.runId;
@@ -242,6 +242,13 @@ angular.module('runnable.controllers', []).
 				$location.path('/journey-create');
 			}
 		};
+        $scope.participateRun = function () {
+            if (!Session.userEmail) {
+                $scope.showLogin();
+            } else {
+                Participate.add($scope.run.id);
+            }
+        };
     }).
     controller('RunnableRunCreateController', function ($scope, $q, $timeout, Run, GoogleMapApi) {
         'use strict';

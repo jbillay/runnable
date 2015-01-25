@@ -45,7 +45,9 @@ module.exports = function (app, passport, auth) {
 	app.get('/api/join/:id', auth.requiresLogin, controllers.join.detail);
     app.get('/api/join/journey/:id', controllers.join.listForJourney);
 	app.get('/api/join/remove/:id', auth.requiresLogin, controllers.join.remove);
-	
+
+    app.post('/api/participate/add', auth.requiresLogin, controllers.participate.add);
+
 	app.get('/api/admin/users', auth.requireAdmin, controllers.user.list);
 	app.get('/api/admin/runs', auth.requireAdmin, controllers.run.list);
 	app.get('/api/admin/joins', auth.requireAdmin, controllers.join.list);

@@ -29,5 +29,7 @@ angular.module('runnable.constant', []).
 		existingAccount:	"Désolé votre compte n'a pas pu être créé car votre adresse email existe déjà",
 		accountCreated:		"Vous allez recevoir un email pour l'activation de votre compte",
 		notJoined:			"Nous n'avons pas réussi à enregistrer votre participation. Veuillez recommencer svp",
-		userJoined:			"Nous vous confirmons la réception de votre demande de participation à ce voyage"
+		userJoined:			"Nous vous confirmons la réception de votre demande de participation à ce voyage",
+        notAbleParticipate: "Désolé cette course n'a pas pu être ajoutée à votre agenda",
+        addParticipate:     "Cette course a été ajoutée à votre agenda"
 	});

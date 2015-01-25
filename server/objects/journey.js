@@ -2,7 +2,6 @@
 
 var models = require('../models');
 var Run = require('./run');
-var async = require('async');
 
 function journey() {
     'use strict';

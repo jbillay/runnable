@@ -467,6 +467,24 @@ angular.module('runnable.services', ['ngResource']).
 			}
 		};
     }).
+    factory('Participate', function ($q, $http, $rootScope) {
+        'use strict';
+        return {
+            add: function (runId) {
+                var deferred = $q.defer();
+                $http.post("/api/participate/add", {"runId": runId}).
+                    success(function (result) {
+                        $rootScope.$broadcast('USER_MSG', result);
+                        deferred.resolve(result);
+                    }).
+                    error(function (data, status) {
+                        console.log('Error : ' + status);
+                        deferred.resolve(data);
+                    });
+                return deferred.promise;
+            }
+        }
+    }).
     factory('Journey', function ($q, $http) {
         'use strict';
         return {
