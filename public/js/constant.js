@@ -27,5 +27,7 @@ angular.module('runnable.constant', []).
         userToggleActive:   "Le status de l'utilisateur a bien été changé",
 		wrongPassword:		"Les deux mots de passe sont différents",
 		existingAccount:	"Désolé votre compte n'a pas pu être créé car votre adresse email existe déjà",
-		accountCreated:		"Vous allez recevoir un email pour l'activation de votre compte"
+		accountCreated:		"Vous allez recevoir un email pour l'activation de votre compte",
+		notJoined:			"Nous n'avons pas réussi à enregistrer votre participation. Veuillez recommencer svp",
+		userJoined:			"Nous vous confirmons la réception de votre demande de participation à ce voyage"
 	});

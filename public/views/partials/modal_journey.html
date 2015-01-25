@@ -43,7 +43,7 @@
                                             <div class="col-sm-6" ng-if="selectedJoin">
                                                 <span class="pull-right journey_space_positive">{{selectedJoin.nb_place_outward}} place(s) réservée(s)</span>
                                             </div>
-                                            <div class="col-sm-6" ng-if="selectedJourney.nb_free_place_outward != null">
+                                            <div class="col-sm-6" ng-if="selectedJourney.nb_free_place_outward !== null && selectedJoin === null"">
 												<span class="pull-right journey_space_positive">{{selectedJourney.nb_free_place_outward}} place(s) restantes(s)</span>
                                             </div>
                                         </div>
@@ -59,7 +59,7 @@
                                             <div class="col-sm-6" ng-if="selectedJoin">
                                                 <span class="pull-right journey_space_positive">{{selectedJoin.nb_place_return}} place(s) réservée(s)</span>
                                             </div>
-                                            <div class="col-sm-6" ng-if="selectedJourney.nb_free_place_return != null">
+                                            <div class="col-sm-6" ng-if="selectedJourney.nb_free_place_return !== null && selectedJoin === null">
 												<span class="pull-right journey_space_positive">{{selectedJourney.nb_free_place_return}} place(s) restantes(s)</span>
                                             </div>
                                         </div>

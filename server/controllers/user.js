@@ -56,6 +56,7 @@ exports.create = function(req, res) {
 				});
 				var url = settings.domain,
 					timekey = new Date(newUser.createdAt).getTime();
+				console.log("http://" + url + "/api/user/active/" + newUser.id + "/" + timekey);
 				mail.setTo(user.email);
 				mail.setSubject("Activation de votre compte runnable");
 				html = "Vous venez de créer un compte sur notre site runnable<br/>" +
@@ -87,7 +88,8 @@ exports.me = function(req, res) {
 exports.showRuns = function(req, res) {
 	"use strict";
 	var user = new User();
-	user.getRuns(req.user, function (err, runs) {
+	var currentUser = req.user;
+	user.getRuns(currentUser, function (err, runs) {
 		if (err) {
 			res.jsonp('Impossible de récupérer les informations sur le site i-tra.org');
 		} else {
@@ -243,6 +245,20 @@ exports.toggleAdmin = function (req, res) {
 			res.jsonp('{"msg": ' + err + '}');
 		} else {
 			res.jsonp('{"msg": "Modification effectuée", "type": "success"}');
+		}
+	});
+};
+
+exports.publicInfo = function (req, res) {
+	'use strict';
+	var userId = req.params.id,
+		user = new User();
+	user.getPublicInfo(userId, function(err, user) {
+		if (err) {
+			console.log('[ERROR] Not able to user public info: ' + err);
+			res.jsonp('{"msg": ' + err + ', "type": "error"}');
+		} else {
+			res.jsonp(user);
 		}
 	});
 };

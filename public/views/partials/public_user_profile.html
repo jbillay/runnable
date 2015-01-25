@@ -1,0 +1,33 @@
+<div ng-include="'partials/nav'"></div>
+
+<div class="container body">
+    <div class="row spacehead">
+        <div class="col-sm-12">
+        	<h2>{{userPublicInfo.firstname | capitalize}} {{userPublicInfo.lastname | capitalize}}</h2>
+        	<hr>
+        	<h3>Profil</h3>
+    		<div>
+	        	<table class="table table-no-border">
+	        		<tr>
+	        			<td><h5><i class="fa fa-map-marker"></i> {{userPublicInfo.address}}</h5></td>
+	        		</tr>
+	        		<tr>
+	        			<td><h5><i class="fa fa-clock-o"></i> Inscrit(e) depuis {{sinceCreation}} jour(s)</h5></td>
+	        		</tr>
+	        	</table>
+    		</div>
+        	<h3>Historique</h3>
+    		<div>
+	        	<table class="table table-no-border">
+	        		<tr>
+	        			<td><h5><i class="fa fa-automobile"></i> {{userNbJourney}} voyage(s) organisé(s)</h5></td>
+	        		</tr>
+	        		<tr>
+	        			<td><h5><i class="fa fa-users"></i> {{userNbJoin}} participation(s) à un voyage</h5></td>
+	        		</tr>
+	        	</table>
+	        </div>
+        </div>
+    </div>
+</div>
+<div ng-include="'partials/footer'"></div>

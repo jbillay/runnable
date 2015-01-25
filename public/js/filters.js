@@ -10,7 +10,7 @@ angular.module('runnable.filters', []).
 			return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}) : '';
 		}
 	}).
-    filter('interpolate', function (version) {
+	filter('interpolate', function (version) {
         'use strict';
         return function (text) {
             return String(text).replace(/\%VERSION\%/mg, version);

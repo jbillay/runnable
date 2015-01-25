@@ -7,11 +7,10 @@ exports.create = function (req, res) {
 	var join = new Join();
 	join.save(req.body, req.user, function (err, join) {
 		if (err) {
-			console.log('user not join the journey ' + err);
-			res.redirect('/');
+			res.jsonp('{"msg": "notJoined", "type": "error"}');
 		} else {
 			console.log('User joined the journey');
-			res.redirect('/checkout');
+			res.jsonp('{"msg": "userJoined", "type": "success"}');
 		}
 	});
 };

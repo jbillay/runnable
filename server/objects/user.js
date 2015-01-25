@@ -64,6 +64,7 @@ user.prototype.save = function (done) {
 			done(null, newUser);
 		})
 		.catch(function (err) {
+			console.log(err);
 			done(err, null);
 		});
 };
@@ -71,19 +72,20 @@ user.prototype.save = function (done) {
 user.prototype.activate = function (id, hash, done) {
 	models.User.find({ where: {id: id}})
 		.then(function (user) {
-			console.log(hash);
-			console.log(user.createdAt);
-			if (hash === user.hashedPassword) {
+			var userhash = new Date(user.createdAt).getTime().toString();
+			if (hash === userhash) {
 				user.isActive = true;
 				user.save()
 					.then(function (newUser) {
+						console.log('Activation done');
 						done(null, null);
 					})
 					.catch(function (err) {
 						done(err, null);
 					})
 			} else {
-				done(err, null);
+				console.log('Failed on activation');
+				done(new Error('key different'), null);
 			}
 		})
 		.catch(function (err) {
@@ -181,6 +183,16 @@ user.prototype.toggleActive = function (id, done) {
 				.then(function (newUser) {
 					done(null, newUser);
 				});
+		})
+		.catch(function (err) {
+			done(err, null);
+		});
+};
+
+user.prototype.getPublicInfo = function (id, done) {
+	models.User.find({where: {id: id}, include: [models.Journey, models.Join]})
+		.then(function (user) {
+			done(null, user);
 		})
 		.catch(function (err) {
 			done(err, null);

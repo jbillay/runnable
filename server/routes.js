@@ -23,6 +23,8 @@ module.exports = function (app, passport, auth) {
     app.get('/api/user/runs', auth.requiresLogin, controllers.user.showRuns);
     app.get('/api/user/journeys', auth.requiresLogin, controllers.user.showJourneys);
     app.get('/api/user/joins', auth.requiresLogin, controllers.user.showJoins);
+    app.get('/api/user/public/info/:id', controllers.user.publicInfo);
+    app.get('/api/user/runs/:id', controllers.user.showRuns);
     
     app.post('/api/run', auth.requiresLogin, controllers.run.create);
     app.get('/api/run/list', controllers.run.activeList);

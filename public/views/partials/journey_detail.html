@@ -76,7 +76,7 @@
 						<input type="hidden" name="currency_code" value="EUR">
 						<input type="hidden" name="country" value="FR">
 						<input type="hidden" name="item_name" value="Parcours My Run Trip">
-						<input type="hidden" name="amount" value="{{(selectedPlaceOutward + selectedPlaceReturn ) * journey.amount + calculateFees()}}">
+						<input type="hidden" name="amount" value="{{(selectedPlaceOutward + selectedPlaceReturn ) * journey.amount + calculateFees() | number:2}}">
 						<button type="submit" class="btn btn-primary btn-block" value="Procéder au paiement" ng-click="joinJourney()">Procéder au paiement</button>
 					</form>
 				</div>
@@ -96,9 +96,20 @@
 				</div>
 				<div class="panel-body">
 					<div class="col-sm-6">
-						<p><i class="fa fa-arrows-h"></i> {{journey.distance}}</p>
-						<p><i class="fa fa-history"></i> {{journey.duration}}</p>
-						<p><i class="fa fa-car"></i> {{journey.car_type | capitalize}}</p>
+						<table class="table table-no-border">
+							<tr>
+								<td><i class="fa fa-arrows-h"></i></td><td>{{journey.distance}}</td>
+							</tr>
+							<tr>
+								<td><i class="fa fa-history"></i></td><td>{{journey.duration}}</td>
+							</tr>
+							<tr>
+								<td><i class="fa fa-car"></i></td><td>{{journey.car_type | capitalize}}</td>
+							</tr>
+							<tr>
+								<td><i class="fa fa-user"></i></td><td><a href="/user-{{journey.User.id}}">{{journey.User.firstname}} {{journey.User.lastname}}</a></td>
+							</tr>
+						</table>
 					</div>
 					<div class="col-sm-6 journey_price_journey">
 						<div class="pull-right journey_price_journey">{{journey.amount | currency:'€ '}}</div>
@@ -137,7 +148,7 @@
 							Participer à ce voyage
 					</button>
 				</div>
-					<button type="button" class="btn btn-success" ng-if="joined" ng-click="removeJoinJourney()">
+					<button type="button" class="btn btn-success" ng-if="joined">
 							Je participe à ce voyage
 					</button>
 			</div>

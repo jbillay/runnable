@@ -23,7 +23,8 @@ module.exports = function(sequelize, DataTypes) {
 		classMethods: {
 			associate: function(models) {
 				User.hasMany(models.Run),
-				User.hasMany(models.Journey)
+				User.hasMany(models.Journey),
+				User.hasMany(models.Join)
 			}
 		},
 		instanceMethods: {

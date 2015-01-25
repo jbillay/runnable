@@ -103,9 +103,25 @@ angular.module('runnable.services', ['ngResource']).
 					});
                 return deferred.promise;
             },
-			getItraRuns: function () {
+            getPublicInfo: function (userId) {
+                var deferred = $q.defer();
+                $http.get("/api/user/public/info/" + userId).
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ', data);
+						deferred.resolve(data);
+					});
+                return deferred.promise;
+            },
+			getItraRuns: function (userId) {
 				var deferred = $q.defer();
-				$http.get("/api/user/runs").
+				var url = "/api/user/runs";
+				if (userId) {
+					url = url + '/' + userId;
+				}
+				$http.get(url).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -184,7 +200,6 @@ angular.module('runnable.services', ['ngResource']).
 			inviteFriends: function (inviteData) {
 				var deferred = $q.defer(),
 					info = {emails: inviteData.inviteEmails, message: inviteData.inviteMessage};
-				console.log(inviteData);
 				$http.post("/api/user/invite", info).
 					success(function (result) {
 						$rootScope.$broadcast('USER_MSG', result);
@@ -232,8 +247,8 @@ angular.module('runnable.services', ['ngResource']).
 			initMap: function (object, address) {
 				$rootScope[object] = [];
 				var mapOptions = {
-				  center: { lat: 46.22764, lng: 2.21375},
-				  zoom: 5
+					center: { lat: 46.22764, lng: 2.21375},
+					zoom: 5
 				};
 				$rootScope[object].geocoder = new google.maps.Geocoder();
 				$rootScope[object].map = new google.maps.Map(document.getElementById(object), mapOptions);
@@ -313,14 +328,16 @@ angular.module('runnable.services', ['ngResource']).
         'use strict';
         return {
 			addJoin: function (id, nbSpaceOutward, nbSpaceReturn) {
-				var info = {journey_id: id, nb_place_outward: nbSpaceOutward, nb_place_return: nbSpaceReturn};
+				var deferred = $q.defer(),
+					info = {journey_id: id, nb_place_outward: nbSpaceOutward, nb_place_return: nbSpaceReturn};
 				$http.post("/api/join", info).
 					success(function (result) {
-						console.log('Journey joined');
+						deferred.resolve(result);
 					}).
 					error(function(data, status) {
 						console.log('Error : ' + status);
 					});
+				return deferred.promise;
 			},
 			getListForJourney: function (journey_id) {
 				var deferred = $q.defer();

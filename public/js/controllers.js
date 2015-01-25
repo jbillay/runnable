@@ -74,8 +74,6 @@ angular.module('runnable.controllers', []).
 		};
 		$scope.inviteFriends = function (inviteData) {
 			angular.element('#modalInviteFriends').modal('hide');
-			console.log('Data for email invitation');
-			console.log(inviteData);
 			User.inviteFriends(inviteData);
 			inviteData.inviteEmails = "";
 		};
@@ -120,7 +118,6 @@ angular.module('runnable.controllers', []).
 			});
 		});
 		$scope.createUser = function (user) {
-			console.log(user);
 			User.create(user);
 		};
 	}).
@@ -199,7 +196,7 @@ angular.module('runnable.controllers', []).
 			AuthService.reset(user.email);
 		};
 		$scope.userTrash = function (user) {
-			console.log('Trash the user ' + user.id);
+			console.log('NOT YET IMPLEMENTED : Trash the user ' + user.id);
 		};
 		$scope.runToggleActive = function(run) {
 			console.log('Toggle active for run : ' + run.id);
@@ -226,7 +223,6 @@ angular.module('runnable.controllers', []).
 				var obj = 'map_canvas_run';
 				GoogleMapApi.initMap(obj, $scope.run.address_start);
 				angular.forEach($scope.journeyList, function (journey) {
-					console.log(journey.address_start);
 					GoogleMapApi.showDirection(obj, journey.address_start, $scope.run.address_start);
 				});
 			});
@@ -243,11 +239,11 @@ angular.module('runnable.controllers', []).
 			if (!Session.userEmail) {
 				$scope.showLogin();
 			} else {
-				$location.path('/create-journey');
+				$location.path('/journey-create');
 			}
 		};
     }).
-    controller('RunnableRunController', function ($scope, $q, $timeout, Run, GoogleMapApi) {
+    controller('RunnableRunCreateController', function ($scope, $q, $timeout, Run, GoogleMapApi) {
         'use strict';
         $scope.page = 'Run';
 		var runPromise = Run.getActiveList(),
@@ -284,6 +280,15 @@ angular.module('runnable.controllers', []).
 			startingDay: 1
 		};
 		$scope.calFormat = 'dd/MM/yyyy';
+    }).
+    controller('RunnableRunController', function ($scope, $q, Run) {
+        'use strict';
+        $scope.page = 'Run';
+		var runPromise = Run.getActiveList(),
+            all = $q.all([runPromise]);
+        all.then(function (res) {
+			$scope.listRun = res[0];
+		});
     }).
 	controller('RunnableJourneyDetailController', function ($scope, $q, $routeParams, $rootScope, $timeout,
 															Run, Journey, Join, GoogleMapApi, MyRunTripFees, Session) {
@@ -464,15 +469,11 @@ angular.module('runnable.controllers', []).
 			all.then(function (res) {
 				$scope.discussionUsers = res[0];
 				$scope.discussionMessages = res[1];
-				console.log($scope.discussionMessages);
 				$timeout(function () {
 					var obj = "map_canvas";
 					GoogleMapApi.initMap(obj);
 					GoogleMapApi.showDirection(obj, $scope.selectedJourney.address_start,
 						$scope.selectedJourney.Run.address_start);
-				});
-				Socket.on('send:message', function (message) {
-					console.log(message);
 				});
 				angular.element('#journeyModal').modal('show');
 			});
@@ -480,12 +481,22 @@ angular.module('runnable.controllers', []).
 		$scope.sendMessage = function () {
 			var text = String($scope.newMessageEntry).replace(/<[^>]+>/gm, '');
 			$scope.newMessageEntry = '';
+			$scope.discussionMessages.unshift(
+				{	"message": text,
+					"createdAt": Date.now(),
+					"User":
+						{	"firstname": Session.userFirstname,
+							"lastname": Session.userLastname}
+				});
+			/* -- Socket messsage deactivate until having manage room for live notification
 			Socket.emit('discussion:newMessage',
 				{"message": text, "createdAt": Date.now(), "User":
 					{"firstname": Session.userFirstname, "lastname": Session.userLastname}
 				});
+			*/
 			Discussion.addMessage(text, $scope.selectedJourney.id);
 		};
+		/*
 		Socket.on('discussion:newMessage', function (data) {
 			$scope.discussionMessages.unshift(
 				{	"message": data.message,
@@ -495,6 +506,27 @@ angular.module('runnable.controllers', []).
 							"lastname": data.User.lastname}
 				});
 		});
+		*/
+	}).
+	controller('RunnableUserPublicProfileController', function ($scope, $q, $routeParams, User) {
+		'use strict';
+		$scope.userId = $routeParams.userId;
+		var userPromise = User.getPublicInfo($scope.userId),
+			userItraRunPromise = User.getItraRuns($scope.userId),
+			all = $q.all([userPromise, userItraRunPromise]);
+		all.then(function (res) {
+			$scope.userPublicInfo = res[0];
+			$scope.userItraRun = res[1];
+			var now = new Date().getTime(),
+				creation = new Date($scope.userPublicInfo.createdAt).getTime();
+			$scope.sinceCreation = parseInt((now-creation)/(24*3600*1000));
+			$scope.userNbJoin = $scope.userPublicInfo.Joins.length;
+			$scope.userNbJourney = $scope.userPublicInfo.Journeys.length;
+		});
+	}).
+	controller('RunnableUserInboxController', function ($scope) {
+		'use strict';
+		console.log('RunnableUserInboxController');
 	}).
 	controller('RunnableJourneyController', function ($scope, $q, $http, $timeout, Run, Journey, GoogleMapApi) {
         'use strict';

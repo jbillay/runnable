@@ -125,13 +125,9 @@ journey.prototype.getNextList = function (nb, done) {
 journey.prototype.getById = function (id, done) {
     'use strict';
 	var that = this;
-	models.Journey.find({where: {id: id}})
+	models.Journey.find({where: {id: id}, include: [models.Run, models.User]})
 		.then(function (journey) {
-			that.setJourney(journey);
-			journey.getRun().then(function (run) {
-				that.setRun(run);
-				done(null, that);
-			});
+			done(null, journey);
 		})
 		.catch(function (err) {
 			done(err, null);

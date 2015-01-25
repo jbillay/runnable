@@ -25,7 +25,6 @@ exports.list = function (req, res) {
 			console.log('Not able to get journey list : ' + err);
 			res.jsonp('{"msg": "ko"}');
 		} else {
-			console.log('List of journeys : ' + journeys);
 			res.jsonp(journeys);
 		}
 	});
@@ -55,7 +54,6 @@ exports.detail = function (req, res) {
 			console.log('Not able to get info on the journey : ' + err);
 			res.jsonp('{"msg": "ko"}');
 		} else {
-			console.log(journeyDetail);
 			res.jsonp(journeyDetail);
 		}
 	});

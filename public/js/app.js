@@ -34,7 +34,7 @@ angular.module('runnable', [
             }).
             when('/run-create', {
                 templateUrl: 'partials/run_create',
-                controller: 'RunnableRunController',
+                controller: 'RunnableRunCreateController',
 				data: {
 					authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor]
 				}
@@ -68,6 +68,17 @@ angular.module('runnable', [
             when('/journey-:journeyId', {
                 templateUrl: 'partials/journey_detail',
                 controller: 'RunnableJourneyDetailController'
+            }).
+            when('/user-:userId', {
+                templateUrl: 'partials/public_user_profile',
+                controller: 'RunnableUserPublicProfileController'
+            }).
+            when('/inbox', {
+                templateUrl: 'partials/user_inbox',
+                controller: 'RunnableUserInboxController',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user]
+                }
             }).
             when('/profile', {
                 templateUrl: 'partials/profile',

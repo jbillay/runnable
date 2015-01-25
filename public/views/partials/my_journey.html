@@ -40,7 +40,7 @@
                                                 </table>
                                             </div>
                                             <div class="col-md-4">
-                                                <span class="pull-right"><i class="fa fa-automobile"></i> {{join.Journey.User.firstname}} {{join.Journey.User.lastname}}</span><br>
+                                                <span class="pull-right"><i class="fa fa-automobile"></i> <a href="/user-{{join.Journey.User.id}}">{{join.Journey.User.firstname}} {{join.Journey.User.lastname}}</a></span><br>
                                                 <button class="btn btn-success pull-right my_journey_more" ng-click="showJourneyModal(join.Journey, join)">En savoir +</button>
                                             </div>
                                         </div>
@@ -86,7 +86,7 @@
                                                 </table>
                                             </div>
                                             <div class="col-md-4">
-                                                <span class="pull-right"><i class="fa fa-automobile"></i> {{journey.User.firstname}} {{journey.User.lastname}}</span><br>
+                                                <span class="pull-right"><i class="fa fa-automobile"></i>  <a href="/user-{{journey.User.id}}">{{journey.User.firstname}} {{journey.User.lastname}}</a></span><br>
                                                 <button class="btn btn-success pull-right my_journey_more" ng-click="showJourneyModal(journey, null)">En savoir +</button>
                                             </div>
                                         </div>
