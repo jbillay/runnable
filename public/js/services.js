@@ -482,6 +482,30 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(data);
                     });
                 return deferred.promise;
+            },
+            userList: function () {
+                var deferred = $q.defer();
+                $http.get("/api/participate/user/list").
+                    success(function (result) {
+                        deferred.resolve(result);
+                    }).
+                    error(function (data, status) {
+                        console.log('Error : ' + status);
+                        deferred.resolve(data);
+                    });
+                return deferred.promise;
+            },
+            runList: function (runId) {
+                var deferred = $q.defer();
+                $http.get("/api/participate/run/list/" + runId).
+                    success(function (result) {
+                        deferred.resolve(result);
+                    }).
+                    error(function (data, status) {
+                        console.log('Error : ' + status);
+                        deferred.resolve(data);
+                    });
+                return deferred.promise;
             }
         }
     }).

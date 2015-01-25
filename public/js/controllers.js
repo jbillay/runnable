@@ -215,10 +215,13 @@ angular.module('runnable.controllers', []).
 		$scope.runId = $routeParams.runId;
 		var runPromise = Run.getDetail($scope.runId),
 			journeyPromise = Journey.getListForRun($scope.runId),
-            all = $q.all([runPromise, journeyPromise]);
+            participatePromise = Participate.runList($scope.runId),
+            all = $q.all([runPromise, journeyPromise, participatePromise]);
         all.then(function (res) {
 			$scope.run = res[0];
 			$scope.journeyList = res[1];
+			$scope.participateList = res[2];
+            $scope.nbJoiner = $scope.participateList.length;
 			$timeout( function() {
 				var obj = 'map_canvas_run';
 				GoogleMapApi.initMap(obj, $scope.run.address_start);
@@ -227,6 +230,12 @@ angular.module('runnable.controllers', []).
 				});
 			});
 			if (Session.userAddress) {
+                angular.forEach($scope.participateList, function (participate) {
+                    $scope.userJoined = false;
+                    if (participate.userId === Session.id) {
+                        $scope.userJoined = true;
+                    }
+                });
 				angular.forEach($scope.journeyList, function (journey) {
 					GoogleMapApi.getDistance(Session.userAddress, journey.address_start).then(function (result) {
 						journey.userDistance = result;

@@ -17,3 +17,26 @@ exports.add = function (req, res) {
     });
 };
 
+exports.userList = function (req, res) {
+    'use strict';
+    var participate = new Participate(),
+        userId = req.user.id;
+    participate.userList(userId, function (err, participation) {
+        if (err) {
+            res.jsonp('{"msg": "participateList", "type": "error"}');
+        }
+        res.jsonp(participation);
+    });
+};
+
+exports.runList = function (req, res) {
+    'use strict';
+    var participate = new Participate(),
+        runId = req.params.id;
+    participate.runList(runId, function (err, participation) {
+        if (err) {
+            res.jsonp('{"msg": "participateList", "type": "error"}');
+        }
+        res.jsonp(participation);
+    });
+};

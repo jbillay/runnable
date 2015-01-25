@@ -5,8 +5,15 @@
 		<div class="panel panel-default">
 			<div class="panel-heading clearfix">
 				<h3 class="pull-left">{{run.name}}</h3>
-                <div class="pull-right"><a class="btn btn-sm btn-primary" ng-click="participateRun()" role="button">Ajouter à mon agenda</a></div>
-				<div class="pull-right"><a class="btn btn-sm btn-success" ng-click="createJourney()" role="button">Proposer un parcours</a></div>
+                <div class="pull-right">
+                    <a class="btn btn-sm btn-success" ng-click="createJourney()" role="button">Proposer un parcours</a>
+                </div>
+                <div class="pull-right" ng-if="!userJoined">
+                    <a class="btn btn-sm btn-primary" ng-click="participateRun()" role="button">Ajouter à mon agenda</a>
+                </div>
+                <div class="pull-right" ng-if="userJoined">
+                    <a class="btn btn-sm" role="button">Cette course est dans votre agenda</a>
+                </div>
 			</div>
 			<div class="panel-body">
 				<div class="col-sm-4">
