@@ -11,6 +11,7 @@ angular.module('runnable', [
     'ngCookies',
     'ngSanitize',
     'ngMessages',
+    'ui.calendar',
     'ui.bootstrap',
     'btford.socket-io',
     'runnable.filters',
@@ -76,6 +77,13 @@ angular.module('runnable', [
             when('/inbox', {
                 templateUrl: 'partials/user_inbox',
                 controller: 'RunnableUserInboxController',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user]
+                }
+            }).
+            when('/calendar', {
+                templateUrl: 'partials/calendar',
+                controller: 'RunnableCalendarController',
                 data: {
                     authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user]
                 }

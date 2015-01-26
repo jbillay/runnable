@@ -256,6 +256,7 @@ angular.module('runnable.controllers', []).
                 $scope.showLogin();
             } else {
                 Participate.add($scope.run.id);
+                $scope.userJoined = true;
             }
         };
     }).
@@ -540,7 +541,28 @@ angular.module('runnable.controllers', []).
 			$scope.userNbJourney = $scope.userPublicInfo.Journeys.length;
 		});
 	}).
-	controller('RunnableUserInboxController', function ($scope) {
+    controller('RunnableCalendarController', function ($scope, $q, Participate) {
+        'use strict';
+        var runPromise = Participate.userList(),
+            all = $q.all([runPromise]);
+        all.then(function (res) {
+            $scope.runParticpateList = res[0];
+            console.log($scope.runParticpateList);
+            $scope.eventSources = [];
+            $scope.uiConfig = {
+                calendar: {
+                    height: 450,
+                    editable: true,
+                    header: {
+                        left: 'title',
+                        center: '',
+                        right: 'today prev,next'
+                    }
+                }
+            };
+        });
+    }).
+    controller('RunnableUserInboxController', function ($scope) {
 		'use strict';
 		console.log('RunnableUserInboxController');
 	}).
