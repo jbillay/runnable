@@ -453,7 +453,7 @@ angular.module('runnable.controllers', []).
 		}
 	}).
 	controller('RunnableMyJourneyController', function ($scope, $q, $timeout, User, Discussion,
-														GoogleMapApi, Socket, Session) {
+														GoogleMapApi, Socket, Session, Inbox) {
 		'use strict';
 		$scope.page = 'MyJourney';
 		var userJourneyPromise = User.getJourney(),
@@ -512,6 +512,15 @@ angular.module('runnable.controllers', []).
 				});
 			*/
 			Discussion.addMessage(text, $scope.selectedJourney.id);
+			angular.forEach($scope.discussionUsers, function (user) {
+				console.log(user.id);
+				console.log(Session.userId);
+				if (user.id !== Session.userId) {
+                    var title = 'Nouveau message concernant le trajet pour la course ' +
+                        $scope.selectedJourney.Run.name;
+					Inbox.addMessage(title, text, user.id);
+				}
+			});
 		};
 		/*
 		Socket.on('discussion:newMessage', function (data) {
@@ -541,32 +550,43 @@ angular.module('runnable.controllers', []).
 			$scope.userNbJourney = $scope.userPublicInfo.Journeys.length;
 		});
 	}).
-    controller('RunnableCalendarController', function ($scope, $q, Participate) {
+    controller('RunnableCalendarController', function ($scope, $q, $compile, Participate) {
         'use strict';
+		$scope.events = [];
+		$scope.eventSources = [$scope.events];
+		$scope.uiConfig = {
+			calendar: {
+				height: 450,
+				editable: true,
+				header: {
+					left: 'title',
+					center: '',
+					right: 'today prev,next'
+				}
+			}
+		};
         var runPromise = Participate.userList(),
             all = $q.all([runPromise]);
         all.then(function (res) {
             $scope.runParticpateList = res[0];
-            console.log($scope.runParticpateList);
-            $scope.eventSources = [];
-            $scope.uiConfig = {
-                calendar: {
-                    height: 450,
-                    editable: true,
-                    header: {
-                        left: 'title',
-                        center: '',
-                        right: 'today prev,next'
-                    }
-                }
-            };
+			angular.forEach($scope.runParticpateList, function (participe) {
+				$scope.events.push({"title": participe.Run.name, "start": new Date(participe.Run.date_start)});
+			});
+			$scope.$apply(function () {
+				$scope.eventSources = [$scope.events];
+			});
         });
     }).
-    controller('RunnableUserInboxController', function ($scope) {
+    controller('RunnableUserInboxController', function ($scope, $q, Inbox) {
 		'use strict';
-		console.log('RunnableUserInboxController');
+		var inboxPromise = Inbox.getList(),
+            all = $q.all([inboxPromise]);
+        all.then(function (res) {
+			$scope.inboxMessages = res[0];
+			console.log($scope.inboxMessages);
+		});
 	}).
-	controller('RunnableJourneyController', function ($scope, $q, $http, $timeout, Run, Journey, GoogleMapApi) {
+	controller('RunnableJourneyController', function ($scope, $q, $timeout, Run, Journey, GoogleMapApi) {
         'use strict';
         $scope.page = 'Journey';
 		var journeyPromise = Journey.getList(),

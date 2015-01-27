@@ -190,7 +190,10 @@ user.prototype.toggleActive = function (id, done) {
 };
 
 user.prototype.getPublicInfo = function (id, done) {
-	models.User.find({where: {id: id}, include: [models.Journey, models.Join]})
+	models.User.find({where: {id: id}, include: [models.Journey, models.Join, {
+							model: models.Participate,
+							as: "Participate",
+							include: [ models.Run ]}]})
 		.then(function (user) {
 			done(null, user);
 		})

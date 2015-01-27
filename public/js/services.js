@@ -424,7 +424,47 @@ angular.module('runnable.services', ['ngResource']).
         };
 	}).
 	factory('Socket', function (socketFactory) {
+		'use strict';
 		return socketFactory();
+	}).
+	factory('Inbox', function ($q, $http) {
+		'use strict';
+		return {
+			addMessage: function (title, message, userId) {
+				var deferred = $q.defer(),
+					info = {"title": title, "message": message, "userId": userId};
+				$http.post("/api/inbox/msg", info).
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+				return deferred.promise;
+			},
+			getList: function() {
+				var deferred = $q.defer();
+				$http.get("/api/inbox/msg").
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+				return deferred.promise;
+			},
+			getMessage: function(id) {
+				var deferred = $q.defer();
+				$http.get("/api/inbox/msg/" + id).
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+				return deferred.promise;
+			}
+		};
 	}).
 	factory('Discussion', function ($q, $http) {
 		'use strict';
