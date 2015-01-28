@@ -8,7 +8,7 @@
 
 angular.module('runnable.controllers', []).
 	controller('RunnableMainController', function ($scope, $rootScope, $q, USER_ROLES, AUTH_EVENTS,
-												   AuthService, USER_MSG, User, Session) {
+												   AuthService, USER_MSG, User, Session, Inbox) {
 		$rootScope.currentUser = null;
 		$rootScope.userRoles = USER_ROLES;
 		$rootScope.isAuthenticated = false;
@@ -23,9 +23,12 @@ angular.module('runnable.controllers', []).
 		};
 
 		var userPromise = User.getUser(),
-			all = $q.all([userPromise]);
+			inboxPromise = Inbox.nbUnreadMessage(),
+			all = $q.all([userPromise, inboxPromise]);
 		all.then(function (res) {
 			$scope.setCurrentUser(res[0]);
+			$scope.nbUnreadMessage = res[1];
+			console.log($scope.nbUnreadMessage);
 		});
 		$scope.switchLoginToReset = function () {
 			$scope.forLogin = false;
@@ -513,12 +516,12 @@ angular.module('runnable.controllers', []).
 			*/
 			Discussion.addMessage(text, $scope.selectedJourney.id);
 			angular.forEach($scope.discussionUsers, function (user) {
-				console.log(user.id);
-				console.log(Session.userId);
 				if (user.id !== Session.userId) {
                     var title = 'Nouveau message concernant le trajet pour la course ' +
-                        $scope.selectedJourney.Run.name;
-					Inbox.addMessage(title, text, user.id);
+							$scope.selectedJourney.Run.name,
+						textMessage = Session.userFirstname + ' '+ Session.userLastname + 
+							' dit : "' + text + '"';
+					Inbox.addMessage(title, textMessage, user.id);
 				}
 			});
 		};
@@ -579,11 +582,27 @@ angular.module('runnable.controllers', []).
     }).
     controller('RunnableUserInboxController', function ($scope, $q, Inbox) {
 		'use strict';
+		$scope.selectedMessage = "Pas de message sélectionné";
 		var inboxPromise = Inbox.getList(),
             all = $q.all([inboxPromise]);
         all.then(function (res) {
 			$scope.inboxMessages = res[0];
 			console.log($scope.inboxMessages);
+			$scope.showMessage = function (id) {
+				angular.forEach($scope.inboxMessages, function (message) {
+					if (message.id === id) {
+						$scope.selectedMessage = message;
+						if (message.is_read === false) {
+							Inbox.setAsRead(id);
+						}
+					}
+				});
+			};
+			$scope.removeMessage = function (id) {
+				// TO BE IMPLEMENTED
+				console.log('Delete message ' + id);
+				Inbox.deleteMessage(id);
+			};
 		});
 	}).
 	controller('RunnableJourneyController', function ($scope, $q, $timeout, Run, Journey, GoogleMapApi) {

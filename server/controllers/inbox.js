@@ -14,7 +14,7 @@ exports.add = function (req, res) {
 		if (err) {
 			res.jsonp('{"msg": "notAbleAddMessage", "type": "error"}');
 		}
-		res.json('{"msg": "addMessage", "type": "success"}');
+		res.jsonp('{"msg": "addMessage", "type": "success"}');
 	});
 };
 
@@ -25,7 +25,7 @@ exports.getList = function (req, res) {
 		if (err) {
 			res.jsonp('{"msg": "notAbleGetMessage", "type": "error"}');
 		}
-		res.json(messages);
+		res.jsonp(messages);
 	});
 };
 
@@ -37,13 +37,14 @@ exports.get = function (req, res) {
 
 exports.read = function (req, res) {
     'use strict';
+	console.log('Make read message :' + req.body.messageId);
 	var messageId = req.body.messageId,
 		inbox = new Inbox();
-	inbox.setReadFlag(messageId, true, function (err, message){
+	inbox.setIsRead(messageId, true, function (err, message){
 		if (err) {
 			res.jsonp('{"msg": "NotAbleMessageRead", "type": "error"}');
 		}
-		res.json('{"msg": "messageRead", "type": "success"}');
+		res.jsonp('{"msg": "messageRead", "type": "success"}');
 	});
 };
 
@@ -51,10 +52,22 @@ exports.unread = function (req, res) {
     'use strict';
 	var messageId = req.body.messageId,
 		inbox = new Inbox();
-	inbox.setReadFlag(messageId, false, function (err, message){
+	inbox.setIsRead(messageId, false, function (err, message){
 		if (err) {
-			res.jsonp('{"msg": "NotAbleMessageUnread", "type": "error"}');
+			res.jsonp('{"msg": "NotAbleUnreadMessage", "type": "error"}');
 		}
-		res.json('{"msg": "messageUnread", "type": "success"}');
+		res.jsonp('{"msg": "messageUnread", "type": "success"}');
+	});
+};
+
+exports.countUnread = function (req, res) {
+	'use strict';
+	var inbox = new Inbox();
+	inbox.countUnread(req.user.id, function (err, nb) {
+		if (err) {
+			res.jsonp('{"msg": "NotAbleCountUnreadMessage", "type": "error"}');
+		}
+		console.log(nb);
+		res.jsonp(nb);
 	});
 };

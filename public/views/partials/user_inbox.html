@@ -3,7 +3,29 @@
 <div class="container body">
     <div class="row spacehead">
         <div class="col-sm-12">
-        	User inbox
+        	<input type="search" ng-model="query" placeholder="Recherche..." />
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<div class="list-group">
+						<a href="#" class="list-group-item" ng-repeat="message in inboxMessages | filter:query as results">
+							<h4 class="list-group-item-heading">
+								<span ng-if="!message.is_read" ng-click="showMessage(message.id)"><strong>{{message.title}}</strong></span>
+								<span ng-if="message.is_read" ng-click="showMessage(message.id)">{{message.title}}</span>
+								<button type="button" class="btn btn-danger btn-xs pull-right" ng-click="removeMessage(message.id)">Supprimer</button>
+							</h4>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<div ng-if="!selectedMessage.id">{{selectedMessage}}</div>
+					<div ng-if="selectedMessage.id > 0">
+						<h4><strong>Reçu le : </strong>{{selectedMessage.createdAt | date:'dd/MM/yyyy h:mma'}}</h4><br/>
+						<h4>{{selectedMessage.message}}</h4>
+					</div>
+				</div>
+			</div>
         </div>
     </div>
 </div>

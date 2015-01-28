@@ -90,4 +90,15 @@ inbox.prototype.setIsRead = function (id, state, done) {
 		});
 };
 
+inbox.prototype.countUnread = function (userId, done) {
+	console.log('Count unread message for user : ' + userId);
+	models.Inbox.count({where: {userId: userId}})
+		.then(function(nb) {
+			done(null, nb);
+		})
+		.catch(function (err) {
+			done(err, null);
+		});			
+};
+
 module.exports = inbox;

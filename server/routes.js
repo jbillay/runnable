@@ -42,8 +42,11 @@ module.exports = function (app, passport, auth) {
     app.get('/api/discussion/messages/:id', auth.requiresLogin, controllers.discussion.getMessages);
 
     app.post('/api/inbox/msg', auth.requiresLogin, controllers.inbox.add);
+    app.post('/api/inbox/msg/read', auth.requiresLogin, controllers.inbox.read);
+    app.post('/api/inbox/msg/unread', auth.requiresLogin, controllers.inbox.unread);
     app.get('/api/inbox/msg', auth.requiresLogin, controllers.inbox.getList);
     app.get('/api/inbox/msg/:id', auth.requiresLogin, controllers.inbox.get);
+    app.get('/api/inbox/unread/nb/msg', auth.requiresLogin, controllers.inbox.countUnread);
 
     app.post('/api/join', auth.requiresLogin, controllers.join.create);
 	app.get('/api/join/:id', auth.requiresLogin, controllers.join.detail);

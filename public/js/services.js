@@ -46,8 +46,7 @@ angular.module('runnable.services', ['ngResource']).
 		};
 
 		authService.login = function (credentials) {
-			return $http
-				.post('/login', credentials)
+			return $http.post('/login', credentials)
 				.then(function (res) {
 					Session.create(res.data);
 					return res.data;
@@ -456,6 +455,31 @@ angular.module('runnable.services', ['ngResource']).
 			getMessage: function(id) {
 				var deferred = $q.defer();
 				$http.get("/api/inbox/msg/" + id).
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+				return deferred.promise;
+			},
+			setAsRead: function (id) {
+				var deferred = $q.defer(),
+					info = {"messageId": id};
+				$http.post("/api/inbox/msg/read", info).
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+				return deferred.promise;
+			},
+			deleteMessage: function (id) {
+			},
+			nbUnreadMessage: function () {
+				var deferred = $q.defer();
+				$http.get("/api/inbox/unread/nb/msg").
 					success(function (result) {
 						deferred.resolve(result);
 					}).
