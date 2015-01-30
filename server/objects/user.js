@@ -129,7 +129,7 @@ user.prototype.getById = function (id, done) {
 
 user.prototype.getByEmail = function (email, done) {
     'use strict';
-	models.User.find({where: {email: email}})
+	models.User.find({where: {email: email}, include: [models.Inbox]})
 		.then(function (user) {
 			done(null, user);
 		})

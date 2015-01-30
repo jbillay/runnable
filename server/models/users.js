@@ -26,7 +26,7 @@ module.exports = function(sequelize, DataTypes) {
 				User.hasMany(models.Journey),
 				User.hasMany(models.Join),
 				User.hasMany(models.Participate),
-                User.hasMany(models.Inbox)
+				User.hasMany(models.Inbox)
 			}
 		},
 		instanceMethods: {

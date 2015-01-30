@@ -3,14 +3,17 @@
 <div class="container body">
     <div class="row spacehead">
         <div class="col-sm-12">
-        	<input type="search" ng-model="query" placeholder="Recherche..." />
 			<div class="panel panel-default">
+				<div class="panel-heading">
+					<span class="glyphicon glyphicon-search"></span>
+					<input type="search" ng-model="query" placeholder="Recherche..." />
+				</div>
 				<div class="panel-body">
 					<div class="list-group">
 						<a href="#" class="list-group-item" ng-repeat="message in inboxMessages | filter:query as results">
 							<h4 class="list-group-item-heading">
-								<span ng-if="!message.is_read" ng-click="showMessage(message.id)"><strong>{{message.title}}</strong></span>
-								<span ng-if="message.is_read" ng-click="showMessage(message.id)">{{message.title}}</span>
+								<span ng-if="!message.is_read" ng-click="showMessage(message)"><strong>{{message.title}}</strong></span>
+								<span ng-if="message.is_read" ng-click="showMessage(message)">{{message.title}}</span>
 								<button type="button" class="btn btn-danger btn-xs pull-right" ng-click="removeMessage(message.id)">Supprimer</button>
 							</h4>
 						</a>

@@ -92,7 +92,7 @@ inbox.prototype.setIsRead = function (id, state, done) {
 
 inbox.prototype.countUnread = function (userId, done) {
 	console.log('Count unread message for user : ' + userId);
-	models.Inbox.count({where: {userId: userId}})
+	models.Inbox.count({where: {userId: userId, is_read: false}})
 		.then(function(nb) {
 			done(null, nb);
 		})

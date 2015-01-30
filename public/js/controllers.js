@@ -15,8 +15,9 @@ angular.module('runnable.controllers', []).
 		$rootScope.isAdmin = false;
 		$rootScope.isAuthorized = AuthService.isAuthorized;
 
-		$scope.setCurrentUser = function (user) {
+		$scope.setCurrentUser = function (user, unread) {
 			Session.create(user);
+			$rootScope.userUnreadEmail = unread;
 			$rootScope.isAuthenticated = user.isActive;
 			$rootScope.isAdmin = AuthService.isAuthorized([USER_ROLES.admin]);
 			$rootScope.currentUser = user;
@@ -26,9 +27,7 @@ angular.module('runnable.controllers', []).
 			inboxPromise = Inbox.nbUnreadMessage(),
 			all = $q.all([userPromise, inboxPromise]);
 		all.then(function (res) {
-			$scope.setCurrentUser(res[0]);
-			$scope.nbUnreadMessage = res[1];
-			console.log($scope.nbUnreadMessage);
+			$scope.setCurrentUser(res[0], res[1]);
 		});
 		$scope.switchLoginToReset = function () {
 			$scope.forLogin = false;
@@ -88,7 +87,14 @@ angular.module('runnable.controllers', []).
 		};
 		$scope.login = function (credentials) {
 			AuthService.login(credentials).then(function (user) {
-				$scope.setCurrentUser(user);
+				var unread = 0;
+				angular.forEach(user.Inboxes, function (inbox) {
+					console.log(inbox);
+					if (inbox.is_read === false) {
+						unread = unread + 1;
+					}
+				});
+				$scope.setCurrentUser(user, unread);
 				$rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
 			}, function () {
 				$rootScope.$broadcast(AUTH_EVENTS.loginFailed);
@@ -588,15 +594,9 @@ angular.module('runnable.controllers', []).
         all.then(function (res) {
 			$scope.inboxMessages = res[0];
 			console.log($scope.inboxMessages);
-			$scope.showMessage = function (id) {
-				angular.forEach($scope.inboxMessages, function (message) {
-					if (message.id === id) {
-						$scope.selectedMessage = message;
-						if (message.is_read === false) {
-							Inbox.setAsRead(id);
-						}
-					}
-				});
+			$scope.showMessage = function (message) {
+				$scope.selectedMessage = message;
+				Inbox.setAsRead(message.id);
 			};
 			$scope.removeMessage = function (id) {
 				// TO BE IMPLEMENTED
