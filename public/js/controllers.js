@@ -89,7 +89,6 @@ angular.module('runnable.controllers', []).
 			AuthService.login(credentials).then(function (user) {
 				var unread = 0;
 				angular.forEach(user.Inboxes, function (inbox) {
-					console.log(inbox);
 					if (inbox.is_read === false) {
 						unread = unread + 1;
 					}
@@ -317,7 +316,8 @@ angular.module('runnable.controllers', []).
 		});
     }).
 	controller('RunnableJourneyDetailController', function ($scope, $q, $routeParams, $rootScope, $timeout,
-															Run, Journey, Join, GoogleMapApi, MyRunTripFees, Session) {
+															Run, Journey, Join, GoogleMapApi, MyRunTripFees, Session,
+                                                            Inbox) {
 		'use strict';
 		$scope.page = 'Journey';
 		$scope.journeyId = $routeParams.journeyId;
@@ -333,7 +333,7 @@ angular.module('runnable.controllers', []).
 			angular.forEach($scope.joinList, function (join) {
 				$scope.reserved_outward += join.nb_place_outward;
 				$scope.reserved_return += join.nb_place_return;
-				if (join.JourneyId == $scope.journeyId && join.UserId === $rootScope.currentUser.id) {
+				if (join.JourneyId === $scope.journeyId && join.UserId === $rootScope.currentUser.id) {
 					$scope.joined = 1;
 				}
 			});
@@ -381,10 +381,16 @@ angular.module('runnable.controllers', []).
 			}
 		};
 		$scope.joinJourney = function () {
-			$scope.joined = 1;
+			var title = "Validation inscription au voyage pour la course " + $scope.journey.Run.name,
+                textMessage = "Nous avons bien pris en compte votre inscriptions pour la course " +
+                    $scope.journey.Run.name + ". Nous sommes en attente de la validation du paiement.";
+            $scope.joined = 1;
 			$scope.reserved_outward = $scope.reserved_outward + $scope.selectedPlaceOutward;
 			$scope.reserved_return = $scope.reserved_return + $scope.selectedPlaceReturn;
 			Join.addJoin($scope.journeyId, $scope.selectedPlaceOutward, $scope.selectedPlaceReturn);
+            console.log('Title : ' + title);
+            console.log('Text : ' + textMessage);
+            Inbox.addMessage(title, textMessage, Session.userId);
 		};
 		$scope.removeJoinJourney = function () {
 			$scope.joined = 0;
@@ -462,7 +468,7 @@ angular.module('runnable.controllers', []).
 		}
 	}).
 	controller('RunnableMyJourneyController', function ($scope, $q, $timeout, User, Discussion,
-														GoogleMapApi, Socket, Session, Inbox) {
+														GoogleMapApi, Socket, Session, Inbox, ValidationJourney) {
 		'use strict';
 		$scope.page = 'MyJourney';
 		var userJourneyPromise = User.getJourney(),
@@ -471,6 +477,7 @@ angular.module('runnable.controllers', []).
 		all.then(function (res) {
 			$scope.userJourney = res[0];
 			$scope.userJoin = res[1];
+            $scope.dateActual = new Date().getTime();
 			angular.forEach($scope.userJourney, function (journey) {
 				var freeSpace = User.getJourneyFreeSpace(journey);
 				journey.nb_free_place_outward = freeSpace.nb_free_place_outward;
@@ -478,10 +485,36 @@ angular.module('runnable.controllers', []).
 			});
 			angular.forEach($scope.userJoin, function (join) {
 				var freeSpace = User.getJourneyFreeSpace(join.Journey);
+                angular.forEach(join.ValidationJourneys, function (validation) {
+                    console.log(validation);
+                    if (validation.UserId === Session.userId) {
+                        join.validated = true;
+                    }
+                });
+                if (join.Journey.date_start_return > join.Journey.date_start_outward) {
+                    join.Journey.date_max = new Date(join.Journey.date_start_return).getTime();
+                } else {
+                    join.Journey.date_max = new Date(join.Journey.date_start_outward).getTime();
+                }
 				join.Journey.nb_free_place_outward = freeSpace.nb_free_place_outward;
 				join.Journey.nb_free_place_return = freeSpace.nb_free_place_return;
 			});
+            console.log($scope.userJoin);
 		});
+        $scope.showJourneyValidationModal = function (join) {
+            $scope.vadidationJoin = join;
+            $scope.validationForm = {
+                commentDriver: "",
+                commentService: "",
+                rates: ""
+            };
+            angular.element('#journeyValidationModal').modal('show');
+            $scope.sendValidation = function (validation) {
+                ValidationJourney.validation($scope.vadidationJoin.id, validation.commentDriver,
+                                                validation.commentService, validation.rates);
+                angular.element('#journeyValidationModal').modal('hide');
+            };
+        };
 		$scope.showJourneyModal = function (journey, join) {
 			var discussionUsersPromise = Discussion.getUsers(journey.id),
 				discussionMessagesPromise = Discussion.getMessages(journey.id),
@@ -547,11 +580,24 @@ angular.module('runnable.controllers', []).
 		'use strict';
 		$scope.userId = $routeParams.userId;
 		var userPromise = User.getPublicInfo($scope.userId),
+			userDriverPromise = User.getPublicDriverInfo($scope.userId),
 			userItraRunPromise = User.getItraRuns($scope.userId),
-			all = $q.all([userPromise, userItraRunPromise]);
+			all = $q.all([userPromise, userDriverPromise, userItraRunPromise]);
 		all.then(function (res) {
 			$scope.userPublicInfo = res[0];
-			$scope.userItraRun = res[1];
+			$scope.userDriverPublicInfo = res[1];
+			$scope.userItraRun = res[2];
+            $scope.driverComments = [];
+            $scope.driverRate = 0;
+            var ratesSum = 0;
+            angular.forEach($scope.userDriverPublicInfo, function (driverInfo) {
+                $scope.driverComments.push(driverInfo.comment_driver);
+                ratesSum = ratesSum + driverInfo.rates;
+            });
+            $scope.driverComments.splice(5, $scope.driverComments.length);
+            if ($scope.userDriverPublicInfo.length > 0) {
+                $scope.driverRate = ratesSum / $scope.userDriverPublicInfo.length;
+            }
 			var now = new Date().getTime(),
 				creation = new Date($scope.userPublicInfo.createdAt).getTime();
 			$scope.sinceCreation = parseInt((now-creation)/(24*3600*1000));
@@ -586,17 +632,17 @@ angular.module('runnable.controllers', []).
 			});
         });
     }).
-    controller('RunnableUserInboxController', function ($scope, $q, Inbox) {
+    controller('RunnableUserInboxController', function ($rootScope, $scope, $q, Inbox) {
 		'use strict';
 		$scope.selectedMessage = "Pas de message sélectionné";
 		var inboxPromise = Inbox.getList(),
             all = $q.all([inboxPromise]);
         all.then(function (res) {
 			$scope.inboxMessages = res[0];
-			console.log($scope.inboxMessages);
 			$scope.showMessage = function (message) {
 				$scope.selectedMessage = message;
 				Inbox.setAsRead(message.id);
+                $rootScope.userUnreadEmail = $rootScope.userUnreadEmail - 1;
 			};
 			$scope.removeMessage = function (id) {
 				// TO BE IMPLEMENTED

@@ -189,11 +189,32 @@ user.prototype.toggleActive = function (id, done) {
 		});
 };
 
+user.prototype.getPublicDriverInfo = function (id, done) {
+    models.Journey.findAll({where: {UserId: id}, include: [models.Join]})
+        .then(function (journeys) {
+            var joinList = [];
+            journeys.forEach(function (journey) {
+                journey.Joins.forEach(function (join) {
+                    joinList.push(join.id);
+                })
+            });
+            models.ValidationJourney.findAll({where: {JoinId: {in: joinList}}})
+                .then(function (validation) {
+                    done(null, validation);
+                })
+                .catch(function (err) {
+                    done(err, null);
+                });
+        })
+};
+
 user.prototype.getPublicInfo = function (id, done) {
-	models.User.find({where: {id: id}, include: [models.Journey, models.Join, {
-							model: models.Participate,
-							as: "Participate",
-							include: [ models.Run ]}]})
+	models.User.find({  where: {id: id},
+                        include: [models.Journey, models.Join, {
+						   	model: models.Participate,
+							as: "Participates",
+							include: [ models.Run ]}]
+                     })
 		.then(function (user) {
 			done(null, user);
 		})

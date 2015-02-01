@@ -24,6 +24,7 @@ module.exports = function (app, passport, auth) {
     app.get('/api/user/journeys', auth.requiresLogin, controllers.user.showJourneys);
     app.get('/api/user/joins', auth.requiresLogin, controllers.user.showJoins);
     app.get('/api/user/public/info/:id', controllers.user.publicInfo);
+    app.get('/api/user/public/driver/:id', controllers.user.publicDriverInfo);
     app.get('/api/user/runs/:id', controllers.user.showRuns);
     
     app.post('/api/run', auth.requiresLogin, controllers.run.create);
@@ -40,6 +41,8 @@ module.exports = function (app, passport, auth) {
     app.post('/api/discussion/message', auth.requiresLogin, controllers.discussion.addMessage);
     app.get('/api/discussion/users/:id', auth.requiresLogin, controllers.discussion.getUsers);
     app.get('/api/discussion/messages/:id', auth.requiresLogin, controllers.discussion.getMessages);
+
+    app.post('/api/validation', auth.requiresLogin, controllers.validation_journey.validate);
 
     app.post('/api/inbox/msg', auth.requiresLogin, controllers.inbox.add);
     app.post('/api/inbox/msg/read', auth.requiresLogin, controllers.inbox.read);

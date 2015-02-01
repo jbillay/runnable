@@ -114,6 +114,18 @@ angular.module('runnable.services', ['ngResource']).
 					});
                 return deferred.promise;
             },
+            getPublicDriverInfo: function (userId) {
+                var deferred = $q.defer();
+                $http.get("/api/user/public/driver/" + userId).
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ', data);
+						deferred.resolve(data);
+					});
+                return deferred.promise;
+            },
 			getItraRuns: function (userId) {
 				var deferred = $q.defer();
 				var url = "/api/user/runs";
@@ -221,7 +233,7 @@ angular.module('runnable.services', ['ngResource']).
 		];
 		return {
 			getTimeBeforeStart: function (startDate, startHour) {
-				var dateTime = startDate + ' ' + startHour,
+				var dateTime = startDate.toString().substr(0, 10) + ' ' + startHour,
 					start = Date.parse(dateTime),
 					now = Date.now();
 				return start - now;
@@ -422,10 +434,28 @@ angular.module('runnable.services', ['ngResource']).
 			}
         };
 	}).
-	factory('Socket', function (socketFactory) {
-		'use strict';
-		return socketFactory();
-	}).
+    factory('Socket', function (socketFactory) {
+        'use strict';
+        return socketFactory();
+    }).
+    factory('ValidationJourney', function ($q, $http) {
+        'use strict';
+        return {
+            validation: function (joinId, commentDriver, commentService, rates) {
+                var deferred = $q.defer(),
+                    info = {"joinId": joinId, "commentDriver": commentDriver,
+                            "commentService": commentService, "rates": rates};
+                $http.post("/api/validation", info).
+                    success(function (result) {
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        console.log('Error : ' + status);
+                    });
+                return deferred.promise;
+            }
+        };
+    }).
 	factory('Inbox', function ($q, $http) {
 		'use strict';
 		return {

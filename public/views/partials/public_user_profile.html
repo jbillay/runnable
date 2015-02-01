@@ -5,28 +5,57 @@
         <div class="col-sm-12">
         	<h2>{{userPublicInfo.firstname | capitalize}} {{userPublicInfo.lastname | capitalize}}</h2>
         	<hr>
-        	<h3>Profil</h3>
-    		<div>
-	        	<table class="table table-no-border">
-	        		<tr>
-	        			<td><h5><i class="fa fa-map-marker"></i> {{userPublicInfo.address}}</h5></td>
-	        		</tr>
-	        		<tr>
-	        			<td><h5><i class="fa fa-clock-o"></i> Inscrit(e) depuis {{sinceCreation}} jour(s)</h5></td>
-	        		</tr>
-	        	</table>
-    		</div>
-        	<h3>Historique</h3>
-    		<div>
-	        	<table class="table table-no-border">
-	        		<tr>
-	        			<td><h5><i class="fa fa-automobile"></i> {{userNbJourney}} voyage(s) organisé(s)</h5></td>
-	        		</tr>
-	        		<tr>
-	        			<td><h5><i class="fa fa-users"></i> {{userNbJoin}} participation(s) à un voyage</h5></td>
-	        		</tr>
-	        	</table>
-	        </div>
+            <div class="col-sm-7">
+                <h3>Profil</h3>
+                <div>
+                    <table class="table table-no-border">
+                        <tr>
+                            <td><h5><i class="fa fa-map-marker"></i> {{userPublicInfo.address}}</h5></td>
+                        </tr>
+                        <tr>
+                            <td><h5><i class="fa fa-clock-o"></i> Inscrit(e) depuis {{sinceCreation}} jour(s)</h5></td>
+                        </tr>
+                    </table>
+                </div>
+                <h3>Historique</h3>
+                <div>
+                    <table class="table table-no-border">
+                        <tr>
+                            <td><h5><i class="fa fa-automobile"></i> {{userNbJourney}} voyage(s) organisé(s)</h5></td>
+                        </tr>
+                        <tr>
+                            <td><h5><i class="fa fa-users"></i> {{userNbJoin}} participation(s) à un voyage</h5></td>
+                        </tr>
+                    </table>
+                </div>
+                <h3>Evaluation</h3>
+                <div>
+                    <table class="table table-no-border">
+                        <tr>
+                            <td><h5><i class="fa fa-star"></i> {{driverRate}} / 5</h5></td>
+                        </tr>
+                        <tr ng-repeat="comment in driverComments">
+                            <td><h5><i class="fa fa-comment-o"></i> {{comment}}</h5></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <h3>Prochaine course(s) planifiée(s)</h3>
+                <div>
+                    <table class="table table-no-border">
+                        <tr ng-repeat="runPlanned in userPublicInfo.Participates">
+                            <td>
+                                <h5>
+                                    <i class="fa fa-calendar"></i>
+                                    {{runPlanned.Run.date_start | date:'dd/MM/yyyy'}}
+                                    {{runPlanned.Run.name}}
+                                </h5>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

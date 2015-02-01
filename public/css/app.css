@@ -129,6 +129,17 @@ a.list-group-item.active,[class*='-info'] {
     color:#f5f5f5;
 }
 
+/* Home comments and mail */
+.home_comments {
+    margin-top: 15%;
+    padding: 10px 10px 10px 10px;
+}
+
+.home_mail {
+    margin-top: 15%;
+    padding: 10px 10px 10px 10px;
+}
+
 /* Run poster */
 .run_poster_home {
 	padding-bottom: 20px;

@@ -72,7 +72,8 @@ run.prototype.update = function (done) {
 
 run.prototype.getActiveList = function (done) {
     'use strict';
-	models.Run.findAll({where: {is_active: true}})
+	models.Run.findAll({where: {is_active: true},
+                        order: 'date_start ASC'})
 		.then(function (runs) {
 			done(null, runs);
 		})

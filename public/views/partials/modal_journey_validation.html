@@ -1,0 +1,36 @@
+<div class="modal fade bs-example-modal-lg" id="journeyValidationModal" tabindex="-1" role="dialog"
+     aria-labelledby="journeyValidationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Validation du parcours</h4>
+            </div>
+            <div class="row">
+                <div class="modal-body">
+                    <div class="col-sm-12 text-center">
+                        <form name="validationForm" ng-submit="sendValidation(validationForm)" novalidate>
+                            <div class="input-group journey_table">
+                                <label class="control-label pull-left" for="commentDriver">Commentaire sur le conducteur</label>
+                                <textarea class="form-control" ng-model="validationForm.commentDriver" id="commentDriver">
+                                </textarea>
+                            </div>
+                            <div class="input-group journey_table">
+                                <label class="control-label pull-left" for="rates">Notes du conducteur (1 à 5)</label>
+                                <input type="number" maxlength="5" minlength="0" class="form-control" ng-model="validationForm.rates" id="rates">
+                            </div>
+                            <div class="input-group journey_table">
+                                <label class="control-label pull-left" for="commentService">Commentaire sur notre service</label>
+                                <textarea class="form-control" ng-model="validationForm.commentService" id="commentService">
+                                </textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary pull-left journey_table">Valider votre voyage</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

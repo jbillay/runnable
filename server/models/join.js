@@ -16,7 +16,8 @@ module.exports = function(sequelize, DataTypes) {
 		classMethods: {
 			associate: function(models) {
 				Join.belongsTo(models.User),
-				Join.belongsTo(models.Journey)
+				Join.belongsTo(models.Journey),
+                Join.hasMany(models.ValidationJourney)
 			}
 		}
 	});

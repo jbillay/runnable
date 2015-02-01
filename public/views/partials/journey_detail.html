@@ -7,13 +7,13 @@
 					<button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">&times;</span>
 						<span class="sr-only">Close</span></button>
-					<h4 class="modal-title" id="myModalLabel">Validation de la participation au voyage pour la course {{journey.run.name}}</h4>
+					<h4 class="modal-title" id="myModalLabel">Validation de la participation au voyage pour la course {{journey.Run.name}}</h4>
 				</div>
 				<div class="row">
 					<div class="modal-body">
 						<div class="col-md-8 col-md-offset-2">
-							<p>Vous allez participer au voyage au départ de {{journey.address_start}} pour la course {{journey.run.name}}
-							se déroulant à {{journey.run.address_start}}.</p>
+							<p>Vous allez participer au voyage au départ de {{journey.address_start}} pour la course {{journey.Run.name}}
+							se déroulant à {{journey.Run.address_start}}.</p>
 							<p>Combien de place souhaitez vous réserver :</p>
 							<p ng-show="journey.journey_type === 'aller-retour' || journey.journey_type === 'aller'">
 								Pour l'aller <select ng-model="selectedPlaceOutward"
@@ -40,13 +40,13 @@
 									</thead>
 									<tbody>
 									<tr ng-if="selectedPlaceOutward > 0">
-										<th scope="row">{{journey.run.name}}</th>
+										<th scope="row">{{journey.Run.name}}</th>
 										<td>{{journey.address_start}}</td>
 										<td>Aller</td>
 										<td>{{selectedPlaceOutward * journey.amount | currency:'€ '}}</td>
 									</tr>
 									<tr ng-if="selectedPlaceReturn > 0">
-										<th scope="row">{{journey.run.name}}</th>
+										<th scope="row">{{journey.Run.name}}</th>
 										<td>{{journey.address_start}}</td>
 										<td>Retour</td>
 										<td>{{selectedPlaceReturn * journey.amount | currency:'€ '}}</td>
@@ -85,7 +85,7 @@
 	</div>
     <div class="row spacehead">
         <div class="col-sm-12">
-            <h2>Parcours pour la course {{journey.run.name}}</h2>
+            <h2>Parcours pour la course {{journey.Run.name}}</h2>
             <hr>
 		</div>
         <div class="col-sm-6">

@@ -262,3 +262,17 @@ exports.publicInfo = function (req, res) {
 		}
 	});
 };
+
+exports.publicDriverInfo = function (req, res) {
+    'use strict';
+    var userId = req.params.id,
+        user = new User();
+    user.getPublicDriverInfo(userId, function(err, feedback) {
+        if (err) {
+            console.log('[ERROR] Not able to user public info: ' + err);
+            res.jsonp('{"msg": ' + err + ', "type": "error"}');
+        } else {
+            res.jsonp(feedback);
+        }
+    });
+};
