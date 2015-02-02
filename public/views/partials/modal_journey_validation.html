@@ -18,13 +18,17 @@
                                 </textarea>
                             </div>
                             <div class="input-group journey_table">
-                                <label class="control-label pull-left" for="rates">Notes du conducteur (1 à 5)</label>
-                                <input type="number" maxlength="5" minlength="0" class="form-control" ng-model="validationForm.rates" id="rates">
+                                <label class="control-label pull-left" for="rate_driver">Note du conducteur (1 à 5)</label>
+                                <input type="number" maxlength="5" minlength="0" class="form-control" ng-model="validationForm.rate_driver" id="rate_driver">
                             </div>
                             <div class="input-group journey_table">
                                 <label class="control-label pull-left" for="commentService">Commentaire sur notre service</label>
                                 <textarea class="form-control" ng-model="validationForm.commentService" id="commentService">
                                 </textarea>
+                            </div>
+                            <div class="input-group journey_table">
+                                <label class="control-label pull-left" for="rate_service">Note du service (1 à 5)</label>
+                                <input type="number" maxlength="5" minlength="0" class="form-control" ng-model="validationForm.rate_service" id="rate_service">
                             </div>
                             <button type="submit" class="btn btn-primary pull-left journey_table">Valider votre voyage</button>
                         </form>

@@ -7,7 +7,8 @@ module.exports = function(sequelize, DataTypes) {
     var validationJourney = sequelize.define("ValidationJourney", {
         comment_driver:     DataTypes.TEXT,
         comment_service:    DataTypes.TEXT,
-        rates:              DataTypes.INTEGER
+        rate_driver:        DataTypes.INTEGER,
+        rate_service:       DataTypes.INTEGER
     }, {
         classMethods: {
             associate: function(models) {

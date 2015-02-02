@@ -12,7 +12,10 @@ module.exports = function (app, passport, auth) {
     app.get('/logout', controllers.root.logout);
     app.get('/login', controllers.root.login);
 	app.post('/login', passport.authenticate('local'), controllers.root.auth);
-	
+	app.post('/api/send/mail', controllers.root.sendMail);
+
+    app.get('/api/home/feedback', controllers.home.userFeedback);
+
 	app.post('/api/user', controllers.user.create);
 	app.post('/api/user/password/reset', controllers.user.resetPassword);
 	app.post('/api/user/password/update', controllers.user.updatePassword);

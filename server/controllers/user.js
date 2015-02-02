@@ -14,12 +14,11 @@ exports.invite = function(req, res) {
 		text,
 		emails = [],
 		mail = new Mail();
-	console.log('Invite person: %j', req.body);
 	emails = req.body.emails.split(",");
 	emails = _.compact(emails);
 	emails.forEach(function(email) {
 		email = email.trim();
-		mail.setTo(req.user.email);
+		mail.setTo(email);
 		mail.setSubject("Rejoins moi sur My Run Trip");
 		html = req.body.message;
 		text = req.body.message;

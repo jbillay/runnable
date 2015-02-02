@@ -1,5 +1,7 @@
 
 var models = require('../models');
+var Mail = require('../objects/mail');
+var _ = require('lodash');
 
 /*jslint node: true */
 
@@ -57,3 +59,25 @@ exports.sync = function (req, res) {
 	res.redirect('/');
 };
 
+exports.sendMail = function (req, res) {
+    'use strict';
+    var html,
+        text,
+        emails = [],
+        confirmation = req.body.confirm,
+        mail = new Mail();
+    emails = req.body.emails.split(",");
+    emails = _.compact(emails);
+    emails.forEach(function(email) {
+        email = email.trim();
+        mail.setTo(email);
+        mail.setSubject(req.body.title);
+        html = req.body.message;
+        text = req.body.message;
+        mail.setContentHtml(html);
+        mail.setText(text);
+        mail.send();
+        console.log('Mail sent to : ' + email);
+    });
+    res.jsonp('{"msg": "' + confirmation + '", "type": "success"}');
+};

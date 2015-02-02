@@ -12,14 +12,15 @@ exports.validate = function (req, res) {
             userId: req.user.id,
             comment_driver: req.body.commentDriver,
             comment_service: req.body.commentService,
-            rates: req.body.rates
+            rate_driver: req.body.rate_driver,
+            rate_service: req.body.rate_service
         },
-        validation = new ValidationJourney();
+    validation = new ValidationJourney();
     validation.set(validationObj);
     validation.create(function (err, validation) {
         if (err) {
             res.jsonp(err);
         }
-        res.jsonp(validation);
+        res.jsonp('{"msg": "journeyValidationDone", "type": "success"}');
     });
 };

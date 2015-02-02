@@ -105,17 +105,21 @@ angular.module('runnable.controllers', []).
 			angular.element('#loginModal').modal('hide');
 		};
 	}).
-	controller('RunnableIndexController', function ($scope, $q, $timeout, Run, User, Journey, GoogleMapApi) {
+	controller('RunnableIndexController', function ($scope, $q, $timeout, Run, User, Journey, GoogleMapApi, Email,
+                                                    ValidationJourney) {
 		'use strict';
 		$scope.page = 'Index';
 		$scope.nbRunItems = 4;
 		$scope.nbJourneyItems = 4;
 		var runPromise = Run.getNextList($scope.nbRunItems),
 			journeyPromise = Journey.getNextList($scope.nbJourneyItems),
-			all = $q.all([runPromise, journeyPromise]);
+			feedbackPromise = ValidationJourney.userFeedback(),
+			all = $q.all([runPromise, journeyPromise, feedbackPromise]);
 		all.then(function (res) {
 			$scope.listRun = res[0];
 			$scope.listJourney = res[1];
+            $scope.userFeedback = res[2];
+            console.log($scope.userFeedback);
 			//timeout in order to wait the page to be loaded
 			$timeout( function() {
 				angular.forEach($scope.listJourney, function (journey) {
@@ -128,6 +132,17 @@ angular.module('runnable.controllers', []).
 		$scope.createUser = function (user) {
 			User.create(user);
 		};
+        $scope.sendContact = function (contact) {
+            var data = {};
+            $scope.mailContact = {};
+            data.emails = 'jbillay@gmail.com';
+            data.title = "[Runnable] Demande info : " + contact.demande;
+            data.message = 'Information concernant' + contact.demande + '<br>' +
+                            'De la part de : ' + contact.email + '<br>' +
+                            'Content : <br>' + contact.content + '<br>';
+            data.confirm = 'infoRequestReceived';
+            Email.send(data);
+        };
 	}).
 	controller('RunnableProfileController', function ($scope, $q, $rootScope, $location, $sce, User) {
 		'use strict';
@@ -506,13 +521,15 @@ angular.module('runnable.controllers', []).
             $scope.validationForm = {
                 commentDriver: "",
                 commentService: "",
-                rates: ""
+                rate_driver: "",
+                rate_service: ""
             };
             angular.element('#journeyValidationModal').modal('show');
             $scope.sendValidation = function (validation) {
-                ValidationJourney.validation($scope.vadidationJoin.id, validation.commentDriver,
-                                                validation.commentService, validation.rates);
                 angular.element('#journeyValidationModal').modal('hide');
+                ValidationJourney.validation($scope.vadidationJoin.id, validation.commentDriver,
+                                                validation.commentService, validation.rate_driver,
+                                                validation.rate_service);
             };
         };
 		$scope.showJourneyModal = function (journey, join) {
@@ -592,7 +609,7 @@ angular.module('runnable.controllers', []).
             var ratesSum = 0;
             angular.forEach($scope.userDriverPublicInfo, function (driverInfo) {
                 $scope.driverComments.push(driverInfo.comment_driver);
-                ratesSum = ratesSum + driverInfo.rates;
+                ratesSum = ratesSum + driverInfo.rate_driver;
             });
             $scope.driverComments.splice(5, $scope.driverComments.length);
             if ($scope.userDriverPublicInfo.length > 0) {

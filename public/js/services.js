@@ -438,15 +438,46 @@ angular.module('runnable.services', ['ngResource']).
         'use strict';
         return socketFactory();
     }).
-    factory('ValidationJourney', function ($q, $http) {
+    factory('ValidationJourney', function ($q, $http, $rootScope) {
         'use strict';
         return {
-            validation: function (joinId, commentDriver, commentService, rates) {
+            validation: function (joinId, commentDriver, commentService, rate_driver, rate_service) {
                 var deferred = $q.defer(),
                     info = {"joinId": joinId, "commentDriver": commentDriver,
-                            "commentService": commentService, "rates": rates};
+                        "commentService": commentService, "rate_driver": rate_driver,
+                        "rate_service": rate_service};
                 $http.post("/api/validation", info).
                     success(function (result) {
+                        $rootScope.$broadcast('USER_MSG', result);
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        console.log('Error : ' + status);
+                    });
+                return deferred.promise;
+            },
+            userFeedback: function () {
+                var deferred = $q.defer();
+                $http.get("/api/home/feedback").
+                    success(function (result) {
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        console.log('Error : ' + status);
+                    });
+                return deferred.promise;
+            }
+        };
+    }).
+    factory('Email', function ($q, $http, $rootScope) {
+        'use strict';
+        return {
+            send: function (data) {
+                var deferred = $q.defer(),
+                    info = {emails: data.emails, message: data.message, title: data.title, confirm: data.confirm};
+                $http.post("/api/send/mail", info).
+                    success(function (result) {
+                        $rootScope.$broadcast('USER_MSG', result);
                         deferred.resolve(result);
                     }).
                     error(function(data, status) {

@@ -10,7 +10,8 @@ function validationJourney() {
     this.userId = null;
     this.comment_driver = null;
     this.comment_service = null;
-    this.rates = null;
+    this.rate_driver = null;
+    this.rate_service = null;
     this.createdAt = null;
     this.updatedAt = null;
 }
@@ -34,8 +35,11 @@ validationJourney.prototype.set = function (validation) {
     if (validation.comment_service) {
         this.comment_service = validation.comment_service;
     }
-    if (validation.rates) {
-        this.rates = validation.rates;
+    if (validation.rate_driver) {
+        this.rate_driver = validation.rate_driver;
+    }
+    if (validation.rate_service) {
+        this.rate_service = validation.rate_service;
     }
     if (validation.updatedAt) {
         this.updatedAt = validation.updatedAt;
@@ -69,6 +73,18 @@ validationJourney.prototype.create = function (done) {
                 });
         });
 
+};
+
+validationJourney.prototype.getUserFeedback = function (done) {
+    'use strict';
+    // TODO: where rate_service >= 3 and limit to 3
+    models.ValidationJourney.findAll()
+        .then(function (feedbacks) {
+            done(null, feedbacks);
+        })
+        .catch(function (feedbacks) {
+            done(err, null);
+        });
 };
 
 module.exports = validationJourney;

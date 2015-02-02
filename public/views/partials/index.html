@@ -122,7 +122,7 @@
 </section>
 
 <section class="container" id="apropos">
-    <h1 class="text-center">Venez discuter avec nous</h1>
+    <h1 class="text-center">Venez en savoir plus sur nous !</h1>
     <div class="row">
         <!--fontawesome icons-->
         <div class="col-sm-1 col-sm-offset-4 col-xs-4 text-center">
@@ -139,8 +139,42 @@
         </div>
     </div><!--/row-->
     <div class="row col-sm-12">
-        <div class="col-sm-6 text-center">Commentaire</div>
-        <div class="col-sm-6 text-center">Mail</div>
+        <div class="col-sm-5 col-sm-offset-1 panel panel-default home_panel">
+            <div class="panel-body">
+                <div class="panel panel-default col-sm-9" ng-class-odd="'pull-left'" ng-class-even="'pull-right'"
+                     ng-repeat="feedback in userFeedback">
+                    <div class="panel-body discussion_message">
+                        <div class="panel-body discussion_message">
+                            <p class="discussion_message_text">{{feedback.comment_service}}</p>
+                            <span class="discussion_message_info pull-right">Note de {{feedback.rate_service}} / 5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-5 col-sm-offset-1 panel panel-default home_panel">
+            <div class="panel-body">
+                <form name="mailContact" id="mailContact" ng-model="mailContact" ng-submit="sendContact(mailContact)">
+                    <div class="form-group">
+                        <label for="mailContactEmail">Votre email</label>
+                        <input type="email" class="form-control" name="mailContact.email" id="mailContactEmail"
+                               ng-model="mailContact.email">
+                    </div>
+                    <div class="form-group">
+                        <label for="mailContactEmail">Sujet de votre demande</label>
+                        <input type="text" class="form-control" name="mailContact.demande"  id="mailContactDemande"
+                               ng-model="mailContact.demande">
+                    </div>
+                    <div class="form-group">
+                        <label for="mailContactContent">Contenu de votre demande</label>
+                        <textarea class="form-control" ng-model="mailContact.content" id="mailContactContent"
+                                  name="mailContact.content" rows="4">
+                        </textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm pull-right">Envoyer</button>
+                </form>
+            </div>
+        </div>
     </div>
 </section>
 
