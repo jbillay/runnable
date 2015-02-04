@@ -67,9 +67,6 @@ run.prototype.save = function (done) {
 		});
 };
 
-run.prototype.update = function (done) {
-};
-
 run.prototype.getActiveList = function (done) {
     'use strict';
 	models.Run.findAll({where: {is_active: true},
@@ -104,17 +101,6 @@ run.prototype.getById = function (id, done) {
 		});
 };
 
-run.prototype.getResumeById = function (id) {
-    'use strict';
-	models.Run.find({where: {id: id}})
-		.then(function (run) {
-			done(null, run);
-		})
-		.catch(function (err) {
-			done(err, null);
-		});
-};
-
 run.prototype.getList = function (done) {
     'use strict';
 	models.Run.findAll()
@@ -134,12 +120,16 @@ run.prototype.toggleActive = function (id, done) {
 			} else {
 				run.is_active = true;
 			}
-			run.save().success(function () {
-				done(null);
-			});
+			run.save()
+                .then(function (run) {
+				    done(null, run);
+    			})
+                .catch(function (err) {
+                    done(err, null)
+                });
 		})
 		.catch(function (err) {
-			done(err);
+			done(err, null);
 		});
 };
 

@@ -49,7 +49,7 @@
                                 <h5>
                                     <i class="fa fa-calendar"></i>
                                     {{runPlanned.Run.date_start | date:'dd/MM/yyyy'}}
-                                    {{runPlanned.Run.name}}
+                                    <a href="/run-{{runPlanned.Run.id}}">{{runPlanned.Run.name}}</a>
                                 </h5>
                             </td>
                         </tr>

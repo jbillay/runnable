@@ -82,7 +82,7 @@ validationJourney.prototype.getUserFeedback = function (done) {
         .then(function (feedbacks) {
             done(null, feedbacks);
         })
-        .catch(function (feedbacks) {
+        .catch(function (err) {
             done(err, null);
         });
 };

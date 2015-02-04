@@ -15,7 +15,7 @@ sequelize
   .authenticate()
   .complete(function(err) {
     if (!!err) {
-	  console.log('Unable to connect to the database: Exiting.');
+	  console.log('Unable to connect to the database: Exiting.' + err);
 	  process.exit(0);
     } else {
       console.log('Connection has been established successfully.')
