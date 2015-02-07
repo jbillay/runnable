@@ -1,0 +1,42 @@
+[
+  {
+    "model": "Discussion",
+    "data": {
+      "id": 1,
+      "message": "test à la con",
+      "UserId": 2,
+      "JourneyId": 2,
+      "createdAt": "2015-01-28 09:57:02"
+    }
+  },
+  {
+    "model": "Discussion",
+    "data": {
+      "id": 2,
+      "message": "je sais que ça va marcher",
+      "UserId": 1,
+      "JourneyId": 2,
+      "createdAt": "2015-01-28 11:29:13"
+    }
+  },
+  {
+    "model": "Discussion",
+    "data": {
+      "id": 3,
+      "message": "Très bonne nouvelle",
+      "UserId": 1,
+      "JourneyId": 1,
+      "createdAt": "2015-01-28 11:29:22"
+    }
+  },
+  {
+    "model": "Discussion",
+    "data": {
+      "id": 4,
+      "message": "Super cette discussion",
+      "UserId": 2,
+      "JourneyId": 1,
+      "createdAt": "2015-01-28 11:32:27"
+    }
+  }
+]

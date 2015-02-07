@@ -8,6 +8,7 @@ function join() {
 	this.nb_place_outward = null;
 	this.nb_place_return = null;
 	this.journey = null;
+    this.status = null;
 	this.user = null;
 	this.journey_id = null;
 }
@@ -25,6 +26,8 @@ join.prototype.set = function (join) {
 		this.nb_place_outward = join.nb_place_outward; }
 	if (join.nb_place_return) {
 		this.nb_place_return = join.nb_place_return; }
+	if (join.status) {
+		this.status = join.status; }
 	if (join.journey_id) {
 		this.journey_id = join.journey_id; }
 };

@@ -1,0 +1,46 @@
+[
+  {
+    "model": "Join",
+    "data": {
+      "id": 1,
+      "nb_place_outward": 2,
+      "nb_place_return": 3,
+      "status": "pending",
+      "UserId": 1,
+      "JourneyId": 1
+    }
+  },
+  {
+    "model": "Join",
+    "data": {
+      "id": 2,
+      "nb_place_outward": 1,
+      "nb_place_return": null,
+      "status": "pending",
+      "UserId": 1,
+      "JourneyId": 2
+    }
+  },
+  {
+    "model": "Join",
+    "data": {
+      "id": 3,
+      "nb_place_outward": 1,
+      "nb_place_return": null,
+      "status": "pending",
+      "UserId": 2,
+      "JourneyId": 2
+    }
+  },
+  {
+    "model": "Join",
+    "data": {
+      "id": 4,
+      "nb_place_outward": 1,
+      "nb_place_return": 1,
+      "status": "pending",
+      "UserId": 1,
+      "JourneyId": 3
+    }
+  }
+]

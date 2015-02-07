@@ -59,7 +59,9 @@ discussion.prototype.getUsers = function (journeyId, done) {
 
 discussion.prototype.getMessages = function (journeyId, done) {
     'use strict';
-    models.Discussion.findAll({where: {JourneyId: journeyId}, include: [models.User], order: 'createdAt DESC',})
+    models.Discussion.findAll({where: {JourneyId:   journeyId},
+                                        include:    [models.User],
+                                        order:      'Discussion.createdAt DESC'})
         .then(function (messages) {
             done(null, messages);
         })

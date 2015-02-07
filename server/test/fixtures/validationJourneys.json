@@ -1,0 +1,14 @@
+[
+  {
+    "model": "ValidationJourney",
+    "data": {
+      "id": 1,
+      "comment_driver": "Conducteur moyen",
+      "comment_service": "Myruntrip est vraiment un service de qualité. Merci pour tout votre travail",
+      "rate_driver": 3,
+      "rate_service": 5,
+      "JoinId": 4,
+      "UserId": 1
+    }
+  }
+]

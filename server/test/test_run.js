@@ -7,17 +7,51 @@
 var assert = require("chai").assert;
 var models = require('../models');
 var Run = require('../objects/run');
+var async = require('async');
+var q = require('q');
+
+var loadData = function (fix) {
+    var deferred = q.defer();
+    models[fix.model].create(fix.data)
+        .complete(function (err, result) {
+            if (err) {
+                console.log(err);
+            }
+            deferred.resolve(result);
+        });
+    return deferred.promise;
+};
 
 describe('Tests of run objects', function () {
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
+        this.timeout(6000);
         models.sequelize.sync({force: true})
             .then(function () {
-                var fixtures = require('./fixtures/test_run.json');
-                fixtures.forEach(function (fix) {
-                    models[fix.model].create(fix.data);
+                async.waterfall([
+                    function(callback) {
+                        var fixtures = require('./fixtures/users.json');
+                        var promises = [];
+                        fixtures.forEach(function (fix) {
+                            promises.push(loadData(fix));
+                        });
+                        q.all(promises).then(function() {
+                            callback(null);
+                        });
+                    },
+                    function(callback) {
+                        var fixtures = require('./fixtures/runs.json');
+                        var promises = [];
+                        fixtures.forEach(function (fix) {
+                            promises.push(loadData(fix));
+                        });
+                        q.all(promises).then(function() {
+                            callback(null);
+                        });
+                    }
+                ], function (err, result) {
+                    done();
                 });
-                done();
             });
     });
     //After all the tests have run, output all the sequelize logging.
@@ -83,7 +117,20 @@ describe('Tests of run objects', function () {
             });
         });
     });
-    // (18, 'Marathon du Mont Blanc', 'marathon', 'Chamonix, France', '2015-06-28 00:00:00', '06:20', '80km - 42km - 23km - 10km - 3.8km', '3214+', '							', 1, '2014-11-24 08:28:53', '2014-11-24 08:28:53', 1),
+
+    it('Should be able to deactivate the run', function (done) {
+        var run = new Run();
+        run.toggleActive(1, function (err) {
+            if (err) {
+                console.log('Error: ' + err);
+            }
+            run.getActiveList(function (err, runs) {
+                assert.equal(runs.length, 4);
+                done();
+            });
+        });
+    });
+
     it('Should be able to create a run', function (done) {
         var run = new Run(),
             data_run = {
@@ -102,10 +149,17 @@ describe('Tests of run objects', function () {
                 "id": 1
             };
         run.set(data_run, data_user);
+        var tmp = run.get();
+        assert.equal(tmp.name, "Marathon du Mont Blanc");
+        assert.equal(tmp.type, "marathon");
+        assert.equal(tmp.address_start, "Chamonix, France");
         run.save(function (err, newRun) {
             if (err) {
                 console.log('Error: ' + err);
             }
+            assert.equal(newRun.name, "Marathon du Mont Blanc");
+            assert.equal(newRun.type, "marathon");
+            assert.equal(newRun.address_start, "Chamonix, France");
             run.getActiveList(function (err, runs) {
                 assert.equal(runs.length, 6);
                 done();

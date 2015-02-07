@@ -5,19 +5,54 @@
 var request = require('supertest'),
     models = require('../models'),
     assert = require("chai").assert,
-    app = require('../../server.js');
+    app = require('../../server.js'),
+    async = require('async'),
+    q = require('q');
+
+var loadData = function (fix) {
+    var deferred = q.defer();
+    models[fix.model].create(fix.data)
+        .complete(function (err, result) {
+            if (err) {
+                console.log(err);
+            }
+            deferred.resolve(result);
+        });
+    return deferred.promise;
+};
+
 
 describe('Test of run API', function () {
 
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
+        this.timeout(6000);
         models.sequelize.sync({force: true})
             .then(function () {
-                var fixtures = require('./fixtures/test_run.json');
-                fixtures.forEach(function (fix) {
-                    models[fix.model].create(fix.data);
+                async.waterfall([
+                    function(callback) {
+                        var fixtures = require('./fixtures/users.json');
+                        var promises = [];
+                        fixtures.forEach(function (fix) {
+                            promises.push(loadData(fix));
+                        });
+                        q.all(promises).then(function() {
+                            callback(null);
+                        });
+                    },
+                    function(callback) {
+                        var fixtures = require('./fixtures/runs.json');
+                        var promises = [];
+                        fixtures.forEach(function (fix) {
+                            promises.push(loadData(fix));
+                        });
+                        q.all(promises).then(function() {
+                            callback(null);
+                        });
+                    }
+                ], function (err, result) {
+                    done();
                 });
-                done();
             });
     });
     //After all the tests have run, output all the sequelize logging.

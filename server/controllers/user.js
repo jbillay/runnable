@@ -225,10 +225,8 @@ exports.active = function(req, res) {
 	var user = new User();
 	user.activate(req.params.id, req.params.hash, function (err, data) {
 		if (err) {
-			req.flash('indexMessage', "Votre compte n'a pas pu être activé");
 			res.redirect('/');
 		}
-		req.flash('indexMessage', "Votre compte vient d'être activé");
 		res.redirect('/');
 	});
 };

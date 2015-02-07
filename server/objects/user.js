@@ -16,6 +16,8 @@ function user() {
 	this.salt = null;
 	this.isActive = null;
 	this.role = null;
+    this.createdAt = null;
+    this.updatedAt = null;
 }
 
 user.prototype.get = function () {
@@ -47,7 +49,10 @@ user.prototype.set = function (user) {
 	else {
 		this.role = 'user';
 	}
-	console.log(this.firstname + ' ' + this.lastname);
+    if (user.createdAt) {
+        this.createdAt = user.createdAt; }
+    if (user.updatedAt) {
+        this.updatedAt = user.updatedAt; }
 };
 
 user.prototype.save = function (done) {
@@ -78,7 +83,7 @@ user.prototype.activate = function (id, hash, done) {
 				user.save()
 					.then(function (newUser) {
 						console.log('Activation done');
-						done(null, null);
+						done(null, newUser);
 					})
 					.catch(function (err) {
 						done(err, null);
@@ -106,6 +111,7 @@ user.prototype.getItraCode = function (done) {
 
 user.prototype.getRuns = function (user, done) {
 	'use strict';
+    console.log(user.firstname);
 	var itra = new Itra(user.firstname, user.lastname, user.itra);
 	itra.getRuns(function (err, runs) {
 		if (err) {

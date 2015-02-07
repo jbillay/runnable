@@ -139,11 +139,55 @@ module.exports = function(grunt) {
             unit: {
                 configFile: 'karma.conf.js'
             }
+        },
+        mocha_istanbul: {
+            coverage: {
+                src: 'server/test', // a folder works nicely
+                options: {
+                    mask: '*.js'
+                }
+            },
+            coverageSpecial: {
+                src: ['testSpecial/*/*.js', 'testUnique/*/*.js'], // specifying file patterns works as well
+                options: {
+                    coverageFolder: 'coverageSpecial',
+                    mask: '*.spec.js'
+                }
+            },
+            coveralls: {
+                src: ['test', 'testSpecial', 'testUnique'], // multiple folders also works
+                options: {
+                    coverage:true,
+                    check: {
+                        lines: 75,
+                        statements: 75
+                    },
+                    root: './lib', // define where the cover task should consider the root of libraries that are covered by tests
+                    reportFormats: ['lcov']
+                }
+            }
+        },
+        istanbul_check_coverage: {
+            default: {
+                options: {
+                    coverageFolder: 'coverage*', // will check both coverage folders and merge the coverage results
+                    check: {
+                        lines: 80,
+                        statements: 80
+                    }
+                }
+            }
         }
+    });
+
+    grunt.event.on('coverage', function(lcovFileContents, done){
+        // Check below
+        done();
     });
 
     // Load NPM tasks
     require('load-grunt-tasks')(grunt);
+    grunt.loadNpmTasks('grunt-mocha-istanbul');
 
     // Making grunt default to force in order not to break the project.
     grunt.option('force', true);
@@ -174,4 +218,8 @@ module.exports = function(grunt) {
 
     // Test task.
     grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit']);
+
+    grunt.registerTask('coveralls', ['mocha_istanbul:coveralls']);
+
+    grunt.registerTask('coverage', ['mocha_istanbul:coverage']);
 };

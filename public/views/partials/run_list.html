@@ -12,7 +12,7 @@
 				</div>
 			</div>
 			<div class="row run_list">
-				<div class="col-sm-2 run_poster" ng-repeat="run in listRun | filter:{name:run_name} | filter:{date_start:run_dt}">
+				<div class="col-sm-2 run_poster" ng-repeat="run in listRun | filter:{name:run_name}">
 					<a href="/run-{{run.id}}"><img src="/img/run_default.jpg" class="run_img" alt="Responsive image"></a>
 					<div class="run_title"><a href="/run-{{run.id}}">{{run.name | capitalize | limitTo:25}}</a></div>
 					<div class="run_desc">

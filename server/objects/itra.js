@@ -29,7 +29,7 @@ itra.prototype.getElementsByTagName = function (html, tag) {
 itra.prototype.getCode = function (done) {
     var url = this.urlBase + "?nom=" + this.lastname,
         itraObject = this;
-    request(url, function (error, response, body) {
+    request.get(url, function (error, response, body) {
         if (error) {
 			done(error, null);
 		} else {
@@ -46,9 +46,8 @@ itra.prototype.getCode = function (done) {
 };
 
 itra.prototype.getRuns = function (done) {
-    var url = this.urlBase + this.code,
-        itraObject = this;
-    request(url, function (error, response, body) {
+    var url = this.urlBase + this.code;
+    request.get(url, function (error, response, body) {
         if (error) {
 			done(error, null);
 		} else {

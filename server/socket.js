@@ -3,9 +3,11 @@
  */
 
 module.exports = function (socket) {
+    /*
     console.log('Client connection');
     socket.on('discussion:newMessage', function (msg) {
         console.log('Discussion message received');
         socket.emit('discussion:newMessage', msg);
     });
+    */
 };

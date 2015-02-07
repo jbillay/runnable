@@ -1,0 +1,36 @@
+[
+    {
+        "model": "User",
+        "data": {
+            "id": 1,
+            "firstname": "Jeremy",
+            "lastname": "Billay",
+            "address": "Saint Germain en laye",
+            "email": "jbillay@gmail.com",
+            "hashedPassword": "30I/772+OK6uQNdlaY8nriTbNSGznAk9un1zRIXmREB9nOjMz7wDDe2XpiS2ggk9En6lxR4SLqJyzAcW/rni3w==",
+            "provider": "local",
+            "salt": "T75xyNJfL19hzc778A08HQ==",
+            "itra": null,
+            "isActive": 1,
+            "role": "admin"
+        }
+    },
+    {
+        "model": "User",
+        "data": {
+            "id": 2,
+            "firstname": "Richard",
+            "lastname": "Couret",
+            "address": "Bouffemont",
+            "email": "richard.couret@free.fr",
+            "hashedPassword": "VMcLEoVLvXdolDlsRzF8cVjo2swFfV1Mo76ycRKObI00pVfBy73IwlYj/mX3Z+PH873k57Gu8vWCbWo9v/Cxuw==",
+            "provider": "local",
+            "salt": "d36OGvube+jUO8lcBpmr+Q==",
+            "itra": "?id=84500&nom=COURET#tab",
+            "isActive": 0,
+            "role": "editor",
+            "createdAt": "2015-02-04 18:55:39",
+            "updatedAt": "2015-02-04 18:55:39"
+        }
+    }
+]

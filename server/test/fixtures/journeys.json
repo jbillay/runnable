@@ -1,0 +1,65 @@
+[
+  {
+    "model": "Journey",
+    "data": {
+      "id": 1,
+      "address_start": "Saint-Germain-en-Laye, France",
+      "distance": "585 km",
+      "duration": "5 heures 29 minutes",
+      "journey_type": "aller-retour",
+      "date_start_outward": "2015-09-06 00:00:00",
+      "time_start_outward": "06:00",
+      "nb_space_outward": 2,
+      "date_start_return": "2015-09-07 00:00:00",
+      "time_start_return": "09:00",
+      "nb_space_return": 3,
+      "car_type": "monospace",
+      "amount": 23,
+      "updatedAt": "2014-12-22 09:08:16",
+      "RunId": 5,
+      "UserId": 1
+    }
+  },
+  {
+    "model": "Journey",
+    "data": {
+      "id": 2,
+      "address_start": "Nantes, France",
+      "distance": "754 km",
+      "duration": "6 heures 36 minute",
+      "journey_type": "aller",
+      "date_start_outward": "2015-06-02 00:00:00",
+      "time_start_outward": "03:00",
+      "nb_space_outward": 2,
+      "date_start_return": null,
+      "time_start_return": null,
+      "nb_space_return": null,
+      "car_type": "citadine",
+      "amount": 32,
+      "updatedAt": "2014-12-22 13:41:38",
+      "RunId": 2,
+      "UserId": 1
+    }
+  },
+  {
+    "model": "Journey",
+    "data": {
+      "id": 3,
+      "address_start": "Rouen",
+      "distance": "250 km",
+      "duration": "2 heures 45 minutes",
+      "journey_type": "aller-retour",
+      "date_start_outward": "2014-12-12 00:00:00",
+      "time_start_outward": "09:00",
+      "nb_space_outward": 2,
+      "date_start_return": "2014-12-13 00:00:00",
+      "time_start_return": "09:00",
+      "nb_space_return": 2,
+      "car_type": "citadine",
+      "amount": 12,
+      "updatedAt": "2015-02-02 05:02:11",
+      "RunId": 4,
+      "UserId": 2
+    }
+  }
+]

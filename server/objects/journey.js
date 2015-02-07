@@ -112,7 +112,7 @@ journey.prototype.getListForRun = function (id, done) {
 
 journey.prototype.getNextList = function (nb, done) {
     'use strict';
-	models.Journey.findAll({limit: nb, order: 'updatedAt ASC ', include: [models.Run]})
+	models.Journey.findAll({limit: nb, include: [models.Run]})
 		.then(function (runs) {
 			done(null, runs);
 		})

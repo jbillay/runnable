@@ -29,7 +29,7 @@ inbox.prototype.set = function (inbox) {
     if (inbox.title) {
         this.title = inbox.title;
     }
-    if (inbox.is_read) {
+    if (typeof inbox.is_read !== 'undefined') {
         this.is_read = inbox.is_read;
     }
     if (inbox.createdAt) {

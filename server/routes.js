@@ -18,18 +18,18 @@ module.exports = function (app, passport, auth) {
 
 	app.post('/api/user', controllers.user.create);
 	app.post('/api/user/password/reset', controllers.user.resetPassword);
-	app.post('/api/user/password/update', controllers.user.updatePassword);
-	app.post('/api/user/invite', controllers.user.invite);
+	app.post('/api/user/password/update', auth.requiresLogin, controllers.user.updatePassword);
+	app.post('/api/user/invite', auth.requiresLogin, controllers.user.invite);
     app.get('/api/user/active/:id/:hash', controllers.user.active);
     app.get('/api/user/:id/:hash', controllers.user.active);
-	app.get('/api/user/me', auth.requiresLogin, controllers.user.me);
-    app.get('/api/user/runs', auth.requiresLogin, controllers.user.showRuns);
-    app.get('/api/user/journeys', auth.requiresLogin, controllers.user.showJourneys);
-    app.get('/api/user/joins', auth.requiresLogin, controllers.user.showJoins);
     app.get('/api/user/public/info/:id', controllers.user.publicInfo);
     app.get('/api/user/public/driver/:id', controllers.user.publicDriverInfo);
     app.get('/api/user/runs/:id', controllers.user.showRuns);
-    
+    app.get('/api/user/me', auth.requiresLogin, controllers.user.me);
+    app.get('/api/user/runs', auth.requiresLogin, controllers.user.showRuns);
+    app.get('/api/user/journeys', auth.requiresLogin, controllers.user.showJourneys);
+    app.get('/api/user/joins', auth.requiresLogin, controllers.user.showJoins);
+
     app.post('/api/run', auth.requiresLogin, controllers.run.create);
     app.get('/api/run/list', controllers.run.activeList);
     app.get('/api/run/:id', controllers.run.detail);

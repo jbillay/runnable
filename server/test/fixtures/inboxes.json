@@ -1,0 +1,42 @@
+[
+  {
+    "model": "Inbox",
+    "data": {
+        "id": 1,
+        "title": "Nouveau message concernant le trajet pour la course Les templiers",
+      "message": "test à la con",
+        "is_read": 1,
+        "UserId": 2
+    }
+  },
+  {
+    "model": "Inbox",
+    "data": {
+      "id": 2,
+      "title": "Nouveau message concernant le trajet pour la course Les templiers",
+      "message": "Richard Couret dit : je sais que ça va marcher",
+      "is_read": 0,
+      "UserId": 1
+    }
+  },
+  {
+    "model": "Inbox",
+    "data": {
+        "id": 3,
+        "title": "Nouveau message concernant le trajet pour la course Les templiers",
+        "message": "Richard Couret dit : c est plutot une super nouvelle",
+        "is_read": 0,
+        "UserId": 1
+    }
+  },
+  {
+    "model": "Inbox",
+    "data": {
+      "id": 4,
+      "title": "Validation inscription au voyage pour la course Corrida de Saint Germain en Laye",
+      "message": "Nous avons bien pris en compte votre inscriptions pour la course Corrida de Saint Germain en Laye. Nous sommes en attente de la validation du paiement.",
+      "is_read": 0,
+      "UserId": 2
+    }
+  }
+]
