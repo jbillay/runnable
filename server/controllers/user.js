@@ -55,7 +55,6 @@ exports.create = function(req, res) {
 				});
 				var url = settings.domain,
 					timekey = new Date(newUser.createdAt).getTime();
-				console.log("http://" + url + "/api/user/active/" + newUser.id + "/" + timekey);
 				mail.setTo(user.email);
 				mail.setSubject("Activation de votre compte runnable");
 				html = "Vous venez de créer un compte sur notre site runnable<br/>" +
@@ -186,7 +185,10 @@ exports.updatePassword = function (req, res) {
 						res.jsonp('{"msg": "passwordUpdated", "type": "success"}');
 					}
 				});
-			}
+			} else {
+                console.log('new passwords are differents');
+                res.jsonp('{"msg": "passwordDifferent", "type": "error"}');
+            }
 		}
 	});
 };

@@ -10,7 +10,6 @@ module.exports = function (app, passport, auth) {
     // serve index and view partials
     app.get('/', controllers.root.default);
     app.get('/logout', controllers.root.logout);
-    app.get('/login', controllers.root.login);
 	app.post('/login', passport.authenticate('local'), controllers.root.auth);
 	app.post('/api/send/mail', controllers.root.sendMail);
 
