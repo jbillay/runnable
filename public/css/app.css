@@ -104,12 +104,12 @@ a.list-group-item.active,[class*='-info'] {
     background-size: cover;
 }
 
-#course {
+#itineraire {
     background-color: #e5e5ef;
     color:#686868;
 }
 
-#itineraire {
+#course {
     background-color: #168ccc;
     color:#ddd;
 }

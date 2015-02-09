@@ -13,10 +13,12 @@
         </div>
         <div class="navbar-collapse collapse" id="navbar-collapsible">
             <ul class="nav navbar-nav navbar-left">
-                <li ng-if="isAuthenticated"><a href="#inscription">Accueil</a></li>
-                <li ng-if="!isAuthenticated"><a href="#inscription">Inscription</a></li>
-                <li><a href="#course">Courses</a></li>
+                <li><a href="#inscription">
+                    <span ng-if="!isAuthenticated">Inscription</span>
+                    <span ng-if="isAuthenticated">Accueil</span>
+                </a></li>
                 <li><a href="#itineraire">Itinéraires</a></li>
+                <li><a href="#course">Courses</a></li>
                 <li><a href="#fonctionnement">Fonctionnement</a></li>
                 <li><a href="#apropos">A propos</a></li>
             </ul>
