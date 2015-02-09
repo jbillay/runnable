@@ -233,21 +233,6 @@ exports.active = function(req, res) {
 	});
 };
 
-exports.toggleAdmin = function (req, res) {
-	"use strict";
-	console.log('Toggle admin for user ' + req.body.id);
-	var id = req.body.id,
-		user = new User();
-	user.toggleAdmin(id, function (err) {
-		if (err) {
-			console.log('Not able to toggle admin flag for user : ' + err);
-			res.jsonp('{"msg": ' + err + '}');
-		} else {
-			res.jsonp('{"msg": "Modification effectuée", "type": "success"}');
-		}
-	});
-};
-
 exports.publicInfo = function (req, res) {
 	'use strict';
 	var userId = req.params.id,

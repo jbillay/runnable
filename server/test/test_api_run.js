@@ -7,7 +7,9 @@ var request = require('supertest'),
     assert = require("chai").assert,
     app = require('../../server.js'),
     async = require('async'),
-    q = require('q');
+    q = require('q'),
+    superagent = require('superagent');
+
 
 var loadData = function (fix) {
     var deferred = q.defer();
@@ -123,4 +125,63 @@ describe('Test of run API', function () {
                 });
         });
     });
+
+    describe('GET /api/admin/runs', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should return list of runs', function (done) {
+            agent
+                .get('http://localhost:9615/api/admin/runs')
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    assert.equal(res.body.length, 6);
+                    done();
+                });
+        });
+    });
+
+    describe('GET /api/admin/run/active', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should return list of runs', function (done) {
+            agent
+                .post('http://localhost:9615/api/admin/run/active')
+                .send({id: 6})
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    assert.equal(JSON.parse(res.body).msg, "done");
+                    request(app)
+                        .get('/api/run/list')
+                        .end(function (err, res) {
+                            if (err) {
+                                return done(err);
+                            }
+                            assert.equal(res.body.length, 6);
+                            return done();
+                        });
+                });
+        });
+    });
 });
+
+
+function loginUser(agent) {
+    return function(done) {
+        agent
+            .post('http://localhost:9615/login')
+            .send({ email: 'jbillay@gmail.com', password: 'noofs' })
+            .end(onResponse);
+
+        function onResponse(err, res) {
+            return done();
+        }
+    };
+}

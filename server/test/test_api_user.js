@@ -148,7 +148,6 @@ describe('Test of user API', function () {
                     if (err) {
                         return done(err);
                     }
-                    console.log(res.body);
                     assert.equal(res.body.length, 1);
                     assert.equal(res.body[0].rate_driver, 3);
                     assert.equal(res.body[0].rate_service, 5);
@@ -399,6 +398,118 @@ describe('Test of user API', function () {
                 .end(function (err, res) {
                     assert.equal(res.body.length, 2);
                     return done();
+                });
+        });
+    });
+
+    describe('GET /api/admin/user/active', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('Should define user 2 as active', function(done) {
+            agent
+                .post('http://localhost:9615/api/admin/user/active')
+                .send({id: "2"})
+                .end(function (err, res) {
+                    assert.equal(JSON.parse(res.body).msg, "userToggleActive");
+                    request(app)
+                        .get('/api/user/public/info/2')
+                        .end(function (err, res) {
+                            if (err) {
+                                return done(err);
+                            }
+                            assert.equal(res.body.isActive, 1);
+                        });
+                    return done();
+                });
+        });
+    });
+
+    describe('GET /api/user/runs', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should return user run from web', function (done) {
+            // TODO: mock the call to itra website
+            agent
+                .get('http://localhost:9615/api/user/runs')
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    console.log(res.body);
+                    assert.isNotNull(res.body);
+                    done();
+                });
+        });
+    });
+
+    describe('GET /api/user/invite', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should send email to friends of user 1', function (done) {
+            agent
+                .post('http://localhost:9615/api/user/invite')
+                .send({emails: "jbillay@gmail.com, richard.couret@free.fr", message: "should send email to friends"})
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    assert.equal(JSON.parse(res.body).msg, "Invitation(s) envoyée(s)");
+                    done();
+                });
+        });
+    });
+
+    describe('GET /api/user/password/reset', function () {
+        it('should return code 302', function (done) {
+            request(app)
+                .post('/api/user/password/reset')
+                .send({ email: 'jbillay@gmail.com'})
+                .expect(302, done);
+        });
+
+        it('Should reset user password', function (done) {
+            var agent = superagent.agent();
+
+            request(app)
+                .post('/api/user/password/reset')
+                .send({ email: 'jbillay@gmail.com'})
+                .end(function (err, res) {
+                    assert.equal(res.header['location'], '/');
+                    agent
+                        .post('http://localhost:9615/login')
+                        .send({ email: 'jbillay@gmail.com', password: 'noofs' })
+                        .end(function (err, res) {
+                            assert.isNull(err);
+                            assert.equal(res.statusCode, 401);
+                            done();
+                        });
+                });
+        });
+    });
+
+    describe('GET /api/user/active/:id/:hash', function () {
+        it('should active the user 2', function (done) {
+            request(app)
+                .get('/api/user/public/info/2')
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    assert.notOk(res.body.isActive);
+                    var hash = new Date(res.body.createdAt).getTime().toString();
+                    request(app)
+                        .get('/api/user/active/2/' + hash)
+                        .end(function (err, res) {
+                            assert.isNull(err);
+                            assert.equal(res.header['location'], '/');
+                            done();
+                        });
                 });
         });
     });
