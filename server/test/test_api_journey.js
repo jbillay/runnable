@@ -7,7 +7,8 @@ var request = require('supertest'),
     assert = require("chai").assert,
     app = require('../../server.js'),
     async = require('async'),
-    q = require('q');
+    q = require('q'),
+    superagent = require('superagent');
 
 var loadData = function (fix) {
     var deferred = q.defer();
@@ -168,6 +169,17 @@ describe('Test of journey API', function () {
                     done();
                 });
         });
+        it('should failed list of journey', function (done) {
+            request(app)
+                .get('/api/journey/run/a')
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    assert.equal(JSON.parse(res.body).msg, 'ko');
+                    done();
+                });
+        });
     });
 
     describe('GET /api/journey/next/:nb', function () {
@@ -188,4 +200,60 @@ describe('Test of journey API', function () {
                 });
         });
     });
+
+    describe('POST /api/journey', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should create a journey', function (done) {
+            var journey = {
+                "id": 4,
+                "address_start": "Paris",
+                "distance": "25 km",
+                "duration": "20 minutes",
+                "journey_type": "aller-retour",
+                "date_start_outward": "2014-12-12 00:00:00",
+                "time_start_outward": "09:00",
+                "nb_space_outward": 2,
+                "date_start_return": "2014-12-13 00:00:00",
+                "time_start_return": "09:00",
+                "nb_space_return": 2,
+                "car_type": "citadine",
+                "amount": 5,
+                "RunId": 4,
+                "UserId": 1
+            };
+            agent
+                .post('http://localhost:9615/api/journey')
+                .send({journey: journey})
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    agent
+                        .get('http://localhost:9615/api/journey/list')
+                        .end(function (err, res) {
+                            if (err) {
+                                return done(err);
+                            }
+                            assert.equal(res.body.length, 4);
+                            return done();
+                        });
+                });
+        });
+    });
 });
+
+function loginUser(agent) {
+    return function(done) {
+        agent
+            .post('http://localhost:9615/login')
+            .send({ email: 'jbillay@gmail.com', password: 'noofs' })
+            .end(onResponse);
+
+        function onResponse(err, res) {
+            return done();
+        }
+    };
+}

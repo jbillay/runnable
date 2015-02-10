@@ -10,11 +10,6 @@ exports.default = function(req, res) {
 	res.render('default.html');
 };
 
-exports.index = function (req, res) {
-    "use strict";
-	res.render('index.html', { message: req.flash('indexMessage') });
-};
-
 exports.partials = function (req, res) {
     "use strict";
     var name = req.params.name;
@@ -27,6 +22,7 @@ exports.logout = function (req, res) {
     res.redirect('/');
 };
 
+/*
 exports.logon = function (req) {
     "use strict";
     req.passport.authenticate('local', {
@@ -35,11 +31,7 @@ exports.logon = function (req) {
         failureFlash : true
     });
 };
-
-exports.login = function (req, res) {
-    "use strict";
-    res.render('login.html', { message: req.flash('loginMessage') });
-};
+*/
 
 exports.auth = function (req, res) {
     "use strict";

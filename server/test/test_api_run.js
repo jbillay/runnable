@@ -105,6 +105,18 @@ describe('Test of run API', function () {
                     done();
                 });
         });
+        it('should failed to retrieve a run', function (done) {
+            request(app)
+                .get('/api/run/-1')
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    var obj = {};
+                    assert.deepEqual(res.body, obj);
+                    done();
+                });
+        });
     });
 
     describe('GET /api/run/next/:nb', function () {
@@ -121,6 +133,17 @@ describe('Test of run API', function () {
                         return done(err);
                     }
                     assert.equal(res.body.length, 2);
+                    done();
+                });
+        });
+        it('should return failed to return runs', function (done) {
+            request(app)
+                .get('/api/run/next/a')
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    assert.include(res.body, 'SequelizeDatabaseError');
                     done();
                 });
         });
@@ -149,7 +172,7 @@ describe('Test of run API', function () {
 
         before(loginUser(agent));
 
-        it('should return list of runs', function (done) {
+        it('should active a run', function (done) {
             agent
                 .post('http://localhost:9615/api/admin/run/active')
                 .send({id: 6})
@@ -169,7 +192,56 @@ describe('Test of run API', function () {
                         });
                 });
         });
+
+        it('should failed to activate the run -1', function (done) {
+            agent
+                .post('http://localhost:9615/api/admin/run/active')
+                .send({id: -1})
+                .end(function (err, res) {
+                    assert.isNotNull(res.body.msg);
+                    return done();
+                });
+        });
     });
+
+    describe('POST /api/run', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should create a run', function (done) {
+            var run = {
+                "id": 7,
+                "name": "Marathon du Mont Blanc",
+                "type": "marathon",
+                "address_start": "Chamonix, France",
+                "date_start": "2015-06-28 00:00:00",
+                "time_start": "06:20",
+                "distances": "80km - 42km - 23km - 10km - 3.8km",
+                "elevations": "3214+",
+                "info": "dkqsd lqldsj lqkjdsllq ksjdlq",
+                "is_active": 1
+            };
+            agent
+                .post('http://localhost:9615/api/run')
+                .send({run: run})
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    agent
+                        .get('http://localhost:9615/api/admin/runs')
+                        .end(function (err, res) {
+                            if (err) {
+                                return done(err);
+                            }
+                            assert.equal(res.body.length, 7);
+                            return done();
+                        });
+                });
+        });
+    });
+
 });
 
 

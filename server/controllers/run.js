@@ -79,7 +79,7 @@ exports.toggleActive = function (req, res) {
 	console.log('Toggle active for run ' + req.body.id);
 	var id= req.body.id,
 		run = new Run();
-	run.toggleActive(id, function (err) {
+	run.toggleActive(id, function (err, run) {
 		if (err) {
 			console.log('Not able to get info on the run : ' + err);
 			res.jsonp('{"msg": ' + err + '}');

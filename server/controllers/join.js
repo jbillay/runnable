@@ -15,11 +15,6 @@ exports.create = function (req, res) {
 	});
 };
 
-exports.remove = function (req, res) {
-    "use strict";
-	console.log('Remove a join for journey : ' + req.params.id);
-};
-
 exports.listForJourney = function (req, res) {
     "use strict";
 	console.log('Get list of join for a journey ' + req.params.id);
