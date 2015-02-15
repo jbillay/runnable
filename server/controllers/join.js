@@ -58,3 +58,8 @@ exports.list = function (req, res) {
 		}
 	});
 };
+
+exports.confirm = function (req, res) {
+    'use strict';
+    console.log('%j', req);
+};

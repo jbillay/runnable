@@ -355,7 +355,7 @@ angular.module('runnable.controllers', []).
 			$timeout( function() {
 				var obj = "map_canvas";
 				GoogleMapApi.initMap(obj);
-				GoogleMapApi.showDirection(obj, $scope.journey.address_start, $scope.journey.run.address_start);
+				GoogleMapApi.showDirection(obj, $scope.journey.address_start, $scope.journey.Run.address_start);
 			});
 			$scope.nbFreeSpaceOutward = function () {
 				return parseInt($scope.journey.nb_space_outward) - parseInt($scope.reserved_outward);
@@ -396,7 +396,7 @@ angular.module('runnable.controllers', []).
 			}
 		};
 		$scope.joinJourney = function () {
-			var title = "Validation inscription au voyage pour la course " + $scope.journey.Run.name,
+			/*var title = "Validation inscription au voyage pour la course " + $scope.journey.Run.name,
                 textMessage = "Nous avons bien pris en compte votre inscriptions pour la course " +
                     $scope.journey.Run.name + ". Nous sommes en attente de la validation du paiement.";
             $scope.joined = 1;
@@ -405,13 +405,14 @@ angular.module('runnable.controllers', []).
 			Join.addJoin($scope.journeyId, $scope.selectedPlaceOutward, $scope.selectedPlaceReturn);
             console.log('Title : ' + title);
             console.log('Text : ' + textMessage);
-            Inbox.addMessage(title, textMessage, Session.userId);
+            Inbox.addMessage(title, textMessage, Session.userId);*/
 		};
 		$scope.removeJoinJourney = function () {
 			$scope.joined = 0;
 		};
-		$scope.calculateFees = function () {
+		$scope.calculateFees = function (outwardPlace, returnPlace, journey) {
 			var fees = 0;
+/*
 			if ($scope.selectedPlaceOutward) {
 				fees += $scope.selectedPlaceOutward * MyRunTripFees.getFees($scope.journey.date_start_outward,
 																			$scope.journey.time_start_outward,
@@ -421,6 +422,17 @@ angular.module('runnable.controllers', []).
 				fees += $scope.selectedPlaceReturn * MyRunTripFees.getFees($scope.journey.date_start_return,
 																			$scope.journey.time_start_return,
 																			$scope.journey.amount);
+			}
+*/
+			if (outwardPlace) {
+				fees += outwardPlace * MyRunTripFees.getFees(journey.date_start_outward,
+                                                             journey.time_start_outward,
+                                                             journey.amount);
+			}
+			if (returnPlace) {
+				fees += returnPlace * MyRunTripFees.getFees(journey.date_start_return,
+															journey.time_start_return,
+															journey.amount);
 			}
 			return fees;
 		};
@@ -501,7 +513,6 @@ angular.module('runnable.controllers', []).
 			angular.forEach($scope.userJoin, function (join) {
 				var freeSpace = User.getJourneyFreeSpace(join.Journey);
                 angular.forEach(join.ValidationJourneys, function (validation) {
-                    console.log(validation);
                     if (validation.UserId === Session.userId) {
                         join.validated = true;
                     }
@@ -514,7 +525,6 @@ angular.module('runnable.controllers', []).
 				join.Journey.nb_free_place_outward = freeSpace.nb_free_place_outward;
 				join.Journey.nb_free_place_return = freeSpace.nb_free_place_return;
 			});
-            console.log($scope.userJoin);
 		});
         $scope.showJourneyValidationModal = function (join) {
             $scope.vadidationJoin = join;

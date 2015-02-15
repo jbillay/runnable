@@ -10,6 +10,12 @@ angular.module('runnable.filters', []).
 			return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}) : '';
 		}
 	}).
+    filter('paypalAmount', function () {
+        "use strict";
+        return function(input) {
+            return (!!input) ? input.replace('.', ',') : '';
+        }
+    }).
     filter('runname', function () {
         "use strict";
         return function (items, search) {
@@ -24,11 +30,5 @@ angular.module('runnable.filters', []).
                 }
                 return flag;
             });
-        };
-    }).
-    filter('interpolate', function (version) {
-        'use strict';
-        return function (text) {
-            return String(text).replace(/\%VERSION\%/mg, version);
         };
     });

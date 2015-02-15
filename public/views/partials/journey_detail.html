@@ -1,88 +1,5 @@
 <div ng-include="'partials/nav'"></div>
 <div class="container body">
-	<div class="modal fade bs-example-modal-lg" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="clientModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">
-						<span aria-hidden="true">&times;</span>
-						<span class="sr-only">Close</span></button>
-					<h4 class="modal-title" id="myModalLabel">Validation de la participation au voyage pour la course {{journey.Run.name}}</h4>
-				</div>
-				<div class="row">
-					<div class="modal-body">
-						<div class="col-md-8 col-md-offset-2">
-							<p>Vous allez participer au voyage au départ de {{journey.address_start}} pour la course {{journey.Run.name}}
-							se déroulant à {{journey.Run.address_start}}.</p>
-							<p>Combien de place souhaitez vous réserver :</p>
-							<p ng-show="journey.journey_type === 'aller-retour' || journey.journey_type === 'aller'">
-								Pour l'aller <select ng-model="selectedPlaceOutward"
-													ng-options="placeOutward.id as placeOutward.id for placeOutward in nbFreeSpaceListOutward">
-											</select>
-								place(s)
-							</p>
-							<p ng-show="journey.journey_type === 'aller-retour' || journey.journey_type === 'retour'">
-								Pour le retour <select ng-model="selectedPlaceReturn"
-													  ng-options="placeReturn.id as placeReturn.id for placeReturn in nbFreeSpaceListReturn">
-												</select>
-								place(s)
-							</p>
-							<hr>
-							<div class="col-md-12">
-								<table class="table table-striped">
-									<thead>
-									<tr>
-										<th>Course</th>
-										<th>Départ</th>
-										<th>Sens</th>
-										<th>Montant</th>
-									</tr>
-									</thead>
-									<tbody>
-									<tr ng-if="selectedPlaceOutward > 0">
-										<th scope="row">{{journey.Run.name}}</th>
-										<td>{{journey.address_start}}</td>
-										<td>Aller</td>
-										<td>{{selectedPlaceOutward * journey.amount | currency:'€ '}}</td>
-									</tr>
-									<tr ng-if="selectedPlaceReturn > 0">
-										<th scope="row">{{journey.Run.name}}</th>
-										<td>{{journey.address_start}}</td>
-										<td>Retour</td>
-										<td>{{selectedPlaceReturn * journey.amount | currency:'€ '}}</td>
-									</tr>
-									<tr ng-if="selectedPlaceOutward + selectedPlaceReturn > 0">
-										<th scope="row">Frais de service</th>
-										<td>&nbsp;</td>
-										<td>&nbsp;</td>
-										<td>{{calculateFees() | currency:'€ '}}</td>
-									</tr>
-									</tbody>
-									<tfoot>
-									<tr>
-										<th scope="row" colspan="3">TOTAL</th>
-										<td>{{(selectedPlaceOutward + selectedPlaceReturn) * journey.amount + calculateFees() | currency:'€ ' }}</td>
-									</tr>
-									</tfoot>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<form name="_xclick" action="https://www.paypal.com/cgi-bin/webscr" method="post">
-						<input type="hidden" name="cmd" value="_xclick-auto-billing">
-						<input type="hidden" name="business" value="adm@4ulabs.fr">
-						<input type="hidden" name="currency_code" value="EUR">
-						<input type="hidden" name="country" value="FR">
-						<input type="hidden" name="item_name" value="Parcours My Run Trip">
-						<input type="hidden" name="amount" value="{{(selectedPlaceOutward + selectedPlaceReturn ) * journey.amount + calculateFees() | number:2}}">
-						<button type="submit" class="btn btn-primary btn-block" value="Procéder au paiement" ng-click="joinJourney()">Procéder au paiement</button>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
     <div class="row spacehead">
         <div class="col-sm-12">
             <h2>Parcours pour la course {{journey.Run.name}}</h2>
@@ -157,5 +74,6 @@
             <div id="map_canvas" class="map"></div>
         </div>
     </div>
+    <div ng-include="'partials/modal_invoice'"></div>
 </div>
 <div ng-include="'partials/footer'"></div>
