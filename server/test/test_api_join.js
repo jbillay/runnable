@@ -166,6 +166,42 @@ describe('Test of join API', function () {
                 });
         });
     });
+
+    describe('GET /api/admin/joins', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should return list of all joins', function(done) {
+            var join = {
+                    id: 5,
+                    nb_place_outward: 1,
+                    nb_place_return: 1,
+                    status: "pending",
+                    JourneyId: 3
+                };
+            agent
+                .post('http://localhost:9615/api/join')
+                .send({join: join})
+                .end(function (err, res) {
+                    assert.equal(JSON.parse(res.body).msg, "userJoined");
+                    agent
+                        .get('http://localhost:9615/api/admin/joins')
+                        .end(function (err, res) {
+                            assert.equal(res.body.length, 5);
+                            return done();
+                        });
+                });
+        });
+    });
+
+    describe('POST /api/paypal/ipn', function () {
+        it('should return code 200', function (done) {
+            request(app)
+                .post('/api/paypal/ipn')
+                .expect(200, done);
+        });
+    });
 });
 
 function loginUser(agent) {

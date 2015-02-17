@@ -21,7 +21,7 @@ var loadData = function (fix) {
     return deferred.promise;
 };
 
-describe('Test of journey object', function () {
+describe('Test of join object', function () {
     "use strict";
     beforeEach(function (done) {
         this.timeout(6000);
