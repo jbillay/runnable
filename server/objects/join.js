@@ -134,4 +134,27 @@ join.prototype.getList = function (done) {
 		});
 };
 
+join.prototype.updatePaymentStatus = function (invoiceRef, amount, status, transactionId, done) {
+	'use strict';
+	models.Journey.find({ where: {invoice: invoiceRef}})
+		.then(function (join) {
+			if (join.amount === amount) {
+				join.status = status;
+				join.transaction = transactionId;
+				join.save()
+					.then(function (newJoin) {
+						done(null, newJoin);
+					})
+					.catch(function (err) {
+						done(new Error(Err), null);
+					});
+			} else {
+				done(new Error('Amount is different then initial'), null);
+			}
+		})
+		.catch(function (err) {
+			done(err, null);
+		});
+};
+
 module.exports = join;
