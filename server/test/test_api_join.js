@@ -27,7 +27,6 @@ var loadData = function (fix) {
 
 
 describe('Test of join API', function () {
-
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
         this.timeout(6000);
@@ -166,13 +165,13 @@ describe('Test of join API', function () {
                 });
         });
     });
-
-    describe('GET /api/admin/joins', function () {
+	
+    describe('POST /api/join', function () {
         var agent = superagent.agent();
 
         before(loginUser(agent));
 
-        it('should return list of all joins', function(done) {
+        it('should create a new join', function(done) {
             var join = {
                     id: 5,
                     nb_place_outward: 1,

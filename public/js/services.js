@@ -338,9 +338,15 @@ angular.module('runnable.services', ['ngResource']).
     factory('Join', function ($q, $http) {
         'use strict';
         return {
-			addJoin: function (id, nbSpaceOutward, nbSpaceReturn) {
+			addJoin: function (id, nbSpaceOutward, nbSpaceReturn, amount, ref) {
 				var deferred = $q.defer(),
-					info = {journey_id: id, nb_place_outward: nbSpaceOutward, nb_place_return: nbSpaceReturn};
+					info = {journey_id: id,
+							nb_place_outward: nbSpaceOutward, 
+							nb_place_return: nbSpaceReturn,
+							amount: amount,
+							status: 'pending',
+							invoice: ref};
+				console.log(info);
 				$http.post("/api/join", info).
 					success(function (result) {
 						deferred.resolve(result);

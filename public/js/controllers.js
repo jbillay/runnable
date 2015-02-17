@@ -119,7 +119,6 @@ angular.module('runnable.controllers', []).
 			$scope.listRun = res[0];
 			$scope.listJourney = res[1];
             $scope.userFeedback = res[2];
-            console.log($scope.userFeedback);
 			//timeout in order to wait the page to be loaded
 			$timeout( function() {
 				angular.forEach($scope.listJourney, function (journey) {
@@ -385,45 +384,38 @@ angular.module('runnable.controllers', []).
 			$scope.nbFreeSpaceListOutward = $scope.getFreeSpaceOutward();
 			$scope.nbFreeSpaceListReturn = $scope.getFreeSpaceReturn();
 		});
-		$scope.selectNbPlaceOutward = function () {
-
-		};
 		$scope.showJoinForm = function () {
 			if (!Session.userEmail) {
 				$scope.showLogin();
 			} else {
+				var invoice_key = Math.random().toString(36).substring(2, 7).toUpperCase();
+				var d = new Date();
+				var curr_date = ("0" + d.getDate()).slice(-2);
+				var curr_month = ("0" + (d.getMonth() + 1)).slice(-2);
+				var curr_year = d.getFullYear();
+				var invoice_date = curr_year + '' + curr_month + '' + curr_date;
+				$scope.invoice_ref = "MRT" + invoice_date + invoice_key;
 				angular.element('#clientModal').modal('show');
 			}
 		};
-		$scope.joinJourney = function () {
-			/*var title = "Validation inscription au voyage pour la course " + $scope.journey.Run.name,
+		$scope.joinJourney = function (placeOutward, placeReturn) {
+			var title = "Validation inscription au voyage pour la course " + $scope.journey.Run.name,
                 textMessage = "Nous avons bien pris en compte votre inscriptions pour la course " +
                     $scope.journey.Run.name + ". Nous sommes en attente de la validation du paiement.";
+			var amount = (placeOutward + placeReturn) * $scope.journey.amount + 
+						$scope.calculateFees(placeOutward, placeReturn, $scope.journey);
             $scope.joined = 1;
-			$scope.reserved_outward = $scope.reserved_outward + $scope.selectedPlaceOutward;
-			$scope.reserved_return = $scope.reserved_return + $scope.selectedPlaceReturn;
-			Join.addJoin($scope.journeyId, $scope.selectedPlaceOutward, $scope.selectedPlaceReturn);
-            console.log('Title : ' + title);
-            console.log('Text : ' + textMessage);
-            Inbox.addMessage(title, textMessage, Session.userId);*/
+			amount = amount.toFixed(2);
+			$scope.reserved_outward = $scope.reserved_outward + placeOutward;
+			$scope.reserved_return = $scope.reserved_return + placeReturn;
+			Join.addJoin($scope.journeyId, placeOutward, placeReturn, amount, $scope.invoice_ref);
+            Inbox.addMessage(title, textMessage, Session.userId);
 		};
 		$scope.removeJoinJourney = function () {
 			$scope.joined = 0;
 		};
 		$scope.calculateFees = function (outwardPlace, returnPlace, journey) {
 			var fees = 0;
-/*
-			if ($scope.selectedPlaceOutward) {
-				fees += $scope.selectedPlaceOutward * MyRunTripFees.getFees($scope.journey.date_start_outward,
-																			$scope.journey.time_start_outward,
-																			$scope.journey.amount);
-			}
-			if ($scope.selectedPlaceReturn) {
-				fees += $scope.selectedPlaceReturn * MyRunTripFees.getFees($scope.journey.date_start_return,
-																			$scope.journey.time_start_return,
-																			$scope.journey.amount);
-			}
-*/
 			if (outwardPlace) {
 				fees += outwardPlace * MyRunTripFees.getFees(journey.date_start_outward,
                                                              journey.time_start_outward,

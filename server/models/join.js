@@ -11,7 +11,10 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.ENUM, 
 			values: ['pending', 'payed', 'cancelled', 'refused', 'done'],
 			defaultValue: 'pending'
-			}
+			},
+		amount: DataTypes.FLOAT,
+		invoice: DataTypes.STRING,
+		transaction : DataTypes.STRING
 	}, {
 		classMethods: {
 			associate: function(models) {
