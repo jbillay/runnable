@@ -111,10 +111,11 @@ exports.confirm = function (req, res) {
     console.log('IPN info : ' + req.body);
     ipn.verify(req.body, {'allow_sandbox': true}, function callback(err, msg) {
         if (err) {
-            console.error(err);
+            console.log('Err: ' + err);
         } else {
             var amount = parseFloat(req.body.mc_gross),
                 status = req.body.payment_statu.toLowerCase();
+            console.log('Just before updatePaymentStatus');
             Join.updatePaymentStatus(req.body.invoice, amount, status, req.body.txn_id,
                 function (err, res) {
                     if (err) {
