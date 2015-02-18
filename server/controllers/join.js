@@ -108,16 +108,20 @@ Exemple
 exports.confirm = function (req, res) {
     'use strict';
     res.send(200);
-    console.log('IPN info : ' + req.body);
+    console.log('IPN info : %j', req.body);
     ipn.verify(req.body, {'allow_sandbox': true}, function callback(err, msg) {
     	console.log('Dans verify !!!');
+            console.log('Err: ' + err);
+            console.log('Msg: ' + msg);
         if (err) {
+	console.log('Dans le if');
             console.log('Err: ' + err);
         } else {
-            var amount = parseFloat(req.body.mc_gross),
-                status = req.body.payment_statu.toLowerCase(),
-                join = new Join();
+        	console.log('Dans le else');
             console.log('Just before updatePaymentStatus');
+            var amount = parseFloat(req.body.mc_gross),
+                status = req.body.payment_status.toLowerCase(),
+                join = new Join();
             join.updatePaymentStatus(req.body.invoice, amount, status, req.body.txn_id,
                 function (err, res) {
                     if (err) {
@@ -126,5 +130,6 @@ exports.confirm = function (req, res) {
                     console.log('TEST ' + res);
                 });
         }
+        	console.log('Fini avec le verify !!!');
     });
 };
