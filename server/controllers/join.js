@@ -115,9 +115,10 @@ exports.confirm = function (req, res) {
             console.log('Err: ' + err);
         } else {
             var amount = parseFloat(req.body.mc_gross),
-                status = req.body.payment_statu.toLowerCase();
+                status = req.body.payment_statu.toLowerCase(),
+                join = new Join();
             console.log('Just before updatePaymentStatus');
-            Join.updatePaymentStatus(req.body.invoice, amount, status, req.body.txn_id,
+            join.updatePaymentStatus(req.body.invoice, amount, status, req.body.txn_id,
                 function (err, res) {
                     if (err) {
                         console.log('Err: ' + err);
