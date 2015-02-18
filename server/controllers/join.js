@@ -109,10 +109,10 @@ exports.confirm = function (req, res) {
     'use strict';
     res.send(200);
     console.log('IPN info : ' + req.body);
-    ipn.verify(req.body, {'allow_sandbox': true}, function callback(err, msg) {
+    /*ipn.verify(req.body, {'allow_sandbox': true}, function callback(err, msg) {
         if (err) {
             console.log('Err: ' + err);
-        } else {
+        } else {*/
             var amount = parseFloat(req.body.mc_gross),
                 status = req.body.payment_statu.toLowerCase();
             console.log('Just before updatePaymentStatus');
@@ -123,6 +123,6 @@ exports.confirm = function (req, res) {
                     }
                     console.log('TEST ' + res);
                 });
-        }
-    });
+        /*}
+    });*/
 };
