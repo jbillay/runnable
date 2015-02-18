@@ -107,7 +107,6 @@ Exemple
 */
 exports.confirm = function (req, res) {
     'use strict';
-    res.send(200);
     ipn.verify(req.body, {'allow_sandbox': true}, function callback(err, msg) {
         if (err) {
             console.error(err);
@@ -120,6 +119,7 @@ exports.confirm = function (req, res) {
                         console.log('Err: ' + err);
                     }
                     console.log('TEST ' + res);
+		    res.send(200);
                 });
         }
     });
