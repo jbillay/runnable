@@ -136,7 +136,11 @@ join.prototype.getList = function (done) {
 
 join.prototype.updatePaymentStatus = function (invoiceRef, amount, status, transactionId, done) {
 	'use strict';
-	models.Journey.find({ where: {invoice: invoiceRef}})
+    console.log('Invoice : ' + invoiceRef);
+    console.log('Amount : ' + amount);
+    console.log('Status : ' + status);
+    console.log('Transcation : ' + transactionId);
+	models.Join.find({ where: {invoice: invoiceRef}})
 		.then(function (join) {
 			if (join.amount === amount) {
 				join.status = status;
@@ -146,7 +150,7 @@ join.prototype.updatePaymentStatus = function (invoiceRef, amount, status, trans
 						done(null, newJoin);
 					})
 					.catch(function (err) {
-						done(new Error(Err), null);
+						done(new Error(err), null);
 					});
 			} else {
 				done(new Error('Amount is different then initial'), null);

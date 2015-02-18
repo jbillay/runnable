@@ -6,6 +6,9 @@
       "nb_place_outward": 2,
       "nb_place_return": 3,
       "status": "pending",
+      "amount": 108.27,
+      "invoice": "MRT20150217LA6E9",
+      "transaction": "",
       "UserId": 1,
       "JourneyId": 1
     }
@@ -17,6 +20,9 @@
       "nb_place_outward": 1,
       "nb_place_return": null,
       "status": "pending",
+      "amount": 50.96,
+      "invoice": "MRT20150217JZL8D",
+      "transaction": "",
       "UserId": 1,
       "JourneyId": 2
     }
@@ -28,6 +34,9 @@
       "nb_place_outward": 1,
       "nb_place_return": null,
       "status": "pending",
+      "amount": 50.96,
+      "invoice": "MRT20150217JZL8D",
+      "transaction": "",
       "UserId": 2,
       "JourneyId": 2
     }
@@ -39,6 +48,9 @@
       "nb_place_outward": 1,
       "nb_place_return": 1,
       "status": "pending",
+      "amount": 23.75,
+      "invoice": "MRT20150217H36EG",
+      "transaction": "",
       "UserId": 1,
       "JourneyId": 3
     }

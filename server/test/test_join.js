@@ -141,6 +141,8 @@ describe('Test of join object', function () {
             assert.equal(joinInfo.nb_place_outward, 1);
             assert.equal(joinInfo.nb_place_return, 1);
             assert.equal(joinInfo.status, "pending");
+            assert.equal(joinInfo.amount, 23.75);
+            assert.equal(joinInfo.invoice, "MRT20150217H36EG");
             join.getById(-1, function (err, joinInfo) {
                 assert.isNotNull(err);
                 assert.isNull(joinInfo);
@@ -156,6 +158,9 @@ describe('Test of join object', function () {
                 "nb_place_outward": 3,
                 "nb_place_return": 2,
                 "status": "pending",
+                "amount": 38.83,
+                "invoice": "MRT2015021728IKD",
+                "transaction": "83V29469P1887825P",
                 "journey_id": 3
            },
            user = {
@@ -169,6 +174,9 @@ describe('Test of join object', function () {
         assert.equal(tmp.nb_place_outward, 3);
         assert.equal(tmp.nb_place_return, 2);
         assert.equal(tmp.status, "pending");
+        assert.equal(tmp.amount, 38.83);
+        assert.equal(tmp.invoice, "MRT2015021728IKD");
+        assert.equal(tmp.transaction, "83V29469P1887825P");
         join.save(tmp, user, function (err, createdJoin) {
             if (err) console.log(err);
             assert.isNotNull(err);
@@ -181,8 +189,42 @@ describe('Test of join object', function () {
                     assert.equal(joinInfo.nb_place_outward, 3);
                     assert.equal(joinInfo.nb_place_return, 2);
                     assert.equal(joinInfo.status, "pending");
+                    assert.equal(joinInfo.amount, 38.83);
+                    assert.equal(joinInfo.invoice, "MRT2015021728IKD");
+                    assert.equal(joinInfo.transaction, "83V29469P1887825P");
                     done();
                 });
+            });
+        });
+    });
+
+    it('Update payment information', function (done) {
+        var join = new Join(),
+            ipn = {
+                invoice: "MRT20150217JZL8D",
+                amount: 50.96,
+                status: "complete",
+                transaction: "83V29469P1887825P"
+            };
+        // TODO
+        join.updatePaymentStatus(ipn.invoice, ipn.amount, ipn.status, ipn.transaction, function (err, msg) {
+            if (err) {
+                console.log(err);
+                done(err);
+            }
+            assert.isNull(err);
+            join.getById(2, function (err, joinInfo) {
+                if (err) {
+                    console.log(err);
+                    done(err);
+                }
+                assert.isNull(err);
+                assert.equal(joinInfo.id, 2);
+                assert.equal(joinInfo.status, "complete");
+                assert.equal(joinInfo.amount, 50.96);
+                assert.equal(joinInfo.invoice, "MRT20150217JZL8D");
+                assert.equal(joinInfo.transaction, "83V29469P1887825P");
+                done();
             });
         });
     });

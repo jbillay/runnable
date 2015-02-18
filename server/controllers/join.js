@@ -1,5 +1,6 @@
 
 var Join = require('../objects/join');
+var ipn = require('paypal-ipn');
 
 exports.create = function (req, res) {
     "use strict";
@@ -106,6 +107,20 @@ Exemple
 */
 exports.confirm = function (req, res) {
     'use strict';
-    console.log(req.body);
     res.send(200);
+    ipn.verify(req.body, {'allow_sandbox': true}, function callback(err, msg) {
+        if (err) {
+            console.error(err);
+        } else {
+            var amount = parseFloat(req.body.mc_gross),
+                status = req.body.payment_statu.toLowerCase();
+            Join.updatePaymentStatus(req.body.invoice, amount, status, req.body.txn_id,
+                function (err, res) {
+                    if (err) {
+                        console.log('Err: ' + err);
+                    }
+                    console.log('TEST ' + res);
+                });
+        }
+    });
 };
