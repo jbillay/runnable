@@ -203,10 +203,9 @@ describe('Test of join object', function () {
             ipn = {
                 invoice: "MRT20150217JZL8D",
                 amount: 50.96,
-                status: "complete",
+                status: "completed",
                 transaction: "83V29469P1887825P"
             };
-        // TODO
         join.updatePaymentStatus(ipn.invoice, ipn.amount, ipn.status, ipn.transaction, function (err, msg) {
             if (err) {
                 console.log(err);

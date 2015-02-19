@@ -136,10 +136,7 @@ join.prototype.getList = function (done) {
 
 join.prototype.updatePaymentStatus = function (invoiceRef, amount, status, transactionId, done) {
 	'use strict';
-    console.log('Invoice : ' + invoiceRef);
-    console.log('Amount : ' + amount);
-    console.log('Status : ' + status);
-    console.log('Transcation : ' + transactionId);
+    console.log('Update invoice ' + invoiceRef + ' to status ' + status)
 	models.Join.find({ where: {invoice: invoiceRef}})
 		.then(function (join) {
 			if (join.amount === amount) {

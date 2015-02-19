@@ -205,6 +205,7 @@ describe('Test of join API', function () {
                 .expect(200, done);
         });
 
+        /* Couldn't be tested as we don't know Paypal behavior
         it('should update the payment for join 2', function (done) {
             var ipn = {
                 mc_gross: '50.96', // AMOUNT
@@ -274,7 +275,7 @@ describe('Test of join API', function () {
                         return done();
                     });
             });
-        });
+        });*/
     });
 });
 

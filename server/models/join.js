@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
 		nb_place_return: DataTypes.INTEGER,
 		status:	{ 
 			type: DataTypes.ENUM, 
-			values: ['pending', 'complete', 'cancelled', 'refused', 'done'],
+			values: ['pending', 'completed', 'cancelled', 'refused', 'done'],
 			defaultValue: 'pending'
 			},
 		amount: DataTypes.FLOAT,
