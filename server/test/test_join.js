@@ -219,7 +219,7 @@ describe('Test of join object', function () {
                 }
                 assert.isNull(err);
                 assert.equal(joinInfo.id, 2);
-                assert.equal(joinInfo.status, "complete");
+                assert.equal(joinInfo.status, "completed");
                 assert.equal(joinInfo.amount, 50.96);
                 assert.equal(joinInfo.invoice, "MRT20150217JZL8D");
                 assert.equal(joinInfo.transaction, "83V29469P1887825P");
