@@ -5,6 +5,7 @@
 /* Controllers */
 
 /*jshint undef:true */
+'use strict';
 
 angular.module('runnable.controllers', []).
 	controller('RunnableMainController', function ($scope, $rootScope, $q, USER_ROLES, AUTH_EVENTS,
@@ -68,16 +69,16 @@ angular.module('runnable.controllers', []).
 	}).
 	controller('RunnableSharedController', function ($scope, Session, User) {
 		$scope.invitForm = {
-			"inviteMessage": "J’utilise My Run Trip pour organiser mes voyages jusqu'aux différentes courses. " +
-			"Cela me permet de faire des économies sur tous mes trajets. " +
-			"Rejoins moi en t’inscrivant sur http://www.myruntrip.fr pour que nous puissions organiser ensemble notre voyage " +
-			"jusqu'à la prochaine course.- " + Session.userFirstname,
-			"inviteEmails": ""
+			inviteMessage: 'J’utilise My Run Trip pour organiser mes voyages jusqu\'aux différentes courses. ' +
+			'Cela me permet de faire des économies sur tous mes trajets. ' +
+			'Rejoins moi en t’inscrivant sur http://www.myruntrip.fr pour que nous puissions organiser ensemble notre voyage ' +
+			'jusqu\'à la prochaine course.- ' + Session.userFirstname,
+			inviteEmails: ''
 		};
 		$scope.inviteFriends = function (inviteData) {
 			angular.element('#modalInviteFriends').modal('hide');
 			User.inviteFriends(inviteData);
-			inviteData.inviteEmails = "";
+			inviteData.inviteEmails = '';
 		};
 	}).
 	controller('RunnableLoginController', function ($scope, $rootScope, AUTH_EVENTS, AuthService) {
@@ -107,7 +108,6 @@ angular.module('runnable.controllers', []).
 	}).
 	controller('RunnableIndexController', function ($scope, $q, $timeout, Run, User, Journey, GoogleMapApi, Email,
                                                     ValidationJourney) {
-		'use strict';
 		$scope.page = 'Index';
 		$scope.nbRunItems = 4;
 		$scope.nbJourneyItems = 4;
@@ -135,7 +135,7 @@ angular.module('runnable.controllers', []).
             var data = {};
             $scope.mailContact = {};
             data.emails = 'jbillay@gmail.com';
-            data.title = "[Runnable] Demande info : " + contact.demande;
+            data.title = '[Runnable] Demande info : ' + contact.demande;
             data.message = 'Information concernant' + contact.demande + '<br>' +
                             'De la part de : ' + contact.email + '<br>' +
                             'Content : <br>' + contact.content + '<br>';
@@ -144,7 +144,6 @@ angular.module('runnable.controllers', []).
         };
 	}).
 	controller('RunnableProfileController', function ($scope, $q, $rootScope, $location, $sce, User) {
-		'use strict';
 		$scope.page = 'Profile';
 		var userItraRunPromise = User.getItraRuns(),
 			userJourneyPromise = User.getJourney(),
@@ -182,7 +181,6 @@ angular.module('runnable.controllers', []).
 		};
 	}).
 	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run, Journey, Join) {
-		'use strict';
 		$scope.page = 'Admin';
 		var userListPromise = User.getList(),
 			runListPromise = Run.getList(),
@@ -232,7 +230,6 @@ angular.module('runnable.controllers', []).
 	}).
 	controller('RunnableRunDetailController', function ($scope, $q, $timeout, $routeParams, $location,
 														Run, Journey, GoogleMapApi, Session, Participate) {
-        'use strict';
         $scope.page = 'Run';
 		$scope.runId = $routeParams.runId;
 		var runPromise = Run.getDetail($scope.runId),
@@ -283,7 +280,6 @@ angular.module('runnable.controllers', []).
         };
     }).
     controller('RunnableRunCreateController', function ($scope, $q, $timeout, Run, GoogleMapApi) {
-        'use strict';
         $scope.page = 'Run';
 		var runPromise = Run.getActiveList(),
             all = $q.all([runPromise]);
@@ -321,7 +317,6 @@ angular.module('runnable.controllers', []).
 		$scope.calFormat = 'dd/MM/yyyy';
     }).
     controller('RunnableRunController', function ($scope, $q, Run) {
-        'use strict';
         $scope.page = 'Run';
 		var runPromise = Run.getActiveList(),
             all = $q.all([runPromise]);
@@ -332,7 +327,6 @@ angular.module('runnable.controllers', []).
 	controller('RunnableJourneyDetailController', function ($scope, $q, $routeParams, $rootScope, $timeout,
 															Run, Journey, Join, GoogleMapApi, MyRunTripFees, Session,
                                                             Inbox) {
-		'use strict';
 		$scope.page = 'Journey';
 		$scope.journeyId = $routeParams.journeyId;
 		var journeyPromise = Journey.getDetail($scope.journeyId),
@@ -352,7 +346,7 @@ angular.module('runnable.controllers', []).
 				}
 			});
 			$timeout( function() {
-				var obj = "map_canvas";
+				var obj = 'map_canvas';
 				GoogleMapApi.initMap(obj);
 				GoogleMapApi.showDirection(obj, $scope.journey.address_start, $scope.journey.Run.address_start);
 			});
@@ -390,18 +384,18 @@ angular.module('runnable.controllers', []).
 			} else {
 				var invoice_key = Math.random().toString(36).substring(2, 7).toUpperCase();
 				var d = new Date();
-				var curr_date = ("0" + d.getDate()).slice(-2);
-				var curr_month = ("0" + (d.getMonth() + 1)).slice(-2);
+				var curr_date = ('0' + d.getDate()).slice(-2);
+				var curr_month = ('0' + (d.getMonth() + 1)).slice(-2);
 				var curr_year = d.getFullYear();
 				var invoice_date = curr_year + '' + curr_month + '' + curr_date;
-				$scope.invoice_ref = "MRT" + invoice_date + invoice_key;
+				$scope.invoice_ref = 'MRT' + invoice_date + invoice_key;
 				angular.element('#clientModal').modal('show');
 			}
 		};
 		$scope.joinJourney = function (placeOutward, placeReturn) {
-			var title = "Validation inscription au voyage pour la course " + $scope.journey.Run.name,
-                textMessage = "Nous avons bien pris en compte votre inscriptions pour la course " +
-                    $scope.journey.Run.name + ". Nous sommes en attente de la validation du paiement.";
+			var title = 'Validation inscription au voyage pour la course ' + $scope.journey.Run.name,
+                textMessage = 'Nous avons bien pris en compte votre inscriptions pour la course ' +
+                    $scope.journey.Run.name + '. Nous sommes en attente de la validation du paiement.';
 			var amount = (placeOutward + placeReturn) * $scope.journey.amount + 
 						$scope.calculateFees(placeOutward, placeReturn, $scope.journey);
             $scope.joined = 1;
@@ -430,7 +424,6 @@ angular.module('runnable.controllers', []).
 		};
 	}).
 	controller('RunnableJourneyCreateController', function ($scope, $q, $timeout, Run, GoogleMapApi) {
-        'use strict';
         $scope.page = 'Journey';
 		var runPromise = Run.getActiveList(),
             all = $q.all([runPromise]);
@@ -484,11 +477,10 @@ angular.module('runnable.controllers', []).
 			if ($scope.destination) {
 				$scope.showMapInfo();
 			}
-		}
+		};
 	}).
 	controller('RunnableMyJourneyController', function ($scope, $q, $timeout, User, Discussion,
 														GoogleMapApi, Socket, Session, Inbox, ValidationJourney) {
-		'use strict';
 		$scope.page = 'MyJourney';
 		var userJourneyPromise = User.getJourney(),
 			userJoinPromise = User.getJoin(),
@@ -521,10 +513,10 @@ angular.module('runnable.controllers', []).
         $scope.showJourneyValidationModal = function (join) {
             $scope.vadidationJoin = join;
             $scope.validationForm = {
-                commentDriver: "",
-                commentService: "",
-                rate_driver: "",
-                rate_service: ""
+                commentDriver: '',
+                commentService: '',
+                rate_driver: '',
+                rate_service: ''
             };
             angular.element('#journeyValidationModal').modal('show');
             $scope.sendValidation = function (validation) {
@@ -548,7 +540,7 @@ angular.module('runnable.controllers', []).
 				$scope.discussionUsers = res[0];
 				$scope.discussionMessages = res[1];
 				$timeout(function () {
-					var obj = "map_canvas";
+					var obj = 'map_canvas';
 					GoogleMapApi.initMap(obj);
 					GoogleMapApi.showDirection(obj, $scope.selectedJourney.address_start,
 						$scope.selectedJourney.Run.address_start);
@@ -560,16 +552,16 @@ angular.module('runnable.controllers', []).
 			var text = String($scope.newMessageEntry).replace(/<[^>]+>/gm, '');
 			$scope.newMessageEntry = '';
 			$scope.discussionMessages.unshift(
-				{	"message": text,
-					"createdAt": Date.now(),
-					"User":
-						{	"firstname": Session.userFirstname,
-							"lastname": Session.userLastname}
+				{	message: text,
+					createdAt: Date.now(),
+					User:
+						{	firstname: Session.userFirstname,
+							lastname: Session.userLastname}
 				});
 			/* -- Socket messsage deactivate until having manage room for live notification
 			Socket.emit('discussion:newMessage',
-				{"message": text, "createdAt": Date.now(), "User":
-					{"firstname": Session.userFirstname, "lastname": Session.userLastname}
+				{message: text, createdAt: Date.now(), User:
+					{firstname: Session.userFirstname, lastname: Session.userLastname}
 				});
 			*/
 			Discussion.addMessage(text, $scope.selectedJourney.id);
@@ -596,7 +588,6 @@ angular.module('runnable.controllers', []).
 		*/
 	}).
 	controller('RunnableUserPublicProfileController', function ($scope, $q, $routeParams, User) {
-		'use strict';
 		$scope.userId = $routeParams.userId;
 		var userPromise = User.getPublicInfo($scope.userId),
 			userDriverPromise = User.getPublicDriverInfo($scope.userId),
@@ -625,7 +616,6 @@ angular.module('runnable.controllers', []).
 		});
 	}).
     controller('RunnableCalendarController', function ($scope, $q, $compile, Participate) {
-        'use strict';
 		$scope.events = [];
 		$scope.eventSources = [$scope.events];
 		$scope.uiConfig = {
@@ -644,7 +634,7 @@ angular.module('runnable.controllers', []).
         all.then(function (res) {
             $scope.runParticpateList = res[0];
 			angular.forEach($scope.runParticpateList, function (participe) {
-				$scope.events.push({"title": participe.Run.name, "start": new Date(participe.Run.date_start)});
+				$scope.events.push({title: participe.Run.name, start: new Date(participe.Run.date_start)});
 			});
 			$scope.$apply(function () {
 				$scope.eventSources = [$scope.events];
@@ -652,8 +642,7 @@ angular.module('runnable.controllers', []).
         });
     }).
     controller('RunnableUserInboxController', function ($rootScope, $scope, $q, Inbox) {
-		'use strict';
-		$scope.selectedMessage = "Pas de message sélectionné";
+		$scope.selectedMessage = 'Pas de message sélectionné';
 		var inboxPromise = Inbox.getList(),
             all = $q.all([inboxPromise]);
         all.then(function (res) {
@@ -671,7 +660,6 @@ angular.module('runnable.controllers', []).
 		});
 	}).
 	controller('RunnableJourneyController', function ($scope, $q, $timeout, Run, Journey, GoogleMapApi) {
-        'use strict';
         $scope.page = 'Journey';
 		var journeyPromise = Journey.getList(),
             all = $q.all([journeyPromise]);

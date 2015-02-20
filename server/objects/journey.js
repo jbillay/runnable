@@ -27,6 +27,7 @@ journey.prototype.get = function () {
 };
 
 journey.prototype.setRun = function (run) {
+    'use strict';
 	this.run = run;
 };
 

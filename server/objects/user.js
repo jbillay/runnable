@@ -75,6 +75,7 @@ user.prototype.save = function (done) {
 };
 
 user.prototype.activate = function (id, hash, done) {
+    'use strict';
 	models.User.find({ where: {id: id}})
 		.then(function (user) {
 			var userhash = new Date(user.createdAt).getTime().toString();
@@ -87,7 +88,7 @@ user.prototype.activate = function (id, hash, done) {
 					})
 					.catch(function (err) {
 						done(err, null);
-					})
+					});
 			} else {
 				console.log('Failed on activation');
 				done(new Error('key different'), null);
@@ -119,7 +120,7 @@ user.prototype.getRuns = function (user, done) {
 		} else {
 			done(null, runs);
 		}
-	})
+	});
 };
 
 user.prototype.getById = function (id, done) {
@@ -169,7 +170,7 @@ user.prototype.updatePassword = function (email, password, done) {
 				})
 				.catch(function (err) {
 					done(err, null);
-				})
+				});
 		})
 		.catch(function (err) {
 			console.log('Password not updated : ' + err);
@@ -178,7 +179,8 @@ user.prototype.updatePassword = function (email, password, done) {
 };
 
 user.prototype.toggleActive = function (id, done) {
-	models.User.find({where: {id: id}})
+	'use strict';
+    models.User.find({where: {id: id}})
 		.then(function (user) {
 			if (user.isActive === true) {
 				user.isActive = false;
@@ -196,13 +198,14 @@ user.prototype.toggleActive = function (id, done) {
 };
 
 user.prototype.getPublicDriverInfo = function (id, done) {
+    'use strict';
     models.Journey.findAll({where: {UserId: id}, include: [models.Join]})
         .then(function (journeys) {
             var joinList = [];
             journeys.forEach(function (journey) {
                 journey.Joins.forEach(function (join) {
                     joinList.push(join.id);
-                })
+                });
             });
             models.ValidationJourney.findAll({where: {JoinId: {in: joinList}}})
                 .then(function (validation) {
@@ -211,14 +214,15 @@ user.prototype.getPublicDriverInfo = function (id, done) {
                 .catch(function (err) {
                     done(err, null);
                 });
-        })
+        });
 };
 
 user.prototype.getPublicInfo = function (id, done) {
+    'use strict';
 	models.User.find({  where: {id: id},
                         include: [models.Journey, models.Join, {
 						   	model: models.Participate,
-							as: "Participates",
+							as: 'Participates',
 							include: [ models.Run ]}]
                      })
 		.then(function (user) {

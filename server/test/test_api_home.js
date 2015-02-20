@@ -1,10 +1,11 @@
 /**
  * Created by jeremy on 07/02/15.
  */
+'use strict';
 
 var request = require('supertest'),
     models = require('../models'),
-    assert = require("chai").assert,
+    assert = require('chai').assert,
     app = require('../../server.js'),
     async = require('async'),
     q = require('q');
@@ -107,7 +108,7 @@ describe('Test of home API', function () {
     });
     //After all the tests have run, output all the sequelize logging.
     after(function () {
-        console.log("Test API home over !");
+        console.log('Test API home over !');
     });
 
     describe('GET /api/home/feedback', function () {
@@ -126,7 +127,7 @@ describe('Test of home API', function () {
                     assert.equal(res.body.length, 1);
                     assert.equal(res.body[0].rate_service, 5);
                     assert.equal(res.body[0].rate_driver, 3);
-                    assert.equal(res.body[0].comment_service, "Myruntrip est vraiment un service de qualité. Merci pour tout votre travail");
+                    assert.equal(res.body[0].comment_service, 'Myruntrip est vraiment un service de qualité. Merci pour tout votre travail');
                     done();
                 });
         });

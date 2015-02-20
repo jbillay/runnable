@@ -1,9 +1,9 @@
 /**
  * Created by jeremy on 06/02/15.
  */
-"use strict";
+'use strict';
 
-var assert = require("chai").assert;
+var assert = require('chai').assert;
 var models = require('../models');
 var Inbox = require('../objects/inbox');
 var async = require('async');
@@ -22,7 +22,6 @@ var loadData = function (fix) {
 };
 
 describe('Test of inbox object', function () {
-    "use strict";
     beforeEach(function (done) {
         this.timeout(6000);
         models.sequelize.sync({force: true})
@@ -95,7 +94,7 @@ describe('Test of inbox object', function () {
     });
     //After all the tests have run, output all the sequelize logging.
     after(function () {
-        console.log("Test of inbox over !");
+        console.log('Test of inbox over !');
     });
 
     it('Get nb unread message for a user', function (done) {
@@ -130,10 +129,10 @@ describe('Test of inbox object', function () {
     it('Get list of message for a user', function (done) {
         var inbox = new Inbox(),
             user = {
-               "id": 2
+               id: 2
             },
             user2 = {
-                "id": -1
+                id: -1
             };
         inbox.getList(user, function (err, messages) {
             if (err) console.log(err);
@@ -150,26 +149,26 @@ describe('Test of inbox object', function () {
     it('Create a new Inbox message', function (done) {
         var inbox = new Inbox(),
             message = {
-                "id": 5,
-                "title": "Test unitaire",
-                "message": "Test unitaire pour la création d un message",
-                "is_read": 0,
-                "userId": 1,
-                "createdAt": "2015-02-05 23:41:54",
-                "updatedAt": "2015-02-05 23:41:54"
+                id: 5,
+                title: 'Test unitaire',
+                message: 'Test unitaire pour la création d un message',
+                is_read: 0,
+                userId: 1,
+                createdAt: '2015-02-05 23:41:54',
+                updatedAt: '2015-02-05 23:41:54'
             };
         inbox.set(message);
         var tmp = inbox.get();
-        assert.equal(tmp.title, "Test unitaire");
-        assert.equal(tmp.message, "Test unitaire pour la création d un message");
+        assert.equal(tmp.title, 'Test unitaire');
+        assert.equal(tmp.message, 'Test unitaire pour la création d un message');
         assert.equal(tmp.userId, 1);
         assert.equal(tmp.is_read, false);
         inbox.add(message.message, message.title, message.userId, function (err, newMessage) {
             if (err) console.log('Error :' + err);
             assert.isNull(err);
             assert.equal(newMessage.id, 5);
-            assert.equal(newMessage.title, "Test unitaire");
-            assert.equal(newMessage.message, "Test unitaire pour la création d un message");
+            assert.equal(newMessage.title, 'Test unitaire');
+            assert.equal(newMessage.message, 'Test unitaire pour la création d un message');
             assert.equal(newMessage.is_read, false);
             assert.equal(newMessage.UserId, 1);
             done();

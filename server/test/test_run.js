@@ -4,7 +4,7 @@
 
 'use strict';
 
-var assert = require("chai").assert;
+var assert = require('chai').assert;
 var models = require('../models');
 var Run = require('../objects/run');
 var async = require('async');
@@ -56,7 +56,7 @@ describe('Tests of run objects', function () {
     });
     //After all the tests have run, output all the sequelize logging.
     after(function () {
-        console.log("Test run over !");
+        console.log('Test run over !');
     });
 
     it('Should be able to show active runs', function (done) {
@@ -76,9 +76,9 @@ describe('Tests of run objects', function () {
             if (err) {
                 console.log('Error: ' + err);
             }
-            assert.equal(run.name, "Maxicross");
-            assert.equal(run.type, "trail");
-            assert.equal(run.address_start, "Bouffémont, France");
+            assert.equal(run.name, 'Maxicross');
+            assert.equal(run.type, 'trail');
+            assert.equal(run.address_start, 'Bouffémont, France');
             done();
         });
     });
@@ -134,32 +134,32 @@ describe('Tests of run objects', function () {
     it('Should be able to create a run', function (done) {
         var run = new Run(),
             data_run = {
-                "id": 7,
-                "name": "Marathon du Mont Blanc",
-                "type": "marathon",
-                "address_start": "Chamonix, France",
-                "date_start": "2015-06-28 00:00:00",
-                "time_start": "06:20",
-                "distances": "80km - 42km - 23km - 10km - 3.8km",
-                "elevations": "3214+",
-                "info": "dkqsd lqldsj lqkjdsllq ksjdlq",
-                "is_active": 1
+                id: 7,
+                name: 'Marathon du Mont Blanc',
+                type: 'marathon',
+                address_start: 'Chamonix, France',
+                date_start: '2015-06-28 00:00:00',
+                time_start: '06:20',
+                distances: '80km - 42km - 23km - 10km - 3.8km',
+                elevations: '3214+',
+                info: 'dkqsd lqldsj lqkjdsllq ksjdlq',
+                is_active: 1
             },
             data_user = {
-                "id": 1
+                id: 1
             };
         run.set(data_run, data_user);
         var tmp = run.get();
-        assert.equal(tmp.name, "Marathon du Mont Blanc");
-        assert.equal(tmp.type, "marathon");
-        assert.equal(tmp.address_start, "Chamonix, France");
+        assert.equal(tmp.name, 'Marathon du Mont Blanc');
+        assert.equal(tmp.type, 'marathon');
+        assert.equal(tmp.address_start, 'Chamonix, France');
         run.save(function (err, newRun) {
             if (err) {
                 console.log('Error: ' + err);
             }
-            assert.equal(newRun.name, "Marathon du Mont Blanc");
-            assert.equal(newRun.type, "marathon");
-            assert.equal(newRun.address_start, "Chamonix, France");
+            assert.equal(newRun.name, 'Marathon du Mont Blanc');
+            assert.equal(newRun.type, 'marathon');
+            assert.equal(newRun.address_start, 'Chamonix, France');
             run.getActiveList(function (err, runs) {
                 assert.equal(runs.length, 6);
                 done();

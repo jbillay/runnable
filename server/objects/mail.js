@@ -8,13 +8,12 @@ var nodemailer = require('nodemailer');
 var settings = require('./../../conf/config');
 
 function mail() {
-    "use strict";
     if (settings.mail.service) {
         this.service = settings.mail.service;
     } else if (settings.mail.host) {
         this.host = settings.mail.host;
     } else {
-        throw new Error("No email setup done");
+        throw new Error('No email setup done');
     }
     this.user = settings.mail.user;
     this.password = settings.mail.password;
@@ -22,9 +21,9 @@ function mail() {
     this.from = settings.mail.from;
     this.to = settings.mail.to;
     this.bcc = settings.mail.bcc;
-    this.subject = "test";
-    this.text = "text";
-    this.html = "<b>Test Email</b>";
+    this.subject = 'test';
+    this.text = 'text';
+    this.html = '<b>Test Email</b>';
     this.attachements = [];
 
     if (this.service) {
@@ -48,32 +47,26 @@ function mail() {
 }
 
 mail.prototype.setTo = function (mail) {
-    "use strict";
     this.to = mail;
 };
 
 mail.prototype.setSubject = function (subject) {
-    'use strict';
     this.subject = subject;
 };
 
 mail.prototype.setContentHtml = function (html) {
-    'use strict';
     this.html = html;
 };
 
 mail.prototype.setText = function (texte) {
-    'use strict';
     this.text = texte;
 };
 
 mail.prototype.addAttachment = function (filename) {
-    "use strict";
     this.attachements.push({filePath: filename});
 };
 
 mail.prototype.send = function () {
-    'use strict';
     this.mailOptions  = {
         from: this.from,
         to: this.to,
@@ -89,7 +82,7 @@ mail.prototype.send = function () {
 			if (error) {
 				throw new Error('Impossible to send mail : ' + error);
 			}
-			console.log("Message sent: " + response.message);
+			console.log('Message sent: ' + response.message);
 		});
 	}
     // if you don't want to use this transport object anymore, uncomment following line

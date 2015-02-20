@@ -4,9 +4,9 @@ module.exports = function(grunt) {
     // Unified Watch Object
     var watchFiles = {
         serverViews: [],
-        serverJS: ['gruntfile.js', 'server.js', 'config/*.js', 'public/js/*.js'],
+        serverJS: ['gruntfile.js', 'server.js', 'config/*.js', 'server/**/*.js'],
         clientViews: ['public/views/**/*.html'],
-        clientJS: ['server/**/*.js'],
+        clientJS: ['public/js/*.js'],
         clientCSS: ['public/css/*.css'],
         mochaTests: ['server/tests/*.js']
     };
@@ -14,7 +14,7 @@ module.exports = function(grunt) {
     // Project Configuration
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        watch: {
+        /*watch: {
             serverViews: {
                 files: watchFiles.serverViews,
                 options: {
@@ -48,7 +48,7 @@ module.exports = function(grunt) {
                     livereload: true
                 }
             }
-        },
+        },*/
         jshint: {
             all: {
                 src: watchFiles.clientJS.concat(watchFiles.serverJS),
@@ -82,29 +82,6 @@ module.exports = function(grunt) {
                 }
             }
         },
-        nodemon: {
-            dev: {
-                script: 'server.js',
-                options: {
-                    nodeArgs: ['--debug'],
-                    ext: 'js,html',
-                    watch: watchFiles.serverViews.concat(watchFiles.serverJS)
-                }
-            }
-        },
-        'node-inspector': {
-            custom: {
-                options: {
-                    'web-port': 1337,
-                    'web-host': 'localhost',
-                    'debug-port': 5858,
-                    'save-live-edit': true,
-                    'no-preload': true,
-                    'stack-trace-limit': 50,
-                    'hidden': []
-                }
-            }
-        },
         ngAnnotate: {
             production: {
                 files: {
@@ -135,35 +112,11 @@ module.exports = function(grunt) {
                 require: 'server.js'
             }
         },
-        karma: {
-            unit: {
-                configFile: 'karma.conf.js'
-            }
-        },
         mocha_istanbul: {
             coverage: {
                 src: 'server/test', // a folder works nicely
                 options: {
                     mask: '*.js'
-                }
-            },
-            coverageSpecial: {
-                src: ['testSpecial/*/*.js', 'testUnique/*/*.js'], // specifying file patterns works as well
-                options: {
-                    coverageFolder: 'coverageSpecial',
-                    mask: '*.spec.js'
-                }
-            },
-            coveralls: {
-                src: ['test', 'testSpecial', 'testUnique'], // multiple folders also works
-                options: {
-                    coverage:true,
-                    check: {
-                        lines: 75,
-                        statements: 75
-                    },
-                    root: './lib', // define where the cover task should consider the root of libraries that are covered by tests
-                    reportFormats: ['lcov']
                 }
             }
         },
@@ -201,15 +154,6 @@ module.exports = function(grunt) {
         grunt.config.set('applicationCSSFiles', config.assets.css);
     });
 
-    // Default task(s).
-    grunt.registerTask('default', ['lint', 'concurrent:default']);
-
-    // Debug task.
-    grunt.registerTask('debug', ['lint', 'concurrent:debug']);
-
-    // Secure task(s).
-    grunt.registerTask('secure', ['env:secure', 'lint', 'concurrent:default']);
-
     // Lint task(s).
     grunt.registerTask('lint', ['jshint', 'csslint']);
 
@@ -217,9 +161,7 @@ module.exports = function(grunt) {
     grunt.registerTask('build', ['lint', 'loadConfig', 'ngAnnotate', 'uglify', 'cssmin']);
 
     // Test task.
-    grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit']);
-
-    grunt.registerTask('coveralls', ['mocha_istanbul:coveralls']);
+    grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit', 'mocha_istanbul:coverage']);
 
     grunt.registerTask('coverage', ['mocha_istanbul:coverage']);
 };

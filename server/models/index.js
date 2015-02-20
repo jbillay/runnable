@@ -2,9 +2,11 @@
  * Created by jeremy on 14/08/2014.
  */
 
-var fs        = require("fs");
-var path      = require("path");
-var Sequelize = require("sequelize");
+'use strict';
+
+var fs        = require('fs');
+var path      = require('path');
+var Sequelize = require('sequelize');
 var settings  = require('../../conf/config');
 var sequelize = new Sequelize(settings.database.database, settings.database.user, settings.database.password, settings.database);
 var db        = {};
@@ -18,23 +20,23 @@ sequelize
 	  console.log('Unable to connect to the database: Exiting.' + err);
 	  process.exit(0);
     } else {
-      console.log('Connection has been established successfully.')
+      console.log('Connection has been established successfully.');
     }
   });
 
 fs
   .readdirSync(__dirname)
   .filter(function(file) {
-    return (file.indexOf(".") !== 0) && (file !== "index.js");
+    return (file.indexOf('.') !== 0) && (file !== 'index.js');
   })
   .forEach(function(file) {
-    var model = sequelize["import"](path.join(__dirname, file));
+    var model = sequelize['import'](path.join(__dirname, file));
 	console.log(model.name + ' model loaded');
     db[model.name] = model;
   });
 
 Object.keys(db).forEach(function(modelName) {
-  if ("associate" in db[modelName]) {
+  if ('associate' in db[modelName]) {
 	console.log(modelName + ' model association done');
     db[modelName].associate(db);
   }

@@ -2,13 +2,12 @@
  * Created by jeremy on 15/08/2014.
  */
 
-"use strict";
+'use strict';
 
 var crypto = require('crypto');
 
 module.exports = function(sequelize, DataTypes) {
-    "use strict";
-	var User = sequelize.define("User", {
+	var User = sequelize.define('User', {
 		firstname:		DataTypes.STRING,
 		lastname: 		DataTypes.STRING,
 		address:		DataTypes.STRING,
@@ -26,7 +25,7 @@ module.exports = function(sequelize, DataTypes) {
 				User.hasMany(models.Journey),
 				User.hasMany(models.Join),
 				User.hasMany(models.Participate),
-				User.hasMany(models.Inbox)
+				User.hasMany(models.Inbox);
 			}
 		},
 		instanceMethods: {

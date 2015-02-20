@@ -7,7 +7,7 @@ var express  = require('express');
 var flash = require('connect-flash');
 
 module.exports = function (app, passport) {
-	"use strict";
+	'use strict';
 	console.log('Init Express');
 	
     app.set('showStackError', true);    
@@ -38,7 +38,7 @@ module.exports = function (app, passport) {
 	app.set('view engine', 'html');
 
     //Enable jsonp
-    app.enable("jsonp callback");
+    app.enable('jsonp callback');
 
     app.configure(function () {
         //cookieParser should be above session

@@ -15,10 +15,12 @@ function participate() {
 }
 
 participate.prototype.get = function () {
+    'use strict';
     return this;
 };
 
 participate.prototype.set = function (participe) {
+    'use strict';
     if (participe.userId) {
         this.userId = participe.userId;
     }
@@ -34,6 +36,7 @@ participate.prototype.set = function (participe) {
 };
 
 participate.prototype.add = function (runId, user, done) {
+    'use strict';
     var that = this;
     console.log('add a date to agenda for user : ' + user.id);
     models.Run.find({where: {id: runId}})
@@ -58,6 +61,7 @@ participate.prototype.add = function (runId, user, done) {
 };
 
 participate.prototype.userList = function (userId, done) {
+    'use strict';
     console.log('get list of run fo user : ' + userId);
     models.Participate.findAll({where: {userId: userId}, include: [models.Run]})
         .then(function (participateUserList) {
@@ -69,6 +73,7 @@ participate.prototype.userList = function (userId, done) {
 };
 
 participate.prototype.runList = function (runId, done) {
+    'use strict';
     console.log('get list of user for run : ' + runId);
     models.Participate.findAll({where: {runId: runId}})
         .then(function (participateRunList) {

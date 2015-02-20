@@ -2,12 +2,13 @@
  * Created by jeremy on 02/01/15.
  */
 
+'use strict';
+
 var models = require('../models');
 var Journey = require('./journey');
 var Join = require('./join');
 
 function discussion() {
-    'use strict';
     this.id = null;
     this.message = null;
     this.createdAt = null;
@@ -15,12 +16,10 @@ function discussion() {
 }
 
 discussion.prototype.get = function () {
-    'use strict';
     return this;
 };
 
 discussion.prototype.set = function (discussion) {
-    'use strict';
     if (discussion.id) {
         this.id = discussion.id;
     }
@@ -36,7 +35,6 @@ discussion.prototype.set = function (discussion) {
 };
 
 discussion.prototype.getUsers = function (journeyId, done) {
-    'use strict';
     models.Journey.find({where: {id: journeyId}})
         .then(function (journey) {
             journey.getJoins().then(function (joins) {
@@ -58,7 +56,6 @@ discussion.prototype.getUsers = function (journeyId, done) {
 };
 
 discussion.prototype.getMessages = function (journeyId, done) {
-    'use strict';
     models.Discussion.findAll({where: {JourneyId:   journeyId},
                                         include:    [models.User],
                                         order:      'Discussion.createdAt DESC'})

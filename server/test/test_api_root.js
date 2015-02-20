@@ -4,16 +4,17 @@
 /**
  * Created by jeremy on 04/02/15.
  */
+'use strict';
 
 var request = require('supertest'),
     models = require('../models'),
-    assert = require("chai").assert,
+    assert = require('chai').assert,
     app = require('../../server.js');
 
 describe('Test of root API', function () {
 
     after(function () {
-        console.log("Test API root over !");
+        console.log('Test API root over !');
     });
 
     describe('GET /', function () {

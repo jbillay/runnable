@@ -2,9 +2,10 @@
  * Created by jeremy on 31/01/15.
  */
 
+'use strict';
+
 module.exports = function(sequelize, DataTypes) {
-    "use strict";
-    var validationJourney = sequelize.define("ValidationJourney", {
+    var validationJourney = sequelize.define('ValidationJourney', {
         comment_driver:     DataTypes.TEXT,
         comment_service:    DataTypes.TEXT,
         rate_driver:        DataTypes.INTEGER,
@@ -13,7 +14,7 @@ module.exports = function(sequelize, DataTypes) {
         classMethods: {
             associate: function(models) {
                 validationJourney.belongsTo(models.Join),
-                validationJourney.belongsTo(models.User)
+                validationJourney.belongsTo(models.User);
             }
         }
     });

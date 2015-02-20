@@ -3,12 +3,10 @@
  */
 'use strict';
 
-var assert = require("chai").assert;
+var assert = require('chai').assert;
 var Mail = require('../objects/mail');
 
 describe('Test of inbox object', function () {
-    "use strict";
-
     it('Test to send an mail with service', function (done) {
         var mail = new Mail();
         mail.setTo('jbillay@gmail.com');

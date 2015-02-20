@@ -2,9 +2,9 @@
  * Created by jeremy on 31/01/15.
  */
 
-"use strict";
+'use strict';
 
-var assert = require("chai").assert;
+var assert = require('chai').assert;
 var models = require('../models');
 var ValidationJourney = require('../objects/validation_journey');
 var async = require('async');
@@ -23,7 +23,6 @@ var loadData = function (fix) {
 };
 
 describe('Test of validation_journey object', function () {
-    "use strict";
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
         this.timeout(6000);
@@ -87,7 +86,7 @@ describe('Test of validation_journey object', function () {
     });
     //After all the tests have run, output all the sequelize logging.
     after(function () {
-        console.log("Test of validation journey over !");
+        console.log('Test of validation journey over !');
     });
 
     it('Get feedback on service', function (done) {
@@ -106,8 +105,8 @@ describe('Test of validation_journey object', function () {
             validationObj = {
                 joinId: 4,
                 userId: 2,
-                comment_driver: "Revoir la musique !",
-                comment_service: "Service au top comme à chaque fois",
+                comment_driver: 'Revoir la musique !',
+                comment_service: 'Service au top comme à chaque fois',
                 rate_driver: 4,
                 rate_service: 5
             };

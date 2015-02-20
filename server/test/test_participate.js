@@ -2,7 +2,9 @@
  * Created by jeremy on 06/02/15.
  */
 
-var assert = require("chai").assert;
+'use strict';
+
+var assert = require('chai').assert;
 var models = require('../models');
 var Participate = require('../objects/participate');
 var async = require('async');
@@ -21,7 +23,6 @@ var loadData = function (fix) {
 };
 
 describe('Test of participate object', function () {
-    "use strict";
     beforeEach(function (done) {
         this.timeout(6000);
         models.sequelize.sync({force: true})
@@ -94,7 +95,7 @@ describe('Test of participate object', function () {
     });
     //After all the tests have run, output all the sequelize logging.
     after(function () {
-        console.log("Test of participate over !");
+        console.log('Test of participate over !');
     });
 
     it('Get list user participate a run', function (done) {
@@ -130,10 +131,10 @@ describe('Test of participate object', function () {
                 id: 2
             },
             participe = {
-                "userId": 2,
-                "runId" : 4,
-                "createdAt": "2015-01-26 10:43:40",
-                "updatedAt": "2015-01-26 10:43:40"
+                userId: 2,
+                runId : 4,
+                createdAt: '2015-01-26 10:43:40',
+                updatedAt: '2015-01-26 10:43:40'
             };
         participate.set(participe);
         var tmp = participate.get();

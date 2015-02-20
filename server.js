@@ -26,10 +26,10 @@ require('./server/routes')(app, passport, auth);
 io.sockets.on('connection', require('./server/socket'));
 
 server.listen(settings.port, function () {
-    "use strict";
-    console.log(("Listening on port " + settings.port));
+    'use strict';
+    console.log(('Listening on port ' + settings.port));
 }).on('error', function (e) {
-    "use strict";
+    'use strict';
     if (e.code === 'EADDRINUSE') {
         console.log('Address in use. Is the server already running?');
     }

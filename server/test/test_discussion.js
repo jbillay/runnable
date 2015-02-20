@@ -1,9 +1,9 @@
 /**
  * Created by jeremy on 06/02/15.
  */
-"use strict";
+'use strict';
 
-var assert = require("chai").assert;
+var assert = require('chai').assert;
 var models = require('../models');
 var Discussion = require('../objects/discussion');
 var async = require('async');
@@ -22,7 +22,6 @@ var loadData = function (fix) {
 };
 
 describe('Test of discussion object', function () {
-    "use strict";
     beforeEach(function (done) {
         this.timeout(6000);
         models.sequelize.sync({force: true})
@@ -85,7 +84,7 @@ describe('Test of discussion object', function () {
     });
     //After all the tests have run, output all the sequelize logging.
     after(function () {
-        console.log("Test of discussion over !");
+        console.log('Test of discussion over !');
     });
 
     it('Get messages for a journey', function (done) {
@@ -99,7 +98,7 @@ describe('Test of discussion object', function () {
                 assert.isNull(messageList);
                 done();
             });
-        })
+        });
     });
 
     it('Get users for a discussion', function (done) {
@@ -119,10 +118,10 @@ describe('Test of discussion object', function () {
     it('Add message for a discussion', function (done) {
         var discussion = new Discussion(),
             message = {
-                "id": 5,
-                "message": "J ajoute un nouveau message pour les tests",
-                "createdAt": "2015-01-28 11:29:13",
-                "updatedAt": "2015-01-28 11:29:13"
+                id: 5,
+                message: 'J ajoute un nouveau message pour les tests',
+                createdAt: '2015-01-28 11:29:13',
+                updatedAt: '2015-01-28 11:29:13'
             },
             journeyId = 2,
             user = {
@@ -131,12 +130,12 @@ describe('Test of discussion object', function () {
         discussion.set(message);
         var tmp = discussion.get();
         assert.equal(tmp.id, 5);
-        assert.equal(tmp.message, "J ajoute un nouveau message pour les tests");
+        assert.equal(tmp.message, 'J ajoute un nouveau message pour les tests');
         discussion.addMessage(message.message, journeyId, user, function (err, newMessage) {
             if (err) console.log(err);
             assert.isNull(err);
             assert.equal(newMessage.id, 5);
-            assert.equal(newMessage.message, "J ajoute un nouveau message pour les tests");
+            assert.equal(newMessage.message, 'J ajoute un nouveau message pour les tests');
             assert.equal(newMessage.UserId, 1);
             assert.equal(newMessage.JourneyId, 2);
             done();

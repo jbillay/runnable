@@ -5,7 +5,7 @@
 var controllers = require('./controllers').init();
 
 module.exports = function (app, passport, auth) {
-    "use strict";
+    'use strict';
 	console.log('Init Routes');
     // serve index and view partials
     app.get('/', controllers.root.default);

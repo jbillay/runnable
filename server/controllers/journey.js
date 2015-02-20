@@ -2,7 +2,7 @@
 var Journey = require('../objects/journey');
 
 exports.create = function (req, res) {
-    "use strict";
+    'use strict';
 	console.log('Create a journey for run : ' + req.body.journey.run_id);
 	var journey = new Journey();
 	journey.save(req.body.journey, req.user, function (err, journey) {
@@ -17,7 +17,7 @@ exports.create = function (req, res) {
 };
 
 exports.list = function (req, res) {
-    "use strict";
+    'use strict';
 	console.log('Get list of journey');
 	var journey = new Journey();
 	journey.getList(function (err, journeys) {
@@ -31,7 +31,7 @@ exports.list = function (req, res) {
 };
 
 exports.listForRun = function (req, res) {
-    "use strict";
+    'use strict';
 	console.log('Get list of journey for run' + req.params.id);
 	var journey = new Journey();
 	journey.getListForRun(req.params.id, function (err, journeys) {
@@ -45,7 +45,7 @@ exports.listForRun = function (req, res) {
 };
 
 exports.detail = function (req, res) {
-    "use strict";
+    'use strict';
 	console.log('Get info on journey ' + req.params.id);
 	var id = req.params.id;
 	var journey = new Journey();
@@ -60,7 +60,7 @@ exports.detail = function (req, res) {
 };
 
 exports.next = function (req, res) {
-    "use strict";
+    'use strict';
 	console.log('Get list of next journey limited to ' + req.params.nb);
 	var journey = new Journey();
 	journey.getNextList(req.params.nb, function (err, runs) {

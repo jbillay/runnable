@@ -113,6 +113,7 @@ run.prototype.getList = function (done) {
 };
 
 run.prototype.toggleActive = function (id, done) {
+    'use strict';
 	models.Run.find({where: {id: id}})
 		.then(function (run) {
 			if (run.is_active === true) {
@@ -125,7 +126,7 @@ run.prototype.toggleActive = function (id, done) {
 				    done(null, run);
     			})
                 .catch(function (err) {
-                    done(err, null)
+                    done(err, null);
                 });
 		})
 		.catch(function (err) {

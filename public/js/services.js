@@ -4,6 +4,7 @@
 
 /* Services */
 
+'use strict';
 
 // Demonstrate how to register services
 // In this case it is a simple value service.
@@ -53,8 +54,8 @@ angular.module('runnable.services', ['ngResource']).
 				})
 				.catch(function (err) {
 					var obj_msg = {
-						"msg" : "userAuthFailed",
-						"type" : "error" };
+						msg : 'userAuthFailed',
+						type : 'error' };
 					$rootScope.$broadcast('USER_MSG', obj_msg);
 					return err;
 				});
@@ -75,11 +76,10 @@ angular.module('runnable.services', ['ngResource']).
 		return authService;
 	}).
     factory('User', function ($q, $http, $rootScope) {
-        'use strict';
 		return {
 			create: function (user) {
                 var deferred = $q.defer();
-                $http.post("/api/user", user).
+                $http.post('/api/user', user).
 					success(function (result) {
 						$rootScope.$broadcast('USER_MSG', result);
 						deferred.resolve(result);
@@ -92,7 +92,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			getUser: function () {
                 var deferred = $q.defer();
-                $http.get("/api/user/me").
+                $http.get('/api/user/me').
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -104,7 +104,7 @@ angular.module('runnable.services', ['ngResource']).
             },
             getPublicInfo: function (userId) {
                 var deferred = $q.defer();
-                $http.get("/api/user/public/info/" + userId).
+                $http.get('/api/user/public/info/' + userId).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -116,7 +116,7 @@ angular.module('runnable.services', ['ngResource']).
             },
             getPublicDriverInfo: function (userId) {
                 var deferred = $q.defer();
-                $http.get("/api/user/public/driver/" + userId).
+                $http.get('/api/user/public/driver/' + userId).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -128,7 +128,7 @@ angular.module('runnable.services', ['ngResource']).
             },
 			getItraRuns: function (userId) {
 				var deferred = $q.defer();
-				var url = "/api/user/runs";
+				var url = '/api/user/runs';
 				if (userId) {
 					url = url + '/' + userId;
 				}
@@ -143,7 +143,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			getJourney: function () {
                 var deferred = $q.defer();
-                $http.get("/api/user/journeys").
+                $http.get('/api/user/journeys').
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -165,7 +165,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			getJoin: function () {
                 var deferred = $q.defer();
-                $http.get("/api/user/joins").
+                $http.get('/api/user/joins').
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -176,7 +176,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			getList: function () {
                 var deferred = $q.defer();
-                $http.get("/api/admin/users").
+                $http.get('/api/admin/users').
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -187,7 +187,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			userToggleActive: function (id) {
                 var deferred = $q.defer();
-                $http.post("/api/admin/user/active", {"id": id}).
+                $http.post('/api/admin/user/active', {id: id}).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -198,7 +198,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			updatePassword: function (passwords) {
 				var deferred = $q.defer();
-                $http.post("/api/user/password/update", {"passwords": passwords}).
+                $http.post('/api/user/password/update', {passwords: passwords}).
 					success(function (result) {
 						$rootScope.$broadcast('USER_MSG', result);
 						deferred.resolve(result);
@@ -211,7 +211,7 @@ angular.module('runnable.services', ['ngResource']).
 			inviteFriends: function (inviteData) {
 				var deferred = $q.defer(),
 					info = {emails: inviteData.inviteEmails, message: inviteData.inviteMessage};
-				$http.post("/api/user/invite", info).
+				$http.post('/api/user/invite', info).
 					success(function (result) {
 						$rootScope.$broadcast('USER_MSG', result);
 						deferred.resolve(result);
@@ -221,10 +221,9 @@ angular.module('runnable.services', ['ngResource']).
 					});
 				return deferred.promise;
 			}
-		}
+		};
     }).
 	factory('MyRunTripFees', function () {
-		'use strict';
 		var feesMap = [
 			{timeMin: 259200, 	timeMax: null, 		fixed: 0.66, variable: 7.92},
 			{timeMin: 172800, 	timeMax: 259201, 	fixed: 0.95, variable: 10.68},
@@ -250,10 +249,9 @@ angular.module('runnable.services', ['ngResource']).
 				});
 				return fees;
 			}
-		}
+		};
 	}).
     factory('GoogleMapApi', function ($rootScope, $http, $q) {
-        'use strict';
 		return {
 			initMap: function (object, address) {
 				$rootScope[object] = [];
@@ -280,8 +278,8 @@ angular.module('runnable.services', ['ngResource']).
 					travelMode: google.maps.TravelMode.DRIVING
 				};
 				$rootScope[object].directionsService.route(request, function(response, status) {
-					if (status == google.maps.DirectionsStatus.OK) {
-						$rootScope[object].directionsRenderer = new google.maps.DirectionsRenderer;
+					if (status === google.maps.DirectionsStatus.OK) {
+						$rootScope[object].directionsRenderer = new google.maps.DirectionsRenderer();
 						$rootScope[object].directionsRenderer.setMap($rootScope[object].map);
 						$rootScope[object].directionsRenderer.setDirections(response);
 					}
@@ -289,7 +287,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			selectedAddress: function (object, address) {
 				$rootScope[object].geocoder.geocode( { 'address': address}, function(results, status) {
-					if (status == google.maps.GeocoderStatus.OK) {
+					if (status === google.maps.GeocoderStatus.OK) {
 						$rootScope[object].map.setCenter(results[0].geometry.location);
 						if ($rootScope[object].marker) {
 							$rootScope[object].marker.setMap(null); }
@@ -336,7 +334,6 @@ angular.module('runnable.services', ['ngResource']).
 		};
     }).
     factory('Join', function ($q, $http) {
-        'use strict';
         return {
 			addJoin: function (id, nbSpaceOutward, nbSpaceReturn, amount, ref) {
 				var deferred = $q.defer(),
@@ -347,7 +344,7 @@ angular.module('runnable.services', ['ngResource']).
 							status: 'pending',
 							invoice: ref};
 				console.log(info);
-				$http.post("/api/join", info).
+				$http.post('/api/join', info).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -358,7 +355,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			getListForJourney: function (journey_id) {
 				var deferred = $q.defer();
-                $http({method: "GET", url: "/api/join/journey/" + journey_id}).
+                $http({method: 'GET', url: '/api/join/journey/' + journey_id}).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -369,7 +366,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			getList: function () {
 				var deferred = $q.defer();
-				$http.get("/api/admin/joins").
+				$http.get('/api/admin/joins').
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -381,11 +378,10 @@ angular.module('runnable.services', ['ngResource']).
         };
     }).
     factory('Run', function ($q, $http) {
-        'use strict';
         return {
 			getDetail: function (id) {
 				var deferred = $q.defer();
-                $http({method: "GET", url: "/api/run/" + id}).
+                $http({method: 'GET', url: '/api/run/' + id}).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -396,7 +392,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
             getActiveList: function () {
                 var deferred = $q.defer();
-                $http({method: "GET", url: "/api/run/list"}).
+                $http({method: 'GET', url: '/api/run/list'}).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -407,7 +403,7 @@ angular.module('runnable.services', ['ngResource']).
             },
 			getNextList: function (nb) {
 				var deferred = $q.defer();
-                $http({method: "GET", url: "/api/run/next/" + nb}).
+                $http({method: 'GET', url: '/api/run/next/' + nb}).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -418,7 +414,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			getList: function () {
                 var deferred = $q.defer();
-                $http.get("/api/admin/runs").
+                $http.get('/api/admin/runs').
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -429,7 +425,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			toogleActive: function (id) {
                 var deferred = $q.defer();
-                $http.post("/api/admin/run/active", {"id": id}).
+                $http.post('/api/admin/run/active', {id: id}).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -441,18 +437,16 @@ angular.module('runnable.services', ['ngResource']).
         };
 	}).
     factory('Socket', function (socketFactory) {
-        'use strict';
         return socketFactory();
     }).
     factory('ValidationJourney', function ($q, $http, $rootScope) {
-        'use strict';
         return {
             validation: function (joinId, commentDriver, commentService, rate_driver, rate_service) {
                 var deferred = $q.defer(),
-                    info = {"joinId": joinId, "commentDriver": commentDriver,
-                        "commentService": commentService, "rate_driver": rate_driver,
-                        "rate_service": rate_service};
-                $http.post("/api/validation", info).
+                    info = {joinId: joinId, commentDriver: commentDriver,
+                        commentService: commentService, rate_driver: rate_driver,
+                        rate_service: rate_service};
+                $http.post('/api/validation', info).
                     success(function (result) {
                         $rootScope.$broadcast('USER_MSG', result);
                         deferred.resolve(result);
@@ -464,7 +458,7 @@ angular.module('runnable.services', ['ngResource']).
             },
             userFeedback: function () {
                 var deferred = $q.defer();
-                $http.get("/api/home/feedback").
+                $http.get('/api/home/feedback').
                     success(function (result) {
                         deferred.resolve(result);
                     }).
@@ -476,12 +470,11 @@ angular.module('runnable.services', ['ngResource']).
         };
     }).
     factory('Email', function ($q, $http, $rootScope) {
-        'use strict';
         return {
             send: function (data) {
                 var deferred = $q.defer(),
                     info = {emails: data.emails, message: data.message, title: data.title, confirm: data.confirm};
-                $http.post("/api/send/mail", info).
+                $http.post('/api/send/mail', info).
                     success(function (result) {
                         $rootScope.$broadcast('USER_MSG', result);
                         deferred.resolve(result);
@@ -494,12 +487,11 @@ angular.module('runnable.services', ['ngResource']).
         };
     }).
 	factory('Inbox', function ($q, $http) {
-		'use strict';
 		return {
 			addMessage: function (title, message, userId) {
 				var deferred = $q.defer(),
-					info = {"title": title, "message": message, "userId": userId};
-				$http.post("/api/inbox/msg", info).
+					info = {title: title, message: message, userId: userId};
+				$http.post('/api/inbox/msg', info).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -510,7 +502,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			getList: function() {
 				var deferred = $q.defer();
-				$http.get("/api/inbox/msg").
+				$http.get('/api/inbox/msg').
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -521,7 +513,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			getMessage: function(id) {
 				var deferred = $q.defer();
-				$http.get("/api/inbox/msg/" + id).
+				$http.get('/api/inbox/msg/' + id).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -532,8 +524,8 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			setAsRead: function (id) {
 				var deferred = $q.defer(),
-					info = {"messageId": id};
-				$http.post("/api/inbox/msg/read", info).
+					info = {messageId: id};
+				$http.post('/api/inbox/msg/read', info).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -546,7 +538,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			nbUnreadMessage: function () {
 				var deferred = $q.defer();
-				$http.get("/api/inbox/unread/nb/msg").
+				$http.get('/api/inbox/unread/nb/msg').
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -558,11 +550,10 @@ angular.module('runnable.services', ['ngResource']).
 		};
 	}).
 	factory('Discussion', function ($q, $http) {
-		'use strict';
 		return {
 			getUsers: function (journeyId) {
 				var deferred = $q.defer();
-				$http.get("/api/discussion/users/" + journeyId).
+				$http.get('/api/discussion/users/' + journeyId).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -574,7 +565,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			getMessages: function (journeyId) {
 				var deferred = $q.defer();
-				$http.get("/api/discussion/messages/" + journeyId).
+				$http.get('/api/discussion/messages/' + journeyId).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -586,7 +577,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			addMessage: function(message, journeyId) {
 				var deferred = $q.defer();
-				$http.post("/api/discussion/message", {"message": message, "journeyId": journeyId}).
+				$http.post('/api/discussion/message', {message: message, journeyId: journeyId}).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -599,11 +590,10 @@ angular.module('runnable.services', ['ngResource']).
 		};
     }).
     factory('Participate', function ($q, $http, $rootScope) {
-        'use strict';
         return {
             add: function (runId) {
                 var deferred = $q.defer();
-                $http.post("/api/participate/add", {"runId": runId}).
+                $http.post('/api/participate/add', {runId: runId}).
                     success(function (result) {
                         $rootScope.$broadcast('USER_MSG', result);
                         deferred.resolve(result);
@@ -616,7 +606,7 @@ angular.module('runnable.services', ['ngResource']).
             },
             userList: function () {
                 var deferred = $q.defer();
-                $http.get("/api/participate/user/list").
+                $http.get('/api/participate/user/list').
                     success(function (result) {
                         deferred.resolve(result);
                     }).
@@ -628,7 +618,7 @@ angular.module('runnable.services', ['ngResource']).
             },
             runList: function (runId) {
                 var deferred = $q.defer();
-                $http.get("/api/participate/run/list/" + runId).
+                $http.get('/api/participate/run/list/' + runId).
                     success(function (result) {
                         deferred.resolve(result);
                     }).
@@ -638,14 +628,13 @@ angular.module('runnable.services', ['ngResource']).
                     });
                 return deferred.promise;
             }
-        }
+        };
     }).
     factory('Journey', function ($q, $http) {
-        'use strict';
         return {
 			getDetail: function (id) {
 				var deferred = $q.defer();
-                $http({method: "GET", url: "/api/journey/" + id}).
+                $http({method: 'GET', url: '/api/journey/' + id}).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -656,7 +645,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
             getList: function () {
                 var deferred = $q.defer();
-                $http({method: "GET", url: "/api/journey/list"}).
+                $http({method: 'GET', url: '/api/journey/list'}).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -666,7 +655,7 @@ angular.module('runnable.services', ['ngResource']).
             },
             getListForRun: function (id) {
                 var deferred = $q.defer();
-                $http({method: "GET", url: "/api/journey/run/" + id}).
+                $http({method: 'GET', url: '/api/journey/run/' + id}).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -677,7 +666,7 @@ angular.module('runnable.services', ['ngResource']).
             },
 			getNextList: function (nb) {
 				var deferred = $q.defer();
-                $http({method: "GET", url: "/api/journey/next/" + nb}).
+                $http({method: 'GET', url: '/api/journey/next/' + nb}).
 					success(function (result) {
 						deferred.resolve(result);
 					}).

@@ -6,18 +6,18 @@ var _ = require('lodash');
 /*jslint node: true */
 
 exports.default = function(req, res) {
-    "use strict";
+    'use strict';
 	res.render('default.html');
 };
 
 exports.partials = function (req, res) {
-    "use strict";
+    'use strict';
     var name = req.params.name;
     res.render('partials/' + name + '.html');
 };
 
 exports.logout = function (req, res) {
-    "use strict";
+    'use strict';
     req.logout();
     res.redirect('/');
 };
@@ -34,16 +34,16 @@ exports.logon = function (req) {
 */
 
 exports.auth = function (req, res) {
-    "use strict";
+    'use strict';
 	res.jsonp(req.user || null);
 };
 
 // for dev purpose only -- To be removed
 exports.sync = function (req, res) {
-    "use strict";
+    'use strict';
 	models.sequelize.sync({force: true})
         .then(function() {
-            console.log("New database created !");
+            console.log('New database created !');
         })
         .catch(function (err) {
 			console.log('Error on sync db : ' + err);
@@ -58,7 +58,7 @@ exports.sendMail = function (req, res) {
         emails = [],
         confirmation = req.body.confirm,
         mail = new Mail();
-    emails = req.body.emails.split(",");
+    emails = req.body.emails.split(',');
     emails = _.compact(emails);
     emails.forEach(function(email) {
         email = email.trim();

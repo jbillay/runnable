@@ -7,7 +7,6 @@
 var Discussion = require('../objects/discussion');
 
 exports.getUsers = function (req, res) {
-    "use strict";
     var discussion = new Discussion(),
         journeyId = req.params.id;
     console.log('Get discussion users for journey : ' + journeyId);
@@ -22,7 +21,6 @@ exports.getUsers = function (req, res) {
 };
 
 exports.getMessages = function (req, res) {
-    "use strict";
     var discussion = new Discussion(),
         journeyId = req.params.id;
     console.log('Get discussion messages for journey : ' + journeyId);
@@ -37,7 +35,6 @@ exports.getMessages = function (req, res) {
 };
 
 exports.addMessage = function (req, res) {
-	"use strict";
 	var discussion = new Discussion(),
         journeyId = req.body.journeyId,
 		message = req.body.message,

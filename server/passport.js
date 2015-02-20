@@ -1,3 +1,5 @@
+'use strict';
+
 var passport = require('passport');
 // These are different types of authentication strategies that can be used with Passport. 
 var LocalStrategy = require('passport-local').Strategy;
@@ -30,19 +32,19 @@ passport.use(new LocalStrategy({
 		req.login = {};
 		user.getByEmail(email, function (err, user) {
 			if (err) {
-				console.log("Problème d'authetification : " + err);
+				console.log('Err with authentification: ' + err);
 				done(err, false);
 			}
 			if (!user) {
-				console.log("Cette utilisateur n'existe pas");
+				console.log('User not exist');
 				done(err, false);
 			} else if (!user.isActivated()) {
-				console.log("Oops! Votre compte est pas encore activé");
+				console.log('Oops! Votre compte est pas encore activé');
 				done(err, false);
 			} else if (!user.authenticate(password)) {
-				console.log("Erreur avec votre mot de passe");
-				req.login.status = "error"
-				req.login.msg = "Erreur avec votre mot de passe";
+				console.log('Erreur avec votre mot de passe');
+				req.login.status = 'error';
+				req.login.msg = 'Erreur avec votre mot de passe';
 				done(err, false);
 			} else {
 				user.salt = user.hashedPassword = user.provider = null;

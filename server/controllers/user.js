@@ -9,17 +9,17 @@ var Join = require('../objects/join');
 var _ = require('lodash');
 
 exports.invite = function(req, res) {
-	"use strict";
+	'use strict';
 	var html,
 		text,
 		emails = [],
 		mail = new Mail();
-	emails = req.body.emails.split(",");
+	emails = req.body.emails.split(',');
 	emails = _.compact(emails);
 	emails.forEach(function(email) {
 		email = email.trim();
 		mail.setTo(email);
-		mail.setSubject("Rejoins moi sur My Run Trip");
+		mail.setSubject('Rejoins moi sur My Run Trip');
 		html = req.body.message;
 		text = req.body.message;
 		mail.setContentHtml(html);
@@ -31,7 +31,7 @@ exports.invite = function(req, res) {
 };
 
 exports.create = function(req, res) {
-    "use strict";
+    'use strict';
 	var html,
 		text,
 		mail = new Mail();
@@ -56,15 +56,15 @@ exports.create = function(req, res) {
 				var url = settings.domain,
 					timekey = new Date(newUser.createdAt).getTime();
 				mail.setTo(user.email);
-				mail.setSubject("Activation de votre compte runnable");
-				html = "Vous venez de créer un compte sur notre site runnable<br/>" +
-					"Pour l'activer veuillez cliquer sur le lien suivant :<br/>" +
-					"http://" + url + "/api/user/active/" + newUser.id + "/" + timekey +
-					"<br/> Merci l'intérêt que vous porter à notre site";
-				text = "Vous venez de créer un compte sur notre site runnable. " +
-					"Pour l'activer veuillez copiez/coller le lien suivant dans votre navigateur" +
-					"http://" + url + "/api/user/active/" + newUser.id + "/" + timekey +
-					" Merci l'intérêt que vous porter à notre site";
+				mail.setSubject('Activation de votre compte runnable');
+				html = 'Vous venez de créer un compte sur notre site runnable<br/>' +
+					'Pour l\'activer veuillez cliquer sur le lien suivant :<br/>' +
+					'http://' + url + '/api/user/active/' + newUser.id + '/' + timekey +
+					'<br/> Merci l\'intérêt que vous porter à notre site';
+				text = 'Vous venez de créer un compte sur notre site runnable. ' +
+					'Pour l\'activer veuillez copiez/coller le lien suivant dans votre navigateur' +
+					'http://' + url + '/api/user/active/' + newUser.id + '/' + timekey +
+					' Merci l\'intérêt que vous porter à notre site';
 				mail.setContentHtml(html);
 				mail.setText(text);
 				mail.send();
@@ -78,13 +78,13 @@ exports.create = function(req, res) {
 };
 
 exports.me = function(req, res) {
-	"use strict";
+	'use strict';
 	req.user.salt = req.user.hashedPassword = req.user.provider = null;
 	res.jsonp(req.user || null);
 };
 
 exports.showRuns = function(req, res) {
-	"use strict";
+	'use strict';
 	var user = new User();
 	var currentUser = req.user;
 	user.getRuns(currentUser, function (err, runs) {
@@ -97,7 +97,7 @@ exports.showRuns = function(req, res) {
 };
 
 exports.showJourneys = function (req, res) {
-	"use strict";
+	'use strict';
 	var id = req.user.id;
 	var journey = new Journey();
 	journey.getByUser(id, function (err, journeyList) {
@@ -111,7 +111,7 @@ exports.showJourneys = function (req, res) {
 };
 
 exports.showJoins = function (req, res) {
-	"use strict";
+	'use strict';
 	var id = req.user.id;
 	var join = new Join();
 	join.getByUser(id, function (err, joinList) {
@@ -125,15 +125,16 @@ exports.showJoins = function (req, res) {
 };
 
 // should be in a tool file
-createPassword = function (size, phrase) {
+var createPassword = function (size, phrase) {
+    'use strict';
 	var index = (Math.random() * (phrase.length - 1)).toFixed(0);
 	return size > 0 ? phrase[index] + createPassword(size - 1, phrase) : '';
 };
 
 exports.resetPassword = function (req, res) {
-	"use strict";
+	'use strict';
 	var email = req.body.email,
-		password = createPassword(8, 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890#{[\@]}&"(-_)=+/-*'),
+		password = createPassword(8, 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890#{[@]}&"(-_)=+/-*'),
 		html,
 		text,
 		mail = new Mail();
@@ -144,13 +145,13 @@ exports.resetPassword = function (req, res) {
 			res.jsonp('{"msg": ' + err + '}');
 		} else { 
 			mail.setTo(newUser.email);
-			mail.setSubject("Génération d'un nouveau mot de passe pour votre compte MyRunTrip");
-			html = "Vous venez de demander la génération d'un nouveau mot de passe sur notre site MyRunTrip.fr<br/>" +
-				"Voici votre nouveau mot de passe :" + password + "<br/>" +
-				"<br/> Merci l'intérêt que vous porter à notre site";
-			text = "Vous venez de demander la génération d'un nouveau mot de passe sur notre site MyRunTrip.fr. " +
-					"Voici votre nouveau mot de passe :" + password + "." +
-					" Merci l'intérêt que vous porter à notre site";
+			mail.setSubject('Génération d\'un nouveau mot de passe pour votre compte MyRunTrip');
+			html = 'Vous venez de demander la génération d\'un nouveau mot de passe sur notre site MyRunTrip.fr<br/>' +
+				'Voici votre nouveau mot de passe :' + password + '<br/>' +
+				'<br/> Merci l\'intérêt que vous porter à notre site';
+			text = 'Vous venez de demander la génération d\'un nouveau mot de passe sur notre site MyRunTrip.fr. ' +
+					'Voici votre nouveau mot de passe :' + password + '.' +
+                    ' Merci l\'intérêt que vous porter à notre site';
 			mail.setContentHtml(html);
 			mail.setText(text);
 			mail.send();
@@ -160,7 +161,7 @@ exports.resetPassword = function (req, res) {
 };
 
 exports.updatePassword = function (req, res) {
-	"use strict";
+	'use strict';
 	var oldPassword = req.body.passwords.old,
 		newPassword = req.body.passwords.new,
 		newPasswordConfirm = req.body.passwords.newConfirm,
@@ -194,7 +195,7 @@ exports.updatePassword = function (req, res) {
 };
 
 exports.list = function(req, res) {
-	"use strict";
+	'use strict';
 	var user = new User();
 	user.getList(function (err, users) {
 		if (err) {
@@ -207,7 +208,7 @@ exports.list = function(req, res) {
 };
 
 exports.toggleActive = function (req, res) {
-	"use strict";
+	'use strict';
 	console.log('Toggle active for user ' + req.body.id);
 	var id = req.body.id,
 		user = new User();
@@ -222,7 +223,7 @@ exports.toggleActive = function (req, res) {
 };
 
 exports.active = function(req, res) {
-	"use strict";
+	'use strict';
 	console.log('Try to activate account ' + req.params.id);
 	var user = new User();
 	user.activate(req.params.id, req.params.hash, function (err, data) {

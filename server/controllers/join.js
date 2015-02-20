@@ -3,7 +3,7 @@ var Join = require('../objects/join');
 var ipn = require('paypal-ipn');
 
 exports.create = function (req, res) {
-    "use strict";
+    'use strict';
 	console.log('Create a join for journey : %j', req.body);
 	var join = new Join();
 	join.save(req.body, req.user, function (err, join) {
@@ -17,7 +17,7 @@ exports.create = function (req, res) {
 };
 
 exports.listForJourney = function (req, res) {
-    "use strict";
+    'use strict';
 	console.log('Get list of join for a journey ' + req.params.id);
 	var join = new Join();
 	join.getByJourney(req.params.id, function (err, joins) {
@@ -31,7 +31,7 @@ exports.listForJourney = function (req, res) {
 };
 
 exports.detail = function (req, res) {
-    "use strict";
+    'use strict';
 	console.log('Get info on join ' + req.params.id);
 	var id = req.params.id;
 	var join = new Join();
@@ -47,7 +47,7 @@ exports.detail = function (req, res) {
 };
 
 exports.list = function (req, res) {
-	"use strict";
+	'use strict';
 	console.log('Get list of joins');
 	var join = new Join();
 	join.getList(function (err, joins) {

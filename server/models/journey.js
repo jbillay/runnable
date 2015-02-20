@@ -2,10 +2,10 @@
  * Created by jeremy on 15/08/2014.
  */
 
- 
+'use strict';
+
 module.exports = function(sequelize, DataTypes) {
-    "use strict";
-	var Journey = sequelize.define("Journey", {
+	var Journey = sequelize.define('Journey', {
 		address_start:		{ type: DataTypes.STRING, allowNull: false },
 		distance: 			DataTypes.STRING,
 		duration: 			DataTypes.STRING,
@@ -23,7 +23,7 @@ module.exports = function(sequelize, DataTypes) {
 			associate: function(models) {
 				Journey.belongsTo(models.Run),
 				Journey.belongsTo(models.User),
-				Journey.hasMany(models.Join)
+				Journey.hasMany(models.Join);
 			}
 		}
 	});

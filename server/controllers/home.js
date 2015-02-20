@@ -2,7 +2,7 @@
  * Created by jeremy on 02/02/15.
  */
 
-"use strict";
+'use strict';
 
 var ValidationJourney = require('../objects/validation_journey');
 

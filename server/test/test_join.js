@@ -1,9 +1,9 @@
 /**
  * Created by jeremy on 05/02/15.
  */
-"use strict";
+'use strict';
 
-var assert = require("chai").assert;
+var assert = require('chai').assert;
 var models = require('../models');
 var Join = require('../objects/join');
 var async = require('async');
@@ -22,7 +22,6 @@ var loadData = function (fix) {
 };
 
 describe('Test of join object', function () {
-    "use strict";
     beforeEach(function (done) {
         this.timeout(6000);
         models.sequelize.sync({force: true})
@@ -85,7 +84,7 @@ describe('Test of join object', function () {
     });
     //After all the tests have run, output all the sequelize logging.
     after(function () {
-        console.log("Test of user over !");
+        console.log('Test of user over !');
     });
 
     it('Get join list', function (done) {
@@ -108,7 +107,7 @@ describe('Test of join object', function () {
                 assert.equal(joinList[0].id, 1);
                 assert.equal(joinList[0].nb_place_outward, 2);
                 assert.equal(joinList[0].nb_place_return, 3);
-                assert.equal(joinList[0].status, "pending");
+                assert.equal(joinList[0].status, 'pending');
                 join.getByJourney(-1, function (err, joinList) {
                     assert.isNotNull(err);
                     done();
@@ -125,7 +124,7 @@ describe('Test of join object', function () {
             assert.equal(joinList[0].id, 3);
             assert.equal(joinList[0].nb_place_outward, 1);
             assert.isNull(joinList[0].nb_place_return);
-            assert.equal(joinList[0].status, "pending");
+            assert.equal(joinList[0].status, 'pending');
             join.getByUser(-1, function (err, joinList) {
                 assert.isNotNull(err);
                 done();
@@ -140,9 +139,9 @@ describe('Test of join object', function () {
             assert.equal(joinInfo.id, 4);
             assert.equal(joinInfo.nb_place_outward, 1);
             assert.equal(joinInfo.nb_place_return, 1);
-            assert.equal(joinInfo.status, "pending");
+            assert.equal(joinInfo.status, 'pending');
             assert.equal(joinInfo.amount, 23.75);
-            assert.equal(joinInfo.invoice, "MRT20150217H36EG");
+            assert.equal(joinInfo.invoice, 'MRT20150217H36EG');
             join.getById(-1, function (err, joinInfo) {
                 assert.isNotNull(err);
                 assert.isNull(joinInfo);
@@ -154,17 +153,17 @@ describe('Test of join object', function () {
     it('Create a new Join', function (done) {
        var join = new Join(),
            newJoin = {
-                "id": 5,
-                "nb_place_outward": 3,
-                "nb_place_return": 2,
-                "status": "pending",
-                "amount": 38.83,
-                "invoice": "MRT2015021728IKD",
-                "transaction": "83V29469P1887825P",
-                "journey_id": 3
+                id: 5,
+                nb_place_outward: 3,
+                nb_place_return: 2,
+                status: 'pending',
+                amount: 38.83,
+                invoice: 'MRT2015021728IKD',
+                transaction: '83V29469P1887825P',
+                journey_id: 3
            },
            user = {
-               "id": 1
+               'id': 1
            };
         join.set(newJoin);
         join.setJourney(newJoin.journey_id);
@@ -173,10 +172,10 @@ describe('Test of join object', function () {
         assert.equal(tmp.id, 5);
         assert.equal(tmp.nb_place_outward, 3);
         assert.equal(tmp.nb_place_return, 2);
-        assert.equal(tmp.status, "pending");
+        assert.equal(tmp.status, 'pending');
         assert.equal(tmp.amount, 38.83);
-        assert.equal(tmp.invoice, "MRT2015021728IKD");
-        assert.equal(tmp.transaction, "83V29469P1887825P");
+        assert.equal(tmp.invoice, 'MRT2015021728IKD');
+        assert.equal(tmp.transaction, '83V29469P1887825P');
         join.save(tmp, user, function (err, createdJoin) {
             if (err) console.log(err);
             assert.isNotNull(err);
@@ -188,10 +187,10 @@ describe('Test of join object', function () {
                     assert.equal(joinInfo.id, 5);
                     assert.equal(joinInfo.nb_place_outward, 3);
                     assert.equal(joinInfo.nb_place_return, 2);
-                    assert.equal(joinInfo.status, "pending");
+                    assert.equal(joinInfo.status, 'pending');
                     assert.equal(joinInfo.amount, 38.83);
-                    assert.equal(joinInfo.invoice, "MRT2015021728IKD");
-                    assert.equal(joinInfo.transaction, "83V29469P1887825P");
+                    assert.equal(joinInfo.invoice, 'MRT2015021728IKD');
+                    assert.equal(joinInfo.transaction, '83V29469P1887825P');
                     done();
                 });
             });
@@ -201,10 +200,10 @@ describe('Test of join object', function () {
     it('Update payment information', function (done) {
         var join = new Join(),
             ipn = {
-                invoice: "MRT20150217JZL8D",
+                invoice: 'MRT20150217JZL8D',
                 amount: 50.96,
-                status: "completed",
-                transaction: "83V29469P1887825P"
+                status: 'completed',
+                transaction: '83V29469P1887825P'
             };
         join.updatePaymentStatus(ipn.invoice, ipn.amount, ipn.status, ipn.transaction, function (err, msg) {
             if (err) {
@@ -219,10 +218,10 @@ describe('Test of join object', function () {
                 }
                 assert.isNull(err);
                 assert.equal(joinInfo.id, 2);
-                assert.equal(joinInfo.status, "completed");
+                assert.equal(joinInfo.status, 'completed');
                 assert.equal(joinInfo.amount, 50.96);
-                assert.equal(joinInfo.invoice, "MRT20150217JZL8D");
-                assert.equal(joinInfo.transaction, "83V29469P1887825P");
+                assert.equal(joinInfo.invoice, 'MRT20150217JZL8D');
+                assert.equal(joinInfo.transaction, '83V29469P1887825P');
                 done();
             });
         });

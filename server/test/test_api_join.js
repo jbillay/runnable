@@ -4,10 +4,11 @@
 /**
  * Created by jeremy on 07/02/15.
  */
+'use strict';
 
 var request = require('supertest'),
     models = require('../models'),
-    assert = require("chai").assert,
+    assert = require('chai').assert,
     app = require('../../server.js'),
     async = require('async'),
     q = require('q'),
@@ -25,6 +26,18 @@ var loadData = function (fix) {
     return deferred.promise;
 };
 
+function loginUser(agent) {
+    return function(done) {
+        function onResponse(err, res) {
+            return done();
+        }
+
+        agent
+            .post('http://localhost:9615/login')
+            .send({ email: 'jbillay@gmail.com', password: 'noofs' })
+            .end(onResponse);
+    };
+}
 
 describe('Test of join API', function () {
     // Recreate the database after each test to ensure isolation
@@ -110,7 +123,7 @@ describe('Test of join API', function () {
     });
     //After all the tests have run, output all the sequelize logging.
     after(function () {
-        console.log("Test API user over !");
+        console.log('Test API user over !');
     });
 
     describe('GET /api/join/journey/:id', function () {
@@ -176,14 +189,14 @@ describe('Test of join API', function () {
                     id: 5,
                     nb_place_outward: 1,
                     nb_place_return: 1,
-                    status: "pending",
+                    status: 'pending',
                     JourneyId: 3
                 };
             agent
                 .post('http://localhost:9615/api/join')
                 .send({join: join})
                 .end(function (err, res) {
-                    assert.equal(JSON.parse(res.body).msg, "userJoined");
+                    assert.equal(JSON.parse(res.body).msg, 'userJoined');
                     agent
                         .get('http://localhost:9615/api/admin/joins')
                         .end(function (err, res) {
@@ -270,24 +283,11 @@ describe('Test of join API', function () {
                         console.log(res.body);
                         assert.equal(res.body.status, 'complete');
                         assert.equal(res.body.amount, 50.96);
-                        assert.equal(res.body.invoice, "MRT20150217JZL8D");
-                        assert.equal(res.body.transaction, "83V29469P1887825P");
+                        assert.equal(res.body.invoice, 'MRT20150217JZL8D');
+                        assert.equal(res.body.transaction, '83V29469P1887825P');
                         return done();
                     });
             });
         });*/
     });
 });
-
-function loginUser(agent) {
-    return function(done) {
-        agent
-            .post('http://localhost:9615/login')
-            .send({ email: 'jbillay@gmail.com', password: 'noofs' })
-            .end(onResponse);
-
-        function onResponse(err, res) {
-            return done();
-        }
-    };
-}

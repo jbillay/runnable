@@ -1,10 +1,11 @@
 /**
  * Created by jeremy on 07/02/15.
  */
+'use strict';
 
 var request = require('supertest'),
     models = require('../models'),
-    assert = require("chai").assert,
+    assert = require('chai').assert,
     app = require('../../server.js'),
     async = require('async'),
     q = require('q'),
@@ -22,6 +23,19 @@ var loadData = function (fix) {
     return deferred.promise;
 };
 
+function loginUser(agent) {
+    return function(done) {
+        function onResponse(err, res) {
+            return done();
+        }
+
+        agent
+            .post('http://localhost:9615/login')
+            .send({ email: 'jbillay@gmail.com', password: 'noofs' })
+            .end(onResponse);
+
+    };
+}
 
 describe('Test of user API', function () {
 
@@ -108,7 +122,7 @@ describe('Test of user API', function () {
     });
     //After all the tests have run, output all the sequelize logging.
     after(function () {
-        console.log("Test API user over !");
+        console.log('Test API user over !');
     });
 
     describe('GET /api/user/public/info/:id', function () {
@@ -124,12 +138,12 @@ describe('Test of user API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(res.body.firstname, "Jeremy");
-                    assert.equal(res.body.lastname, "Billay");
-                    assert.equal(res.body.address, "Saint Germain en laye");
-                    assert.equal(res.body.email, "jbillay@gmail.com");
+                    assert.equal(res.body.firstname, 'Jeremy');
+                    assert.equal(res.body.lastname, 'Billay');
+                    assert.equal(res.body.address, 'Saint Germain en laye');
+                    assert.equal(res.body.email, 'jbillay@gmail.com');
                     assert.equal(res.body.isActive, 1);
-                    assert.equal(res.body.role, "admin");
+                    assert.equal(res.body.role, 'admin');
                     done();
                 });
         });
@@ -160,12 +174,12 @@ describe('Test of user API', function () {
     describe('POST /api/user', function () {
         it('should return code 200', function (done) {
             var user = {
-                "firstname" : "Test",
-                "lastname" : "Creation",
-                "address" : "Saint Germain en Laye",
-                "email" : "test.creation@user.fr",
-                "password" : "test",
-                "password_confirmation" : "test"
+                firstname : 'Test',
+                lastname : 'Creation',
+                address : 'Saint Germain en Laye',
+                email : 'test.creation@user.fr',
+                password : 'test',
+                password_confirmation : 'test'
             };
             request(app)
                 .post('/api/user')
@@ -174,20 +188,20 @@ describe('Test of user API', function () {
         });
         it('should return a new user', function (done) {
             var user = {
-                "firstname" : "Test",
-                "lastname" : "Creation",
-                "address" : "Saint Germain en Laye",
-                "email" : "test.creation@user.fr",
-                "password" : "test",
-                "password_confirmation" : "test"
+                firstname : 'Test',
+                lastname : 'Creation',
+                address : 'Saint Germain en Laye',
+                email : 'test.creation@user.fr',
+                password : 'test',
+                password_confirmation : 'test'
             };
             var user2 = {
-                "firstname" : "Test",
-                "lastname" : "Creation",
-                "address" : "Saint Germain en Laye",
-                "email" : "test.creation@user.fr",
-                "password" : "test",
-                "password_confirmation" : "test1"
+                firstname : 'Test',
+                lastname : 'Creation',
+                address : 'Saint Germain en Laye',
+                email : 'test.creation@user.fr',
+                password : 'test',
+                password_confirmation : 'test1'
             };
             request(app)
                 .post('/api/user')
@@ -196,19 +210,19 @@ describe('Test of user API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(JSON.parse(res.body).msg, "accountCreated");
+                    assert.equal(JSON.parse(res.body).msg, 'accountCreated');
                     done();
                 });
         });
 
         it('should return an error for different password', function (done) {
             var user = {
-                "firstname" : "Test",
-                "lastname" : "Creation",
-                "address" : "Saint Germain en Laye",
-                "email" : "test.creation@user.fr",
-                "password" : "test",
-                "password_confirmation" : "test1"
+                firstname : 'Test',
+                lastname : 'Creation',
+                address : 'Saint Germain en Laye',
+                email : 'test.creation@user.fr',
+                password : 'test',
+                password_confirmation : 'test1'
             };
             request(app)
                 .post('/api/user')
@@ -217,19 +231,19 @@ describe('Test of user API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(JSON.parse(res.body).msg, "wrongPassword");
+                    assert.equal(JSON.parse(res.body).msg, 'wrongPassword');
                     done();
                 });
         });
 
         it('should return an error for existing user', function (done) {
             var user = {
-                "firstname" : "Test",
-                "lastname" : "Creation",
-                "address" : "Saint Germain en Laye",
-                "email" : "jbillay@gmail.com",
-                "password" : "test",
-                "password_confirmation" : "test"
+                firstname : 'Test',
+                lastname : 'Creation',
+                address : 'Saint Germain en Laye',
+                email : 'jbillay@gmail.com',
+                password : 'test',
+                password_confirmation : 'test'
             };
             request(app)
                 .post('/api/user')
@@ -238,7 +252,7 @@ describe('Test of user API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(JSON.parse(res.body).msg, "existingAccount");
+                    assert.equal(JSON.parse(res.body).msg, 'existingAccount');
                     done();
                 });
         });
@@ -349,7 +363,7 @@ describe('Test of user API', function () {
                 .post('http://localhost:9615/api/user/password/update')
                 .send({ passwords: {old: 'noofs', new: 'test', newConfirm: 'test'}})
                 .end(function (err, res) {
-                    assert.equal(res.body.msg, "notAuthenticated");
+                    assert.equal(res.body.msg, 'notAuthenticated');
                     done();
                 });
         });
@@ -361,7 +375,7 @@ describe('Test of user API', function () {
                 .post('http://localhost:9615/api/user/password/update')
                 .send({ passwords: {old: 'noofs', new: 'test', newConfirm: 'test'}})
                 .end(function (err, res) {
-                    assert.equal(JSON.parse(res.body).msg, "passwordUpdated");
+                    assert.equal(JSON.parse(res.body).msg, 'passwordUpdated');
                     done();
                 });
         });
@@ -371,7 +385,7 @@ describe('Test of user API', function () {
                 .post('http://localhost:9615/api/user/password/update')
                 .send({ passwords: {old: 'kjdhkqshdk', new: 'test', newConfirm: 'test'}})
                 .end(function (err, res) {
-                    assert.equal(JSON.parse(res.body).msg, "passwordWrong");
+                    assert.equal(JSON.parse(res.body).msg, 'passwordWrong');
                     done();
                 });
         });
@@ -381,7 +395,7 @@ describe('Test of user API', function () {
                 .post('http://localhost:9615/api/user/password/update')
                 .send({ passwords: {old: 'noofs', new: 'test', newConfirm: 'test1'}})
                 .end(function (err, res) {
-                    assert.equal(JSON.parse(res.body).msg, "passwordDifferent");
+                    assert.equal(JSON.parse(res.body).msg, 'passwordDifferent');
                     done();
                 });
         });
@@ -410,9 +424,9 @@ describe('Test of user API', function () {
         it('Should define user 2 as active', function(done) {
             agent
                 .post('http://localhost:9615/api/admin/user/active')
-                .send({id: "2"})
+                .send({id: '2'})
                 .end(function (err, res) {
-                    assert.equal(JSON.parse(res.body).msg, "userToggleActive");
+                    assert.equal(JSON.parse(res.body).msg, 'userToggleActive');
                     request(app)
                         .get('/api/user/public/info/2')
                         .end(function (err, res) {
@@ -454,12 +468,12 @@ describe('Test of user API', function () {
         it('should send email to friends of user 1', function (done) {
             agent
                 .post('http://localhost:9615/api/user/invite')
-                .send({emails: "jbillay@gmail.com, richard.couret@free.fr", message: "should send email to friends"})
+                .send({emails: 'jbillay@gmail.com, richard.couret@free.fr', message: 'should send email to friends'})
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(JSON.parse(res.body).msg, "Invitation(s) envoyée(s)");
+                    assert.equal(JSON.parse(res.body).msg, 'Invitation(s) envoyée(s)');
                     done();
                 });
         });
@@ -480,7 +494,7 @@ describe('Test of user API', function () {
                 .post('/api/user/password/reset')
                 .send({ email: 'jbillay@gmail.com'})
                 .end(function (err, res) {
-                    assert.equal(res.header['location'], '/');
+                    assert.equal(res.header.location, '/');
                     agent
                         .post('http://localhost:9615/login')
                         .send({ email: 'jbillay@gmail.com', password: 'noofs' })
@@ -507,7 +521,7 @@ describe('Test of user API', function () {
                         .get('/api/user/active/2/' + hash)
                         .end(function (err, res) {
                             assert.isNull(err);
-                            assert.equal(res.header['location'], '/');
+                            assert.equal(res.header.location, '/');
                             done();
                         });
                 });
@@ -515,15 +529,3 @@ describe('Test of user API', function () {
     });
 });
 
-function loginUser(agent) {
-    return function(done) {
-        agent
-            .post('http://localhost:9615/login')
-            .send({ email: 'jbillay@gmail.com', password: 'noofs' })
-            .end(onResponse);
-
-        function onResponse(err, res) {
-            return done();
-        }
-    };
-}

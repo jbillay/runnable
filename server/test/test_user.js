@@ -2,9 +2,9 @@
  * Created by jeremy on 31/01/15.
  */
 
-"use strict";
+'use strict';
 
-var assert = require("chai").assert;
+var assert = require('chai').assert;
 var models = require('../models');
 var User = require('../objects/user');
 var async = require('async');
@@ -23,7 +23,6 @@ var loadData = function (fix) {
 };
 
 describe('Test of user object', function () {
-    "use strict";
     beforeEach(function (done) {
         this.timeout(6000);
         models.sequelize.sync({force: true})
@@ -86,7 +85,7 @@ describe('Test of user object', function () {
     });
     //After all the tests have run, output all the sequelize logging.
     after(function () {
-        console.log("Test of user over !");
+        console.log('Test of user over !');
     });
 
     it('Get feedback on driver', function (done) {
@@ -108,12 +107,12 @@ describe('Test of user object', function () {
         var user = new User();
         user.getPublicInfo(1, function (err, userInfo) {
             if (err) return done(err);
-            assert.equal(userInfo.firstname, "Jeremy");
-            assert.equal(userInfo.lastname, "Billay");
-            assert.equal(userInfo.address, "Saint Germain en laye");
-            assert.equal(userInfo.email, "jbillay@gmail.com");
+            assert.equal(userInfo.firstname, 'Jeremy');
+            assert.equal(userInfo.lastname, 'Billay');
+            assert.equal(userInfo.address, 'Saint Germain en laye');
+            assert.equal(userInfo.email, 'jbillay@gmail.com');
             assert.equal(userInfo.isActive, 1);
-            assert.equal(userInfo.role, "admin");
+            assert.equal(userInfo.role, 'admin');
             user.getPublicInfo(-10, function (err, user) {
                 assert.isNotNull(err);
                 done();
@@ -125,12 +124,12 @@ describe('Test of user object', function () {
         var user = new User();
         user.toggleActive(1, function (err, userChanged) {
             if (err) return done(err);
-            assert.equal(userChanged.firstname, "Jeremy");
-            assert.equal(userChanged.lastname, "Billay");
-            assert.equal(userChanged.address, "Saint Germain en laye");
-            assert.equal(userChanged.email, "jbillay@gmail.com");
+            assert.equal(userChanged.firstname, 'Jeremy');
+            assert.equal(userChanged.lastname, 'Billay');
+            assert.equal(userChanged.address, 'Saint Germain en laye');
+            assert.equal(userChanged.email, 'jbillay@gmail.com');
             assert.equal(userChanged.isActive, 0);
-            assert.equal(userChanged.role, "admin");
+            assert.equal(userChanged.role, 'admin');
             user.toggleActive(1, function (err, userChanged) {
                 assert.equal(userChanged.isActive, 1);
                 user.toggleActive(-1, function (err, userChanged) {
@@ -145,13 +144,13 @@ describe('Test of user object', function () {
         var user = new User();
         user.updatePassword('jbillay@gmail.com', 'test', function (err, userChanged) {
             if (err) return done(err);
-            assert.equal(userChanged.firstname, "Jeremy");
-            assert.equal(userChanged.lastname, "Billay");
-            assert.equal(userChanged.address, "Saint Germain en laye");
-            assert.equal(userChanged.email, "jbillay@gmail.com");
-            assert.equal(userChanged.role, "admin");
-            assert.notEqual(userChanged.hashedPassword, "30I/772+OK6uQNdlaY8nriTbNSGznAk9un1zRIXmREB9nOjMz7wDDe2XpiS2ggk9En6lxR4SLqJyzAcW/rni3w==");
-            assert.notEqual(userChanged.salt, "T75xyNJfL19hzc778A08HQ==");
+            assert.equal(userChanged.firstname, 'Jeremy');
+            assert.equal(userChanged.lastname, 'Billay');
+            assert.equal(userChanged.address, 'Saint Germain en laye');
+            assert.equal(userChanged.email, 'jbillay@gmail.com');
+            assert.equal(userChanged.role, 'admin');
+            assert.notEqual(userChanged.hashedPassword, '30I/772+OK6uQNdlaY8nriTbNSGznAk9un1zRIXmREB9nOjMz7wDDe2XpiS2ggk9En6lxR4SLqJyzAcW/rni3w==');
+            assert.notEqual(userChanged.salt, 'T75xyNJfL19hzc778A08HQ==');
             user.updatePassword(4, 'test', function (err, userChanged) {
                 assert.isNotNull(err);
                 user.updatePassword('jbillay@gmail.com', null, function (err, userChanged) {
@@ -175,11 +174,11 @@ describe('Test of user object', function () {
         var user = new User();
         user.getByEmail('jbillay@gmail.com', function (err, userDetail) {
             if (err) return done(err);
-            assert.equal(userDetail.firstname, "Jeremy");
-            assert.equal(userDetail.lastname, "Billay");
-            assert.equal(userDetail.address, "Saint Germain en laye");
-            assert.equal(userDetail.email, "jbillay@gmail.com");
-            assert.equal(userDetail.role, "admin");
+            assert.equal(userDetail.firstname, 'Jeremy');
+            assert.equal(userDetail.lastname, 'Billay');
+            assert.equal(userDetail.address, 'Saint Germain en laye');
+            assert.equal(userDetail.email, 'jbillay@gmail.com');
+            assert.equal(userDetail.role, 'admin');
             assert.equal(userDetail.isActive, 1);
             user.getByEmail(-1, function (err, userDetail) {
                 assert.isNotNull(err);
@@ -192,11 +191,11 @@ describe('Test of user object', function () {
         var user = new User();
         user.getById(2, function (err, userDetail) {
             if (err) return done(err);
-            assert.equal(userDetail.firstname, "Richard");
-            assert.equal(userDetail.lastname, "Couret");
-            assert.equal(userDetail.address, "Bouffemont");
-            assert.equal(userDetail.email, "richard.couret@free.fr");
-            assert.equal(userDetail.role, "editor");
+            assert.equal(userDetail.firstname, 'Richard');
+            assert.equal(userDetail.lastname, 'Couret');
+            assert.equal(userDetail.address, 'Bouffemont');
+            assert.equal(userDetail.email, 'richard.couret@free.fr');
+            assert.equal(userDetail.role, 'editor');
             assert.equal(userDetail.isActive, 0);
             user.getById('TOTO', function (err, userDetail) {
                 assert.isNotNull(err);
@@ -208,32 +207,32 @@ describe('Test of user object', function () {
     it('Create new user', function (done) {
         var user = new User(),
             newUser = {
-                "firstname": "Emilie",
-                "lastname": "Francisco",
-                "address": "Saint Germain en laye",
-                "email": "emiliefrancisco@hotmail.fr",
-                "isActive": 1
+                firstname: 'Emilie',
+                lastname: 'Francisco',
+                address: 'Saint Germain en laye',
+                email: 'emiliefrancisco@hotmail.fr',
+                isActive: 1
             },
             newUser2 = {
-                "firstname": "Test",
-                "lastname": "Test",
-                "address": "Test"
+                firstname: 'Test',
+                lastname: 'Test',
+                address: 'Test'
             };
         user.set(newUser);
         var tmp = user.get();
-        assert.equal(tmp.firstname, "Emilie");
-        assert.equal(tmp.lastname, "Francisco");
-        assert.equal(tmp.address, "Saint Germain en laye");
-        assert.equal(tmp.email, "emiliefrancisco@hotmail.fr");
-        assert.equal(tmp.role, "user");
+        assert.equal(tmp.firstname, 'Emilie');
+        assert.equal(tmp.lastname, 'Francisco');
+        assert.equal(tmp.address, 'Saint Germain en laye');
+        assert.equal(tmp.email, 'emiliefrancisco@hotmail.fr');
+        assert.equal(tmp.role, 'user');
         assert.equal(tmp.isActive, 1);
         user.save(function (err, newUser) {
             if (err) return done(err);
-            assert.equal(newUser.firstname, "Emilie");
-            assert.equal(newUser.lastname, "Francisco");
-            assert.equal(newUser.address, "Saint Germain en laye");
-            assert.equal(newUser.email, "emiliefrancisco@hotmail.fr");
-            assert.equal(newUser.role, "user");
+            assert.equal(newUser.firstname, 'Emilie');
+            assert.equal(newUser.lastname, 'Francisco');
+            assert.equal(newUser.address, 'Saint Germain en laye');
+            assert.equal(newUser.email, 'emiliefrancisco@hotmail.fr');
+            assert.equal(newUser.role, 'user');
             assert.equal(newUser.isActive, 1);
             user.set(newUser2);
             user.save(function (err, newUser) {
@@ -246,16 +245,16 @@ describe('Test of user object', function () {
     it('First activation of a user', function (done) {
         var user = new User(),
             newUser = {
-                "id": 3,
-                "firstname": "Emilie",
-                "lastname": "Francisco",
-                "address": "Saint Germain en laye",
-                "password": "emilie",
-                "email": "emiliefrancisco@hotmail.fr",
-                "isActive": 0,
-                "role": "user",
-                "createdAt": "2015-02-04 18:55:39",
-                "updatedAt": "2015-02-04 18:55:39"
+                id: 3,
+                firstname: 'Emilie',
+                lastname: 'Francisco',
+                address: 'Saint Germain en laye',
+                password: 'emilie',
+                email: 'emiliefrancisco@hotmail.fr',
+                isActive: 0,
+                role: 'user',
+                createdAt: '2015-02-04 18:55:39',
+                updatedAt: '2015-02-04 18:55:39'
             };
         user.set(newUser);
         user.save(function (err, createdUser) {
@@ -265,11 +264,11 @@ describe('Test of user object', function () {
                 if (err) {
                     console.log('Error: ' + err);
                 }
-                assert.equal(newUser.firstname, "Emilie");
-                assert.equal(newUser.lastname, "Francisco");
-                assert.equal(newUser.address, "Saint Germain en laye");
-                assert.equal(newUser.email, "emiliefrancisco@hotmail.fr");
-                assert.equal(newUser.role, "user");
+                assert.equal(newUser.firstname, 'Emilie');
+                assert.equal(newUser.lastname, 'Francisco');
+                assert.equal(newUser.address, 'Saint Germain en laye');
+                assert.equal(newUser.email, 'emiliefrancisco@hotmail.fr');
+                assert.equal(newUser.role, 'user');
                 assert.equal(newUser.isActive, 1);
                 user.activate(1, '', function (err, newUser) {
                     assert.isNotNull(err);

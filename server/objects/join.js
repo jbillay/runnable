@@ -95,7 +95,7 @@ join.prototype.getByUser = function (id, done) {
     'use strict';
 	models.Join.findAll({where: {userId: id}, include: [models.ValidationJourney, {
                         model: models.Journey,
-                        as: "Journey",
+                        as: 'Journey',
                         include: [ models.Run, models.User ]
                     }]})
 		.then(function (joins) {
@@ -123,7 +123,7 @@ join.prototype.getList = function (done) {
 	'use strict';
 	models.Join.findAll({include: [{
 							model: models.Journey,
-							as: "Journey",
+							as: 'Journey',
 							include: [ models.Run ]
 						}, models.User]})
 		.then(function (joins) {
@@ -136,7 +136,7 @@ join.prototype.getList = function (done) {
 
 join.prototype.updatePaymentStatus = function (invoiceRef, amount, status, transactionId, done) {
 	'use strict';
-    console.log('Update invoice ' + invoiceRef + ' to status ' + status)
+    console.log('Update invoice ' + invoiceRef + ' to status ' + status);
 	models.Join.find({ where: {invoice: invoiceRef}})
 		.then(function (join) {
 			if (join.amount === amount) {

@@ -1,10 +1,11 @@
 /**
  * Created by jeremy on 07/02/15.
  */
+'use strict';
 
 var request = require('supertest'),
     models = require('../models'),
-    assert = require("chai").assert,
+    assert = require('chai').assert,
     app = require('../../server.js'),
     async = require('async'),
     q = require('q'),
@@ -22,6 +23,18 @@ var loadData = function (fix) {
     return deferred.promise;
 };
 
+function loginUser(agent) {
+    return function(done) {
+        function onResponse(err, res) {
+            return done();
+        }
+
+        agent
+            .post('http://localhost:9615/login')
+            .send({ email: 'jbillay@gmail.com', password: 'noofs' })
+            .end(onResponse);
+    };
+}
 
 describe('Test of journey API', function () {
 
@@ -98,7 +111,7 @@ describe('Test of journey API', function () {
     });
     //After all the tests have run, output all the sequelize logging.
     after(function () {
-        console.log("Test API journey over !");
+        console.log('Test API journey over !');
     });
 
     describe('GET /api/journey/list', function () {
@@ -133,19 +146,19 @@ describe('Test of journey API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(res.res.body.address_start, "Saint-Germain-en-Laye, France");
-                    assert.equal(res.res.body.distance, "585 km");
-                    assert.equal(res.res.body.duration, "5 heures 29 minutes");
-                    assert.equal(res.res.body.journey_type, "aller-retour");
-                    assert.equal(res.res.body.time_start_outward, "06:00");
+                    assert.equal(res.res.body.address_start, 'Saint-Germain-en-Laye, France');
+                    assert.equal(res.res.body.distance, '585 km');
+                    assert.equal(res.res.body.duration, '5 heures 29 minutes');
+                    assert.equal(res.res.body.journey_type, 'aller-retour');
+                    assert.equal(res.res.body.time_start_outward, '06:00');
                     assert.equal(res.res.body.nb_space_outward, 2);
-                    assert.equal(res.res.body.time_start_return, "09:00");
+                    assert.equal(res.res.body.time_start_return, '09:00');
                     assert.equal(res.res.body.nb_space_return, 3);
-                    assert.equal(res.res.body.car_type, "monospace");
+                    assert.equal(res.res.body.car_type, 'monospace');
                     assert.equal(res.res.body.amount, 23);
                     assert.equal(res.res.body.RunId, 5);
                     assert.equal(res.res.body.UserId, 1);
-                    assert.equal(res.res.body.Run.name, "Marathon du médoc");
+                    assert.equal(res.res.body.Run.name, 'Marathon du médoc');
                     done();
                 });
         });
@@ -165,7 +178,7 @@ describe('Test of journey API', function () {
                         return done(err);
                     }
                     assert.equal(res.body.length, 1);
-                    assert.equal(res.body[0].address_start, "Nantes, France");
+                    assert.equal(res.body[0].address_start, 'Nantes, France');
                     done();
                 });
         });
@@ -208,21 +221,21 @@ describe('Test of journey API', function () {
 
         it('should create a journey', function (done) {
             var journey = {
-                "id": 4,
-                "address_start": "Paris",
-                "distance": "25 km",
-                "duration": "20 minutes",
-                "journey_type": "aller-retour",
-                "date_start_outward": "2014-12-12 00:00:00",
-                "time_start_outward": "09:00",
-                "nb_space_outward": 2,
-                "date_start_return": "2014-12-13 00:00:00",
-                "time_start_return": "09:00",
-                "nb_space_return": 2,
-                "car_type": "citadine",
-                "amount": 5,
-                "RunId": 4,
-                "UserId": 1
+                id: 4,
+                address_start: 'Paris',
+                distance: '25 km',
+                duration: '20 minutes',
+                journey_type: 'aller-retour',
+                date_start_outward: '2014-12-12 00:00:00',
+                time_start_outward: '09:00',
+                nb_space_outward: 2,
+                date_start_return: '2014-12-13 00:00:00',
+                time_start_return: '09:00',
+                nb_space_return: 2,
+                car_type: 'citadine',
+                amount: 5,
+                RunId: 4,
+                UserId: 1
             };
             agent
                 .post('http://localhost:9615/api/journey')
@@ -244,16 +257,3 @@ describe('Test of journey API', function () {
         });
     });
 });
-
-function loginUser(agent) {
-    return function(done) {
-        agent
-            .post('http://localhost:9615/login')
-            .send({ email: 'jbillay@gmail.com', password: 'noofs' })
-            .end(onResponse);
-
-        function onResponse(err, res) {
-            return done();
-        }
-    };
-}

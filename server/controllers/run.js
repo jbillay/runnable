@@ -2,7 +2,7 @@
 var Run = require('../objects/run');
 
 exports.create = function (req, res) {
-    "use strict";
+    'use strict';
 	console.log('Create the run : ' + req.body.run.name);
 	var run = new Run();
 	run.set(req.body.run, req.user);
@@ -18,7 +18,7 @@ exports.create = function (req, res) {
 };
 
 exports.activeList = function (req, res) {
-    "use strict";
+    'use strict';
 	console.log('Get list of active run');
 	var run = new Run();
 	run.getActiveList(function (err, runs) {
@@ -32,7 +32,7 @@ exports.activeList = function (req, res) {
 };
 
 exports.detail = function (req, res) {
-    "use strict";
+    'use strict';
 	console.log('Get info on run ' + req.params.id);
 	var id = req.params.id;
 	var run = new Run();
@@ -47,7 +47,7 @@ exports.detail = function (req, res) {
 };
 
 exports.next = function (req, res) {
-    "use strict";
+    'use strict';
 	console.log('Get list of next run limited to ' + req.params.nb);
 	var run = new Run();
 	run.getNextList(req.params.nb, function (err, runs) {
@@ -61,7 +61,7 @@ exports.next = function (req, res) {
 };
 
 exports.list = function (req, res) {
-    "use strict";
+    'use strict';
 	console.log('Get list of run');
 	var run = new Run();
 	run.getList(function (err, runs) {
@@ -75,7 +75,7 @@ exports.list = function (req, res) {
 };
 
 exports.toggleActive = function (req, res) {
-    "use strict";
+    'use strict';
 	console.log('Toggle active for run ' + req.body.id);
 	var id= req.body.id,
 		run = new Run();

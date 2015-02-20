@@ -1,15 +1,15 @@
+'use strict';
 
 var fs = require('fs');
 var path = require('path');
 
 exports.init = function () {
-	"use strict";
-	console.log("Init Controllers");
+	console.log('Init Controllers');
 	var controllers = [];
 	// loop through all files in current directory ignoring hidden files and this file
 	fs.readdirSync(path.join(__dirname))
 		.filter(function(file) {
-			return (file.indexOf('.') !== 0) && (file !== 'index.js')
+			return (file.indexOf('.') !== 0) && (file !== 'index.js');
 	})
 	// import controllers files
 	.forEach(function(file) {

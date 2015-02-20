@@ -1,10 +1,11 @@
 /**
  * Created by jeremy on 04/02/15.
  */
+'use strict';
 
 var request = require('supertest'),
     models = require('../models'),
-    assert = require("chai").assert,
+    assert = require('chai').assert,
     app = require('../../server.js'),
     async = require('async'),
     q = require('q'),
@@ -23,6 +24,18 @@ var loadData = function (fix) {
     return deferred.promise;
 };
 
+function loginUser(agent) {
+    return function(done) {
+        function onResponse(err, res) {
+            return done();
+        }
+
+        agent
+            .post('http://localhost:9615/login')
+            .send({ email: 'jbillay@gmail.com', password: 'noofs' })
+            .end(onResponse);
+    };
+}
 
 describe('Test of run API', function () {
 
@@ -59,7 +72,7 @@ describe('Test of run API', function () {
     });
     //After all the tests have run, output all the sequelize logging.
     after(function () {
-        console.log("Test API run over !");
+        console.log('Test API run over !');
     });
 
     describe('GET /api/run/list', function () {
@@ -94,13 +107,13 @@ describe('Test of run API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(res.res.body.name, "Maxicross");
-                    assert.equal(res.res.body.type, "trail");
-                    assert.equal(res.res.body.address_start, "Bouffémont, France");
-                    assert.equal(res.res.body.time_start, "09:15");
-                    assert.equal(res.res.body.distances, "15k - 30k - 7k");
-                    assert.equal(res.res.body.elevations, "500+ - 1400+");
-                    assert.equal(res.res.body.info, "Toutes les infos sur le maxicross");
+                    assert.equal(res.res.body.name, 'Maxicross');
+                    assert.equal(res.res.body.type, 'trail');
+                    assert.equal(res.res.body.address_start, 'Bouffémont, France');
+                    assert.equal(res.res.body.time_start, '09:15');
+                    assert.equal(res.res.body.distances, '15k - 30k - 7k');
+                    assert.equal(res.res.body.elevations, '500+ - 1400+');
+                    assert.equal(res.res.body.info, 'Toutes les infos sur le maxicross');
                     assert.equal(res.res.body.is_active, 1);
                     done();
                 });
@@ -180,7 +193,7 @@ describe('Test of run API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(JSON.parse(res.body).msg, "done");
+                    assert.equal(JSON.parse(res.body).msg, 'done');
                     request(app)
                         .get('/api/run/list')
                         .end(function (err, res) {
@@ -211,16 +224,16 @@ describe('Test of run API', function () {
 
         it('should create a run', function (done) {
             var run = {
-                "id": 7,
-                "name": "Marathon du Mont Blanc",
-                "type": "marathon",
-                "address_start": "Chamonix, France",
-                "date_start": "2015-06-28 00:00:00",
-                "time_start": "06:20",
-                "distances": "80km - 42km - 23km - 10km - 3.8km",
-                "elevations": "3214+",
-                "info": "dkqsd lqldsj lqkjdsllq ksjdlq",
-                "is_active": 1
+                id: 7,
+                name: 'Marathon du Mont Blanc',
+                type: 'marathon',
+                address_start: 'Chamonix, France',
+                date_start: '2015-06-28 00:00:00',
+                time_start: '06:20',
+                distances: '80km - 42km - 23km - 10km - 3.8km',
+                elevations: '3214+',
+                info: 'dkqsd lqldsj lqkjdsllq ksjdlq',
+                is_active: 1
             };
             agent
                 .post('http://localhost:9615/api/run')
@@ -243,17 +256,3 @@ describe('Test of run API', function () {
     });
 
 });
-
-
-function loginUser(agent) {
-    return function(done) {
-        agent
-            .post('http://localhost:9615/login')
-            .send({ email: 'jbillay@gmail.com', password: 'noofs' })
-            .end(onResponse);
-
-        function onResponse(err, res) {
-            return done();
-        }
-    };
-}

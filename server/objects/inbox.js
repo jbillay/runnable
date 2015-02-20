@@ -2,11 +2,12 @@
  * Created by jeremy on 25/01/15.
  */
 
+'use strict';
+
 var models = require('../models');
 var User = require('./user');
 
 function inbox() {
-    'use strict';
     this.userId = null;
     this.title = null;
 	this.message = null;
