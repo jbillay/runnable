@@ -10,6 +10,7 @@ function join() {
 	this.journey = null;
     this.status = null;
 	this.amount = null;
+	this.fees = null;
 	this.invoice = null;
 	this.transaction = null;
 	this.user = null;
@@ -31,8 +32,10 @@ join.prototype.set = function (join) {
 		this.nb_place_return = join.nb_place_return; }
 	if (join.status) {
 		this.status = join.status; }
-	if (join.amount) {
-		this.amount = parseFloat(join.amount).toFixed(2); }
+    if (join.amount) {
+        this.amount = parseFloat(join.amount).toFixed(2); }
+    if (join.fees) {
+        this.fees = parseFloat(join.fees).toFixed(2); }
 	if (join.transaction) {
 		this.transaction = join.transaction; }
 	if (join.invoice) {

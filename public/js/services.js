@@ -348,12 +348,13 @@ angular.module('runnable.services', ['ngResource']).
     }).
     factory('Join', function ($q, $http) {
         return {
-			addJoin: function (id, nbSpaceOutward, nbSpaceReturn, amount, ref) {
+			addJoin: function (id, nbSpaceOutward, nbSpaceReturn, amount, fees, ref) {
 				var deferred = $q.defer(),
 					info = {journey_id: id,
 							nb_place_outward: nbSpaceOutward, 
 							nb_place_return: nbSpaceReturn,
 							amount: amount,
+							fees: fees,
 							status: 'pending',
 							invoice: ref};
 				console.log(info);

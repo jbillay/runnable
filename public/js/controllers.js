@@ -405,11 +405,12 @@ angular.module('runnable.controllers', []).
                     $scope.journey.Run.name + '. Nous sommes en attente de la validation du paiement.';
 			var amount = (placeOutward + placeReturn) * $scope.journey.amount + 
 						$scope.calculateFees(placeOutward, placeReturn, $scope.journey);
+            var fees = $scope.calculateFees(placeOutward, placeReturn, $scope.journey);
             $scope.joined = 1;
 			amount = amount.toFixed(2);
 			$scope.reserved_outward = $scope.reserved_outward + placeOutward;
 			$scope.reserved_return = $scope.reserved_return + placeReturn;
-			Join.addJoin($scope.journeyId, placeOutward, placeReturn, amount, $scope.invoice_ref);
+			Join.addJoin($scope.journeyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref);
             Inbox.addMessage(title, textMessage, Session.userId);
 		};
 		$scope.removeJoinJourney = function () {

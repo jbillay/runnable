@@ -14,6 +14,7 @@ module.exports = function(sequelize, DataTypes) {
 			defaultValue: 'pending'
 			},
 		amount: DataTypes.FLOAT,
+		fees: DataTypes.FLOAT,
 		invoice: DataTypes.STRING,
 		transaction : DataTypes.STRING
 	}, {
