@@ -9,6 +9,7 @@ function user() {
 	this.firstname = null;
 	this.lastname = null;
 	this.address = null;
+    this.phone = null;
     this.email = null;
 	this.password = null;
 	this.hashedPassword = null;
@@ -33,8 +34,10 @@ user.prototype.set = function (user) {
 		this.firstname = user.firstname; }
 	if (user.lastname) {
 		this.lastname = user.lastname; }
-	if (user.address) {
-		this.address = user.address; }
+    if (user.address) {
+        this.address = user.address; }
+    if (user.phone) {
+        this.phone = user.phone; }
 	if (user.email) {
 		this.email = user.email; }
 	if (user.password) {
@@ -53,6 +56,24 @@ user.prototype.set = function (user) {
         this.createdAt = user.createdAt; }
     if (user.updatedAt) {
         this.updatedAt = user.updatedAt; }
+};
+
+user.prototype.update = function (id, datas, done) {
+    'use strict';
+    var that = this;
+    models.User.find({ where: {id: id}})
+        .then(function (user) {
+            user.updateAttributes(datas)
+                .then(function (updatedUser) {
+                    done(null, updatedUser);
+                })
+                .catch(function (err) {
+                    done(err, null);
+                });
+        })
+        .catch(function (err) {
+            done(err, null);
+        });
 };
 
 user.prototype.save = function (done) {

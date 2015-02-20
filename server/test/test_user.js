@@ -110,6 +110,7 @@ describe('Test of user object', function () {
             assert.equal(userInfo.firstname, 'Jeremy');
             assert.equal(userInfo.lastname, 'Billay');
             assert.equal(userInfo.address, 'Saint Germain en laye');
+            assert.equal(userInfo.phone, '0689876547');
             assert.equal(userInfo.email, 'jbillay@gmail.com');
             assert.equal(userInfo.isActive, 1);
             assert.equal(userInfo.role, 'admin');
@@ -127,6 +128,7 @@ describe('Test of user object', function () {
             assert.equal(userChanged.firstname, 'Jeremy');
             assert.equal(userChanged.lastname, 'Billay');
             assert.equal(userChanged.address, 'Saint Germain en laye');
+            assert.equal(userChanged.phone, '0689876547');
             assert.equal(userChanged.email, 'jbillay@gmail.com');
             assert.equal(userChanged.isActive, 0);
             assert.equal(userChanged.role, 'admin');
@@ -147,6 +149,7 @@ describe('Test of user object', function () {
             assert.equal(userChanged.firstname, 'Jeremy');
             assert.equal(userChanged.lastname, 'Billay');
             assert.equal(userChanged.address, 'Saint Germain en laye');
+            assert.equal(userChanged.phone, '0689876547');
             assert.equal(userChanged.email, 'jbillay@gmail.com');
             assert.equal(userChanged.role, 'admin');
             assert.notEqual(userChanged.hashedPassword, '30I/772+OK6uQNdlaY8nriTbNSGznAk9un1zRIXmREB9nOjMz7wDDe2XpiS2ggk9En6lxR4SLqJyzAcW/rni3w==');
@@ -177,6 +180,7 @@ describe('Test of user object', function () {
             assert.equal(userDetail.firstname, 'Jeremy');
             assert.equal(userDetail.lastname, 'Billay');
             assert.equal(userDetail.address, 'Saint Germain en laye');
+            assert.equal(userDetail.phone, '0689876547');
             assert.equal(userDetail.email, 'jbillay@gmail.com');
             assert.equal(userDetail.role, 'admin');
             assert.equal(userDetail.isActive, 1);
@@ -210,6 +214,7 @@ describe('Test of user object', function () {
                 firstname: 'Emilie',
                 lastname: 'Francisco',
                 address: 'Saint Germain en laye',
+                phone: '0671902307',
                 email: 'emiliefrancisco@hotmail.fr',
                 isActive: 1
             },
@@ -223,6 +228,7 @@ describe('Test of user object', function () {
         assert.equal(tmp.firstname, 'Emilie');
         assert.equal(tmp.lastname, 'Francisco');
         assert.equal(tmp.address, 'Saint Germain en laye');
+        assert.equal(tmp.phone, '0671902307');
         assert.equal(tmp.email, 'emiliefrancisco@hotmail.fr');
         assert.equal(tmp.role, 'user');
         assert.equal(tmp.isActive, 1);
@@ -231,6 +237,7 @@ describe('Test of user object', function () {
             assert.equal(newUser.firstname, 'Emilie');
             assert.equal(newUser.lastname, 'Francisco');
             assert.equal(newUser.address, 'Saint Germain en laye');
+            assert.equal(newUser.phone, '0671902307');
             assert.equal(newUser.email, 'emiliefrancisco@hotmail.fr');
             assert.equal(newUser.role, 'user');
             assert.equal(newUser.isActive, 1);
@@ -249,6 +256,7 @@ describe('Test of user object', function () {
                 firstname: 'Emilie',
                 lastname: 'Francisco',
                 address: 'Saint Germain en laye',
+                phone: '0671902307',
                 password: 'emilie',
                 email: 'emiliefrancisco@hotmail.fr',
                 isActive: 0,
@@ -267,6 +275,7 @@ describe('Test of user object', function () {
                 assert.equal(newUser.firstname, 'Emilie');
                 assert.equal(newUser.lastname, 'Francisco');
                 assert.equal(newUser.address, 'Saint Germain en laye');
+                assert.equal(newUser.phone, '0671902307');
                 assert.equal(newUser.email, 'emiliefrancisco@hotmail.fr');
                 assert.equal(newUser.role, 'user');
                 assert.equal(newUser.isActive, 1);
@@ -278,6 +287,25 @@ describe('Test of user object', function () {
                     });
                 });
             });
+        });
+    });
+    it('Update a user', function (done) {
+        var user = new User(),
+            updatedValues = {
+                firstname: 'Jeremy',
+                lastname: 'Billay',
+                address: 'Chantilly',
+                phone: '0647658789',
+                email: 'jbillay@gmail.fr'
+            };
+        user.update(1, updatedValues, function (err, updatedUser) {
+            if (err) return done(err);
+            assert.equal(updatedUser.firstname, 'Jeremy');
+            assert.equal(updatedUser.lastname, 'Billay');
+            assert.equal(updatedUser.address, 'Chantilly');
+            assert.equal(updatedUser.phone, '0647658789');
+            assert.equal(updatedUser.email, 'jbillay@gmail.fr');
+            return done();
         });
     });
 });

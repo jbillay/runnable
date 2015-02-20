@@ -30,6 +30,21 @@ exports.invite = function(req, res) {
 	res.jsonp('{"msg": "Invitation(s) envoyée(s)"}');
 };
 
+exports.update = function(req, res) {
+    'use strict';
+    var user = new User();
+    console.log(req.body);
+    user.update(req.user.id, req.body, function (err, selectedUser) {
+        if (err) {
+            console.log('Account not updated ' + err);
+            res.jsonp('{"msg": "notUpdatedAccount", "type": "error"}');
+        } else {
+            console.log('Account updated !');
+            res.jsonp('{"msg": "accountUpdated", "type": "success"}');
+        }
+    });
+};
+
 exports.create = function(req, res) {
     'use strict';
 	var html,

@@ -6,6 +6,7 @@
             "firstname": "Jeremy",
             "lastname": "Billay",
             "address": "Saint Germain en laye",
+            "phone": "0689876547",
             "email": "jbillay@gmail.com",
             "hashedPassword": "30I/772+OK6uQNdlaY8nriTbNSGznAk9un1zRIXmREB9nOjMz7wDDe2XpiS2ggk9En6lxR4SLqJyzAcW/rni3w==",
             "provider": "local",

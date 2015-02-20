@@ -141,6 +141,7 @@ describe('Test of user API', function () {
                     assert.equal(res.body.firstname, 'Jeremy');
                     assert.equal(res.body.lastname, 'Billay');
                     assert.equal(res.body.address, 'Saint Germain en laye');
+                    assert.equal(res.body.phone, '0689876547');
                     assert.equal(res.body.email, 'jbillay@gmail.com');
                     assert.equal(res.body.isActive, 1);
                     assert.equal(res.body.role, 'admin');
@@ -275,6 +276,7 @@ describe('Test of user API', function () {
                     assert.equal(res.body.firstname, 'Jeremy');
                     assert.equal(res.body.lastname, 'Billay');
                     assert.equal(res.body.address, 'Saint Germain en laye');
+                    assert.equal(res.body.phone, '0689876547');
                     assert.equal(res.body.email, 'jbillay@gmail.com');
                     assert.equal(res.body.role, 'admin');
                     done();
@@ -317,6 +319,7 @@ describe('Test of user API', function () {
                     assert.equal(res.body.firstname, 'Jeremy');
                     assert.equal(res.body.lastname, 'Billay');
                     assert.equal(res.body.address, 'Saint Germain en laye');
+                    assert.equal(res.body.phone, '0689876547');
                     assert.equal(res.body.email, 'jbillay@gmail.com');
                     assert.equal(res.body.role, 'admin');
                     return done();
@@ -523,6 +526,43 @@ describe('Test of user API', function () {
                             assert.isNull(err);
                             assert.equal(res.header.location, '/');
                             done();
+                        });
+                });
+        });
+    });
+
+    describe('PUT /api/user', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should update user information', function (done) {
+            var user = {
+                firstname : 'Jeremy',
+                lastname : 'Billay',
+                address : 'Chantilly',
+                phone: '0987654321',
+                email : 'jbillay@gmail.com'
+            };
+            agent
+                .put('http://localhost:9615/api/user')
+                .send(user)
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    assert.equal(JSON.parse(res.body).msg, 'accountUpdated');
+                    agent
+                        .get('http://localhost:9615/api/user/me')
+                        .end(function(err, res) {
+                            assert.equal(res.body.id, 1);
+                            assert.equal(res.body.firstname, 'Jeremy');
+                            assert.equal(res.body.lastname, 'Billay');
+                            assert.equal(res.body.address, 'Chantilly');
+                            assert.equal(res.body.phone, '0987654321');
+                            assert.equal(res.body.email, 'jbillay@gmail.com');
+                            assert.equal(res.body.role, 'admin');
+                            return done();
                         });
                 });
         });
