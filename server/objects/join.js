@@ -93,7 +93,7 @@ join.prototype.getById = function (id, done) {
 
 join.prototype.getByUser = function (id, done) {
     'use strict';
-	models.Join.findAll({where: {userId: id}, include: [models.ValidationJourney, {
+	models.Join.findAll({where: {userId: id, status: 'completed'}, include: [models.ValidationJourney, {
                         model: models.Journey,
                         as: 'Journey',
                         include: [ models.Run, models.User ]

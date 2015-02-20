@@ -40,7 +40,6 @@ exports.detail = function (req, res) {
 			console.log('Not able to get info on the journey : ' + err);
 			res.jsonp('{"msg": "ko"}');
 		} else {
-			console.log(joinDetail);
 			res.jsonp(joinDetail);
 		}
 	});

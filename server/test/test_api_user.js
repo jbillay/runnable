@@ -351,7 +351,7 @@ describe('Test of user API', function () {
             agent
                 .get('http://localhost:9615/api/user/joins')
                 .end(function (err, res) {
-                    assert.equal(res.body.length, 3);
+                    assert.equal(res.body.length, 2);
                     return done();
                 });
         });

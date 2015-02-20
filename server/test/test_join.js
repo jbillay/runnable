@@ -107,7 +107,7 @@ describe('Test of join object', function () {
                 assert.equal(joinList[0].id, 1);
                 assert.equal(joinList[0].nb_place_outward, 2);
                 assert.equal(joinList[0].nb_place_return, 3);
-                assert.equal(joinList[0].status, 'pending');
+                assert.equal(joinList[0].status, 'completed');
                 join.getByJourney(-1, function (err, joinList) {
                     assert.isNotNull(err);
                     done();
@@ -118,16 +118,21 @@ describe('Test of join object', function () {
 
     it('Get join list by user', function (done) {
         var join = new Join();
-        join.getByUser(2, function (err, joinList) {
+        join.getByUser(1, function (err, joinList) {
+            if (err) return done(err);
             assert.isNull(err);
-            assert.equal(joinList.length, 1);
-            assert.equal(joinList[0].id, 3);
-            assert.equal(joinList[0].nb_place_outward, 1);
-            assert.isNull(joinList[0].nb_place_return);
-            assert.equal(joinList[0].status, 'pending');
-            join.getByUser(-1, function (err, joinList) {
-                assert.isNotNull(err);
-                done();
+            assert.equal(joinList.length, 2);
+            join.getByUser(2, function (err, joinList) {
+                assert.isNull(err);
+                assert.equal(joinList.length, 1);
+                assert.equal(joinList[0].id, 3);
+                assert.equal(joinList[0].nb_place_outward, 1);
+                assert.isNull(joinList[0].nb_place_return);
+                assert.equal(joinList[0].status, 'completed');
+                join.getByUser(-1, function (err, joinList) {
+                    assert.isNotNull(err);
+                    return done();
+                });
             });
         });
     });
@@ -139,7 +144,7 @@ describe('Test of join object', function () {
             assert.equal(joinInfo.id, 4);
             assert.equal(joinInfo.nb_place_outward, 1);
             assert.equal(joinInfo.nb_place_return, 1);
-            assert.equal(joinInfo.status, 'pending');
+            assert.equal(joinInfo.status, 'completed');
             assert.equal(joinInfo.amount, 23.75);
             assert.equal(joinInfo.invoice, 'MRT20150217H36EG');
             join.getById(-1, function (err, joinInfo) {

@@ -156,7 +156,7 @@ describe('Test of join API', function () {
                 .end(function (err, res) {
                     assert.equal(res.body.nb_place_outward, 2);
                     assert.equal(res.body.nb_place_return, 3);
-                    assert.equal(res.body.status, 'pending');
+                    assert.equal(res.body.status, 'completed');
                     assert.equal(res.body.UserId, 1);
                     assert.equal(res.body.JourneyId, 1);
                     return done();
