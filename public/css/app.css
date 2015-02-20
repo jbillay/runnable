@@ -198,6 +198,10 @@ a.list-group-item.active,[class*='-info'] {
 	color: black;
 }
 
+.run_noresult {
+	font-size: large;
+}
+
 /* Journey poster */
 .journey_poster_home {
 	padding-bottom: 20px;

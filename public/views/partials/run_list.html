@@ -21,7 +21,12 @@
 						<p><i class="glyphicon glyphicon-text-width"></i> {{run.distances | limitTo:21}}</p>
 						<p><i class="glyphicon glyphicon-road"></i> {{run.type | capitalize}}</p>
 					</div>
-				</div>				
+				</div>
+				<div class="col-sm-6 run_noresult" ng-show="!run.length">
+					Aucune course ne correspond à votre recherche. 
+					Vous la trouverez certainement chez notre partenaire
+					<a href="http://www.goforun.com/courses/affiches">GoFoRun</a>
+				</div>
 			</div>
         </div>
     </div>

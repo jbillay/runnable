@@ -20,6 +20,10 @@
 									<label for="address">Adresse</label>
 									<input type="text" class="form-control" id="address" placeholder="Adresse" ng-model="currentUser.address">
 								</div>
+								<div class="form-group">
+									<label for="address">Téléphone Mobile</label>
+									<input type="text" class="form-control" id="phone" placeholder="Téléphone Mobile" ng-model="currentUser.phone">
+								</div>
 								<div class="form-group"
 									ng-class="{ 'has-success' : userInfoForm.email.$valid && userInfoForm.email.$dirty, 
 												'has-error' : userInfoForm.email.$invalid && userInfoForm.email.$dirty }">

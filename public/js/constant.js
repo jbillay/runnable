@@ -33,5 +33,7 @@ angular.module('runnable.constant', []).
         notAbleParticipate:     'Désolé cette course n\'a pas pu être ajoutée à votre agenda',
         addParticipate:         'Cette course a été ajoutée à votre agenda',
         infoRequestReceived:    'Nous avons bien reçu votre demande d\'information, nous revenons vers vous rapidement',
-        journeyValidationDone:  'Merci de votre validation, vos commentaires seront pris en compte pour améliorer notre service'
+        journeyValidationDone:  'Merci de votre validation, vos commentaires seront pris en compte pour améliorer notre service',
+		accountUpdated:			'Vos information ont été mise à jour',
+		notUpdatedAccount:		'Désolé en raison d\'un problème vos informations n\'ont pas été mise à jour'
 	});

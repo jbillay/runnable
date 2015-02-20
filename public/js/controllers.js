@@ -177,7 +177,14 @@ angular.module('runnable.controllers', []).
 			$scope.passwords = {};
 		};
 		$scope.updateUserInfo = function (userInfo) {
-			console.log('TO BE IMPLEMENTED : Update user info');
+			var userData = {
+				firstname: userInfo.firstname,
+				lastname: userInfo.lastname,
+				address: userInfo.address,
+				phone: userInfo.phone,
+				email: userInfo.email
+			};
+			User.update(userData);
 		};
 	}).
 	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run, Journey, Join) {
