@@ -86,6 +86,16 @@ describe('Test of user API', function () {
                         });
                     },
                     function (callback) {
+                        var fixtures = require('./fixtures/invoices.json');
+                        var promises = [];
+                        fixtures.forEach(function (fix) {
+                            promises.push(loadData(fix));
+                        });
+                        q.all(promises).then(function () {
+                            callback(null);
+                        });
+                    },
+                    function (callback) {
                         var fixtures = require('./fixtures/discussions.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -351,6 +361,7 @@ describe('Test of user API', function () {
             agent
                 .get('http://localhost:9615/api/user/joins')
                 .end(function (err, res) {
+                    if (err) return done(err);
                     assert.equal(res.body.length, 2);
                     return done();
                 });

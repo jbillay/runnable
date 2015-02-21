@@ -1,7 +1,6 @@
 /* user object */
 
 var models = require('../models');
-var Run = require('./run');
 
 function journey() {
     'use strict';

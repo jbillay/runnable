@@ -7,21 +7,13 @@
 module.exports = function(sequelize, DataTypes) {
 	var Join = sequelize.define('Join', {
 		nb_place_outward: DataTypes.INTEGER,
-		nb_place_return: DataTypes.INTEGER,
-		status:	{ 
-			type: DataTypes.ENUM, 
-			values: ['pending', 'completed', 'cancelled', 'refused', 'done'],
-			defaultValue: 'pending'
-			},
-		amount: DataTypes.FLOAT,
-		fees: DataTypes.FLOAT,
-		invoice: DataTypes.STRING,
-		transaction : DataTypes.STRING
+		nb_place_return: DataTypes.INTEGER
 	}, {
 		classMethods: {
 			associate: function(models) {
 				Join.belongsTo(models.User),
 				Join.belongsTo(models.Journey),
+				Join.hasOne(models.Invoice),
                 Join.hasMany(models.ValidationJourney);
 			}
 		}

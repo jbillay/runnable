@@ -5,7 +5,6 @@
 'use strict';
 
 var models = require('../models');
-var User = require('./user');
 
 function inbox() {
     this.userId = null;

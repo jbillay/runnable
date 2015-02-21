@@ -403,11 +403,14 @@ angular.module('runnable.controllers', []).
 			var title = 'Validation inscription au voyage pour la course ' + $scope.journey.Run.name,
                 textMessage = 'Nous avons bien pris en compte votre inscriptions pour la course ' +
                     $scope.journey.Run.name + '. Nous sommes en attente de la validation du paiement.';
-			var amount = (placeOutward + placeReturn) * $scope.journey.amount + 
+            placeOutward = placeOutward  || 0;
+            placeReturn = placeReturn  || 0;
+			var amount = (placeOutward + placeReturn) * $scope.journey.amount +
 						$scope.calculateFees(placeOutward, placeReturn, $scope.journey);
             var fees = $scope.calculateFees(placeOutward, placeReturn, $scope.journey);
             $scope.joined = 1;
 			amount = amount.toFixed(2);
+			fees = fees.toFixed(2);
 			$scope.reserved_outward = $scope.reserved_outward + placeOutward;
 			$scope.reserved_return = $scope.reserved_return + placeReturn;
 			Join.addJoin($scope.journeyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref);
@@ -566,12 +569,6 @@ angular.module('runnable.controllers', []).
 						{	firstname: Session.userFirstname,
 							lastname: Session.userLastname}
 				});
-			/* -- Socket messsage deactivate until having manage room for live notification
-			Socket.emit('discussion:newMessage',
-				{message: text, createdAt: Date.now(), User:
-					{firstname: Session.userFirstname, lastname: Session.userLastname}
-				});
-			*/
 			Discussion.addMessage(text, $scope.selectedJourney.id);
 			angular.forEach($scope.discussionUsers, function (user) {
 				if (user.id !== Session.userId) {
@@ -583,17 +580,6 @@ angular.module('runnable.controllers', []).
 				}
 			});
 		};
-		/*
-		Socket.on('discussion:newMessage', function (data) {
-			$scope.discussionMessages.unshift(
-				{	"message": data.message,
-					"createdAt": data.createdAt,
-					"User":
-						{	"firstname": data.User.firstname,
-							"lastname": data.User.lastname}
-				});
-		});
-		*/
 	}).
 	controller('RunnableUserPublicProfileController', function ($scope, $q, $routeParams, User) {
 		$scope.userId = $routeParams.userId;

@@ -5,8 +5,6 @@
 'use strict';
 
 var models = require('../models');
-var Journey = require('./journey');
-var Join = require('./join');
 
 function discussion() {
     this.id = null;

@@ -3,8 +3,6 @@
  */
 
 var models = require('../models');
-var Run = require('./run');
-var User = require('./user');
 
 function participate() {
     'use strict';

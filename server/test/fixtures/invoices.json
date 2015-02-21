@@ -1,0 +1,58 @@
+[
+  {
+    "model": "Invoice",
+    "data": {
+      "id": 1,
+      "status": "completed",
+      "amount": 108.27,
+      "fees": 8.27,
+      "ref": "MRT20150217LA6E9",
+      "transaction": "",
+      "UserId": 1,
+      "JourneyId": 1,
+      "JoinId": 1
+    }
+  },
+  {
+    "model": "Invoice",
+    "data": {
+      "id": 2,
+      "status": "pending",
+      "amount": 50.96,
+      "fees": 2.96,
+      "ref": "MRT20150217JZL8D",
+      "transaction": "",
+      "UserId": 1,
+      "JourneyId": 2,
+      "JoinId": 2
+    }
+  },
+  {
+    "model": "Invoice",
+    "data": {
+      "id": 3,
+      "status": "completed",
+      "amount": 50.96,
+      "fees": 2.96,
+      "ref": "MRT20150217JZL8D",
+      "transaction": "",
+      "UserId": 2,
+      "JourneyId": 2,
+      "JoinId": 3
+    }
+  },
+  {
+    "model": "Invoice",
+    "data": {
+      "id": 4,
+      "status": "completed",
+      "amount": 23.75,
+      "fees": 3.75,
+      "ref": "MRT20150217H36EG",
+      "transaction": "",
+      "UserId": 1,
+      "JourneyId": 3,
+      "JoinId": 4
+    }
+  }
+]

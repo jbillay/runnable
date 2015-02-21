@@ -356,8 +356,7 @@ angular.module('runnable.services', ['ngResource']).
 							amount: amount,
 							fees: fees,
 							status: 'pending',
-							invoice: ref};
-				console.log(info);
+							ref: ref};
 				$http.post('/api/join', info).
 					success(function (result) {
 						deferred.resolve(result);

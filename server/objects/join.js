@@ -7,12 +7,6 @@ function join() {
 	this.id = null;
 	this.nb_place_outward = null;
 	this.nb_place_return = null;
-	this.journey = null;
-    this.status = null;
-	this.amount = null;
-	this.fees = null;
-	this.invoice = null;
-	this.transaction = null;
 	this.user = null;
 	this.journey_id = null;
 }
@@ -30,16 +24,6 @@ join.prototype.set = function (join) {
 		this.nb_place_outward = join.nb_place_outward; }
 	if (join.nb_place_return) {
 		this.nb_place_return = join.nb_place_return; }
-	if (join.status) {
-		this.status = join.status; }
-    if (join.amount) {
-        this.amount = parseFloat(join.amount).toFixed(2); }
-    if (join.fees) {
-        this.fees = parseFloat(join.fees).toFixed(2); }
-	if (join.transaction) {
-		this.transaction = join.transaction; }
-	if (join.invoice) {
-		this.invoice = join.invoice; }
 	if (join.journey_id) {
 		this.journey_id = join.journey_id; }
 };
@@ -58,6 +42,7 @@ join.prototype.save = function (join, user, done) {
     'use strict';
 	var that = this;
 
+    console.log(join);
 	this.set(join);
 	console.log('try to join for the journey : ' + that.journey_id);
 	models.User.find({where: {id: user.id}})
@@ -96,7 +81,12 @@ join.prototype.getById = function (id, done) {
 
 join.prototype.getByUser = function (id, done) {
     'use strict';
-	models.Join.findAll({where: {userId: id, status: 'completed'}, include: [models.ValidationJourney, {
+	models.Join.findAll({where: {userId: id}, include: [models.ValidationJourney,
+                    {
+                        model: models.Invoice,
+                        where: {status: 'completed'}
+                    },
+                    {
                         model: models.Journey,
                         as: 'Journey',
                         include: [ models.Run, models.User ]
@@ -131,30 +121,6 @@ join.prototype.getList = function (done) {
 						}, models.User]})
 		.then(function (joins) {
 			done(null, joins);
-		})
-		.catch(function (err) {
-			done(err, null);
-		});
-};
-
-join.prototype.updatePaymentStatus = function (invoiceRef, amount, status, transactionId, done) {
-	'use strict';
-    console.log('Update invoice ' + invoiceRef + ' to status ' + status);
-	models.Join.find({ where: {invoice: invoiceRef}})
-		.then(function (join) {
-			if (join.amount === amount) {
-				join.status = status;
-				join.transaction = transactionId;
-				join.save()
-					.then(function (newJoin) {
-						done(null, newJoin);
-					})
-					.catch(function (err) {
-						done(new Error(err), null);
-					});
-			} else {
-				done(new Error('Amount is different then initial'), null);
-			}
 		})
 		.catch(function (err) {
 			done(err, null);

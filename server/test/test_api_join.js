@@ -156,7 +156,6 @@ describe('Test of join API', function () {
                 .end(function (err, res) {
                     assert.equal(res.body.nb_place_outward, 2);
                     assert.equal(res.body.nb_place_return, 3);
-                    assert.equal(res.body.status, 'completed');
                     assert.equal(res.body.UserId, 1);
                     assert.equal(res.body.JourneyId, 1);
                     return done();
@@ -185,16 +184,20 @@ describe('Test of join API', function () {
         before(loginUser(agent));
 
         it('should create a new join', function(done) {
+
             var join = {
                     id: 5,
                     nb_place_outward: 1,
                     nb_place_return: 1,
+                    amount: 50.96,
+                    fees: 3.74,
+                    ref: "MRT201502215K753",
                     status: 'pending',
-                    JourneyId: 3
+                    journey_id: 3
                 };
             agent
                 .post('http://localhost:9615/api/join')
-                .send({join: join})
+                .send(join)
                 .end(function (err, res) {
                     assert.equal(JSON.parse(res.body).msg, 'userJoined');
                     agent

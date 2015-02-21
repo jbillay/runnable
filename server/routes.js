@@ -68,7 +68,7 @@ module.exports = function (app, passport, auth) {
 	app.post('/api/admin/run/active', auth.requireAdmin, controllers.run.toggleActive);
 	app.post('/api/admin/user/active', auth.requireAdmin, controllers.user.toggleActive);
 
-    app.post('/api/paypal/ipn', controllers.join.confirm);
+    app.post('/api/paypal/ipn', controllers.invoice.confirm);
 
     app.get('/partials/:name', controllers.root.partials);
 

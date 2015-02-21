@@ -68,6 +68,16 @@ describe('Test of join object', function () {
                         });
                     },
                     function (callback) {
+                        var fixtures = require('./fixtures/invoices.json');
+                        var promises = [];
+                        fixtures.forEach(function (fix) {
+                            promises.push(loadData(fix));
+                        });
+                        q.all(promises).then(function () {
+                            callback(null);
+                        });
+                    },
+                    function (callback) {
                         var fixtures = require('./fixtures/validationJourneys.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -84,7 +94,7 @@ describe('Test of join object', function () {
     });
     //After all the tests have run, output all the sequelize logging.
     after(function () {
-        console.log('Test of user over !');
+        console.log('Test of join over !');
     });
 
     it('Get join list', function (done) {
@@ -110,9 +120,6 @@ describe('Test of join object', function () {
                 assert.equal(joinList[0].id, 1);
                 assert.equal(joinList[0].nb_place_outward, 2);
                 assert.equal(joinList[0].nb_place_return, 3);
-                assert.equal(joinList[0].status, 'completed');
-                assert.equal(joinList[0].amount, 108.27);
-                assert.equal(joinList[0].fees, 8.27);
                 join.getByJourney(-1, function (err, joinList) {
                     assert.isNotNull(err);
                     return done();
@@ -134,9 +141,6 @@ describe('Test of join object', function () {
                 assert.equal(joinList[0].id, 3);
                 assert.equal(joinList[0].nb_place_outward, 1);
                 assert.isNull(joinList[0].nb_place_return);
-                assert.equal(joinList[0].status, 'completed');
-                assert.equal(joinList[0].amount, 50.96);
-                assert.equal(joinList[0].fees, 2.96);
                 join.getByUser(-1, function (err, joinList) {
                     assert.isNotNull(err);
                     return done();
@@ -153,10 +157,6 @@ describe('Test of join object', function () {
             assert.equal(joinInfo.id, 4);
             assert.equal(joinInfo.nb_place_outward, 1);
             assert.equal(joinInfo.nb_place_return, 1);
-            assert.equal(joinInfo.status, 'completed');
-            assert.equal(joinInfo.amount, 23.75);
-            assert.equal(joinInfo.fees, 3.75);
-            assert.equal(joinInfo.invoice, 'MRT20150217H36EG');
             join.getById(-1, function (err, joinInfo) {
                 assert.isNotNull(err);
                 assert.isNull(joinInfo);
@@ -171,11 +171,6 @@ describe('Test of join object', function () {
                 id: 5,
                 nb_place_outward: 3,
                 nb_place_return: 2,
-                status: 'pending',
-                amount: 38.83,
-                fees: 8.83,
-                invoice: 'MRT2015021728IKD',
-                transaction: '83V29469P1887825P',
                 journey_id: 3
            },
            user = {
@@ -188,11 +183,6 @@ describe('Test of join object', function () {
         assert.equal(tmp.id, 5);
         assert.equal(tmp.nb_place_outward, 3);
         assert.equal(tmp.nb_place_return, 2);
-        assert.equal(tmp.status, 'pending');
-        assert.equal(tmp.amount, 38.83);
-        assert.equal(tmp.fees, 8.83);
-        assert.equal(tmp.invoice, 'MRT2015021728IKD');
-        assert.equal(tmp.transaction, '83V29469P1887825P');
         join.save(tmp, user, function (err, createdJoin) {
             if (err) console.log(err);
             assert.isNotNull(err);
@@ -204,43 +194,8 @@ describe('Test of join object', function () {
                     assert.equal(joinInfo.id, 5);
                     assert.equal(joinInfo.nb_place_outward, 3);
                     assert.equal(joinInfo.nb_place_return, 2);
-                    assert.equal(joinInfo.status, 'pending');
-                    assert.equal(joinInfo.amount, 38.83);
-                    assert.equal(joinInfo.fees, 8.83);
-                    assert.equal(joinInfo.invoice, 'MRT2015021728IKD');
-                    assert.equal(joinInfo.transaction, '83V29469P1887825P');
                     return done();
                 });
-            });
-        });
-    });
-
-    it('Update payment information', function (done) {
-        var join = new Join(),
-            ipn = {
-                invoice: 'MRT20150217JZL8D',
-                amount: 50.96,
-                status: 'completed',
-                transaction: '83V29469P1887825P'
-            };
-        join.updatePaymentStatus(ipn.invoice, ipn.amount, ipn.status, ipn.transaction, function (err, msg) {
-            if (err) {
-                console.log(err);
-                return done(err);
-            }
-            assert.isNull(err);
-            join.getById(2, function (err, joinInfo) {
-                if (err) {
-                    console.log(err);
-                    return done(err);
-                }
-                assert.isNull(err);
-                assert.equal(joinInfo.id, 2);
-                assert.equal(joinInfo.status, 'completed');
-                assert.equal(joinInfo.amount, 50.96);
-                assert.equal(joinInfo.invoice, 'MRT20150217JZL8D');
-                assert.equal(joinInfo.transaction, '83V29469P1887825P');
-                return done();
             });
         });
     });
