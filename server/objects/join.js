@@ -42,7 +42,6 @@ join.prototype.save = function (join, user, done) {
     'use strict';
 	var that = this;
 
-    console.log(join);
 	this.set(join);
 	console.log('try to join for the journey : ' + that.journey_id);
 	models.User.find({where: {id: user.id}})

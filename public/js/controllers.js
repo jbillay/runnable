@@ -609,7 +609,16 @@ angular.module('runnable.controllers', []).
 			$scope.userNbJourney = $scope.userPublicInfo.Journeys.length;
 		});
 	}).
-    controller('RunnableCalendarController', function ($scope, $q, $compile, Participate) {
+    controller('RunnableInvoiceController', function ($scope, $q, Invoice) {
+        var invoiceUserPromise = Invoice.getByUser(),
+            invoiceDriverPromise = Invoice.getByDriver(),
+            all = $q.all([invoiceUserPromise, invoiceDriverPromise]);
+        all.then(function (res) {
+            $scope.invoicesUser = res[0];
+            $scope.invoicesDriver = res[1];
+        });
+    }).
+    controller('RunnableCalendarController', function ($scope, $q, Participate) {
 		$scope.events = [];
 		$scope.eventSources = [$scope.events];
 		$scope.uiConfig = {

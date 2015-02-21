@@ -67,9 +67,7 @@ invoice.prototype.save = function (invoice, user, done) {
     'use strict';
     var that = this;
 
-    console.log('INVOICE : %j', invoice);
     this.set(invoice);
-    console.log('THAT : %j', that);
     console.log('try to create an invoice for join : ' + that.join_id);
     models.User.find({where: {id: user.id}})
         .then(function (user) {
@@ -112,9 +110,40 @@ invoice.prototype.getById = function (id, done) {
 invoice.prototype.getByUser = function (id, done) {
     'use strict';
     models.Invoice.findAll({where: {userId: id, status: 'completed'},
-        include: [models.Join, models.Journey]})
+        include: [models.Join, {
+            model: models.Journey,
+            as: 'Journey',
+            include: [ models.Run ]
+        }]})
         .then(function (invoices) {
             done(null, invoices);
+        })
+        .catch(function (err) {
+            done(err, null);
+        });
+};
+
+invoice.prototype.getByDriver = function (id, done) {
+    'use strict';
+    models.Journey.findAll({where: {userId: id}})
+        .then(function (journeys) {
+            var journeyIdList = [];
+            journeys.forEach(function (journey) {
+                journeyIdList.push(journey.id);
+            });
+            console.log(journeyIdList);
+            models.Invoice.findAll({where: {journeyId: journeyIdList, status: 'completed'},
+                include: [models.Join, {
+                    model: models.Journey,
+                    as: 'Journey',
+                    include: [ models.Run ]
+                }]})
+                .then(function (invoices) {
+                    done(null, invoices);
+                })
+                .catch(function (err) {
+                    done(err, null);
+                });
         })
         .catch(function (err) {
             done(err, null);

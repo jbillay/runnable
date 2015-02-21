@@ -499,6 +499,32 @@ angular.module('runnable.services', ['ngResource']).
             }
         };
     }).
+	factory('Invoice', function ($q, $http) {
+        return {
+            getByUser: function() {
+                var deferred = $q.defer();
+                $http.get('/api/invoice').
+                    success(function (result) {
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        console.log('Error : ' + status);
+                    });
+                return deferred.promise;
+            },
+            getByDriver: function() {
+                var deferred = $q.defer();
+                $http.get('/api/invoice/driver').
+                    success(function (result) {
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        console.log('Error : ' + status);
+                    });
+                return deferred.promise;
+            }
+        };
+    }).
 	factory('Inbox', function ($q, $http) {
 		return {
 			addMessage: function (title, message, userId) {

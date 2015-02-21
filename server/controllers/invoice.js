@@ -5,6 +5,30 @@
 var ipn = require('paypal-ipn');
 var Invoice = require('../objects/invoice');
 
+exports.getByUser = function (req, res) {
+    'use strict';
+    var invoice = new Invoice();
+    invoice.getByUser(req.user.id, function (err, invoiceList) {
+        if (err) {
+            res.jsonp('{"msg": "ko"}');
+        } else {
+            res.jsonp(invoiceList);
+        }
+    });
+};
+
+exports.getByDriver = function (req, res) {
+    'use strict';
+    var invoice = new Invoice();
+    invoice.getByDriver(req.user.id, function (err, invoiceList) {
+        if (err) {
+            res.jsonp('{"msg": "ko"}');
+        } else {
+            res.jsonp(invoiceList);
+        }
+    });
+};
+
 /*
  Exemple
  { mc_gross: '50.96', ==> AMOUNT

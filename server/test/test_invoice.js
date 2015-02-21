@@ -140,6 +140,16 @@ describe('Test of Invoice object', function () {
         });
     });
 
+    it('Get invoice by driver', function (done) {
+        var invoice = new Invoice();
+        invoice.getByDriver(1, function (err, invoiceInfo) {
+            if (err) return done(err);
+            assert.isNull(err);
+            assert.equal(invoiceInfo.length, 2);
+            return done();
+        });
+    });
+
     it('Create a new Invoice', function (done) {
         var invoice = new Invoice(),
             newInvoice = {

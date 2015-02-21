@@ -8,14 +8,10 @@ exports.create = function (req, res) {
 	var join = new Join(),
         invoice = new Invoice();
 	join.save(req.body, req.user, function (err, join) {
-        // TODO: Add invoice creation
         if (err) {
-            console.log('Err : ' + err);
+            res.jsonp('{"msg": "notJoined", "type": "error"}');
         }
-        console.log('REQ BODY : %j', req.body);
-        console.log('JOIN : %j', join);
         req.body.join_id = join.id;
-        console.log('REQ BODY : %j', req.body);
         invoice.save(req.body, req.user, function (err, Invoice) {
             if (err) {
                 res.jsonp('{"msg": "notJoined", "type": "error"}');

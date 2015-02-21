@@ -29,6 +29,7 @@
 					<a href="/inbox"><i class="fa fa-inbox"></i> <span ng-if="userUnreadEmail>0" class="badge">{{userUnreadEmail}}</span></a>					
 				</li>
                 <li ng-if="isAuthenticated"><a href="/calendar"><i class="fa fa-calendar"></i></a></li>
+                <li ng-if="isAuthenticated"><a href="/invoice"><i class="fa fa-credit-card"></i></a></li>
 				<li ng-if="isAuthenticated"><a href="#" ng-click="inviteFriend()"><i class="fa fa-comments-o"></i></a></li>
                 <li class="dropdown" ng-if="isAuthenticated">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">

@@ -88,6 +88,13 @@ angular.module('runnable', [
                     authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user]
                 }
             }).
+            when('/invoice', {
+                templateUrl: 'partials/invoice',
+                controller: 'RunnableInvoiceController',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user]
+                }
+            }).
             when('/profile', {
                 templateUrl: 'partials/profile',
                 controller: 'RunnableProfileController',

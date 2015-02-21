@@ -1,0 +1,44 @@
+<div ng-include="'partials/nav'"></div>
+<div class="container body">
+    <div class="row spacehead">
+        <div class="col-sm-12">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingOne">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <i class="fa fa-users"></i> Paiement à venir ou reçu(s)
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                        <div class="panel-body">
+                            <div ng-repeat="invoiceDriver in invoicesDriver">
+                                Pour le voyage organisé pour la course {{invoiceDriver.Journey.Run.name}}
+                                pour un montant de {{invoiceDriver.amount - invoiceDriver.fees | currency:'€ '}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingTwo">
+                        <h4 class="panel-title">
+                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                <i class="fa fa-automobile"></i> Vos paiements de voyage(s)
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                        <div class="panel-body">
+                            <div ng-repeat="invoiceUser in invoicesUser">
+                                Vous avez payé {{invoiceUser.amount | currency:'€ '}} pour votre voyage pour la course
+                                {{invoiceUser.Journey.Run.name}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div ng-include="'partials/footer'"></div>
