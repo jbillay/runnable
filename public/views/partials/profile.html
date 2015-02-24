@@ -93,58 +93,6 @@
                         <tbody ng-bind-html="itraRuns"></tbody>
                     </table>
                 </tab>
-				<tab heading="Vos itinéraire">
-                    <table class="col-sm-12 journey">
-						<table class="table myjourney">
-							<tr>
-								<th>Course</th>
-								<th>Lieu de départ</th>
-								<th>Nombre place aller proposé</th>
-								<th>Nombre place aller disponible</th>
-								<th>Nombre place retour proposé</th>
-								<th>Nombre place retour disponible</th>
-							</tr>
-							<tbody ng-repeat="journey in userJourney">
-								<tr>
-									<td><a href="/run-{{journey.Run.id}}">{{journey.Run.name}}</a></td>
-									<td><a href="/journey-{{journey.id}}">{{journey.address_start}}</a></td>
-									<td>{{journey.nb_space_outward}}</td>
-									<td>{{journey.nb_free_space_outward}}</td>
-									<td>{{journey.nb_space_return}}</td>
-									<td>{{journey.nb_free_space_return}}</td>
-								</tr>
-							</tbody>
-						</table>
-                    </table>
-                </tab>
-                <tab heading="Vos parcours">
-                    <table class="col-sm-12 join">
-						<table class="table myjoin">
-							<tr>
-								<th>Course</th>
-								<th>Lieu de départ</th>
-								<th>Date départ aller</th>
-								<th>Heure départ aller</th>
-								<th>Date départ retour</th>
-								<th>Heure départ retour</th>
-								<th>Distance</th>
-								<th>Durée</th>
-							</tr>
-							<tbody ng-repeat="join in userJoin">
-								<tr>
-									<td><a href="/run-{{join.Journey.Run.id}}">{{join.Journey.Run.name}}</a></td>
-									<td><a href="/journey-{{join.Journey.id}}">{{join.Journey.address_start}}</a></td>
-									<td>{{join.Journey.date_start_outward | date: mediumDate}}</td>
-									<td>{{join.Journey.time_start_outward}}</td>
-									<td>{{join.Journey.date_start_return | date: mediumDate}}</td>
-									<td>{{join.Journey.time_start_return}}</td>
-									<td>{{join.Journey.distance}}</td>
-									<td>{{join.Journey.duration}}</td>
-								</tr>
-							</tbody>
-						</table>
-                    </table>
-                </tab>
             </tabset>
         </div>
     </div>

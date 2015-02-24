@@ -105,6 +105,25 @@ describe('Tests of run objects', function () {
         });
     });
 
+    it('Should be able to search for runs', function (done) {
+        var run = new Run(),
+            searchInfo = {
+                run_adv_type: '10 Km',
+                run_adv_start_date: '',
+                run_adv_end_date: '',
+                run_adv_city: 'Saint-Germain-En-Laye',
+                run_name: ''
+            };
+        run.search(searchInfo, function (err, runs) {
+            if (err) {
+                console.log('Error: ' + err);
+                return done(err);
+            }
+            assert.equal(runs.length, 1);
+            return done();
+        });
+    });
+
     it('Should be able to activate the run', function (done) {
         var run = new Run();
         run.toggleActive(6, function (err) {

@@ -30,7 +30,7 @@ section {
 }
 
 .table-no-border {
-	margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 .table-no-border>thead>tr>th, 
@@ -198,6 +198,14 @@ a.list-group-item.active,[class*='-info'] {
 	color: black;
 }
 
+.run_advanced_search {
+    margin-top: 15px;
+}
+
+.run_advanced_search_city {
+    width: 280px !important;
+}
+
 .run_noresult {
 	font-size: large;
 }
@@ -289,7 +297,7 @@ a.list-group-item.active,[class*='-info'] {
 }
 
 div.journey_price_journey {
-	padding-right: 0px;
+    padding-right: 0;
 }
 
 .journey_space_positive {

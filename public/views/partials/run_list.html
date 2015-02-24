@@ -10,9 +10,59 @@
 						<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
 					</div>
 				</div>
+                <a href=# ng-click="switchSearch()" ng-if="!advancedSearch">Recherche avancée</a>
+                <a href=# ng-click="switchSearch()" ng-if="advancedSearch">Recherche simple</a>
 			</div>
+            <div class="row run_advanced_search" ng-if="advancedSearch">
+                <div class="col-sm-12">
+                    <form class="form-inline" ng-submit="launchSearch(searchForm)">
+                        <div class="input-group">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-road"></span></span>
+                            <select class="form-control" ng-model='searchForm.run_adv_type'>
+                                <option value="">Tous</option>
+                                <option value="trail">Trail</option>
+                                <option value="ultra">Ultra trail</option>
+                                <option value="10k">10 Km</option>
+                                <option value="20k">20 Km</option>
+                                <option value="semi">Semi marathon</option>
+                                <option value="marathon">Marathon</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default" ng-click="open($event)">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+							</span>
+                            <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy"
+                                   ng-model="searchForm.run_adv_start_date"
+                                   is-open="opened" min-date="'2009-08-24'" max-date="'2032-06-22'"
+                                   datepicker-options="dateOptions"
+                                   date-disabled="disabled(date, mode)" close-text="Close"/>
+                        </div>
+                        <div class="input-group">
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default" ng-click="open($event)">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+							</span>
+                            <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy"
+                                   ng-model="searchForm.run_adv_end_date"
+                                   is-open="opened" min-date="run_adv_name" max-date="'2032-06-22'"
+                                   datepicker-options="dateOptions"
+                                   date-disabled="disabled(date, mode)" close-text="Close"/>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-map-marker"></span></span>
+                            <input type="text" class="form-control run_advanced_search_city"
+                                   ng-model="searchForm.run_adv_city" placeholder="Ville de départ">
+                        </div>
+                        <button type="submit" class="btn btn-success">Rechercher</button>
+                    </form>
+                </div>
+            </div>
 			<div class="row run_list">
-				<div class="col-sm-2 run_poster" ng-repeat="run in listRun | filter:{name:run_name}">
+                <div class="col-sm-2 run_poster" ng-repeat="run in listRun | filter:{name:run_name} as results">
 					<a href="/run-{{run.id}}"><img src="/img/run_default.jpg" class="run_img" alt="Responsive image"></a>
 					<div class="run_title"><a href="/run-{{run.id}}">{{run.name | capitalize | limitTo:25}}</a></div>
 					<div class="run_desc">
@@ -22,7 +72,7 @@
 						<p><i class="glyphicon glyphicon-road"></i> {{run.type | capitalize}}</p>
 					</div>
 				</div>
-				<div class="col-sm-6 run_noresult" ng-show="!run.length">
+                <div class="col-sm-6 run_noresult" ng-if="!results.length">
 					Aucune course ne correspond à votre recherche. 
 					Vous la trouverez certainement chez notre partenaire
 					<a href="http://www.goforun.com/courses/affiches">GoFoRun</a>

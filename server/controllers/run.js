@@ -17,6 +17,21 @@ exports.create = function (req, res) {
 	});
 };
 
+exports.search = function (req, res) {
+    'use strict';
+    var run = new Run(),
+        searchInfo = {};
+    console.log(req.body);
+    run.search(searchInfo, function (err, runs) {
+        if (err) {
+            console.log('Not able to search run : ' + err);
+            res.jsonp('{"msg": "ko"}');
+        } else {
+            res.jsonp(runs);
+        }
+    });
+};
+
 exports.activeList = function (req, res) {
     'use strict';
 	console.log('Get list of active run');

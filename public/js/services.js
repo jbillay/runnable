@@ -446,7 +446,18 @@ angular.module('runnable.services', ['ngResource']).
 						console.log('Error : ' + status);
 					});
                 return deferred.promise;
-			}
+            },
+            search: function (searchInfo) {
+                var deferred = $q.defer();
+                $http.post('/api/run/search', searchInfo).
+                    success(function (result) {
+                        deferred.resolve(result);
+                    }).
+                    error(function (data, status) {
+                        console.log('Error : ' + status);
+                    });
+                return deferred.promise;
+            }
         };
 	}).
     factory('Socket', function (socketFactory) {

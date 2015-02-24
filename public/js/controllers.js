@@ -146,27 +146,13 @@ angular.module('runnable.controllers', []).
 	controller('RunnableProfileController', function ($scope, $q, $rootScope, $location, $sce, User) {
 		$scope.page = 'Profile';
 		var userItraRunPromise = User.getItraRuns(),
-			userJourneyPromise = User.getJourney(),
-			userJoinPromise = User.getJoin(),
-			all = $q.all([userItraRunPromise, userJourneyPromise, userJoinPromise]);
+            all = $q.all([userItraRunPromise]);
 		all.then(function (res) {
 			$scope.itraRuns = $sce.trustAsHtml(res[0]);
-			$scope.userJourney = res[1];
-			$scope.userJoin = res[2];
 			$scope.passwords = {};
 			if (!$rootScope.isAuthenticated) {
 				$location.path('/');
 			}
-			angular.forEach($scope.userJourney, function (journey) {
-				var nb_free_place_outward = journey.nb_space_outward,
-					nb_free_place_return = journey.nb_space_return;
-				angular.forEach(journey.Joins, function (join) {
-					nb_free_place_outward = nb_free_place_outward - join.nb_place_outward;
-					nb_free_place_return = nb_free_place_return - join.nb_place_return;
-				});
-				journey.nb_free_space_outward = nb_free_place_outward;
-				journey.nb_free_space_return = nb_free_place_return;
-			});
 		});
 		$scope.updatePassword = function (passwords, form) {
 			if (form) {
@@ -329,7 +315,17 @@ angular.module('runnable.controllers', []).
             all = $q.all([runPromise]);
         all.then(function (res) {
 			$scope.listRun = res[0];
+            $scope.advancedSearch = 0;
 		});
+        $scope.switchSearch = function () {
+            $scope.advancedSearch = $scope.advancedSearch ? 0 : 1;
+        };
+        $scope.launchSearch = function (advancedSearch) {
+            if ($scope.run_name) {
+                advancedSearch.run_name = $scope.run_name;
+            }
+            console.log(advancedSearch);
+        };
     }).
 	controller('RunnableJourneyDetailController', function ($scope, $q, $routeParams, $rootScope, $timeout,
 															Run, Journey, Join, GoogleMapApi, MyRunTripFees, Session,
