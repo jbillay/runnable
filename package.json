@@ -43,7 +43,7 @@
     "request": "~2.40.0",
     "sinon": "~1.10.3",
     "q": "~1.0.1",
-    "sequelize": "~2.0.0-rc2",
+    "sequelize": "~2.0.*",
     "supertest": "~0.15.0",
     "should": "~4.3.0",
     "chai": "~1.10.0",
