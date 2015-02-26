@@ -81,7 +81,19 @@ run.prototype.getActiveList = function (done) {
 
 run.prototype.search = function (searchInfo, done) {
     'use strict';
-    models.Run.findAll()
+    console.log(JSON.stringify(searchInfo));
+    var searchParams = [];
+    if (searchInfo.run_adv_type.length !== 0) {
+        searchParams.push({type: searchInfo.run_adv_type});
+    }
+    if (searchInfo.run_adv_city !== 0) {
+        searchParams.push('lower(address_start) LIKE lower("%' + searchInfo.run_adv_city + '%")');
+    }
+    console.log(searchParams);
+    models.Run.findAll({
+        where: {
+            $and: [searchParams]
+        }})
         .then(function (runs) {
             done(null, runs);
         })

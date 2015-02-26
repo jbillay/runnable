@@ -108,10 +108,10 @@ describe('Tests of run objects', function () {
     it('Should be able to search for runs', function (done) {
         var run = new Run(),
             searchInfo = {
-                run_adv_type: '10 Km',
+                run_adv_type: 'trail',
                 run_adv_start_date: '',
                 run_adv_end_date: '',
-                run_adv_city: 'Saint-Germain-En-Laye',
+                run_adv_city: 'Bouffémont',
                 run_name: ''
             };
         run.search(searchInfo, function (err, runs) {
