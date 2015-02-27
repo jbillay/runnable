@@ -81,18 +81,20 @@ run.prototype.getActiveList = function (done) {
 
 run.prototype.search = function (searchInfo, done) {
     'use strict';
-    var searchParams = [];
-    if (searchInfo.run_name !== 0) {
+    var searchParams = [{is_active: true}];
+    console.log('SearchInfo : %j', searchInfo);
+    if (searchInfo.run_name && searchInfo.run_name.length !== 0) {
         searchParams.push('lower(name) LIKE lower("%' + searchInfo.run_name + '%")');
     }
-    if (searchInfo.run_adv_type.length !== 0) {
+    if (searchInfo.run_adv_type && searchInfo.run_adv_type.length !== 0) {
+        console.log('here');
         searchParams.push({type: searchInfo.run_adv_type});
     }
-    if (searchInfo.run_adv_start_date.length !== 0) {
+    if (searchInfo.run_adv_start_date && searchInfo.run_adv_start_date.length !== 0) {
         var start_date = new Date(searchInfo.run_adv_start_date);
         searchParams.push({date_start: {$gte: start_date}});
     }
-    if (searchInfo.run_adv_end_date.length !== 0) {
+    if (searchInfo.run_adv_end_date && searchInfo.run_adv_end_date.length !== 0) {
         var end_date = new Date(searchInfo.run_adv_end_date);
         searchParams.push({date_start: {$lte: end_date}});
     }

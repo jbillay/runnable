@@ -19,10 +19,9 @@ exports.create = function (req, res) {
 
 exports.search = function (req, res) {
     'use strict';
-    var run = new Run(),
-        searchInfo = {};
+    var run = new Run();
     console.log(req.body);
-    run.search(searchInfo, function (err, runs) {
+    run.search(req.body, function (err, runs) {
         if (err) {
             console.log('Not able to search run : ' + err);
             res.jsonp('{"msg": "ko"}');

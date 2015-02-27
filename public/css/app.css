@@ -201,6 +201,10 @@ section.apropos a {
     width: 280px !important;
 }
 
+.run_advanced_search_distance {
+    width: 70px !important;
+}
+
 .run_noresult {
 	font-size: large;
 }

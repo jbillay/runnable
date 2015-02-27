@@ -324,7 +324,9 @@ angular.module('runnable.controllers', []).
             if ($scope.run_name) {
                 advancedSearch.run_name = $scope.run_name;
             }
-            console.log(advancedSearch);
+            Run.search(advancedSearch).then(function(runs) {
+                $scope.listRun = runs;
+            });
         };
     }).
 	controller('RunnableJourneyDetailController', function ($scope, $q, $routeParams, $rootScope, $timeout,
