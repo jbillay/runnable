@@ -11,10 +11,12 @@ module.exports = function(sequelize, DataTypes) {
 	}, {
 		classMethods: {
 			associate: function(models) {
+                /*jshint -W030 */
 				Join.belongsTo(models.User),
 				Join.belongsTo(models.Journey),
 				Join.hasOne(models.Invoice),
                 Join.hasMany(models.ValidationJourney);
+                /*jshint +W030 */
 			}
 		}
 	});

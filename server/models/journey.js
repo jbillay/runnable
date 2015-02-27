@@ -21,9 +21,11 @@ module.exports = function(sequelize, DataTypes) {
 	}, {
 		classMethods: {
 			associate: function(models) {
+                /*jshint -W030 */
 				Journey.belongsTo(models.Run),
 				Journey.belongsTo(models.User),
 				Journey.hasMany(models.Join);
+                /*jshint +W030 */
 			}
 		}
 	});

@@ -99,33 +99,28 @@ a.list-group-item.active,[class*='-info'] {
     padding-left: 5px;
 }
 
-#inscription {
+section.imgback {
     background:center no-repeat fixed url('/img/home.jpg');
     background-size: cover;
+    width: 100%;
 }
 
-#itineraire {
+section.itineraire {
     background-color: #e5e5ef;
     color:#686868;
 }
 
-#course {
+section.course {
     background-color: #168ccc;
     color:#ddd;
 }
 
-#fonctionnement {
+section.fonctionnement {
     background-color: #fff;
     color:#444;
 }
 
-#apropos {
-    background:center no-repeat fixed url('/img/home.jpg');
-    background-size: cover;
-	width:100%;
-}
-
-#apropos a {
+section.apropos a {
     color:#f5f5f5;
 }
 

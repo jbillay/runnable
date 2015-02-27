@@ -9,8 +9,10 @@ module.exports = function(sequelize, DataTypes) {
     }, {
         classMethods: {
             associate: function(models) {
+                /*jshint -W030 */
                 Participate.belongsTo(models.Run),
                 Participate.belongsTo(models.User);
+                /*jshint +W030 */
             }
         }
     });

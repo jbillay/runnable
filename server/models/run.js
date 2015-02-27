@@ -18,8 +18,10 @@ module.exports = function(sequelize, DataTypes) {
 	}, {
 		classMethods: {
 			associate: function(models) {
+                /*jshint -W030 */
 				Run.belongsTo(models.User),
 				Run.hasMany(models.Journey);
+                /*jshint +W030 */
 			},
 			isActive: function() {
 				return this.isActive;

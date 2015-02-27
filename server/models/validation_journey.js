@@ -13,8 +13,10 @@ module.exports = function(sequelize, DataTypes) {
     }, {
         classMethods: {
             associate: function(models) {
+                /*jshint -W030 */
                 validationJourney.belongsTo(models.Join),
                 validationJourney.belongsTo(models.User);
+                /*jshint +W030 */
             }
         }
     });

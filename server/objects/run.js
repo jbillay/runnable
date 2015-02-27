@@ -99,7 +99,7 @@ run.prototype.search = function (searchInfo, done) {
         })
         .catch(function (err) {
             done(err, null);
-        })
+        });
 };
 
 run.prototype.getNextList = function (nb, done) {

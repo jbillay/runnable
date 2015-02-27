@@ -199,7 +199,7 @@ describe('Test of join API', function () {
                     nb_place_return: 1,
                     amount: 50.96,
                     fees: 3.74,
-                    ref: "MRT201502215K753",
+                ref: 'MRT201502215K753',
                     status: 'pending',
                     journey_id: 3
                 };

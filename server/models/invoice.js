@@ -22,9 +22,11 @@ module.exports = function(sequelize, DataTypes) {
     }, {
         classMethods: {
             associate: function(models) {
+                /*jshint -W030 */
                 Invoice.belongsTo(models.User);
                 Invoice.belongsTo(models.Journey);
                 Invoice.belongsTo(models.Join);
+                /*jshint +W030 */
             }
         }
     });

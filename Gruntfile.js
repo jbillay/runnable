@@ -3,55 +3,18 @@
 module.exports = function(grunt) {
     // Unified Watch Object
     var watchFiles = {
-        serverViews: [],
         serverJS: ['gruntfile.js', 'server.js', 'config/*.js', 'server/**/*.js'],
         clientViews: ['public/views/**/*.html'],
         clientJS: ['public/js/*.js'],
-        clientCSS: ['public/css/*.css'],
-        mochaTests: ['server/tests/*.js']
+        clientCSS: ['public/css/*.css']
     };
 
     // Project Configuration
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        /*watch: {
-            serverViews: {
-                files: watchFiles.serverViews,
-                options: {
-                    livereload: true
-                }
-            },
-            serverJS: {
-                files: watchFiles.serverJS,
-                tasks: ['jshint'],
-                options: {
-                    livereload: true
-                }
-            },
-            clientViews: {
-                files: watchFiles.clientViews,
-                options: {
-                    livereload: true
-                }
-            },
-            clientJS: {
-                files: watchFiles.clientJS,
-                tasks: ['jshint'],
-                options: {
-                    livereload: true
-                }
-            },
-            clientCSS: {
-                files: watchFiles.clientCSS,
-                tasks: ['csslint'],
-                options: {
-                    livereload: true
-                }
-            }
-        },*/
         jshint: {
             all: {
-                src: watchFiles.clientJS.concat(watchFiles.serverJS),
+                src: watchFiles.clientJS.concat(watchFiles.serverJS, watchFiles.clientJS),
                 options: {
                     jshintrc: true
                 }
@@ -89,27 +52,9 @@ module.exports = function(grunt) {
                 }
             }
         },
-        concurrent: {
-            default: ['nodemon', 'watch'],
-            debug: ['nodemon', 'watch', 'node-inspector'],
-            options: {
-                logConcurrentOutput: true,
-                limit: 10
-            }
-        },
         env: {
             test: {
                 NODE_ENV: 'test'
-            },
-            secure: {
-                NODE_ENV: 'secure'
-            }
-        },
-        mochaTest: {
-            src: watchFiles.mochaTests,
-            options: {
-                reporter: 'spec',
-                require: 'server.js'
             }
         },
         mocha_istanbul: {
@@ -142,26 +87,12 @@ module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt);
     grunt.loadNpmTasks('grunt-mocha-istanbul');
 
-    // Making grunt default to force in order not to break the project.
-    grunt.option('force', true);
-
-    // A Task for loading the configuration object
-    grunt.task.registerTask('loadConfig', 'Task that loads the config into a grunt option.', function() {
-        var init = require('./config/init')();
-        var config = require('./config/config');
-
-        grunt.config.set('applicationJavaScriptFiles', config.assets.js);
-        grunt.config.set('applicationCSSFiles', config.assets.css);
-    });
-
     // Lint task(s).
     grunt.registerTask('lint', ['jshint', 'csslint']);
 
     // Build task(s).
-    grunt.registerTask('build', ['lint', 'loadConfig', 'ngAnnotate', 'uglify', 'cssmin']);
+    grunt.registerTask('build', ['lint', 'test', 'ngAnnotate', 'uglify', 'cssmin']);
 
     // Test task.
-    grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit', 'mocha_istanbul:coverage']);
-
-    grunt.registerTask('coverage', ['mocha_istanbul:coverage']);
+    grunt.registerTask('test', ['env:test', 'mocha_istanbul:coverage']);
 };

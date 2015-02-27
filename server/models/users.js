@@ -22,11 +22,13 @@ module.exports = function(sequelize, DataTypes) {
 	}, {
 		classMethods: {
 			associate: function(models) {
+                /*jshint -W030 */
 				User.hasMany(models.Run),
 				User.hasMany(models.Journey),
 				User.hasMany(models.Join),
 				User.hasMany(models.Participate),
 				User.hasMany(models.Inbox);
+                /*jshint +W030 */
 			}
 		},
 		instanceMethods: {
