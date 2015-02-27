@@ -105,14 +105,14 @@ describe('Tests of run objects', function () {
         });
     });
 
-    it('Should be able to search for runs', function (done) {
+    it('Should be able to search Maxicross race', function (done) {
         var run = new Run(),
             searchInfo = {
                 run_adv_type: 'trail',
-                run_adv_start_date: '',
-                run_adv_end_date: '',
-                run_adv_city: 'Bouffémont',
-                run_name: ''
+                run_adv_start_date: '2015-02-01 00:00:00',
+                run_adv_end_date: '2015-02-10 00:00:00',
+                run_adv_city: '',
+                run_name: 'maxi'
             };
         run.search(searchInfo, function (err, runs) {
             if (err) {
@@ -120,6 +120,69 @@ describe('Tests of run objects', function () {
                 return done(err);
             }
             assert.equal(runs.length, 1);
+            assert.equal(runs[0].name, 'Maxicross');
+            assert.equal(runs[0].type, 'trail');
+            assert.equal(runs[0].address_start, 'Bouffémont, France');
+            return done();
+        });
+    });
+
+    it('Should be able to find race between feb and june 2015', function (done) {
+        var run = new Run(),
+            searchInfo = {
+                run_adv_type: '',
+                run_adv_start_date: '2015-02-01 00:00:00',
+                run_adv_end_date: '2015-06-30 00:00:00',
+                run_adv_city: '',
+                run_name: ''
+            };
+        run.search(searchInfo, function (err, runs) {
+            if (err) {
+                console.log('Error: ' + err);
+                return done(err);
+            }
+            assert.equal(runs.length, 3);
+            return done();
+        });
+    });
+
+    it('Should be able to find trails', function (done) {
+        var run = new Run(),
+            searchInfo = {
+                run_adv_type: 'trail',
+                run_adv_start_date: '',
+                run_adv_end_date: '',
+                run_adv_city: '',
+                run_name: ''
+            };
+        run.search(searchInfo, function (err, runs) {
+            if (err) {
+                console.log('Error: ' + err);
+                return done(err);
+            }
+            assert.equal(runs.length, 2);
+            return done();
+        });
+    });
+
+    it('Should be able to find Les templiers race', function (done) {
+        var run = new Run(),
+            searchInfo = {
+                run_adv_type: '',
+                run_adv_start_date: '',
+                run_adv_end_date: '',
+                run_adv_city: '',
+                run_name: 'templ'
+            };
+        run.search(searchInfo, function (err, runs) {
+            if (err) {
+                console.log('Error: ' + err);
+                return done(err);
+            }
+            assert.equal(runs.length, 1);
+            assert.equal(runs[0].name, 'Les templiers');
+            assert.equal(runs[0].type, 'trail');
+            assert.equal(runs[0].address_start, 'Millau, France');
             return done();
         });
     });

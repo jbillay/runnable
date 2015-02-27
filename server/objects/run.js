@@ -83,11 +83,19 @@ run.prototype.search = function (searchInfo, done) {
     'use strict';
     console.log(JSON.stringify(searchInfo));
     var searchParams = [];
+    if (searchInfo.run_name !== 0) {
+        searchParams.push('lower(name) LIKE lower("%' + searchInfo.run_name + '%")');
+    }
     if (searchInfo.run_adv_type.length !== 0) {
         searchParams.push({type: searchInfo.run_adv_type});
     }
-    if (searchInfo.run_adv_city !== 0) {
-        searchParams.push('lower(address_start) LIKE lower("%' + searchInfo.run_adv_city + '%")');
+    if (searchInfo.run_adv_start_date.length !== 0) {
+        var start_date = new Date(searchInfo.run_adv_start_date);
+        searchParams.push({date_start: {$gte: start_date}});
+    }
+    if (searchInfo.run_adv_end_date.length !== 0) {
+        var end_date = new Date(searchInfo.run_adv_end_date);
+        searchParams.push({date_start: {$lte: end_date}});
     }
     console.log(searchParams);
     models.Run.findAll({
@@ -99,7 +107,7 @@ run.prototype.search = function (searchInfo, done) {
         })
         .catch(function (err) {
             done(err, null);
-        });
+        })
 };
 
 run.prototype.getNextList = function (nb, done) {
