@@ -3,12 +3,14 @@
  */
 'use strict';
 
-var request = require('supertest'),
+var supertest = require('supertest'),
     models = require('../models'),
     assert = require('chai').assert,
     app = require('../../server.js'),
     async = require('async'),
     q = require('q'),
+    sinon = require('sinon'),
+    request = require('request'),
     superagent = require('superagent');
 
 var loadData = function (fix) {
@@ -38,6 +40,14 @@ function loginUser(agent) {
 }
 
 describe('Test of user API', function () {
+    var html_full_page = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr"><head> <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> <meta name="revisit-after" content="7days"/> <meta name="ROBOTS" content="INDEX, FOLLOW, ALL"/> <meta name="Identifier-url" content="http://www.i-tra.org/"/> <meta http-equiv="Content-Language" content="fr"/> <title>Indice de performance - ITRA</title> <meta name="title" lang="fr" content="Indice de performance - ITRA"/> <meta name="description" lang="fr" content="International Trail Running Association"/> <meta name="keywords" lang="fr" content="trail,international,association, trail, course, à pied, run, running, jogging"/> <link rel="icon" type="image/png" href="/itra16.png"/><!--[if IE]> <link rel="shortcut icon" type="image/x-icon" href="/itra16.ico"/><![endif]--><link rel="stylesheet" type="text/css" media="screen" href="/css/jquery/jquery-ui-1.8.19.custom.css"/><link rel="stylesheet" type="text/css" href="/st.css"/><script type="text/javascript" src="/js/jquery.js"></script><script type="text/javascript" src="/js/jquery-ui.js"></script><script type="text/javascript" src="/js/jquery.cycle.js"></script><script type="text/javascript" src="/js/pub.js"></script><script type="text/javascript" src="/js/httpReq.js"></script><script type="text/javascript">function dispSsM(o){var c=$(o).parent("li").find("ul:first");if(!c.is(":visible")){c.parent("li").parent("ul").find("li ul:visible").slideToggle();}c.slideToggle();}$(function(){$("body").click(function(e){if($(e.target).closest("#mainMenu").length > 0) return;$("#mainMenu li ul:visible").slideToggle();});}); </script></head><body><a href="aspi.php?p=26410" style="display:block;position:absolute;top:0;left:0;width:1px;height:1px;"><img src="/images/pix.gif" width="1" height="1" border="0"></a> <div id="general"> <div id="bande"></div><div id="tetiere"><div id="imgs"><img src="/incphotos/fond/ITRA-©-Ultra-Marin-2013.png"/><img src="/incphotos/fond/ITRA-©-BRU.png" style="display:none"/><img src="/incphotos/fond/ITRA-©-Tor-des-Géants.png" style="display:none"/><img src="/incphotos/fond/ITRA-©-Thierry-MARSILHAC---ASO.png" style="display:none"/><img src="/incphotos/fond/ITRA-©-The-North-Face®-Ultra-Trail-du-Mont-Blanc®---Pascal-Tournaire.png" style="display:none"/><img src="/incphotos/fond/ITRA-©-Trans-Alps-Run.png" style="display:none"/><img src="/incphotos/fond/ITRA-©-Marathon-des-Sables.png" style="display:none"/><img src="/incphotos/fond/ITRA-©-EcoTrail-de-Paris.png" style="display:none"/></div><div id="menusec"><ul> <li><a href="/page/276/Contact.html" >Contact</a></li><li id="lg"> <a href="?langue_affich=_en" return false;">EN</a> | <a class="selected">FR</a> </li></ul></div><div id="carre"><a href="/"><img id="logo" src="/images/logo.png" border="0"/></a><ul id="mainMenu"> <li><a href="#" onclick="dispSsM(this); return false">ASSEMBLEE GENERALE 2015</a><ul><li><a href="/page/312/Organisation.html" >Organisation</a></li><li><a href="/page/313/Liste_des_adherents.html" >Liste des adhérents</a></li></ul></li><li><a href="#" onclick="dispSsM(this); return false">Presentation</a><ul><li><a href="/page/257/Presentation_et_objectifs.html" >Présentation et objectifs</a></li><li><a href="/page/283/Organisation.html" >Organisation</a></li></ul></li><li><a href="#" onclick="dispSsM(this); return false">Missions</a><ul><li><a href="/page/258/Charte_ethique.html" >Charte ethique</a></li><li><a href="/page/259/Definition_du_trail.html" >Definition du trail</a></li><li><a href="/page/260/Gestion_des_athletes_de_haut_niveau.html" >Gestion des athletes de haut niveau</a></li><li><a href="/page/261/Politique_sante_et_antidopage.html" >Politique sante et antidopage</a></li><li><a href="/page/291/Securite.html" >Securite</a></li><li><a href="/page/292/Evaluation_des_trails.html" >Evaluation des trails</a></li></ul></li><li><a href="#" onclick="dispSsM(this); return false">Soyez acteur</a><ul><li><a href="/page/264/Coureurs.html" >Coureurs</a></li><li><a href="/page/265/Coureurs_elite.html" >Coureurs elite</a></li><li><a href="/page/266/Organisateurs.html" >Organisateurs</a></li><li><a href="/page/284/Associations.html" >Associations</a></li><li><a href="/page/268/Marques.html" >Marques</a></li></ul></li><li class="selected"><a href="#" onclick="dispSsM(this); return false">Classements</a><ul><li class="selected"><a href="/page/278/Indice_de_performance.html" >Indice de performance</a></li><li><a href="/page/269/FAQ_Indice_de_performance.html" >FAQ Indice de performance</a></li></ul></li><li><a href="#" onclick="dispSsM(this); return false">Courses</a><ul><li><a href="/page/308/Liste_par_continent.html" >Liste par continent</a></li><li><a href="/page/290/Calendrier.html" >Calendrier</a></li></ul></li><li><a href="#" onclick="dispSsM(this); return false">Presse</a><ul><li><a href="/page/279/Communiques_de_presse.html" >Communiqués de presse</a></li><li><a href="/page/310/Dossier_de_presse.html" >Dossier de presse</a></li></ul></li></ul></div></div><div id="ariane">Classements > Indice de performance</div><div id="member"></div><div id="content"><h1>Indice de performance</h1><a name="tab"></a><form name="fcoureur" method="get" action="#tab"><fieldset><legend>Rechercher un coureur</legend><div><label>Nom : </label><input type="text" name="nom" value="COURET"/> <input type="submit" value="Chercher..."/></div></fieldset></form><a name="tab"></a><div id="palm" class="popin"></div><div id="result" class="popin"></div><h1>Richard COURET (Homme / France)</h1><table style="width:700px"><thead><tr><th>Catégorie de trail</th><th>Cote ( / 1000)</th><th>Meilleure cote Homme</th></tr></thead><tbody><tr class="odd"><td><b>GENERAL</b></td><td ><b>546</b></td><td>939</td></tr><tr><td><b>Trail Ultra XL ( >=100 km)</b></td><td >-</td><td>911</td></tr><tr class="odd"><td><b>Trail Ultra L (70 to 99 km)</b></td><td >-</td><td>925</td></tr><tr><td><b>Trail Ultra M (42 to 69 km)</b></td><td ><b>496</b></td><td>925</td></tr><tr class="odd"><td><b>Trail (<42km)</b></td><td ><b>546</b></td><td>929</td></tr></tbody></table><br/><div id="lienPalm" onclick="palmares();"><a href="#" onclick="return false">Palmarès complet du coureur</a></div><h1 style="text-transform:none">Courses prises en compte dans le calcul de l index</h1> <table class="palmares" style="width:100%"><tr><td colspan="8"><h2 style="margin:10px 0 2px 0">GENERAL</h2></td></tr><tr><th>Course</th><th>Pays</th><th>Annee</th><th>Distance</th><th>Clt.</th><th>Clt. Homme</th><th>Temps</th><th>Cote</th></tr><tr class="odd"><td>TEMPLIERS - MARATHON DES CAUSSES</td><td>France</td><td>2013</td><td align="right">37km</td><td align="right">143</td><td align="right">131 </td><td>04:31:10</td><td align="right">565</td></tr><tr><td>TRAIL DES HAUTS FORTS 43K</td><td>France</td><td>2014</td><td align="right">43km</td><td align="right">76</td><td align="right">65 </td><td>06:47:23</td><td align="right">514</td></tr><tr class="odd"><td>INTEGRALE DES CAUSSES</td><td>France</td><td>2014</td><td align="right">62km</td><td align="right">95</td><td align="right">87 </td><td>09:47:39</td><td align="right">504</td></tr><tr><td>ARAVISTRAIL - 52km</td><td>France</td><td>2013</td><td align="right">37km</td><td align="right">114</td><td align="right">100 </td><td>06:13:43</td><td align="right">493</td></tr><tr class="odd"><td>TRAIL DU GALIBIER</td><td>France</td><td>2013</td><td align="right">45km</td><td align="right">85</td><td align="right">77 </td><td>08:11:24</td><td align="right">490</td></tr><tr><td colspan="8"><h2 style="margin:10px 0 2px 0">Trail Ultra M (42 to 69 km)</h2></td></tr><tr><th>Course</th><th>Pays</th><th>Annee</th><th>Distance</th><th>Clt.</th><th>Clt. Homme</th><th>Temps</th><th>Cote</th></tr><tr class="odd"><td>TRAIL DES HAUTS FORTS 43K</td><td>France</td><td>2014</td><td align="right">43km</td><td align="right">76</td><td align="right">65 </td><td>06:47:23</td><td align="right">514</td></tr><tr><td>INTEGRALE DES CAUSSES</td><td>France</td><td>2014</td><td align="right">62km</td><td align="right">95</td><td align="right">87 </td><td>09:47:39</td><td align="right">504</td></tr><tr class="odd"><td>TRAIL DU GALIBIER</td><td>France</td><td>2013</td><td align="right">45km</td><td align="right">85</td><td align="right">77 </td><td>08:11:24</td><td align="right">490</td></tr><tr><td>TRAIL DE LA VALLEE DES LACS - TRAIL LONG</td><td>France</td><td>2014</td><td align="right">55km</td><td align="right">120</td><td align="right">112 </td><td>08:22:04</td><td align="right">485</td></tr><tr><td colspan="8"><h2 style="margin:10px 0 2px 0">Trail (<42km)</h2></td></tr><tr><th>Course</th><th>Pays</th><th>Annee</th><th>Distance</th><th>Clt.</th><th>Clt. Homme</th><th>Temps</th><th>Cote</th></tr><tr class="odd"><td>TEMPLIERS - MARATHON DES CAUSSES</td><td>France</td><td>2013</td><td align="right">37km</td><td align="right">143</td><td align="right">131 </td><td>04:31:10</td><td align="right">565</td></tr><tr><td>ARAVISTRAIL - 52km</td><td>France</td><td>2013</td><td align="right">37km</td><td align="right">114</td><td align="right">100 </td><td>06:13:43</td><td align="right">493</td></tr><tr class="odd"><td>ALTISPEED</td><td>France</td><td>2012</td><td align="right">30km</td><td align="right">157</td><td align="right">136 </td><td>06:20:25</td><td align="right">424</td></tr></table></div><div id="bottom"><div style="float:right;"><a style="padding:0 5px 0 5px" href="https://www.twitter.com/ITRA_trail" target="_blank" title="Find ITRA on Twitter"><img src="/images/tweet.gif"/></a><a style="padding:0 5px 0 5px" href="https://www.facebook.com/InternationalTrailRunningAssociation" target="_blank" title="Find ITRA on Facebook"><img src="/images/facebk.gif"/></a></div>Powered by <a href="http://livetrail.net" target="_blank" >LiveTrail&trade;</a><a href="http://livetrail.net" target="_blank" ><img src="/images/livetrail.png" style="vertical-align:middle"/></a></div></div></body></html>';
+
+    before(function (done) {
+        sinon
+            .stub(request, 'get')
+            .yields(null, null, html_full_page);
+        done();
+    });
 
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
@@ -132,17 +142,18 @@ describe('Test of user API', function () {
     });
     //After all the tests have run, output all the sequelize logging.
     after(function () {
+        request.get.restore();
         console.log('Test API user over !');
     });
 
     describe('GET /api/user/public/info/:id', function () {
         it('should return code 200', function (done) {
-            request(app)
+            supertest(app)
                 .get('/api/user/public/info/1')
                 .expect(200, done);
         });
         it('should return public info on user 1', function (done) {
-            request(app)
+            supertest(app)
                 .get('/api/user/public/info/1')
                 .end(function (err, res) {
                     if (err) {
@@ -162,12 +173,12 @@ describe('Test of user API', function () {
 
     describe('GET /api/user/public/driver/:id', function () {
         it('should return code 200', function (done) {
-            request(app)
+            supertest(app)
                 .get('/api/user/public/driver/2')
                 .expect(200, done);
         });
         it('should return public driver info on user 2', function (done) {
-            request(app)
+            supertest(app)
                 .get('/api/user/public/driver/2')
                 .end(function (err, res) {
                     if (err) {
@@ -192,7 +203,7 @@ describe('Test of user API', function () {
                 password : 'test',
                 password_confirmation : 'test'
             };
-            request(app)
+            supertest(app)
                 .post('/api/user')
                 .send(user)
                 .expect(200, done);
@@ -214,7 +225,7 @@ describe('Test of user API', function () {
                 password : 'test',
                 password_confirmation : 'test1'
             };
-            request(app)
+            supertest(app)
                 .post('/api/user')
                 .send(user)
                 .end(function (err, res) {
@@ -235,7 +246,7 @@ describe('Test of user API', function () {
                 password : 'test',
                 password_confirmation : 'test1'
             };
-            request(app)
+            supertest(app)
                 .post('/api/user')
                 .send(user)
                 .end(function (err, res) {
@@ -256,7 +267,7 @@ describe('Test of user API', function () {
                 password : 'test',
                 password_confirmation : 'test'
             };
-            request(app)
+            supertest(app)
                 .post('/api/user')
                 .send(user)
                 .end(function (err, res) {
@@ -271,14 +282,14 @@ describe('Test of user API', function () {
 
     describe('GET /login', function () {
         it('should return code 200', function (done) {
-            request(app)
+            supertest(app)
                 .post('/login')
                 .send({ email: 'jbillay@gmail.com', password: 'noofs' })
                 .expect(200, done);
         });
 
         it('Should get user information after login', function (done) {
-            request(app)
+            supertest(app)
                 .post('/login')
                 .send({ email: 'jbillay@gmail.com', password: 'noofs' })
                 .end(function (err, res) {
@@ -294,7 +305,7 @@ describe('Test of user API', function () {
         });
 
         it('Should not be logging due to wrong email', function (done) {
-            request(app)
+            supertest(app)
                 .post('/login')
                 .send({ email: 'jbillay@gmail.fr', password: 'noofs' })
                 .end(function (err, res) {
@@ -305,7 +316,7 @@ describe('Test of user API', function () {
         });
 
         it('Should not be logging due to wrong password', function (done) {
-            request(app)
+            supertest(app)
                 .post('/login')
                 .send({ email: 'jbillay@gmail.com', password: 'test' })
                 .end(function (err, res) {
@@ -441,7 +452,7 @@ describe('Test of user API', function () {
                 .send({id: '2'})
                 .end(function (err, res) {
                     assert.equal(JSON.parse(res.body).msg, 'userToggleActive');
-                    request(app)
+                    supertest(app)
                         .get('/api/user/public/info/2')
                         .end(function (err, res) {
                             if (err) {
@@ -495,7 +506,7 @@ describe('Test of user API', function () {
 
     describe('GET /api/user/password/reset', function () {
         it('should return code 302', function (done) {
-            request(app)
+            supertest(app)
                 .post('/api/user/password/reset')
                 .send({ email: 'jbillay@gmail.com'})
                 .expect(302, done);
@@ -504,7 +515,7 @@ describe('Test of user API', function () {
         it('Should reset user password', function (done) {
             var agent = superagent.agent();
 
-            request(app)
+            supertest(app)
                 .post('/api/user/password/reset')
                 .send({ email: 'jbillay@gmail.com'})
                 .end(function (err, res) {
@@ -523,7 +534,7 @@ describe('Test of user API', function () {
 
     describe('GET /api/user/active/:id/:hash', function () {
         it('should active the user 2', function (done) {
-            request(app)
+            supertest(app)
                 .get('/api/user/public/info/2')
                 .end(function (err, res) {
                     if (err) {
@@ -531,7 +542,7 @@ describe('Test of user API', function () {
                     }
                     assert.notOk(res.body.isActive);
                     var hash = new Date(res.body.createdAt).getTime().toString();
-                    request(app)
+                    supertest(app)
                         .get('/api/user/active/2/' + hash)
                         .end(function (err, res) {
                             assert.isNull(err);

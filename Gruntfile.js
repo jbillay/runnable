@@ -3,7 +3,7 @@
 module.exports = function(grunt) {
     // Unified Watch Object
     var watchFiles = {
-        serverJS: ['gruntfile.js', 'server.js', 'config/*.js', 'server/**/*.js'],
+        serverJS: ['Gruntfile.js', 'server.js', 'config/*.js', 'server/**/*.js'],
         clientViews: ['public/views/**/*.html'],
         clientJS: ['public/js/*.js'],
         clientCSS: ['public/css/*.css']
@@ -28,27 +28,47 @@ module.exports = function(grunt) {
                 src: watchFiles.clientCSS
             }
         },
+        /*
+         Check why I should use ng-annotate
+         ngAnnotate: {
+         production: {
+         options: {
+         singleQuotes: true
+         },
+         files: [
+         {
+         expand: true,
+         src: watchFiles.clientJS,
+         ext: '.annotated.js'
+         }
+         ]
+         }
+         },
+         */
+        concat: {
+            js: {
+                src: [watchFiles.clientJS],
+                dest: 'dist/pubic/js/<%= pkg.name %>-<%= pkg.version %>.js'
+            },
+            css: {
+                src: [watchFiles.clientCSS],
+                dest: 'dist/pubic/css/<%= pkg.name %>-<%= pkg.version %>.css'
+            }
+        },
         uglify: {
             production: {
                 options: {
                     mangle: false
                 },
                 files: {
-                    'public/dist/application.min.js': 'public/dist/application.js'
+                    'dist/pubic/js/<%= pkg.name %>-<%= pkg.version %>.min.js': 'dist/pubic/js/<%= pkg.name %>-<%= pkg.version %>.js'
                 }
             }
         },
         cssmin: {
             combine: {
                 files: {
-                    'public/dist/application.min.css': '<%= applicationCSSFiles %>'
-                }
-            }
-        },
-        ngAnnotate: {
-            production: {
-                files: {
-                    'public/dist/application.js': '<%= applicationJavaScriptFiles %>'
+                    'dist/pubic/css/<%= pkg.name %>-<%= pkg.version %>.min.css': 'dist/pubic/css/<%= pkg.name %>-<%= pkg.version %>.css'
                 }
             }
         },
@@ -64,35 +84,21 @@ module.exports = function(grunt) {
                     mask: '*.js'
                 }
             }
-        },
-        istanbul_check_coverage: {
-            default: {
-                options: {
-                    coverageFolder: 'coverage*', // will check both coverage folders and merge the coverage results
-                    check: {
-                        lines: 80,
-                        statements: 80
-                    }
-                }
-            }
         }
-    });
-
-    grunt.event.on('coverage', function(lcovFileContents, done){
-        // Check below
-        done();
     });
 
     // Load NPM tasks
     require('load-grunt-tasks')(grunt);
-    grunt.loadNpmTasks('grunt-mocha-istanbul');
 
     // Lint task(s).
     grunt.registerTask('lint', ['jshint', 'csslint']);
 
-    // Build task(s).
-    grunt.registerTask('build', ['lint', 'test', 'ngAnnotate', 'uglify', 'cssmin']);
-
     // Test task.
     grunt.registerTask('test', ['env:test', 'mocha_istanbul:coverage']);
+
+    // Test task.
+    grunt.registerTask('package', ['concat:js', 'concat:css', 'uglify', 'cssmin']);
+
+    // Build task(s).
+    grunt.registerTask('build', ['lint', 'test', 'package']);
 };

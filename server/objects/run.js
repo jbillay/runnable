@@ -81,7 +81,6 @@ run.prototype.getActiveList = function (done) {
 
 run.prototype.search = function (searchInfo, done) {
     'use strict';
-    console.log(JSON.stringify(searchInfo));
     var searchParams = [];
     if (searchInfo.run_name !== 0) {
         searchParams.push('lower(name) LIKE lower("%' + searchInfo.run_name + '%")');
@@ -97,7 +96,6 @@ run.prototype.search = function (searchInfo, done) {
         var end_date = new Date(searchInfo.run_adv_end_date);
         searchParams.push({date_start: {$lte: end_date}});
     }
-    console.log(searchParams);
     models.Run.findAll({
         where: {
             $and: [searchParams]
@@ -107,7 +105,7 @@ run.prototype.search = function (searchInfo, done) {
         })
         .catch(function (err) {
             done(err, null);
-        })
+        });
 };
 
 run.prototype.getNextList = function (nb, done) {
