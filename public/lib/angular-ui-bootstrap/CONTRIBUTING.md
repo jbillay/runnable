@@ -1,6 +1,8 @@
 ## Got a question or problem?
 
-Please, do not open issues for the general support questions as we want to keep GitHub issues for bug reports and feature requests. You've got much better chances of getting your question answered on (StackOverflow)[http://stackoverflow.com/questions/tagged/angular-ui-bootstrap] where maintainers are looking at questions questions tagged with `angular-ui-bootstrap`.
+Firstly, please go over our FAQ: https://github.com/angular-ui/bootstrap/wiki/FAQ
+
+Please, do not open issues for the general support questions as we want to keep GitHub issues for bug reports and feature requests. You've got much better chances of getting your question answered on [StackOverflow](http://stackoverflow.com/questions/tagged/angular-ui-bootstrap) where maintainers are looking at questions questions tagged with `angular-ui-bootstrap`.
 
 StackOverflow is a much better place to ask questions since:
 * there are hundreds of people willing to help on StackOverflow
@@ -21,7 +23,7 @@ A minimal reproduce scenario using http://plnkr.co/ allows us to quickly confirm
 
 We will be insisting on a minimal reproduce scenario in order to save maintainers time and ultimately be able to fix more bugs. Interestingly, from our experience users often find coding problems themselves while preparing a minimal plunk. We understand that sometimes it might be hard to extract essentials bits of code from a larger code-base but we really need to isolate the problem before we can fix it.
 
-The best part is that you don't need to create plunks from scratch - you can for one from our [demo page](http://angular-ui.github.io/bootstrap/).
+The best part is that you don't need to create plunks from scratch - you can use one from our [demo page](http://angular-ui.github.io/bootstrap/).
 
 Unfortunately we are not able to investigate / fix bugs without a minimal reproduce scenario using http://plnkr.co/, so if we don't hear back from you we are going to close an issue that don't have enough info to be reproduced.
 

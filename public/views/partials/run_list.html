@@ -30,27 +30,25 @@
                         </div>
                         <div class="input-group">
 							<span class="input-group-btn">
-								<button type="button" class="btn btn-default" ng-click="open($event)">
+								<button type="button" class="btn btn-default" ng-click="calendar.open($event, 'start')">
                                     <i class="glyphicon glyphicon-calendar"></i>
                                 </button>
 							</span>
-                            <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy"
-                                   ng-model="searchForm.run_adv_start_date"
-                                   is-open="opened" min-date="'2009-08-24'" max-date="'2032-06-22'"
-                                   datepicker-options="dateOptions"
-                                   date-disabled="disabled(date, mode)" close-text="Close"/>
+                            <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
+                                   ng-model="searchForm.run_adv_start_date" name="run_adv_start_date"
+                                   is-open="calendar.opened.start" min-date="today"
+                                   datepicker-options="calendar.dateOptions" close-text="Fermer"/>
                         </div>
                         <div class="input-group">
 							<span class="input-group-btn">
-								<button type="button" class="btn btn-default" ng-click="open($event)">
+								<button type="button" class="btn btn-default" ng-click="calendar.open($event, 'end')">
                                     <i class="glyphicon glyphicon-calendar"></i>
                                 </button>
 							</span>
-                            <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy"
-                                   ng-model="searchForm.run_adv_end_date"
-                                   is-open="opened" min-date="run_adv_name" max-date="'2032-06-22'"
-                                   datepicker-options="dateOptions"
-                                   date-disabled="disabled(date, mode)" close-text="Close"/>
+                            <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
+                                   ng-model="searchForm.run_adv_end_date" name="run_adv_end_date"
+                                   is-open="calendar.opened.end" min-date="searchForm.run_adv_start_date"
+                                   datepicker-options="calendar.dateOptions" close-text="Fermer"/>
                         </div>
                         <div class="input-group">
                             <span class="input-group-addon"><span class="glyphicon glyphicon-map-marker"></span></span>

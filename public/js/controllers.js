@@ -317,6 +317,20 @@ angular.module('runnable.controllers', []).
 			$scope.listRun = res[0];
             $scope.advancedSearch = 0;
 		});
+        $scope.today = new Date();
+        $scope.calendar = {
+            opened: {},
+            dateFormat: 'dd/MM/yyyy',
+            dateOptions: {
+                formatYear: 'yy',
+                startingDay: 1
+            },
+            open: function($event, which) {
+                $event.preventDefault();
+                $event.stopPropagation();
+                $scope.calendar.opened[which] = true;
+            }
+        };
         $scope.switchSearch = function () {
             $scope.advancedSearch = $scope.advancedSearch ? 0 : 1;
         };
