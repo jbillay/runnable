@@ -110,25 +110,29 @@ run.prototype.search = function (searchInfo, done) {
             if (searchInfo.run_adv_city && searchInfo.run_adv_distance) {
                 var origins = [],
                     destinations = [];
-                runs.forEach(function (run) {
-                    origins.push(run.address_start);
-                    destinations.push(searchInfo.run_adv_city);
-                });
-                var options = {
-                    origin: origins,
-                    destination: destinations
-                };
-                distance.get(options, function (err, data) {
-                    if (err) return done(err);
-                    data.forEach(function (journey, index) {
-                        var newDistance = journey.distance.substr(0, journey.distance.lastIndexOf(' '));
-                        var distanceFloat = parseFloat(newDistance);
-                        if (distanceFloat <= searchInfo.run_adv_distance) {
-                            filtered = 1;
-                            filterRuns.push(runs[index]);
+                if (runs.length) {
+                    runs.forEach(function (run) {
+                        origins.push(run.address_start);
+                        destinations.push(searchInfo.run_adv_city);
+                    });
+                    var options = {
+                        origins: origins,
+                        destinations: destinations
+                    };
+                    distance.get(options, function (err, data) {
+                        if (err) return done(err);
+                        if (data.length) {
+                            data.forEach(function (journey, index) {
+                                var newDistance = journey.distance.substr(0, journey.distance.lastIndexOf(' '));
+                                var distanceFloat = parseFloat(newDistance);
+                                if (distanceFloat <= searchInfo.run_adv_distance) {
+                                    filtered = 1;
+                                    filterRuns.push(runs[index]);
+                                }
+                            });
                         }
                     });
-                });
+                }
             }
             if (filtered === 0) {
                 filterRuns = runs;
