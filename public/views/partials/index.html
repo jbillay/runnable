@@ -25,7 +25,8 @@
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <div class="form-group inscription-form-group">
                                 <input type="text" name="user[address]" id="address" ng-model="userCreate.address"
-									class="form-control input-sm" placeholder="Adresse" tabindex="3">
+                                       typeahead="address for address in getLocation($viewValue)"
+                                       class="form-control input-sm" placeholder="Ville" tabindex="3">
                             </div>
                         </div>
                     </div>

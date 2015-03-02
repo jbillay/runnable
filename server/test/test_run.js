@@ -9,6 +9,9 @@ var models = require('../models');
 var Run = require('../objects/run');
 var async = require('async');
 var q = require('q');
+var request = require('request');
+var sinon = require('sinon');
+var distance = require('google-distance');
 
 var loadData = function (fix) {
     var deferred = q.defer();
@@ -55,8 +58,10 @@ describe('Tests of run objects', function () {
             });
     });
     //After all the tests have run, output all the sequelize logging.
-    after(function () {
+    after(function (done) {
+        distance.get.restore();
         console.log('Test run over !');
+        done();
     });
 
     it('Should be able to show active runs', function (done) {
@@ -134,6 +139,7 @@ describe('Tests of run objects', function () {
                 run_adv_start_date: '2015-02-01 00:00:00',
                 run_adv_end_date: '2015-06-30 00:00:00',
                 run_adv_city: '',
+                run_adv_distance: '',
                 run_name: ''
             };
         run.search(searchInfo, function (err, runs) {
@@ -141,7 +147,31 @@ describe('Tests of run objects', function () {
                 console.log('Error: ' + err);
                 return done(err);
             }
-            assert.equal(runs.length, 3);
+            assert.equal(runs.length, 2);
+            return done();
+        });
+    });
+
+    it('Should be able to find race within less then 30km', function (done) {
+        var obj = [{distance: '35.4 km'}, {distance: '649 km'}, {distance: '22.2 km'}, {distance: '1 m'}, {distance: '594 km'}];
+
+        sinon.stub(distance, 'get')
+            .yields(null, obj);
+        var run = new Run(),
+            searchInfo = {
+                run_adv_type: '',
+                run_adv_start_date: '',
+                run_adv_end_date: '',
+                run_adv_city: 'Saint-Germain-en-Laye, France',
+                run_adv_distance: '30',
+                run_name: ''
+            };
+        run.search(searchInfo, function (err, runs) {
+            if (err) {
+                console.log('Error: ' + err);
+                return done(err);
+            }
+            assert.equal(runs.length, 2);
             return done();
         });
     });

@@ -1,6 +1,7 @@
 /* user object */
 
 var models = require('../models');
+var distance = require('google-distance');
 
 function run() {
     'use strict';
@@ -81,6 +82,7 @@ run.prototype.getActiveList = function (done) {
 
 run.prototype.search = function (searchInfo, done) {
     'use strict';
+    distance.apiKey = 'AIzaSyDwRGJAEBNCeZK1176FXLvVAKyt5XQXXsM';
     var searchParams = [{is_active: true}];
     console.log('SearchInfo : %j', searchInfo);
     if (searchInfo.run_name && searchInfo.run_name.length !== 0) {
@@ -103,7 +105,35 @@ run.prototype.search = function (searchInfo, done) {
             $and: [searchParams]
         }})
         .then(function (runs) {
-            done(null, runs);
+            var filterRuns = [],
+                filtered = 0;
+            if (searchInfo.run_adv_city && searchInfo.run_adv_distance) {
+                var origins = [],
+                    destinations = [];
+                runs.forEach(function (run) {
+                    origins.push(run.address_start);
+                    destinations.push(searchInfo.run_adv_city);
+                });
+                var options = {
+                    origin: origins,
+                    destination: destinations
+                };
+                distance.get(options, function (err, data) {
+                    if (err) return done(err);
+                    data.forEach(function (journey, index) {
+                        var newDistance = journey.distance.substr(0, journey.distance.lastIndexOf(' '));
+                        var distanceFloat = parseFloat(newDistance);
+                        if (distanceFloat <= searchInfo.run_adv_distance) {
+                            filtered = 1;
+                            filterRuns.push(runs[index]);
+                        }
+                    });
+                });
+            }
+            if (filtered === 0) {
+                filterRuns = runs;
+            }
+            done(null, filterRuns);
         })
         .catch(function (err) {
             done(err, null);

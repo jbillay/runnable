@@ -19,6 +19,7 @@ angular.module('runnable.constant', []).
         editor: 'editor',
         user: 'user'
     }).
+    constant('DEFAULT_DISTANCE', 30).
 	constant('USER_MSG', {
 		passwordReseted:	    'Un nouveau mot de passe vient de vous être envoyé',
 		passwordUpdated:	    'Votre mot de passe a été mis à jour',

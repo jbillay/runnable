@@ -316,6 +316,7 @@ angular.module('runnable.services', ['ngResource']).
 				return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
 					params: {
 						address: val,
+                        components: 'country:FR',
 						sensor: false
 					}
 				}).then(function(response){

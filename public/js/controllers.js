@@ -128,6 +128,9 @@ angular.module('runnable.controllers', []).
 				});
 			});
 		});
+        $scope.getLocation = function (val) {
+            return GoogleMapApi.getLocation(val);
+        };
 		$scope.createUser = function (user) {
 			User.create(user);
 		};
@@ -309,8 +312,9 @@ angular.module('runnable.controllers', []).
 		};
 		$scope.calFormat = 'dd/MM/yyyy';
     }).
-    controller('RunnableRunController', function ($scope, $q, Run) {
+    controller('RunnableRunController', function ($scope, $q, Run, GoogleMapApi, DEFAULT_DISTANCE) {
         $scope.page = 'Run';
+        $scope.default_distance = DEFAULT_DISTANCE;
 		var runPromise = Run.getActiveList(),
             all = $q.all([runPromise]);
         all.then(function (res) {
@@ -334,12 +338,21 @@ angular.module('runnable.controllers', []).
         $scope.switchSearch = function () {
             $scope.advancedSearch = $scope.advancedSearch ? 0 : 1;
         };
+        $scope.getLocation = function (val) {
+            return GoogleMapApi.getLocation(val);
+        };
         $scope.launchSearch = function (advancedSearch) {
+            if (!advancedSearch.run_adv_distance) {
+                advancedSearch.run_adv_distance = DEFAULT_DISTANCE;
+            }
             if ($scope.run_name) {
                 advancedSearch.run_name = $scope.run_name;
             }
             Run.search(advancedSearch).then(function(runs) {
                 $scope.listRun = runs;
+                if (advancedSearch.run_adv_distance === DEFAULT_DISTANCE) {
+                    advancedSearch.run_adv_distance = null;
+                }
             });
         };
     }).
