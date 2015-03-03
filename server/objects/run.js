@@ -106,7 +106,8 @@ run.prototype.search = function (searchInfo, done) {
         }})
         .then(function (runs) {
             var filterRuns = [],
-                filtered = 0;
+                filtered = 0,
+                iterator = runs.length;
             if (searchInfo.run_adv_city && searchInfo.run_adv_distance) {
                 var origins = [],
                     destinations = [];
@@ -121,14 +122,17 @@ run.prototype.search = function (searchInfo, done) {
                     };
                     distance.get(options, function (err, data) {
                         if (err) return done(err);
+                        
                         if (data.length) {
                             data.forEach(function (journey, index) {
-                                var newDistance = journey.distance.substr(0, journey.distance.lastIndexOf(' '));
-                                var distanceFloat = parseFloat(newDistance);
-                                if (distanceFloat <= searchInfo.run_adv_distance) {
-                                    filtered = 1;
-                                    filterRuns.push(runs[index]);
-                                }
+                            	if (index % iterator === 0) {
+	                                var newDistance = journey.distance.substr(0, journey.distance.lastIndexOf(' '));
+	                                var distanceFloat = parseFloat(newDistance);
+	                                if (distanceFloat <= searchInfo.run_adv_distance) {
+	                                    filtered = 1;
+	                                    filterRuns.push(runs[index]);
+	                                }
+                            	}
                             });
                         }
                     });
