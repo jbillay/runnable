@@ -1,0 +1,13 @@
+[
+    {
+        "model": "BankAccount",
+        "data": {
+            "id": 1,
+            "owner": "Jeremy Billay",
+            "agency_name": "Crédit Agricole",
+            "IBAN": "FR7618206000576025840255308",
+            "BIC": "AGRIFRPP882",
+            "UserId": 1
+        }
+    }
+]

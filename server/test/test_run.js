@@ -28,7 +28,7 @@ var loadData = function (fix) {
 describe('Tests of run objects', function () {
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
-        this.timeout(6000);
+		this.timeout(6000);
         models.sequelize.sync({force: true})
             .then(function () {
                 async.waterfall([
@@ -59,9 +59,9 @@ describe('Tests of run objects', function () {
     });
     //After all the tests have run, output all the sequelize logging.
     after(function (done) {
-        distance.get.restore();
+		distance.get.restore();
         console.log('Test run over !');
-        done();
+		done();
     });
 
     it('Should be able to show active runs', function (done) {
@@ -140,30 +140,6 @@ describe('Tests of run objects', function () {
                 run_adv_end_date: '2015-06-30 00:00:00',
                 run_adv_city: '',
                 run_adv_distance: '',
-                run_name: ''
-            };
-        run.search(searchInfo, function (err, runs) {
-            if (err) {
-                console.log('Error: ' + err);
-                return done(err);
-            }
-            assert.equal(runs.length, 2);
-            return done();
-        });
-    });
-
-    it('Should be able to find race within less then 30km', function (done) {
-        var obj = [{distance: '35.4 km'}, {distance: '649 km'}, {distance: '22.2 km'}, {distance: '1 m'}, {distance: '594 km'}];
-
-        sinon.stub(distance, 'get')
-            .yields(null, obj);
-        var run = new Run(),
-            searchInfo = {
-                run_adv_type: '',
-                run_adv_start_date: '',
-                run_adv_end_date: '',
-                run_adv_city: 'Saint-Germain-en-Laye, France',
-                run_adv_distance: '30',
                 run_name: ''
             };
         run.search(searchInfo, function (err, runs) {
@@ -277,5 +253,55 @@ describe('Tests of run objects', function () {
                 done();
             });
         });
+    });
+
+	it('Should be able to find race within less then 30km', function (done) {
+		var obj = [
+			{index:null, distance:'35.4 km', distanceValue:27466,   duration:'44 mins',         durationValue:2612,     origin:'Bouffémont, France',            destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'35.4 km', distanceValue:27466,   duration:'44 mins',         durationValue:2612,     origin:'Bouffémont, France',            destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'35.4 km', distanceValue:27466,   duration:'44 mins',         durationValue:2612,     origin:'Bouffémont, France',            destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'35.4 km', distanceValue:27466,   duration:'44 mins',         durationValue:2612,     origin:'Bouffémont, France',            destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'35.4 km', distanceValue:27466,   duration:'44 mins',         durationValue:2612,     origin:'Bouffémont, France',            destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'642 km',  distanceValue:642143,  duration:'5 hours 44 mins', durationValue:20636,    origin:'Millau, France',                destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'642 km',  distanceValue:642143,  duration:'5 hours 44 mins', durationValue:20636,    origin:'Millau, France',                destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'642 km',  distanceValue:642143,  duration:'5 hours 44 mins', durationValue:20636,    origin:'Millau, France',                destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'642 km',  distanceValue:642143,  duration:'5 hours 44 mins', durationValue:20636,    origin:'Millau, France',                destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'642 km',  distanceValue:642143,  duration:'5 hours 44 mins', durationValue:20636,    origin:'Millau, France',                destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'22.5 km', distanceValue:22523,   duration:'36 mins',         durationValue:2142,     origin:'Saint-Germain-en-Laye, France', destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'22.5 km', distanceValue:22523,   duration:'36 mins',         durationValue:2142,     origin:'Saint-Germain-en-Laye, France', destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'22.5 km', distanceValue:22523,   duration:'36 mins',         durationValue:2142,     origin:'Saint-Germain-en-Laye, France', destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'22.5 km', distanceValue:22523,   duration:'36 mins',         durationValue:2142,     origin:'Saint-Germain-en-Laye, France', destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'22.5 km', distanceValue:22523,   duration:'36 mins',         durationValue:2142,     origin:'Saint-Germain-en-Laye, France', destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'1 m',     distanceValue:0,       duration:'1 min',           durationValue:0,        origin:'Paris, France',                 destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'1 m',     distanceValue:0,       duration:'1 min',           durationValue:0,        origin:'Paris, France',                 destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'1 m',     distanceValue:0,       duration:'1 min',           durationValue:0,        origin:'Paris, France',                 destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'1 m',     distanceValue:0,       duration:'1 min',           durationValue:0,        origin:'Paris, France',                 destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'1 m',     distanceValue:0,       duration:'1 min',           durationValue:0,        origin:'Paris, France',                 destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'594 km',  distanceValue:587210,  duration:'5 hours 23 mins', durationValue:19362,    origin:'Saint-Émilion, France',         destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'594 km',  distanceValue:587210,  duration:'5 hours 23 mins', durationValue:19362,    origin:'Saint-Émilion, France',         destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'594 km',  distanceValue:587210,  duration:'5 hours 23 mins', durationValue:19362,    origin:'Saint-Émilion, France',         destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'594 km',  distanceValue:587210,  duration:'5 hours 23 mins', durationValue:19362,    origin:'Saint-Émilion, France',         destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+			{index:null, distance:'594 km',  distanceValue:587210,  duration:'5 hours 23 mins', durationValue:19362,    origin:'Saint-Émilion, France',         destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
+		];
+		
+		sinon.stub(distance, 'get')
+            .yields(null, obj);
+		var run = new Run(),
+			searchInfo = {
+				run_adv_type: '',
+				run_adv_start_date: '',
+				run_adv_end_date: '',
+				run_adv_city: 'Saint-Germain-en-Laye, France',
+				run_adv_distance: '30',
+				run_name: ''
+			};
+		run.search(searchInfo, function (err, runs) {
+			if (err) {
+				console.log('Error: ' + err);
+				return done(err);
+			}
+			assert.equal(runs.length, 2);
+			return done();
+		});
     });
 });

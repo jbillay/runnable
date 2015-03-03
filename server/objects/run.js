@@ -82,14 +82,13 @@ run.prototype.getActiveList = function (done) {
 
 run.prototype.search = function (searchInfo, done) {
     'use strict';
-    distance.apiKey = 'AIzaSyDwRGJAEBNCeZK1176FXLvVAKyt5XQXXsM';
+	distance.apiKey = 'AIzaSyDwRGJAEBNCeZK1176FXLvVAKyt5XQXXsM';
     var searchParams = [{is_active: true}];
     console.log('SearchInfo : %j', searchInfo);
     if (searchInfo.run_name && searchInfo.run_name.length !== 0) {
         searchParams.push('lower(name) LIKE lower("%' + searchInfo.run_name + '%")');
     }
     if (searchInfo.run_adv_type && searchInfo.run_adv_type.length !== 0) {
-        console.log('here');
         searchParams.push({type: searchInfo.run_adv_type});
     }
     if (searchInfo.run_adv_start_date && searchInfo.run_adv_start_date.length !== 0) {
@@ -105,39 +104,38 @@ run.prototype.search = function (searchInfo, done) {
             $and: [searchParams]
         }})
         .then(function (runs) {
-            var filterRuns = [],
-                filtered = 0;
-            if (searchInfo.run_adv_city && searchInfo.run_adv_distance) {
-                var origins = [],
-                    destinations = [];
-                if (runs.length) {
-                    runs.forEach(function (run) {
-                        origins.push(run.address_start);
-                        destinations.push(searchInfo.run_adv_city);
-                    });
-                    var options = {
-                        origins: origins,
-                        destinations: destinations
-                    };
-                    distance.get(options, function (err, data) {
-                        if (err) return done(err);
-                        if (data.length) {
-                            data.forEach(function (journey, index) {
-                                var newDistance = journey.distance.substr(0, journey.distance.lastIndexOf(' '));
-                                var distanceFloat = parseFloat(newDistance);
-                                if (distanceFloat <= searchInfo.run_adv_distance) {
-                                    filtered = 1;
-                                    filterRuns.push(runs[index]);
-                                }
-                            });
-                        }
-                    });
-                }
+			var filterRuns = [],
+				iterator = runs.length;
+			if (searchInfo.run_adv_city && searchInfo.run_adv_distance) {
+				var origins = [],
+					destinations = [];
+				runs.forEach(function (run) {
+					origins.push(run.address_start);
+					destinations.push(searchInfo.run_adv_city);
+				});
+				var options = {
+					origins: origins,
+					destinations: destinations
+				};
+				distance.get(options, function(err, data) {
+					if (err) return done(err);
+					if (data.length) {
+						data.forEach(function (journey, index) {
+							if (index % iterator === 0) {
+								var newDistance = journey.distance.substr(0, journey.distance.lastIndexOf(' ')),
+								    distanceFloat = parseFloat(newDistance),
+                                    searchDistance = parseFloat(searchInfo.run_adv_distance);
+								if (distanceFloat <= searchDistance) {
+									filterRuns.push(runs[index / iterator]);
+								}
+							}
+						});
+					}
+                    done(null, filterRuns);
+                });
+			} else {
+                done(null, runs);
             }
-            if (filtered === 0) {
-                filterRuns = runs;
-            }
-            done(null, filterRuns);
         })
         .catch(function (err) {
             done(err, null);
