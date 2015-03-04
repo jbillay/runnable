@@ -146,12 +146,14 @@ angular.module('runnable.controllers', []).
             Email.send(data);
         };
 	}).
-	controller('RunnableProfileController', function ($scope, $q, $rootScope, $location, $sce, User) {
+	controller('RunnableProfileController', function ($scope, $q, $rootScope, $location, $sce, User, BankAccount) {
 		$scope.page = 'Profile';
 		var userItraRunPromise = User.getItraRuns(),
-            all = $q.all([userItraRunPromise]);
+			userBankAccountPromise = BankAccount.get(),
+            all = $q.all([userItraRunPromise, userBankAccountPromise]);
 		all.then(function (res) {
 			$scope.itraRuns = $sce.trustAsHtml(res[0]);
+			$scope.bankAccount = res[1];
 			$scope.passwords = {};
 			if (!$rootScope.isAuthenticated) {
 				$location.path('/');
@@ -174,6 +176,10 @@ angular.module('runnable.controllers', []).
 				email: userInfo.email
 			};
 			User.update(userData);
+		};
+		$scope.saveBankAccount = function (bankAccountInfo) {
+			console.log('Save bank account : %j', bankAccountInfo);
+			BankAccount.save(bankAccountInfo);
 		};
 	}).
 	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run, Journey, Join) {

@@ -3,6 +3,7 @@
  */
 
 var models = require('../models');
+var _ = require('lodash');
 
 function bankAccount() {
     'use strict';
@@ -64,7 +65,12 @@ bankAccount.prototype.save = function (done) {
 								done(null, newBankAccount);
 							});
 					} else {
-						done(null, bankAccount);
+						var updateBankAccount = _.assign(bankAccount, that);
+						console.log('Updated account : %j',updateBankAccount);
+						updateBankAccount.save()
+							.then(function (bankAccount) {
+								done(null, bankAccount);
+							});
 					}
 				})
 				.catch(function (err) {

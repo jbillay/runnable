@@ -36,5 +36,7 @@ angular.module('runnable.constant', []).
         infoRequestReceived:    'Nous avons bien reçu votre demande d\'information, nous revenons vers vous rapidement',
         journeyValidationDone:  'Merci de votre validation, vos commentaires seront pris en compte pour améliorer notre service',
 		accountUpdated:			'Vos information ont été mise à jour',
-		notUpdatedAccount:		'Désolé en raison d\'un problème vos informations n\'ont pas été mise à jour'
+		notUpdatedAccount:		'Désolé en raison d\'un problème vos informations n\'ont pas été mise à jour',
+		bankAccountNotSaved:	'En raison d\'un problème technique vos informations bancaires n\'ont pas été enregistrées',
+		bankAccountSaved:		'Vos informations bancaires ont bien été enregistrées'
 	});

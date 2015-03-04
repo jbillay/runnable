@@ -52,7 +52,6 @@ module.exports = function (app, passport, auth) {
     app.post('/api/inbox/msg/read', auth.requiresLogin, controllers.inbox.read);
     app.post('/api/inbox/msg/unread', auth.requiresLogin, controllers.inbox.unread);
     app.get('/api/inbox/msg', auth.requiresLogin, controllers.inbox.getList);
-    app.get('/api/inbox/msg/:id', auth.requiresLogin, controllers.inbox.get);
     app.get('/api/inbox/unread/nb/msg', auth.requiresLogin, controllers.inbox.countUnread);
 
     app.post('/api/join', auth.requiresLogin, controllers.join.create);
@@ -71,6 +70,9 @@ module.exports = function (app, passport, auth) {
 
     app.get('/api/invoice', auth.requiresLogin, controllers.invoice.getByUser);
     app.get('/api/invoice/driver', auth.requiresLogin, controllers.invoice.getByDriver);
+	
+	app.post('/api/user/bankaccount', auth.requiresLogin, controllers.bank_account.save);
+	app.get('/api/user/bankaccount', auth.requiresLogin, controllers.bank_account.get);
 
     app.post('/api/paypal/ipn', controllers.invoice.confirm);
 

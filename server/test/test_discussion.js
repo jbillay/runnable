@@ -92,7 +92,7 @@ describe('Test of discussion object', function () {
         discussion.getMessages(1, function (err, messageList) {
             if (err) console.log(err);
             assert.isNull(err);
-            assert.equal(messageList.length, 2);
+            assert.equal(messageList.length, 1);
             discussion.getMessages(-1, function (err, messageList) {
                 assert.isNotNull(err);
                 assert.isNull(messageList);

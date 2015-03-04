@@ -25,7 +25,7 @@
         "id": 3,
         "title": "Nouveau message concernant le trajet pour la course Les templiers",
         "message": "Richard Couret dit : c est plutot une super nouvelle",
-        "is_read": 0,
+        "is_read": 1,
         "UserId": 1
     }
   },

@@ -75,6 +75,35 @@ angular.module('runnable.services', ['ngResource']).
 
 		return authService;
 	}).
+    factory('BankAccount', function ($q, $http, $rootScope) {
+		return {
+			save: function (account) {
+                var deferred = $q.defer();
+                $http.post('/api/user/bankaccount', account).
+					success(function (result) {
+						$rootScope.$broadcast('USER_MSG', result);
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ', data);
+						deferred.resolve(data);
+					});
+				return deferred.promise;
+			},
+			get: function () {
+                var deferred = $q.defer();
+                $http.get('/api/user/bankaccount').
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ', data);
+						deferred.resolve(data);
+					});
+                return deferred.promise;
+            }
+		};
+	}).
     factory('User', function ($q, $http, $rootScope) {
 		return {
 			create: function (user) {

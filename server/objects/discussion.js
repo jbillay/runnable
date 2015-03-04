@@ -71,6 +71,9 @@ discussion.prototype.addMessage = function (message, journeyId, user, done) {
 	console.log('try to add message to journey run : ' + journeyId);
 	models.Journey.find({where: {id: journeyId}})
         .then(function (journey) {
+            if (!journey) {
+                done(new Error('No Journey found'), null);
+            }
 			models.User.find({where: {id: user.id}})
 				.then(function(user) {
 					models.Discussion.create(that)

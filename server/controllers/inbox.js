@@ -29,12 +29,6 @@ exports.getList = function (req, res) {
 	});
 };
 
-exports.get = function (req, res) {
-    'use strict';
-	var inbox = new Inbox();
-	// TO BE IMPLEMENTED
-};
-
 exports.read = function (req, res) {
     'use strict';
 	console.log('Make read message :' + req.body.messageId);
@@ -67,7 +61,6 @@ exports.countUnread = function (req, res) {
 		if (err) {
 			res.jsonp('{"msg": "NotAbleCountUnreadMessage", "type": "error"}');
 		}
-		console.log(nb);
 		res.jsonp(nb);
 	});
 };
