@@ -57,6 +57,9 @@ validationJourney.prototype.create = function (done) {
         .then(function(user) {
             models.Join.find({where: {id: that.joinId}})
                 .then(function (join) {
+					if (!join) {
+						done(new Error('Join not found'), null);
+					}
                     models.ValidationJourney.create(that)
                         .then(function (valide) {
                             valide.setUser(user)

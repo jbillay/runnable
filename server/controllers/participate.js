@@ -9,11 +9,14 @@ exports.add = function (req, res) {
     var participate = new Participate(),
         runId = req.body.runId,
         user = req.user;
-    participate.add(runId, user, function (err) {
+    participate.add(runId, user, function (err, participate) {
+		console.log('Err : %j', err);
+		console.log('Part : %j', participate);
         if (err) {
             res.jsonp('{"msg": "notAbleParticipate", "type": "error"}');
-        }
-        res.json('{"msg": "addParticipate", "type": "success"}');
+        } else {
+			res.json('{"msg": "addParticipate", "type": "success"}');
+		}
     });
 };
 
@@ -24,8 +27,9 @@ exports.userList = function (req, res) {
     participate.userList(userId, function (err, participation) {
         if (err) {
             res.jsonp('{"msg": "participateList", "type": "error"}');
-        }
-        res.jsonp(participation);
+        } else {
+			res.jsonp(participation);
+		}
     });
 };
 
@@ -36,7 +40,8 @@ exports.runList = function (req, res) {
     participate.runList(runId, function (err, participation) {
         if (err) {
             res.jsonp('{"msg": "participateList", "type": "error"}');
-        }
-        res.jsonp(participation);
+        } else {
+			res.jsonp(participation);
+		}
     });
 };

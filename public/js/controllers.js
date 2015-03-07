@@ -683,8 +683,10 @@ angular.module('runnable.controllers', []).
 			$scope.inboxMessages = res[0];
 			$scope.showMessage = function (message) {
 				$scope.selectedMessage = message;
-				Inbox.setAsRead(message.id);
-                $rootScope.userUnreadEmail = $rootScope.userUnreadEmail - 1;
+				if (!message.is_read) {
+					Inbox.setAsRead(message.id);
+					$rootScope.userUnreadEmail = $rootScope.userUnreadEmail - 1;
+				}
 			};
 			$scope.removeMessage = function (id) {
 				// TO BE IMPLEMENTED

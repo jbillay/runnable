@@ -39,6 +39,9 @@ participate.prototype.add = function (runId, user, done) {
     console.log('add a date to agenda for user : ' + user.id);
     models.Run.find({where: {id: runId}})
         .then(function (run) {
+			if (!run) {
+                done(new Error('No Run found'), null);
+            }
             models.User.find({where: {id: user.id}})
                 .then(function(user) {
                     models.Participate.create(that)
@@ -60,7 +63,7 @@ participate.prototype.add = function (runId, user, done) {
 
 participate.prototype.userList = function (userId, done) {
     'use strict';
-    console.log('get list of run fo user : ' + userId);
+    console.log('get list of run for user : ' + userId);
     models.Participate.findAll({where: {userId: userId}, include: [models.Run]})
         .then(function (participateUserList) {
             done(null, participateUserList);

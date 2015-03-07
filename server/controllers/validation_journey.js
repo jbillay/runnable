@@ -19,8 +19,9 @@ exports.validate = function (req, res) {
     validation.set(validationObj);
     validation.create(function (err, validation) {
         if (err) {
-            res.jsonp(err);
-        }
-        res.jsonp('{"msg": "journeyValidationDone", "type": "success"}');
+            res.jsonp('{"msg": "journeyNotValidated", "type": "error"}');
+        } else {
+			res.jsonp('{"msg": "journeyValidationDone", "type": "success"}');
+		}
     });
 };
