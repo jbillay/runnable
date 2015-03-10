@@ -132,7 +132,20 @@ angular.module('runnable.services', ['ngResource']).
 					});
 				return deferred.promise;
 			},
-			getUser: function () {
+            delete: function (userId) {
+                var deferred = $q.defer();
+                $http.post('/api/admin/user/remove', {id: userId}).
+                    success(function (result) {
+                        $rootScope.$broadcast('USER_MSG', result);
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        console.log('Error : ', data);
+                        deferred.resolve(data);
+                    });
+                return deferred.promise;
+            },
+            getUser: function () {
                 var deferred = $q.defer();
                 $http.get('/api/user/me').
 					success(function (result) {

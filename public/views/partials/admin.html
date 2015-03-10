@@ -34,7 +34,7 @@
 									<td>{{user.createdAt | date:'dd/MM/yyyy'}}</td>
 									<td>
 										<span class="glyphicon glyphicon-pencil" ng-click=userEdit(user)></span>
-										<span class="glyphicon glyphicon-trash" ng-click=userTrash(user)></span>
+										<span class="glyphicon glyphicon-trash" ng-click=userTrash($index)></span>
 										<span class="glyphicon glyphicon-random" ng-click=userResetPassword(user)></span>
 									</td>
 								</tr>

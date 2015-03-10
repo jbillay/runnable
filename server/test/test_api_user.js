@@ -567,7 +567,7 @@ describe('Test of user API', function () {
                 .send(user)
                 .end(function (err, res) {
                     if (err) return done(err);
-                    assert.equal(JSON.parse(res.text).msg, 'userDeleted');
+                    assert.equal(JSON.parse(res.body).msg, 'userDeleted');
                     return done();
                 });
         });

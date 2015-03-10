@@ -38,5 +38,7 @@ angular.module('runnable.constant', []).
 		accountUpdated:			'Vos information ont été mise à jour',
 		notUpdatedAccount:		'Désolé en raison d\'un problème vos informations n\'ont pas été mise à jour',
 		bankAccountNotSaved:	'En raison d\'un problème technique vos informations bancaires n\'ont pas été enregistrées',
-		bankAccountSaved:		'Vos informations bancaires ont bien été enregistrées'
+		bankAccountSaved:		'Vos informations bancaires ont bien été enregistrées',
+        userNotDeleted:         'L\'utilisateur n\'a pas pu être supprimée',
+        userDeleted:            'L\'utilisateur vient d\'être supprimée'
 	});

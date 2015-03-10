@@ -217,8 +217,10 @@ angular.module('runnable.controllers', []).
 		$scope.userResetPassword = function (user) {
 			AuthService.reset(user.email);
 		};
-		$scope.userTrash = function (user) {
-			console.log('NOT YET IMPLEMENTED : Trash the user ' + user.id);
+		$scope.userTrash = function (idx) {
+            var user = $scope.userList[idx];
+            $scope.userList.splice(idx, 1);
+            User.delete(user.id);
 		};
 		$scope.runToggleActive = function(run) {
 			console.log('Toggle active for run : ' + run.id);
