@@ -145,6 +145,18 @@ angular.module('runnable.services', ['ngResource']).
                     });
                 return deferred.promise;
             },
+            deleteMe: function () {
+                var deferred = $q.defer();
+                $http.get('/api/user/remove/me').
+                    success(function (result) {
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        console.log('Error : ', data);
+                        deferred.resolve(data);
+                    });
+                return deferred.promise;
+            },
             getUser: function () {
                 var deferred = $q.defer();
                 $http.get('/api/user/me').

@@ -572,7 +572,7 @@ describe('Test of user API', function () {
                 });
         });
     });
-
+    
     describe('PUT /api/user', function () {
         var agent = superagent.agent();
 

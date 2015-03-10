@@ -21,6 +21,7 @@ module.exports = function (app, passport, auth) {
 	app.post('/api/user/password/update', auth.requiresLogin, controllers.user.updatePassword);
 	app.post('/api/user/invite', auth.requiresLogin, controllers.user.invite);
     app.get('/api/user/active/:id/:hash', controllers.user.active);
+    app.get('/api/user/remove/me', auth.requiresLogin, controllers.user.removeMe);
     app.get('/api/user/:id/:hash', controllers.user.active);
     app.get('/api/user/public/info/:id', controllers.user.publicInfo);
     app.get('/api/user/public/driver/:id', controllers.user.publicDriverInfo);

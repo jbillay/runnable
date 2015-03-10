@@ -181,6 +181,9 @@ angular.module('runnable.controllers', []).
 			console.log('Save bank account : %j', bankAccountInfo);
 			BankAccount.save(bankAccountInfo);
 		};
+        $scope.erase = function () {
+            User.deleteMe();
+        };
 	}).
 	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run, Journey, Join) {
 		$scope.page = 'Admin';

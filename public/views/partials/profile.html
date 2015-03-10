@@ -87,11 +87,11 @@
 							</form>
 						</div>
 					</div>
-                </tab>
-                <tab heading="Course">
-                    <table class="col-sm-12 palmares">
-                        <tbody ng-bind-html="itraRuns"></tbody>
-                    </table>
+                    <div class="col-sm-6">
+                        <div class="profile">
+                            <button class="btn btn-danger" ng-click="">Supprimer mon compte</button>
+                        </div>
+                    </div>
                 </tab>
                 <tab heading="Info bancaire">
                     <div class="col-sm-12">
@@ -117,6 +117,11 @@
 							</form>
 						</div>
                     </div>
+                </tab>
+                <tab heading="Course">
+                    <table class="col-sm-12 palmares">
+                        <tbody ng-bind-html="itraRuns"></tbody>
+                    </table>
                 </tab>
             </tabset>
         </div>

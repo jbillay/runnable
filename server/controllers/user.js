@@ -8,6 +8,21 @@ var Journey = require('../objects/journey');
 var Join = require('../objects/join');
 var _ = require('lodash');
 
+exports.removeMe = function(req, res) {
+    'use strict';
+    console.log('Try to remove current user');
+    var userId = req.user.id,
+        user = new User();
+    user.delete(userId, function (err, msg) {
+        if (err) {
+            console.log('user account not deleted');
+            res.jsonp('{"msg": "userNotDeleted", "type": "error"}');
+        } else {
+            res.redirect('/');
+        }
+    });
+};
+
 exports.remove = function(req, res) {
     'use strict';
     var userId = req.body.id,
