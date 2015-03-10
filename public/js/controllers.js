@@ -318,7 +318,7 @@ angular.module('runnable.controllers', []).
 		};
 		$scope.calFormat = 'dd/MM/yyyy';
     }).
-    controller('RunnableRunController', function ($scope, $q, Run, GoogleMapApi, DEFAULT_DISTANCE) {
+    controller('RunnableRunController', function ($scope, $q, Run, $timeout, GoogleMapApi, DEFAULT_DISTANCE) {
         $scope.page = 'Run';
 		$scope.default_distance = DEFAULT_DISTANCE;
 		var runPromise = Run.getActiveList(),
@@ -343,6 +343,9 @@ angular.module('runnable.controllers', []).
         };
         $scope.switchSearch = function () {
             $scope.advancedSearch = $scope.advancedSearch ? 0 : 1;
+			$timeout( function() {
+				$('[data-toggle="tooltip"]').tooltip();
+			});
         };
 		$scope.getLocation = function(val) {
 			return GoogleMapApi.getLocation(val);

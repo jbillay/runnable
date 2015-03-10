@@ -1,5 +1,4 @@
 <div ng-include="'partials/nav'"></div>
-
 <div class="container body">
     <div class="row spacehead">
         <div class="col-sm-12">
@@ -18,7 +17,8 @@
                     <form class="form-inline" ng-submit="launchSearch(searchForm)">
                         <div class="input-group">
                             <span class="input-group-addon"><span class="glyphicon glyphicon-road"></span></span>
-                            <select class="form-control" ng-model='searchForm.run_adv_type'>
+                            <select class="form-control" ng-model='searchForm.run_adv_type'
+								data-toggle="tooltip" data-placement="bottom" title="Type de course">
                                 <option value="">Tous</option>
                                 <option value="trail">Trail</option>
                                 <option value="ultra">Ultra trail</option>
@@ -37,7 +37,9 @@
                             <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
                                    ng-model="searchForm.run_adv_start_date" name="run_adv_start_date"
                                    is-open="calendar.opened.start" min-date="today"
-                                   datepicker-options="calendar.dateOptions" close-text="Fermer"/>
+                                   datepicker-options="calendar.dateOptions" close-text="Fermer"
+								   data-toggle="tooltip" data-placement="bottom" 
+								   title="Course ayant lieu à partir de la date sélectionnée"/>
                         </div>
                         <div class="input-group">
 							<span class="input-group-btn">
@@ -48,17 +50,21 @@
                             <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
                                    ng-model="searchForm.run_adv_end_date" name="run_adv_end_date"
                                    is-open="calendar.opened.end" min-date="searchForm.run_adv_start_date"
-                                   datepicker-options="calendar.dateOptions" close-text="Fermer"/>
+                                   datepicker-options="calendar.dateOptions" close-text="Fermer"
+								   data-toggle="tooltip" data-placement="bottom" 
+								   title="Course ayant lieu avant de la date sélectionnée"/>
                         </div>
                         <div class="input-group">
                             <span class="input-group-addon"><span class="glyphicon glyphicon-map-marker"></span></span>
                             <input type="text" class="form-control run_advanced_search_city"
 									typeahead="address for address in getLocation($viewValue)"
-									ng-model="searchForm.run_adv_city" placeholder="Ville de départ">
+									ng-model="searchForm.run_adv_city" placeholder="Ville de départ"
+									data-toggle="tooltip" data-placement="bottom" title="Ville recherchée">
                         </div>
                         <div class="input-group">
                             <input type="text" class="form-control run_advanced_search_distance"
-                                   ng-model="searchForm.run_adv_distance" placeholder="{{default_distance}} Km">
+                                   ng-model="searchForm.run_adv_distance" placeholder="{{default_distance}} Km"
+								   data-toggle="tooltip" data-placement="bottom"  data-title="Sur un rayon de x km autour de la ville sélectionnée">
                         </div>
                         <button type="submit" class="btn btn-success">Rechercher</button>
                     </form>
@@ -84,4 +90,13 @@
         </div>
     </div>
 </div>
+<script type='javascript'>
+	/* Activation of bootstrap tooltip */
+	alert('Test');
+	$(function () {
+		
+		alert('Tooltip activated');
+	})
+</script>
+
 <div ng-include="'partials/footer'"></div>

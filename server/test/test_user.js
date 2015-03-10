@@ -289,6 +289,7 @@ describe('Test of user object', function () {
             });
         });
     });
+
     it('Update a user', function (done) {
         var user = new User(),
             updatedValues = {
@@ -305,6 +306,28 @@ describe('Test of user object', function () {
             assert.equal(updatedUser.address, 'Chantilly');
             assert.equal(updatedUser.phone, '0647658789');
             assert.equal(updatedUser.email, 'jbillay@gmail.fr');
+            return done();
+        });
+    });
+
+    it('Delete user by id', function (done) {
+        var user = new User();
+        user.delete(2, function (err, res) {
+            if (err) return done(err);
+            assert.equal(res, 'deleted');
+            user.getById(2, function (err, userDetail) {
+                if (err) return done(err);
+                assert.isNull(userDetail);
+                return done();
+            });
+        });
+    });
+
+    it('Delete a not existing user', function (done) {
+        var user = new User();
+        user.delete(1023, function (err, res) {
+            assert.isNotNull(err);
+            assert.isNull(res);
             return done();
         });
     });

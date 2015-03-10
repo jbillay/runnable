@@ -1,12 +1,12 @@
 'use strict';
 
 $(document).ready(function(){/* activate scrollspy menu */
-    $('body').scrollspy({
+	$('body').scrollspy({
         target: '#navbar-collapsible',
         offset: 50
     });
-
-    /* smooth scrolling sections */
+	
+	/* smooth scrolling sections */
     $('a[href*=#]:not([href=#])').click(function() {
         if (location.pathname.replace(/^\//,'') === this.pathname.replace(/^\//,'') && location.hostname === this.hostname) {
             var target = $(this.hash);

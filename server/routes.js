@@ -67,6 +67,7 @@ module.exports = function (app, passport, auth) {
 	app.get('/api/admin/joins', auth.requireAdmin, controllers.join.list);
 	app.post('/api/admin/run/active', auth.requireAdmin, controllers.run.toggleActive);
 	app.post('/api/admin/user/active', auth.requireAdmin, controllers.user.toggleActive);
+    app.post('/api/admin/user/remove', auth.requireAdmin, controllers.user.remove);
 
     app.get('/api/invoice', auth.requiresLogin, controllers.invoice.getByUser);
     app.get('/api/invoice/driver', auth.requiresLogin, controllers.invoice.getByDriver);

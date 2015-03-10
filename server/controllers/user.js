@@ -8,6 +8,21 @@ var Journey = require('../objects/journey');
 var Join = require('../objects/join');
 var _ = require('lodash');
 
+exports.remove = function(req, res) {
+    'use strict';
+    var userId = req.body.id,
+        user = new User();
+    user.delete(userId, function (err, msg) {
+        if (err) {
+            console.log('user account not deleted');
+            res.jsonp('{"msg": "userNotDeleted", "type": "error"}');
+        } else {
+            console.log('user account deleted');
+            res.jsonp('{"msg": "userDeleted", "type": "success"}');
+        }
+    });
+};
+
 exports.invite = function(req, res) {
 	'use strict';
 	var html,

@@ -254,4 +254,22 @@ user.prototype.getPublicInfo = function (id, done) {
 		});
 };
 
+user.prototype.delete = function (id, done) {
+    'use strict';
+    models.User.find({ where: {id: id}})
+        .then(function (user) {
+            if (!user) {
+                done(new Error('User not found'), null);
+            }
+            user.destroy()
+                .then(function () {
+                    done(null, 'deleted');
+
+                })
+                .catch(function (err) {
+                    done(err, null);
+                });
+        });
+};
+
 module.exports = user;

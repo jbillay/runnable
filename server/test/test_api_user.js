@@ -532,7 +532,7 @@ describe('Test of user API', function () {
         });
     });
 
-    describe('GET /api/user/active/:id/:hash', function () {
+    describe('GET /api/user/public/info/:id', function () {
         it('should active the user 2', function (done) {
             supertest(app)
                 .get('/api/user/public/info/2')
@@ -549,6 +549,26 @@ describe('Test of user API', function () {
                             assert.equal(res.header.location, '/');
                             done();
                         });
+                });
+        });
+    });
+
+    describe('POST /api/admin/user/remove', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should delete the user 2', function (done) {
+            var user = {
+                id: 2
+            };
+            agent
+                .post('http://localhost:9615/api/admin/user/remove')
+                .send(user)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(JSON.parse(res.text).msg, 'userDeleted');
+                    return done();
                 });
         });
     });
