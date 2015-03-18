@@ -22,9 +22,6 @@ module.exports = function(sequelize, DataTypes) {
 				Run.belongsTo(models.User),
 				Run.hasMany(models.Journey);
                 /*jshint +W030 */
-			},
-			isActive: function() {
-				return this.isActive;
 			}
 		}
 	});

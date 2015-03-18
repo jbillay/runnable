@@ -85,6 +85,7 @@
     "grunt-mocha-istanbul": "~2.3.1",
     "superagent": "~0.21.0",
     "matchdep": "~0.3.0",
-    "grunt-contrib-concat": "~0.5.1"
+    "grunt-contrib-concat": "~0.5.1",
+    "angular-hint": "0.0.0"
   }
 }

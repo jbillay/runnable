@@ -22,17 +22,6 @@ exports.logout = function (req, res) {
     res.redirect('/');
 };
 
-/*
-exports.logon = function (req) {
-    "use strict";
-    req.passport.authenticate('local', {
-        successRedirect : '/',
-        failureRedirect : '/login',
-        failureFlash : true
-    });
-};
-*/
-
 exports.auth = function (req, res) {
     'use strict';
 	res.jsonp(req.user || null);
