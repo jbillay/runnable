@@ -228,7 +228,7 @@ describe('Test of user object', function () {
         user.getById(1, function (err, userDetail) {
             if (err) return done(err);
             user.set(userDetail);
-            user.getItraCode(function (err, code) {
+            user.getItraCode(userDetail, function (err, code) {
                 if (err) return done(err);
                 assert.isNull(code);
                 return done();
@@ -241,7 +241,7 @@ describe('Test of user object', function () {
         user.getById(2, function (err, userDetail) {
             if (err) return done(err);
             user.set(userDetail);
-            user.getItraCode(function (err, code) {
+            user.getItraCode(userDetail, function (err, code) {
                 if (err) return done(err);
                 assert.equal(code, '?id=84500&nom=COURET#tab');
                 return done();

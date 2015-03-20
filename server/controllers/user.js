@@ -75,13 +75,12 @@ exports.create = function(req, res) {
 				res.jsonp('{"msg": "existingAccount", "type": "error"}');
 			} else {
 				console.log('Account created');
-				user.getItraCode(function (err, code) {
+				user.getItraCode(newUser, function (err, code) {
 					if (err) {
 						console.log('ITRA cannot be retrieve');
-					} else if (code) {
-						newUser.itra = code;
-						newUser.save();
-					}
+					} else {
+                        console.log('ITRA code is : ' + code);
+                    }
 				});
 				var url = settings.domain,
 					timekey = new Date(newUser.createdAt).getTime();

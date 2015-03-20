@@ -120,13 +120,17 @@ user.prototype.activate = function (id, hash, done) {
 		});
 };
 
-user.prototype.getItraCode = function (done) {
+user.prototype.getItraCode = function (user, done) {
 	'use strict';
 	var itra = new Itra(this.firstname, this.lastname, null);
 	itra.getCode(function (err, code) {
 		if (err) {
 			done(err, null);
 		} else {
+            if (code) {
+                user.itra = code;
+                user.save();
+            }
 		    done(null, code);
         }
 	});
