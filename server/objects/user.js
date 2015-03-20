@@ -126,8 +126,9 @@ user.prototype.getItraCode = function (done) {
 	itra.getCode(function (err, code) {
 		if (err) {
 			done(err, null);
-		}
-		done(null, code);
+		} else {
+		    done(null, code);
+        }
 	});
 };
 

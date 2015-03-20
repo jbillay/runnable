@@ -33,13 +33,18 @@ itra.prototype.getCode = function (done) {
 			done(error, null);
 		} else {
 			var parsedHTML = cheerio.load(itraObject.getElementsByTagName(body, 'tbody')),
-				matchUser = itraObject.firstname.toUpperCase() + ' ' + itraObject.lastname.toUpperCase();
+				matchUser = itraObject.firstname.toUpperCase() + ' ' + itraObject.lastname.toUpperCase(),
+                ret = 0;
 			parsedHTML('a').map(function(i, link) {
 				link = cheerio(link);
 				if (matchUser === link.text().toUpperCase()) {
+                    ret = 1;
 					done(null, cheerio(link).attr('href'));
 				}
 			});
+            if (ret === 0 ) {
+                done(null, null);
+            }
 		}
     });
 };

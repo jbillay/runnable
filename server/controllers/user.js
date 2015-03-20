@@ -78,7 +78,7 @@ exports.create = function(req, res) {
 				user.getItraCode(function (err, code) {
 					if (err) {
 						console.log('ITRA cannot be retrieve');
-					} else {
+					} else if (code) {
 						newUser.itra = code;
 						newUser.save();
 					}

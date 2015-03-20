@@ -12,7 +12,7 @@ var Itra = require('../objects/itra.js');
 describe('Test of itra object - get code', function () {
     var html = '<tbody><tr class="odd"><td><a href="?id=340083&nom=COURET#tab">Andre COURET</a></td><td>Homme</td><td>France</td><td>??</td></tr><tr><td><a href="?id=78273&nom=COURET#tab">Jacques-Andre COURET</a></td><td>Homme</td><td>France</td><td>1965</td></tr><tr class="odd"><td><a href="?id=267249&nom=COURET#tab">Jaques Andre COURET</a></td><td>Homme</td><td>France</td><td>??</td></tr><tr><td><a href="?id=437314&nom=COURET#tab">Nicolas COURET</a></td><td>Homme</td><td>France</td><td>??</td></tr><tr class="odd"><td><a href="?id=84500&nom=COURET#tab">Richard COURET</a></td><td>Homme</td><td>France</td><td>1980</td></tr><tr><td><a href="?id=489223&nom=DUCOURET#tab">Fabien DUCOURET</a></td><td>Homme</td><td>France</td><td>1978</td></tr><tr class="odd"><td><a href="?id=475698&nom=PICOURET#tab">Apollo PICOURET</a></td><td>Homme</td><td>France</td><td>1985</td></tr>				</tbody>';
 
-    beforeEach(function(done){
+    before(function(done){
         sinon
             .stub(request, 'get')
             .yields(null, null, html);
@@ -29,7 +29,16 @@ describe('Test of itra object - get code', function () {
         itra.getCode(function (err, result) {
             if(err) return done(err);
             assert.equal(result, '?id=84500&nom=COURET#tab');
-            done();
+            return done();
+        });
+    });
+
+    it('Get not existing user code from itra fake data', function (done) {
+        var itra = new Itra('Jeremy', 'Billay', null);
+        itra.getCode(function (err, result) {
+            if(err) return done(err);
+            assert.isNull(result);
+            return done();
         });
     });
 });
