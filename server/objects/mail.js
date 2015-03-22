@@ -81,10 +81,14 @@ mail.prototype.send = function () {
 		this.smtpTransport.sendMail(this.mailOptions, function (error, response) {
 			if (error) {
 				throw new Error('Impossible to send mail : ' + error);
-			}
-			console.log('Message sent: ' + response.message);
+			} else {
+			    console.log('Message sent: ' + response.message);
+            }
 		});
 	}
+};
+
+mail.prototype.close = function () {
     // if you don't want to use this transport object anymore, uncomment following line
     this.smtpTransport.close(); // shut down the connection pool, no more messages
 };
