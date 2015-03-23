@@ -146,7 +146,7 @@ angular.module('runnable.controllers', []).
             Email.send(data);
         };
 	}).
-	controller('RunnableProfileController', function ($scope, $q, $rootScope, $location, $sce, User, BankAccount) {
+	controller('RunnableProfileController', function ($scope, $q, $rootScope, $location, $sce, User, BankAccount, fileReader) {
 		$scope.page = 'Profile';
 		var userItraRunPromise = User.getItraRuns(),
 			userBankAccountPromise = BankAccount.get(),
@@ -183,6 +183,23 @@ angular.module('runnable.controllers', []).
 		};
         $scope.erase = function () {
             User.deleteMe();
+        };
+        $scope.getFile = function (file) {
+            console.log(file);
+            fileReader.readAsDataUrl(file, $scope)
+                .then(function(result) {
+                    $scope.file = file;
+                    $scope.imageSrc = result;
+                });
+        };
+        $scope.saveFile = function () {
+            if ($scope.file) {
+                console.log($scope.file);
+                fileReader.savePicture($scope.file)
+                    .then(function (result) {
+                        console.log('Picture saved !!');
+                    });
+            }
         };
 	}).
 	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run, Journey, Join) {

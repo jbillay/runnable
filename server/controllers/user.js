@@ -290,3 +290,8 @@ exports.publicDriverInfo = function (req, res) {
         }
     });
 };
+
+exports.uploadPicture = function (req, res) {
+    'use strict';
+    console.log(req);
+};

@@ -287,8 +287,24 @@ angular.module('runnable.services', ['ngResource']).
 						console.log('Error : ' + status);
 					});
 				return deferred.promise;
-			}
-		};
+			},
+            uploadPicture: function (file) {
+                var deferred = $q.defer();
+                var fd = new FormData();
+                fd.append('file', file);
+                $http.post('/api/user/picture', fd, {
+                    transformRequest: angular.identity,
+                    headers: {'Content-Type': undefined}
+                }).
+                    success(function (result) {
+                        deferred.resolve(result);
+                    }).
+                    error(function (data, status) {
+                        console.log('Error : ' + status);
+                    });
+                return deferred.promise;
+            }
+        };
     }).
 	factory('MyRunTripFees', function () {
 		var feesMap = [
@@ -733,6 +749,54 @@ angular.module('runnable.services', ['ngResource']).
                     });
                 return deferred.promise;
             }
+        };
+    }).
+    factory('fileReader', function ($q, $http) {
+        var onLoad = function(reader, deferred, scope) {
+            return function () {
+                scope.$apply(function () {
+                    deferred.resolve(reader.result);
+                });
+            };
+        };
+        var onError = function (reader, deferred, scope) {
+            return function () {
+                scope.$apply(function () {
+                    deferred.reject(reader.result);
+                });
+            };
+        };
+        var getReader = function(deferred, scope) {
+            var reader = new FileReader();
+            reader.onload = onLoad(reader, deferred, scope);
+            reader.onerror = onError(reader, deferred, scope);
+            return reader;
+        };
+        var readAsDataURL = function (file, scope) {
+            var deferred = $q.defer();
+            var reader = getReader(deferred, scope);
+            reader.readAsDataURL(file);
+            return deferred.promise;
+        };
+        var savePicture = function (file) {
+            var deferred = $q.defer();
+            var fd = new FormData();
+            fd.append('file', file);
+            $http.post('/api/user/picture', fd, {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': 'multipart/form-data'}
+            }).
+                success(function (result) {
+                    deferred.resolve(result);
+                }).
+                error(function (data, status) {
+                    console.log('Error : ' + status);
+                });
+            return deferred.promise;
+        };
+        return {
+            readAsDataUrl: readAsDataURL,
+            savePicture: savePicture
         };
     }).
     factory('Journey', function ($q, $http) {
