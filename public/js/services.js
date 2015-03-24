@@ -294,7 +294,7 @@ angular.module('runnable.services', ['ngResource']).
                 fd.append('file', file);
                 $http.post('/api/user/picture', fd, {
                     transformRequest: angular.identity,
-                    headers: {'Content-Type': undefined}
+                    headers: {'Content-Type': 'multipart/form-data'}
                 }).
                     success(function (result) {
                         deferred.resolve(result);
@@ -784,7 +784,7 @@ angular.module('runnable.services', ['ngResource']).
             fd.append('file', file);
             $http.post('/api/user/picture', fd, {
                 transformRequest: angular.identity,
-                headers: {'Content-Type': 'multipart/form-data'}
+                headers: {'Content-Type': undefined}
             }).
                 success(function (result) {
                     deferred.resolve(result);

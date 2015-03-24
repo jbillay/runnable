@@ -27,7 +27,7 @@ exports.invite = function(req, res) {
 	'use strict';
 	var html,
 		text,
-		emails = [],
+		emails,
 		mail = new Mail();
 	emails = req.body.emails.split(',');
 	emails = _.compact(emails);
@@ -293,5 +293,5 @@ exports.publicDriverInfo = function (req, res) {
 
 exports.uploadPicture = function (req, res) {
     'use strict';
-    console.log(req);
+    console.log(req.files);
 };

@@ -5,6 +5,7 @@
 var path     = require('path');
 var express  = require('express');
 var flash = require('connect-flash');
+var multer = require('multer');
 
 module.exports = function (app, passport) {
 	'use strict';
@@ -58,6 +59,23 @@ module.exports = function (app, passport) {
         //use passport session
         app.use(passport.initialize());
         app.use(passport.session());
+
+        // Directory to save uploaded files
+        app.use(multer({ dest: './public/uploads/',
+            rename: function (fieldname, filename, req) {
+                return 'avatar_' + req.user.id;
+            },
+            changeDest: function (dest, req) {
+                console.log(req);
+                return dest;
+            },
+            onFileUploadStart: function (file) {
+                console.log(file.originalname + ' is starting ...');
+            },
+            onFileUploadComplete: function (file) {
+                console.log(file.fieldname + ' uploaded to  ' + file.path);
+            }
+        }));
 
         //routes should be at the last
         app.use(app.router);

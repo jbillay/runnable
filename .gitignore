@@ -2,3 +2,4 @@ conf/
 .idea/
 coverage/
 dist/
+public/uploads/
