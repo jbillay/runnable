@@ -40,5 +40,6 @@ angular.module('runnable.constant', []).
 		bankAccountNotSaved:	'En raison d\'un problème technique vos informations bancaires n\'ont pas été enregistrées',
 		bankAccountSaved:		'Vos informations bancaires ont bien été enregistrées',
         userNotDeleted:         'L\'utilisateur n\'a pas pu être supprimé',
-        userDeleted:            'L\'utilisateur vient d\'être supprimé'
+        userDeleted:            'L\'utilisateur vient d\'être supprimé',
+        userPictureSaved:       'Votre image a bien été sauvegardée'
 	});

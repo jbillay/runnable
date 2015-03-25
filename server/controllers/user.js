@@ -293,5 +293,15 @@ exports.publicDriverInfo = function (req, res) {
 
 exports.uploadPicture = function (req, res) {
     'use strict';
-    console.log(req.files);
+    var userId= req.user.id,
+        path = req.files.file.path,
+        user = new User();
+    user.addPicture(userId, path, function (err) {
+        if (err) {
+            console.log('[ERROR] Not able to save profil picture : ' + err);
+            res.jsonp('{"msg": ' + err + ', "type": "error"}');
+        } else {
+            res.jsonp('{"msg": "userPictureSaved", "type": "success"}');
+        }
+    });
 };

@@ -372,4 +372,17 @@ describe('Test of user object', function () {
             return done();
         });
     });
+
+    it('Save picture for a user', function (done) {
+        var user = new User();
+        user.addPicture(1, 'public/uploads/users/avatar_1.jpg', function (err) {
+            if (err) return done(err);
+            user.getById(1, function (err, userDetail) {
+                if (err) return done(err);
+                assert.equal(userDetail.firstname, 'Jeremy');
+                assert.equal(userDetail.picture, '/uploads/users/avatar_1.jpg');
+                return done();
+            });
+        });
+    });
 });

@@ -13,7 +13,8 @@
             "salt": "T75xyNJfL19hzc778A08HQ==",
             "itra": null,
             "isActive": 1,
-            "role": "admin"
+            "role": "admin",
+            "picture": null
         }
     },
     {
@@ -30,6 +31,7 @@
             "itra": "?id=84500&nom=COURET#tab",
             "isActive": 0,
             "role": "editor",
+            "picture": null,
             "createdAt": "2015-02-04 18:55:39",
             "updatedAt": "2015-02-04 18:55:39"
         }

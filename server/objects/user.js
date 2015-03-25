@@ -265,14 +265,34 @@ user.prototype.delete = function (id, done) {
         .then(function (user) {
             if (!user) {
                 done(new Error('User not found'), null);
-            }
-            user.destroy()
-                .then(function () {
-                    done(null, 'deleted');
+            } else {
+                user.destroy()
+                    .then(function () {
+                        done(null, 'deleted');
 
+                    })
+                    .catch(function (err) {
+                        done(err, null);
+                    });
+            }
+        });
+};
+
+user.prototype.addPicture = function (id, path, done) {
+    'use strict';
+    models.User.find({ where: {id: id}})
+        .then(function (user) {
+            if (!user) {
+                done(new Error('User not found'));
+            }
+            var shortPath = path.substring(path.indexOf('/'));
+            user.picture = shortPath;
+            user.save()
+                .then(function (res) {
+                    done(null);
                 })
                 .catch(function (err) {
-                    done(err, null);
+                    done(err);
                 });
         });
 };

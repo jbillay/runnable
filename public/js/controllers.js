@@ -155,6 +155,9 @@ angular.module('runnable.controllers', []).
 			$scope.itraRuns = $sce.trustAsHtml(res[0]);
 			$scope.bankAccount = res[1];
 			$scope.passwords = {};
+            if ($rootScope.currentUser.picture) {
+                $scope.imageSrc = $rootScope.currentUser.picture;
+            }
 			if (!$rootScope.isAuthenticated) {
 				$location.path('/');
 			}
@@ -185,7 +188,6 @@ angular.module('runnable.controllers', []).
             User.deleteMe();
         };
         $scope.getFile = function (file) {
-            console.log(file);
             fileReader.readAsDataUrl(file, $scope)
                 .then(function(result) {
                     $scope.file = file;
@@ -195,10 +197,7 @@ angular.module('runnable.controllers', []).
         $scope.saveFile = function () {
             if ($scope.file) {
                 console.log($scope.file);
-                fileReader.savePicture($scope.file)
-                    .then(function (result) {
-                        console.log('Picture saved !!');
-                    });
+                fileReader.savePicture($scope.file);
             }
         };
 	}).

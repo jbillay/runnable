@@ -751,7 +751,7 @@ angular.module('runnable.services', ['ngResource']).
             }
         };
     }).
-    factory('fileReader', function ($q, $http) {
+    factory('fileReader', function ($q, $http, $rootScope) {
         var onLoad = function(reader, deferred, scope) {
             return function () {
                 scope.$apply(function () {
@@ -787,6 +787,7 @@ angular.module('runnable.services', ['ngResource']).
                 headers: {'Content-Type': undefined}
             }).
                 success(function (result) {
+                    $rootScope.$broadcast('USER_MSG', result);
                     deferred.resolve(result);
                 }).
                 error(function (data, status) {

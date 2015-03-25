@@ -62,12 +62,16 @@ module.exports = function (app, passport) {
 
         // Directory to save uploaded files
         app.use(multer({ dest: './public/uploads/',
+            changeDest: function (dest, req) {
+                if (req.path.match(/^\/api\/user\/.+/)) {
+                    dest = dest + '/users';
+                } else if (req.path.match(/^\/api\/run\/.+/)) {
+                    dest = dest + '/runs';
+                }
+                return dest;
+            },
             rename: function (fieldname, filename, req) {
                 return 'avatar_' + req.user.id;
-            },
-            changeDest: function (dest, req) {
-                console.log(req);
-                return dest;
             },
             onFileUploadStart: function (file) {
                 console.log(file.originalname + ' is starting ...');

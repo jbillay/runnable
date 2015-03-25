@@ -72,7 +72,7 @@
             </div>
 			<div class="row run_list">
                 <div class="col-sm-2 run_poster" ng-repeat="run in listRun | filter:{name:run_name} as results">
-					<a href="/run-{{run.id}}"><img src="/img/run_default.jpg" class="run_img" alt="Responsive image"></a>
+					<a href="/run-{{run.id}}"><img src="/img/run_default.jpg" class="run_img" alt="Image de la course"></a>
 					<div class="run_title"><a href="/run-{{run.id}}">{{run.name | capitalize | limitTo:25}}</a></div>
 					<div class="run_desc">
 						<p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize | limitTo:21}}</p>

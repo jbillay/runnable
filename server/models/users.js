@@ -18,7 +18,8 @@ module.exports = function(sequelize, DataTypes) {
 		salt: 			{ type: DataTypes.STRING, allowNull: false },
 		itra:			DataTypes.STRING,
 		isActive:		{ type: DataTypes.BOOLEAN, defaultValue: false },
-		role:			{ type: DataTypes.ENUM, values: ['user', 'editor', 'admin'] }
+		role:			{ type: DataTypes.ENUM, values: ['user', 'editor', 'admin'] },
+		picture:		DataTypes.STRING,
 	}, {
 		classMethods: {
 			associate: function(models) {

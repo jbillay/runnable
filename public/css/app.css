@@ -99,6 +99,12 @@ a.list-group-item.active,[class*='-info'] {
     padding-left: 5px;
 }
 
+.user_avatar {
+    width: 400px;
+    margin-left: 50px;
+    margin-bottom: 20px;
+}
+
 section.imgback {
     background:center no-repeat fixed url('/img/home.jpg');
     background-size: cover;
