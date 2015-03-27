@@ -27,7 +27,7 @@ function mail() {
     this.attachements = [];
 
     if (this.service) {
-        this.smtpTransport = nodemailer.createTransport(this.transport, {
+        this.smtpTransport = nodemailer.createTransport({
             service: this.service,
             auth: {
                 user: this.user,
@@ -35,12 +35,13 @@ function mail() {
             }
         });
     } else if (this.host) {
-        this.smtpTransport = nodemailer.createTransport(this.transport, {
+        this.smtpTransport = nodemailer.createTransport({
             host: this.host,
             port: 587,
-            use_authentication: true,
-            user: this.user,
-            pass: this.password
+            auth: {
+                user: this.user,
+                pass: this.password
+            }
         });
     }
     this.mailOptions = null;
@@ -63,7 +64,7 @@ mail.prototype.setText = function (texte) {
 };
 
 mail.prototype.addAttachment = function (filename) {
-    this.attachements.push({filePath: filename});
+    this.attachements.push({filepath: filename});
 };
 
 mail.prototype.send = function () {
@@ -86,11 +87,6 @@ mail.prototype.send = function () {
             }
 		});
 	}
-};
-
-mail.prototype.close = function () {
-    // if you don't want to use this transport object anymore, uncomment following line
-    this.smtpTransport.close(); // shut down the connection pool, no more messages
 };
 
 module.exports = mail;
