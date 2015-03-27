@@ -196,11 +196,14 @@ angular.module('runnable.controllers', []).
         };
         $scope.saveFile = function () {
             if ($scope.file) {
-                console.log($scope.file);
                 fileReader.savePicture($scope.file);
             }
         };
-	}).
+        $scope.deleteFile = function () {
+            $scope.imageSrc = null;
+            fileReader.deletePicture($scope.file);
+        };
+    }).
 	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run, Journey, Join) {
 		$scope.page = 'Admin';
 		var userListPromise = User.getList(),

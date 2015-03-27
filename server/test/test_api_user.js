@@ -618,5 +618,20 @@ describe('Test of user API', function () {
                 });
         });
     });
+
+    describe('GET /api/user/remove/picture', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('Should remove picture of users profil', function(done) {
+            agent
+                .get('http://localhost:9615/api/user/remove/picture')
+                .end(function (err, res) {
+                    assert.equal(JSON.parse(res.body).msg, 'userPictureRemoved');
+                    return done();
+                });
+        });
+    });
 });
 

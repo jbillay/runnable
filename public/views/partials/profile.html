@@ -9,7 +9,7 @@
                         <div class="col-sm-6">
                             <div class="profile">
                                 <i ng-hide="imageSrc">Pas de photo choisie</i>
-                                <img ng-src="{{imageSrc}}" class="user_avatar"/><br/>
+                                <img ng-show="imageSrc" ng-src="{{imageSrc}}" class="img-rounded user_avatar"/><br/>
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="input-group">
@@ -28,7 +28,7 @@
                                         </button>
                                     </div>
                                     <div class="col-sm-3">
-                                        <button type="button" class="btn btn-danger">
+                                        <button type="button" class="btn btn-danger" ng-click="deleteFile()">
                                             <i class="fa fa-trash"></i> Supprimer
                                         </button>
                                     </div>

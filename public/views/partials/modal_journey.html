@@ -76,16 +76,11 @@
                                     </div>
                                 </div>
                             </tab>
-                            <tab heading="Carte">
-                                <div class="col-sm-12 discussion_tab">
-                                    <div id="map_canvas" class="map"></div>
-                                </div>
-                            </tab>
                             <tab heading="Discussion">
                                 <div class="col-sm-3 discussion_tab">
                                     <ul class="list-group">
                                         <li class="list-group-item" ng-repeat="user in discussionUsers">
-                                            {{user.firstname}} {{user.lastname}}
+                                            <img ng-src="{{user.picture}}" class="img-rounded img-user-discussion"> {{user.firstname}} {{user.lastname}}
                                         </li>
                                     </ul>
                                 </div>

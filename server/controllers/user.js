@@ -305,3 +305,17 @@ exports.uploadPicture = function (req, res) {
         }
     });
 };
+
+exports.deletePicture = function (req, res) {
+    'use strict';
+    var userId= req.user.id,
+        user = new User();
+    user.deletePicture(userId, function (err) {
+        if (err) {
+            console.log('[ERROR] Not able to delete profil picture : ' + err);
+            res.jsonp('{"msg": ' + err + ', "type": "error"}');
+        } else {
+            res.jsonp('{"msg": "userPictureRemoved", "type": "success"}');
+        }
+    });
+};

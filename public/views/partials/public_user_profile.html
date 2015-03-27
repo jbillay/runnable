@@ -3,7 +3,8 @@
 <div class="container body">
     <div class="row spacehead">
         <div class="col-sm-12">
-        	<h2>{{userPublicInfo.firstname | capitalize}} {{userPublicInfo.lastname | capitalize}}</h2>
+            <h2><img ng-src="{{userPublicInfo.picture}}" class="img-rounded img-user-public">
+        	{{userPublicInfo.firstname | capitalize}} {{userPublicInfo.lastname | capitalize}}</h2>
         	<hr>
             <div class="col-sm-7">
                 <h3>Profil</h3>

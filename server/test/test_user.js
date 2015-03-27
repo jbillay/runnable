@@ -385,4 +385,17 @@ describe('Test of user object', function () {
             });
         });
     });
+
+    it('Delete picture for a user', function (done) {
+        var user = new User();
+        user.deletePicture(1, function (err) {
+            if (err) return done(err);
+            user.getById(1, function (err, userDetail) {
+                if (err) return done(err);
+                assert.equal(userDetail.firstname, 'Jeremy');
+                assert.isNull(userDetail.picture);
+                return done();
+            });
+        });
+    });
 });

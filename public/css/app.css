@@ -105,6 +105,15 @@ a.list-group-item.active,[class*='-info'] {
     margin-bottom: 20px;
 }
 
+.img-user-public {
+    width: 140px;
+}
+
+.img-user-discussion {
+    width: 35px;
+    height: 35px;
+}
+
 section.imgback {
     background:center no-repeat fixed url('/img/home.jpg');
     background-size: cover;

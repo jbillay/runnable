@@ -297,4 +297,22 @@ user.prototype.addPicture = function (id, path, done) {
         });
 };
 
+user.prototype.deletePicture = function (id, done) {
+    'use strict';
+    models.User.find({ where: {id: id}})
+        .then(function (user) {
+            if (!user) {
+                done(new Error('User not found'));
+            }
+            user.picture = null;
+            user.save()
+                .then(function (res) {
+                    done(null);
+                })
+                .catch(function (err) {
+                    done(err);
+                });
+        });
+};
+
 module.exports = user;
