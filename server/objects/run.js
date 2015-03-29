@@ -84,7 +84,6 @@ run.prototype.search = function (searchInfo, done) {
     'use strict';
 	distance.apiKey = 'AIzaSyDwRGJAEBNCeZK1176FXLvVAKyt5XQXXsM';
     var searchParams = [{is_active: true}];
-    console.log('SearchInfo : %j', searchInfo);
     if (searchInfo.run_name && searchInfo.run_name.length !== 0) {
         searchParams.push('lower(name) LIKE lower("%' + searchInfo.run_name + '%")');
     }
@@ -179,7 +178,9 @@ run.prototype.toggleActive = function (id, done) {
     'use strict';
 	models.Run.find({where: {id: id}})
 		.then(function (run) {
-			if (run.is_active === true) {
+            if (!run) {
+                done(new Error('Run not found'), null);
+            }			if (run.is_active === true) {
 				run.is_active = false;
 			} else {
 				run.is_active = true;

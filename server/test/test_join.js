@@ -119,7 +119,7 @@ describe('Test of join object', function () {
                 assert.equal(joinList.length, 1);
                 assert.equal(joinList[0].id, 1);
                 assert.equal(joinList[0].nb_place_outward, 2);
-                assert.equal(joinList[0].nb_place_return, 3);
+                assert.equal(joinList[0].nb_place_return, 2);
                 join.getByJourney(-1, function (err, joinList) {
                     assert.isNotNull(err);
                     return done();

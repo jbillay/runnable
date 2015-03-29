@@ -39,7 +39,7 @@ module.exports = function (app, passport, auth) {
     app.get('/api/run/next/:nb', controllers.run.next);
 
     app.post('/api/journey', auth.requiresLogin, controllers.journey.create);
-    app.get('/api/journey/list', controllers.journey.list);
+    app.get('/api/journey/open', controllers.journey.openList);
 	app.get('/api/journey/:id', controllers.journey.detail);
     app.get('/api/journey/run/:id', controllers.journey.listForRun);
     app.get('/api/journey/next/:nb', controllers.journey.next);
@@ -66,7 +66,8 @@ module.exports = function (app, passport, auth) {
 
 	app.get('/api/admin/users', auth.requireAdmin, controllers.user.list);
 	app.get('/api/admin/runs', auth.requireAdmin, controllers.run.list);
-	app.get('/api/admin/joins', auth.requireAdmin, controllers.join.list);
+    app.get('/api/admin/journeys', auth.requireAdmin, controllers.journey.list);
+    app.get('/api/admin/joins', auth.requireAdmin, controllers.join.list);
 	app.post('/api/admin/run/active', auth.requireAdmin, controllers.run.toggleActive);
 	app.post('/api/admin/user/active', auth.requireAdmin, controllers.user.toggleActive);
     app.post('/api/admin/user/remove', auth.requireAdmin, controllers.user.remove);
@@ -78,6 +79,10 @@ module.exports = function (app, passport, auth) {
 	app.get('/api/user/bankaccount', auth.requiresLogin, controllers.bank_account.get);
 
     app.post('/api/paypal/ipn', controllers.invoice.confirm);
+	
+	app.get('/get/option/:name', auth.requireAdmin, controllers.option.getOption);
+    app.get('/get/options', auth.requireAdmin, controllers.option.getOptions);
+    app.post('/set/options', auth.requireAdmin, controllers.option.saveOptions);
 
     app.get('/partials/:name', controllers.root.partials);
 

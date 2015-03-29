@@ -827,9 +827,19 @@ angular.module('runnable.services', ['ngResource']).
 					});
                 return deferred.promise;
 			},
+            getOpenList: function () {
+                var deferred = $q.defer();
+                $http.get('/api/journey/open').
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+					});
+                return deferred.promise;
+            },
             getList: function () {
                 var deferred = $q.defer();
-                $http({method: 'GET', url: '/api/journey/list'}).
+                $http.get('/api/admin/journeys').
 					success(function (result) {
 						deferred.resolve(result);
 					}).

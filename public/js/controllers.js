@@ -724,7 +724,7 @@ angular.module('runnable.controllers', []).
 	}).
 	controller('RunnableJourneyController', function ($scope, $q, $timeout, Run, Journey, GoogleMapApi) {
         $scope.page = 'Journey';
-		var journeyPromise = Journey.getList(),
+		var journeyPromise = Journey.getOpenList(),
             all = $q.all([journeyPromise]);
         all.then(function (res) {
 			$scope.journeyList = res[0];

@@ -128,7 +128,7 @@ describe('Test of Invoice object', function () {
             if (err) return done(err);
             assert.isNull(err);
             assert.equal(invoiceInfo.id, 4);
-            assert.equal(invoiceInfo.status, 'completed');
+            assert.equal(invoiceInfo.status, 'pending');
             assert.equal(invoiceInfo.amount, 23.75);
             assert.equal(invoiceInfo.fees, 3.75);
             assert.equal(invoiceInfo.ref, 'MRT20150217H36EG');

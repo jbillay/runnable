@@ -68,6 +68,16 @@ describe('Test of journey object', function () {
                         });
                     },
                     function(callback) {
+                        var fixtures = require('./fixtures/invoices.json');
+                        var promises = [];
+                        fixtures.forEach(function (fix) {
+                            promises.push(loadData(fix));
+                        });
+                        q.all(promises).then(function() {
+                            callback(null);
+                        });
+                    },
+                    function(callback) {
                         var fixtures = require('./fixtures/validationJourneys.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -159,6 +169,15 @@ describe('Test of journey object', function () {
             if (err) console.log(err);
             assert.equal(journeyList.length, 3);
             done();
+        });
+    });
+
+    it('Get list of open journey', function (done) {
+        var journey = new Journey();
+        journey.getOpenList(function (err, journeyList) {
+            if (err) return done(err);
+            assert.equal(journeyList.length, 2);
+            return done();
         });
     });
 

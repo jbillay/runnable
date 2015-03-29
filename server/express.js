@@ -6,6 +6,7 @@ var path     = require('path');
 var express  = require('express');
 var flash = require('connect-flash');
 var multer = require('multer');
+var Options = require('./objects/option');
 
 module.exports = function (app, passport) {
 	'use strict';
@@ -37,6 +38,18 @@ module.exports = function (app, passport) {
     app.set('views', path.join(__dirname, '../public/views'));
     app.engine('html', require('ejs').renderFile);
 	app.set('view engine', 'html');
+	
+	app.use(function (req, res, next) {
+		var options = new Options();
+		options.load(function (err, options) {
+			if (err) {
+				console.log('Problem to get options : ' + err);
+			} else {
+				res.locals.options = options;
+			}
+			next();
+		});
+	});
 
     //Enable jsonp
     app.enable('jsonp callback');
@@ -80,7 +93,7 @@ module.exports = function (app, passport) {
                 console.log(file.fieldname + ' uploaded to  ' + file.path);
             }
         }));
-
+		
         //routes should be at the last
         app.use(app.router);
 

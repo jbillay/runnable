@@ -30,6 +30,20 @@ exports.list = function (req, res) {
 	});
 };
 
+exports.openList = function (req, res) {
+    'use strict';
+    console.log('Get list of open journey');
+    var journey = new Journey();
+    journey.getOpenList(function (err, journeys) {
+        if (err) {
+            console.log('Not able to get journey list : ' + err);
+            res.jsonp('{"msg": "ko"}');
+        } else {
+            res.jsonp(journeys);
+        }
+    });
+};
+
 exports.listForRun = function (req, res) {
     'use strict';
 	console.log('Get list of journey for run' + req.params.id);

@@ -138,7 +138,6 @@ user.prototype.getItraCode = function (user, done) {
 
 user.prototype.getRuns = function (user, done) {
 	'use strict';
-    console.log(user.firstname);
 	var itra = new Itra(user.firstname, user.lastname, user.itra);
 	itra.getRuns(function (err, runs) {
 		if (err) {

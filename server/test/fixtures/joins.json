@@ -4,12 +4,7 @@
     "data": {
       "id": 1,
       "nb_place_outward": 2,
-      "nb_place_return": 3,
-      "status": "completed",
-      "amount": 108.27,
-      "fees": 8.27,
-      "invoice": "MRT20150217LA6E9",
-      "transaction": "",
+      "nb_place_return": 2,
       "UserId": 1,
       "JourneyId": 1
     }
@@ -20,11 +15,6 @@
       "id": 2,
       "nb_place_outward": 1,
       "nb_place_return": null,
-      "status": "pending",
-      "amount": 50.96,
-      "fees": 2.96,
-      "invoice": "MRT20150217JZL8D",
-      "transaction": "",
       "UserId": 1,
       "JourneyId": 2
     }
@@ -35,11 +25,6 @@
       "id": 3,
       "nb_place_outward": 1,
       "nb_place_return": null,
-      "status": "completed",
-      "amount": 50.96,
-      "fees": 2.96,
-      "invoice": "MRT20150217JZL8D",
-      "transaction": "",
       "UserId": 2,
       "JourneyId": 2
     }
@@ -50,11 +35,6 @@
       "id": 4,
       "nb_place_outward": 1,
       "nb_place_return": 1,
-      "status": "completed",
-      "amount": 23.75,
-      "fees": 3.75,
-      "invoice": "MRT20150217H36EG",
-      "transaction": "",
       "UserId": 1,
       "JourneyId": 3
     }

@@ -131,8 +131,7 @@ invoice.prototype.getByDriver = function (id, done) {
             journeys.forEach(function (journey) {
                 journeyIdList.push(journey.id);
             });
-            console.log(journeyIdList);
-            models.Invoice.findAll({where: {journeyId: journeyIdList, status: 'completed'},
+            models.Invoice.findAll({where: {journeyId: journeyIdList, status: 'completed', userId: id},
                 include: [models.Join, {
                     model: models.Journey,
                     as: 'Journey',

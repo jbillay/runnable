@@ -87,7 +87,6 @@ journey.prototype.save = function (journey, user, done) {
 
 journey.prototype.getList = function (done) {
     'use strict';
-	var that = this;
 	models.Journey.findAll({include: [models.Run]})
 		.then(function (journeys) {
 			done(null, journeys);
@@ -95,6 +94,46 @@ journey.prototype.getList = function (done) {
 		.catch(function (err) {
 			done(err, null);
 		});
+};
+
+journey.prototype.getOpenList = function (done) {
+    'use strict';
+    models.Journey.findAll({include: [
+                {
+                    model: models.Join,
+                    as: 'Joins',
+                    include: [ models.Invoice ]
+                },
+                { model: models.Run }
+            ]})
+        .then(function (journeys) {
+            var openJourney = [];
+            journeys.forEach(function (journey) {
+                var place = 0,
+                    book_place = 0;
+                if (journey.nb_space_outward) {
+                    place += journey.nb_space_outward;
+                }
+                if (journey.nb_space_return) {
+                    place += journey.nb_space_return;
+                }
+                journey.Joins.forEach(function (join) {
+                    if (join.nb_place_outward && join.Invoice.status === 'completed') {
+                        book_place += join.nb_place_outward;
+                    }
+                    if (join.nb_place_return && join.Invoice.status === 'completed') {
+                        book_place += join.nb_place_return;
+                    }
+                });
+                if (place > book_place) {
+                    openJourney.push(journey);
+                }
+            });
+            done(null, openJourney);
+        })
+        .catch(function (err) {
+            done(err, null);
+        });
 };
 
 journey.prototype.getListForRun = function (id, done) {

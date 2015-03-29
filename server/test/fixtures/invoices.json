@@ -17,7 +17,7 @@
     "model": "Invoice",
     "data": {
       "id": 2,
-      "status": "pending",
+      "status": "completed",
       "amount": 50.96,
       "fees": 2.96,
       "ref": "MRT20150217JZL8D",
@@ -45,7 +45,7 @@
     "model": "Invoice",
     "data": {
       "id": 4,
-      "status": "completed",
+      "status": "pending",
       "amount": 23.75,
       "fees": 3.75,
       "ref": "MRT20150217H36EG",

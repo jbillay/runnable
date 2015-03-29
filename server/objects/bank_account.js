@@ -66,7 +66,6 @@ bankAccount.prototype.save = function (done) {
 							});
 					} else {
 						var updateBankAccount = _.assign(bankAccount, that);
-						console.log('Updated account : %j',updateBankAccount);
 						updateBankAccount.save()
 							.then(function (bankAccount) {
 								done(null, bankAccount);

@@ -125,7 +125,8 @@
 								<th>Nb de place Aller</th>
 								<th>Nb de place Retour</th>
 								<th>Statut</th>
-								<th>Création</th>
+								<th>Paiement</th>
+								<th>Ref Paiement</th>
 							</tr>
 							<tbody ng-repeat="join in joinList">
 							<tr>
@@ -134,8 +135,9 @@
 								<td><a href="/journey-{{join.Journey.id}}">{{join.Journey.address_start}}</a></td>
 								<td>{{join.nb_place_outward}}</td>
 								<td>{{join.nb_place_return}}</td>
-								<td>{{join.status}}</td>
-								<td>{{join.createdAt | date:'dd/MM/yyyy'}}</td>
+								<td>{{join.Invoice.status}}</td>
+								<td>{{join.Invoice.createdAt | date:'dd/MM/yyyy'}}</td>
+								<td>{{join.Invoice.ref}}</td>
 							</tr>
 							</tbody>
 						</table>

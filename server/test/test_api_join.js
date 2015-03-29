@@ -163,7 +163,7 @@ describe('Test of join API', function () {
                 .get('http://localhost:9615/api/join/1')
                 .end(function (err, res) {
                     assert.equal(res.body.nb_place_outward, 2);
-                    assert.equal(res.body.nb_place_return, 3);
+                    assert.equal(res.body.nb_place_return, 2);
                     assert.equal(res.body.UserId, 1);
                     assert.equal(res.body.JourneyId, 1);
                     return done();

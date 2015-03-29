@@ -254,5 +254,25 @@ describe('Test of run API', function () {
                 });
         });
     });
-
+    describe('POST /api/run/search', function () {
+        it('should return a Maxicross runs', function (done) {
+            var searchInfo = {
+                    run_adv_type: 'trail',
+                    run_adv_start_date: '2015-02-01 00:00:00',
+                    run_adv_end_date: '2015-02-10 00:00:00',
+                    run_adv_city: '',
+                    run_name: 'maxi'
+                };
+            request(app)
+                .post('/api/run/search')
+                .send(searchInfo)
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    assert.equal(res.body.length, 1);
+                    done();
+                });
+        });
+    });
 });

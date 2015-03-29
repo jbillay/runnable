@@ -85,6 +85,16 @@ describe('Test of journey API', function () {
                             });
                         },
                         function (callback) {
+                            var fixtures = require('./fixtures/invoices.json');
+                            var promises = [];
+                            fixtures.forEach(function (fix) {
+                                promises.push(loadData(fix));
+                            });
+                            q.all(promises).then(function () {
+                                callback(null);
+                            });
+                        },
+                        function (callback) {
                             var fixtures = require('./fixtures/discussions.json');
                             var promises = [];
                             fixtures.forEach(function (fix) {
@@ -114,20 +124,38 @@ describe('Test of journey API', function () {
         console.log('Test API journey over !');
     });
 
-    describe('GET /api/journey/list', function () {
-        it('should return code 200', function (done) {
-            request(app)
-                .get('/api/journey/list')
-                .expect(200, done);
-        });
+    describe('GET /api/admin/journeys', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
         it('should return list of 3 runs', function (done) {
-            request(app)
-                .get('/api/journey/list')
+            agent
+                .get('http://localhost:9615/api/admin/journeys')
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
                     }
                     assert.equal(res.body.length, 3);
+                    return done();
+                });
+        });
+    });
+
+    describe('GET /api/journey/open', function () {
+        it('should return code 200', function (done) {
+            request(app)
+                .get('/api/journey/open')
+                .expect(200, done);
+        });
+        it('should return list of 2 runs', function (done) {
+            request(app)
+                .get('/api/journey/open')
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    assert.equal(res.body.length, 2);
                     done();
                 });
         });
@@ -245,7 +273,7 @@ describe('Test of journey API', function () {
                         return done(err);
                     }
                     agent
-                        .get('http://localhost:9615/api/journey/list')
+                        .get('http://localhost:9615/api/admin/journeys')
                         .end(function (err, res) {
                             if (err) {
                                 return done(err);
