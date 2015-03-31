@@ -1,6 +1,7 @@
 /* option object */
 
 var models = require('../models');
+var q = require('q');
 
 function Options() {
     'use strict';
@@ -8,13 +9,30 @@ function Options() {
     this.mailConfig = null;
 }
 
+Options.prototype.get = function (name) {
+    'use strict';
+    var deferred = q.defer();
+    models.Options.find({where: {name: name}})
+        .then(function (option) {
+            if (!option) {
+                deferred.reject(new Error('Option not found'));
+            } else {
+                deferred.resolve(option.value);
+            }
+        })
+        .catch(function (err) {
+            deferred.reject(new Error(err));
+        });
+    return deferred.promise;
+};
+
 Options.prototype.load = function (done) {
 	'use strict';
 	var that = this;
 	models.Options.findAll()
 		.then(function (options) {
 			options.forEach(function (opt) {
-				var funcName = "set";
+				var funcName = 'set';
 				funcName += opt.name[0].toUpperCase() + opt.name.substring(1);
 				if (Options.prototype.hasOwnProperty(funcName)) {
 					that[funcName](JSON.parse(opt.value));
@@ -37,7 +55,7 @@ Options.prototype.save = function (newOptions, done) {
 				if (eval(option.name) !== null) {
 					option.updateAttributes({value: JSON.stringify(eval(option.name))})
 						.then(function (savedOption) {
-							console.log("Option " + savedOption.name + " changed !");
+							console.log('Option ' + savedOption.name + ' changed !');
 						})
 						.catch(function (err) {
 							console.log('No able to save option ' + option.name + ' due to ' + err);

@@ -180,19 +180,21 @@ run.prototype.toggleActive = function (id, done) {
 		.then(function (run) {
             if (!run) {
                 done(new Error('Run not found'), null);
-            }			if (run.is_active === true) {
-				run.is_active = false;
-			} else {
-				run.is_active = true;
-			}
-			run.save()
-                .then(function (run) {
-				    done(null, run);
-    			})
-                .catch(function (err) {
-                    done(err, null);
-                });
-		})
+            } else {
+                if (run.is_active === true) {
+                    run.is_active = false;
+                } else {
+                    run.is_active = true;
+                }
+                run.save()
+                    .then(function (run) {
+                        done(null, run);
+                    })
+                    .catch(function (err) {
+                        done(err, null);
+                    });
+            }
+        })
 		.catch(function (err) {
 			done(err, null);
 		});

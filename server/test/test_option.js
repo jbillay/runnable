@@ -16,7 +16,7 @@ var loadData = function (fix) {
     models[fix.model].create(fix.data)
         .complete(function (err, result) {
             if (err) {
-                console.log(err);
+                deferred.reject(new Error(err));
             }
             deferred.resolve(result);
         });
@@ -53,8 +53,7 @@ describe('Tests of option object', function () {
 
     it('Should load options values', function (done) {
         var options = new Options(),
-			mailData = {"host": "mail.gmail.com", "user": "jbillay@gmail.com", "password": "test", "transport": "SMTP", "from": "Service des ventes Inside Pole <ventes@insidepole.fr>", "to": "ventes@insidepole.fr", "bcc": "jbillay@gmail.com"},
-			templateData = [{"id": 0, "name": "Out of Stock", "key": ["articleName", "stockDate"], "html": "TEST Out of stock HTML", "text": "TEST Out of Stock TEXT"}, {"id": 1, "name": "Tracking Generic", "key": ["deliveryName", "deliveryURL", "trackingNumber"], "html": "TEST Tracking Generic HTML", "text": "TEST Tracking Generic TEXT"}, {"id": 3, "name": "Tracking Xpole", "key": ["deliveryName", "deliveryURL", "trackingNumber"], "html": "TEST"}];
+            mailData = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: true};
         options.load(function (err, options) {
             if (err) {
                 console.log('Error: ' + err);
@@ -66,12 +65,28 @@ describe('Tests of option object', function () {
             return done();
         });
     });
-	
-	it('Should save options values', function (done) {
+
+    it('Should get mailConfig option value', function (done) {
+        var options = new Options(),
+            mailData = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: true};
+        options.get('mailConfig')
+            .then(function (value) {
+                assert.deepEqual(JSON.parse(value), mailData);
+                return done();
+            })
+            .catch(function (err) {
+                console.log('Error: ' + err);
+                return done (err);
+            });
+    });
+
+    it('Should save options values', function (done) {
         var options = new Options(),
 			optionData = [],
-			mailData = {"host": "mail.ovh.com", "user": "jbillay@gmail.com", "password": "noofs", "transport": "SMTP", "from": "My Run Trip <postmaster@myruntrip.com>", "to": "postmaster@myruntrip.com", "bcc": "jbillay@gmail.com"},
-			templateData = [{"id": 0, "name": "Test", "key": ["articleName", "stockDate"], "html": "TEST Out of stock HTML", "text": "TEST Out of Stock TEXT"}, {"id": 1, "name": "Tracking Generic", "key": ["deliveryName", "deliveryURL", "trackingNumber"], "html": "TEST BDD", "text": "TEST Tracking Generic TEXT"}, {"id": 3, "name": "Tracking Xpole", "key": ["deliveryName", "deliveryURL", "trackingNumber"], "html": "TEST"}];
+            mailData = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'noofs', transport: 'SMTP', from: 'My Run Trip <postmaster@myruntrip.com>', to: 'postmaster@myruntrip.com', bcc: 'jbillay@gmail.com'},
+			templateData = [{id: 0, name: 'Test', key: ['articleName', 'stockDate'], html: 'TEST Out of stock HTML', text: 'TEST Out of Stock TEXT'},
+                {id: 1, name: 'Tracking Generic', key: ['deliveryName', 'deliveryURL', 'trackingNumber'], html: 'TEST BDD', text: 'TEST Tracking Generic TEXT'},
+                {id: 3, name: 'Tracking Xpole', key: ['deliveryName', 'deliveryURL', 'trackingNumber'], html: 'TEST'}];
 		optionData.push(mailData);
 		optionData.push(templateData);
         options.save(optionData, function (err, newOptions) {

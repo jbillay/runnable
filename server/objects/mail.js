@@ -5,46 +5,69 @@
 'use strict';
 
 var nodemailer = require('nodemailer');
-var settings = require('./../../conf/config');
+var Options = require('./option');
+var q = require('q');
 
 function mail() {
-    if (settings.mail.service) {
-        this.service = settings.mail.service;
-    } else if (settings.mail.host) {
-        this.host = settings.mail.host;
-    } else {
-        throw new Error('No email setup done');
-    }
-    this.user = settings.mail.user;
-    this.password = settings.mail.password;
-    this.transport = settings.mail.transport;
-    this.from = settings.mail.from;
-    this.to = settings.mail.to;
-    this.bcc = settings.mail.bcc;
+    this.smtpTransport = null;
+    this.user = null;
+    this.password = null;
+    this.transport = null;
+    this.from = null;
+    this.to = null;
+    this.bcc = null;
+    this.toSend = null;
     this.subject = 'test';
     this.text = 'text';
     this.html = '<b>Test Email</b>';
     this.attachements = [];
-
-    if (this.service) {
-        this.smtpTransport = nodemailer.createTransport({
-            service: this.service,
-            auth: {
-                user: this.user,
-                pass: this.password
-            }
-        });
-    } else if (this.host) {
-        this.smtpTransport = nodemailer.createTransport({
-            host: this.host,
-            port: 587,
-            auth: {
-                user: this.user,
-                pass: this.password
-            }
-        });
-    }
     this.mailOptions = null;
+    var deferred = q.defer();
+    var that = this;
+    var option = new Options();
+    option.get('mailConfig')
+        .then(function (config) {
+            var settings = JSON.parse(config);
+            if (settings.service) {
+                that.service = settings.service;
+            } else if (settings.host) {
+                that.host = settings.host;
+            } else {
+                console.log(new Error('No email setup done'));
+            }
+            that.user = settings.user;
+            that.password = settings.password;
+            that.transport = settings.transport;
+            that.from = settings.from;
+            that.to = settings.to;
+            that.bcc = settings.bcc;
+            that.toSend = settings.send;
+
+            if (that.service) {
+                that.smtpTransport = nodemailer.createTransport({
+                    service: that.service,
+                    auth: {
+                        user: that.user,
+                        pass: that.password
+                    }
+                });
+            } else if (that.host) {
+                that.smtpTransport = nodemailer.createTransport({
+                    host: that.host,
+                    port: 587,
+                    auth: {
+                        user: that.user,
+                        pass: that.password
+                    }
+                });
+            }
+            deferred.resolve(that);
+        })
+        .catch(function (err) {
+            console.log(new Error('Not able to get email config : ' + err));
+            deferred.reject(new Error(err));
+        });
+    return deferred.promise;
 }
 
 mail.prototype.setTo = function (mail) {
@@ -68,25 +91,25 @@ mail.prototype.addAttachment = function (filename) {
 };
 
 mail.prototype.send = function () {
-    this.mailOptions  = {
-        from: this.from,
-        to: this.to,
-        bcc: this.bcc,
-        subject: this.subject,
-        text: this.text,
-        html: this.html,
-        attachments: this.attachements
-    };
+        this.mailOptions  = {
+            from: this.from,
+            to: this.to,
+            bcc: this.bcc,
+            subject: this.subject,
+            text: this.text,
+            html: this.html,
+            attachments: this.attachements
+        };
 
-	if (settings.mail.send) {
-		this.smtpTransport.sendMail(this.mailOptions, function (error, response) {
-			if (error) {
-				throw new Error('Impossible to send mail : ' + error);
-			} else {
-			    console.log('Message sent: ' + response.message);
-            }
-		});
-	}
+        if (this.toSend) {
+            this.smtpTransport.sendMail(this.mailOptions, function (error, response) {
+                if (error) {
+                    throw new Error('Impossible to send mail : ' + error);
+                } else {
+                    console.log('Message sent: ' + response.message);
+                }
+            });
+        }
 };
 
 module.exports = mail;

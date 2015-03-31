@@ -12,7 +12,7 @@
         "data": {
             "id": 2,
             "name": "mailConfig",
-            "value": "{\"host\": \"mail.gmail.com\", \"user\": \"jbillay@gmail.com\", \"password\": \"test\", \"transport\": \"SMTP\", \"from\": \"Service des ventes Inside Pole <ventes@insidepole.fr>\", \"to\": \"ventes@insidepole.fr\", \"bcc\": \"jbillay@gmail.com\"}"
+            "value": "{\"host\": \"mail.gmail.com\", \"user\": \"jbillay@gmail.com\", \"password\": \"test\", \"transport\": \"SMTP\", \"from\": \"Service des ventes Inside Pole <ventes@insidepole.fr>\", \"to\": \"ventes@insidepole.fr\", \"bcc\": \"jbillay@gmail.com\", \"send\": true}"
         }
     }
 ]

@@ -293,7 +293,7 @@ angular.module('runnable.controllers', []).
 			if (!Session.userEmail) {
 				$scope.showLogin();
 			} else {
-				$location.path('/journey-create');
+				$location.path('/journey-create-' + $scope.runId);
 			}
 		};
         $scope.participateRun = function () {
@@ -492,7 +492,7 @@ angular.module('runnable.controllers', []).
 			return fees;
 		};
 	}).
-	controller('RunnableJourneyCreateController', function ($scope, $q, $timeout, Run, GoogleMapApi) {
+	controller('RunnableJourneyCreateController', function ($scope, $q, $timeout, Run, GoogleMapApi, $routeParams) {
         $scope.page = 'Journey';
 		var runPromise = Run.getActiveList(),
             all = $q.all([runPromise]);
@@ -509,6 +509,14 @@ angular.module('runnable.controllers', []).
 			$timeout( function() {
 				GoogleMapApi.initMap('map_canvas');
 			});
+            if ($routeParams.runId) {
+                $scope.runList.forEach(function (run) {
+                    if (run.id === parseInt($routeParams.runId)) {
+                        $scope.run_id = run;
+                        $scope.selectDestination(run);
+                    }
+                });
+            }
 		});
 		$scope.journeyTypeChange = function () {
 			if ($scope.journey.journey_type ===  'aller-retour') {

@@ -8,13 +8,13 @@ exports.getOption = function (req, res) {
     'use strict';
     var name = req.params.name;
 	var value = res.locals.options[name];
-    console.log("Get option " + name);
+    console.log('Get option ' + name);
     res.json(value);
 };
 
 exports.getOptions = function (req, res) {
     'use strict';
-    console.log("Get all options");
+    console.log('Get all options');
 	res.json(res.locals.options);
 };
 

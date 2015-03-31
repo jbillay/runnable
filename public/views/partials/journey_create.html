@@ -15,8 +15,8 @@
 						<div class="form-group" ng-class="{ 'has-success' : createJourney.run_id_selector.$valid && createJourney.run_id_selector.$dirty,
 							'has-error' : createJourney.run_id_selector.$invalid && createJourney.run_id_selector.$dirty }">
 							<select ng-model="run_id" placeholder="Definir la course"
-									name="journey[run_id_selector]" id="run_id_selector" class="form-control"  tabindex="1" 
-									ng-change="selectDestination(run_id)"
+									name="journey[run_id_selector]" id="run_id_selector" class="form-control"
+                                    tabindex="1" ng-change="selectDestination(run_id)"
                                     ng-options="run as run.name for run in runList" required>
 									<option value="">-- Choisir une course --</option>
                             </select>
