@@ -25,24 +25,25 @@ exports.remove = function(req, res) {
 
 exports.invite = function(req, res) {
 	'use strict';
-	var html,
-		text,
-		emails,
-		mail = new Mail();
+	var emails;
 	emails = req.body.emails.split(',');
 	emails = _.compact(emails);
-	emails.forEach(function(email) {
-		email = email.trim();
-		mail.setTo(email);
-		mail.setSubject('Rejoins moi sur My Run Trip');
-		html = req.body.message;
-		text = req.body.message;
-		mail.setContentHtml(html);
-		mail.setText(text);
-		mail.send();
-		console.log('Invite sent to : ' + email);
-	});
-	res.jsonp('{"msg": "Invitation(s) envoyée(s)"}');
+    new Mail().then(function (mail) {
+        emails.forEach(function(email) {
+            var html,
+                text;
+            email = email.trim();
+            mail.setTo(email);
+            mail.setSubject('Rejoins moi sur My Run Trip');
+            html = req.body.message;
+            text = req.body.message;
+            mail.setContentHtml(html);
+            mail.setText(text);
+            mail.send();
+            console.log('Invite sent to : ' + email);
+        });
+        res.jsonp('{"msg": "Invitation(s) envoyée(s)"}');
+    });
 };
 
 exports.update = function(req, res) {
@@ -61,9 +62,6 @@ exports.update = function(req, res) {
 
 exports.create = function(req, res) {
     'use strict';
-	var html,
-		text,
-		mail = new Mail();
 	console.log('Add user : ' + req.body.email);
 	if (req.body.password === req.body.password_confirmation) {
 		var user = new User();
@@ -83,20 +81,24 @@ exports.create = function(req, res) {
 				});
 				var url = settings.domain,
 					timekey = new Date(newUser.createdAt).getTime();
-				mail.setTo(user.email);
-				mail.setSubject('Activation de votre compte runnable');
-				html = 'Vous venez de créer un compte sur notre site runnable<br/>' +
-					'Pour l\'activer veuillez cliquer sur le lien suivant :<br/>' +
-					'http://' + url + '/api/user/active/' + newUser.id + '/' + timekey +
-					'<br/> Merci l\'intérêt que vous porter à notre site';
-				text = 'Vous venez de créer un compte sur notre site runnable. ' +
-					'Pour l\'activer veuillez copiez/coller le lien suivant dans votre navigateur' +
-					'http://' + url + '/api/user/active/' + newUser.id + '/' + timekey +
-					' Merci l\'intérêt que vous porter à notre site';
-				mail.setContentHtml(html);
-				mail.setText(text);
-				mail.send();
-				res.jsonp('{"msg": "accountCreated", "type": "success"}');
+                new Mail().then(function (mail) {
+                    var html,
+                        text;
+                    mail.setTo(user.email);
+                    mail.setSubject('Activation de votre compte runnable');
+                    html = 'Vous venez de créer un compte sur notre site runnable<br/>' +
+                    'Pour l\'activer veuillez cliquer sur le lien suivant :<br/>' +
+                    'http://' + url + '/api/user/active/' + newUser.id + '/' + timekey +
+                    '<br/> Merci l\'intérêt que vous porter à notre site';
+                    text = 'Vous venez de créer un compte sur notre site runnable. ' +
+                    'Pour l\'activer veuillez copiez/coller le lien suivant dans votre navigateur' +
+                    'http://' + url + '/api/user/active/' + newUser.id + '/' + timekey +
+                    ' Merci l\'intérêt que vous porter à notre site';
+                    mail.setContentHtml(html);
+                    mail.setText(text);
+                    mail.send();
+                    res.jsonp('{"msg": "accountCreated", "type": "success"}');
+                });
 			}
 		});
 	} else {
@@ -163,27 +165,29 @@ exports.resetPassword = function (req, res) {
 	'use strict';
 	var email = req.body.email,
 		password = createPassword(8, 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890#{[@]}&"(-_)=+/-*'),
-		html,
-		text,
-		mail = new Mail();
-	var user = new User();
+        user = new User();
+
 	user.updatePassword(email, password, function (err, newUser) {
 		if (err) {
 			console.log('Not able to reset password : ' + err);
 			res.jsonp('{"msg": ' + err + '}');
-		} else { 
-			mail.setTo(newUser.email);
-			mail.setSubject('Génération d\'un nouveau mot de passe pour votre compte MyRunTrip');
-			html = 'Vous venez de demander la génération d\'un nouveau mot de passe sur notre site MyRunTrip.fr<br/>' +
-				'Voici votre nouveau mot de passe :' + password + '<br/>' +
-				'<br/> Merci l\'intérêt que vous porter à notre site';
-			text = 'Vous venez de demander la génération d\'un nouveau mot de passe sur notre site MyRunTrip.fr. ' +
-					'Voici votre nouveau mot de passe :' + password + '.' +
-                    ' Merci l\'intérêt que vous porter à notre site';
-			mail.setContentHtml(html);
-			mail.setText(text);
-			mail.send();
-			res.redirect('/');
+		} else {
+            new Mail().then(function (mail) {
+                var html,
+                    text;
+                mail.setTo(newUser.email);
+                mail.setSubject('Génération d\'un nouveau mot de passe pour votre compte MyRunTrip');
+                html = 'Vous venez de demander la génération d\'un nouveau mot de passe sur notre site MyRunTrip.fr<br/>' +
+                'Voici votre nouveau mot de passe :' + password + '<br/>' +
+                '<br/> Merci l\'intérêt que vous porter à notre site';
+                text = 'Vous venez de demander la génération d\'un nouveau mot de passe sur notre site MyRunTrip.fr. ' +
+                'Voici votre nouveau mot de passe :' + password + '.' +
+                ' Merci l\'intérêt que vous porter à notre site';
+                mail.setContentHtml(html);
+                mail.setText(text);
+                mail.send();
+                res.redirect('/');
+            });
 		}
 	});
 };

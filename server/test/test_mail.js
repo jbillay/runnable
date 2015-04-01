@@ -71,5 +71,28 @@ describe('Tests of mail object', function () {
                 return done(err);
             });
         });
+
+        it('Test to send an mail with a template', function (done) {
+            new Mail().then(function (mail) {
+                mail.setTo('jbillay@gmail.com');
+                mail.setSubject('Email template des tests unitaires');
+                mail.generateContent('Out of Stock', {articleName: 'name', stockDate: 'date'})
+                    .then(function (mail) {
+                        sinon.stub(mail, 'send', function() {
+                            assert.equal(this.user, 'jbillay@gmail.com');
+                            assert.equal(this.password, 'test');
+                            assert.equal(this.text, 'TEST Out of stock name date HTML');
+                        });
+                        mail.send();
+                        return done();
+                    })
+                    .catch(function (err) {
+                        return done(err);
+                    });
+            })
+            .catch(function (err) {
+                return done(err);
+            });
+        });
     });
 });

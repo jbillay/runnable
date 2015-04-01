@@ -90,26 +90,64 @@ mail.prototype.addAttachment = function (filename) {
     this.attachements.push({filepath: filename});
 };
 
-mail.prototype.send = function () {
-        this.mailOptions  = {
-            from: this.from,
-            to: this.to,
-            bcc: this.bcc,
-            subject: this.subject,
-            text: this.text,
-            html: this.html,
-            attachments: this.attachements
-        };
+mail.prototype.generateContent = function (templateName, keys) {
+    var that = this,
+        deferred = q.defer(),
+        option = new Options();
 
-        if (this.toSend) {
-            this.smtpTransport.sendMail(this.mailOptions, function (error, response) {
-                if (error) {
-                    throw new Error('Impossible to send mail : ' + error);
-                } else {
-                    console.log('Message sent: ' + response.message);
+    if (templateName === null) {
+        console.log(new Error('Template name ' + templateName + ' is not correct'));
+        deferred.reject(new Error('Template name ' + templateName + ' is not correct'));
+    }
+
+    option.get('emailTemplate')
+        .then(function (value) {
+            var html,
+                text,
+                noHTML = /(<([^>]+)>)/ig,
+                templates = JSON.parse(value);
+            templates.forEach(function (template) {
+                if (template.name === templateName) {
+                    html = template.html;
+                    Object.keys(keys).forEach(function (key) {
+                        var tag = new RegExp('{{' + key + '}}', 'g');
+                        html = html.replace(tag, keys[key]);
+                    });
+                    text = html.replace(/<br\/>/g, '\r\n');
+                    text = text.replace(noHTML, '');
+                    that.html = html;
+                    that.text = text;
                 }
             });
-        }
+            deferred.resolve(that);
+        })
+        .catch(function (err) {
+            console.log(new Error('Not able to get template : ' + err));
+            deferred.reject(new Error('Not able to get template : ' + err));
+        });
+    return deferred.promise;
+};
+
+mail.prototype.send = function () {
+    this.mailOptions = {
+        from: this.from,
+        to: this.to,
+        bcc: this.bcc,
+        subject: this.subject,
+        text: this.text,
+        html: this.html,
+        attachments: this.attachements
+    };
+
+    if (this.toSend) {
+        this.smtpTransport.sendMail(this.mailOptions, function (error, response) {
+            if (error) {
+                console.log(new Error('Impossible to send mail : ' + error));
+            } else {
+                console.log('Message sent: ' + response.message);
+            }
+        });
+    }
 };
 
 module.exports = mail;

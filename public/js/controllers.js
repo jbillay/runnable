@@ -132,13 +132,14 @@ angular.module('runnable.controllers', []).
 			return GoogleMapApi.getLocation(val);
 		};
 		$scope.createUser = function (user) {
+            $scope.userCreate = {};
 			User.create(user);
 		};
         $scope.sendContact = function (contact) {
             var data = {};
             $scope.mailContact = {};
             data.emails = 'jbillay@gmail.com';
-            data.title = '[Runnable] Demande info : ' + contact.demande;
+            data.title = '[My Run Trip] Demande info : ' + contact.demande;
             data.message = 'Information concernant' + contact.demande + '<br>' +
                             'De la part de : ' + contact.email + '<br>' +
                             'Content : <br>' + contact.content + '<br>';
