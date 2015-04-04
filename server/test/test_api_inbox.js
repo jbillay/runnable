@@ -58,6 +58,16 @@ describe('Test of Inbox API', function () {
                         });
                     },
                     function(callback) {
+                        var fixtures = require('./fixtures/options.json');
+                        var promises = [];
+                        fixtures.forEach(function (fix) {
+                            promises.push(loadData(fix));
+                        });
+                        q.all(promises).then(function() {
+                            callback(null);
+                        });
+                    },
+                    function(callback) {
                         var fixtures = require('./fixtures/inboxes.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -119,7 +129,7 @@ describe('Test of Inbox API', function () {
 
         before(loginUser(agent));
 
-        it('should return create un new message', function (done) {
+        it('should return create a new message', function (done) {
             var message = {
                 message: 'TEST Message',
                 title: 'TEST Title',

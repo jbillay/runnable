@@ -75,13 +75,13 @@ describe('Tests of mail object', function () {
         it('Test to send an mail with a template', function (done) {
             new Mail().then(function (mail) {
                 mail.setTo('jbillay@gmail.com');
-                mail.setSubject('Email template des tests unitaires');
-                mail.generateContent('ActivationAccount', {url: 'url', timekey: 'timekey', userId: 'userId'})
+                mail.generateContent('ActivationAccount', {url: 'url', timekey: 'timekey', userId: 'toto'})
                     .then(function (mail) {
                         sinon.stub(mail, 'send', function() {
                             assert.equal(this.user, 'jbillay@gmail.com');
                             assert.equal(this.password, 'test');
-                            assert.equal(this.text, 'TEST Out of stock userId timekey HTML');
+                            assert.equal(this.subject, 'Email pour user toto');
+                            assert.equal(this.text, 'TEST Out of stock toto timekey HTML');
                         });
                         mail.send();
                         return done();

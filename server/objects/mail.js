@@ -104,19 +104,23 @@ mail.prototype.generateContent = function (templateName, keys) {
         .then(function (value) {
             var html,
                 text,
+                title,
                 noHTML = /(<([^>]+)>)/ig,
                 templates = JSON.parse(value);
             templates.forEach(function (template) {
                 if (template.name === templateName) {
                     html = template.html;
+                    title = template.title;
                     Object.keys(keys).forEach(function (key) {
                         var tag = new RegExp('{{' + key + '}}', 'g');
                         html = html.replace(tag, keys[key]);
+                        title = title.replace(tag, keys[key]);
                     });
                     text = html.replace(/<br\/>/g, '\r\n');
                     text = text.replace(noHTML, '');
                     that.html = html;
                     that.text = text;
+                    that.subject = title;
                 }
             });
             deferred.resolve(that);

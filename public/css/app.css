@@ -4,7 +4,7 @@ html,body,.runnable_root {
 }
 
 body {
-  font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 14px "Palatino Linotype", "Book Antiqua", Palatino, serif;
 }
 
 h1, .h1,
@@ -14,13 +14,13 @@ h4, .h4,
 h5, .h5,
 h6, .h6 {
   margin-top: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
   font-weight: normal;
-  color: #333;
+  color: #428bca;
 }
 
 a {
-  color: #00B7FF;
+  color: #428bca;
 }
 
 section {
@@ -52,8 +52,10 @@ section {
 }
 
 .v-center {
-    padding-top:3%;
-    font-size:50px;
+    color: #fff;
+    padding-top: 2%;
+    font-size: 50px;
+    text-shadow: 2px 2px 8px #494949;
 }
 
 .icon-bar {
@@ -76,8 +78,13 @@ section {
     background-color: #fff;
 }
 
+.navbar a {
+    color: #428bca;
+    font: 16px "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
 a.list-group-item.active,[class*='-info'] {
-    background-color: #168ccc;
+    background-color: #494437;
     color:#fff;
 }
 
@@ -121,18 +128,15 @@ section.imgback {
 }
 
 section.itineraire {
-    background-color: #e5e5ef;
-    color:#686868;
+    color:#686868 !important;
 }
 
 section.course {
-    background-color: #168ccc;
-    color:#ddd;
+    color:#00B7FF !important;
 }
 
 section.fonctionnement {
-    background-color: #fff;
-    color:#444;
+    color:#444 !important;
 }
 
 section.apropos a {
@@ -436,11 +440,21 @@ table.palmares h3 {
 }
 
 footer {
-    background-color:#494949;
+    background-color:#d3d3d3;
     color:#ddd;
     min-height:100px;
     padding-top:20px;
     padding-bottom:40px;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+footer .icon {
+    width: 30px;
+}
+
+footer .titre {
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    color: #428bca;
 }
 
 footer .nav>li>a {
