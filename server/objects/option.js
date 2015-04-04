@@ -47,8 +47,8 @@ Options.prototype.load = function (done) {
 
 Options.prototype.save = function (newOptions, done) {
 	'use strict';
-	var mailConfig = newOptions[0],
-		emailTemplate = newOptions[1];
+	var mailConfig = newOptions.mailConfig,
+		emailTemplate = newOptions.emailTemplate;
 	models.Options.findAll()
 		.then(function (options) {
 			options.forEach(function (option) {

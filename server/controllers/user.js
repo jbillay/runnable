@@ -82,22 +82,13 @@ exports.create = function(req, res) {
 				var url = settings.domain,
 					timekey = new Date(newUser.createdAt).getTime();
                 new Mail().then(function (mail) {
-                    var html,
-                        text;
                     mail.setTo(user.email);
-                    mail.setSubject('Activation de votre compte runnable');
-                    html = 'Vous venez de créer un compte sur notre site runnable<br/>' +
-                    'Pour l\'activer veuillez cliquer sur le lien suivant :<br/>' +
-                    'http://' + url + '/api/user/active/' + newUser.id + '/' + timekey +
-                    '<br/> Merci l\'intérêt que vous porter à notre site';
-                    text = 'Vous venez de créer un compte sur notre site runnable. ' +
-                    'Pour l\'activer veuillez copiez/coller le lien suivant dans votre navigateur' +
-                    'http://' + url + '/api/user/active/' + newUser.id + '/' + timekey +
-                    ' Merci l\'intérêt que vous porter à notre site';
-                    mail.setContentHtml(html);
-                    mail.setText(text);
-                    mail.send();
-                    res.jsonp('{"msg": "accountCreated", "type": "success"}');
+                    mail.setSubject('Activation de votre compte MyRunTrip');
+                    mail.generateContent('ActivationAccount', {url: url, userId: newUser.id, timekey: timekey})
+                        .then(function (mail) {
+                            mail.send();
+                            res.jsonp('{"msg": "accountCreated", "type": "success"}');
+                    });
                 });
 			}
 		});
@@ -173,20 +164,13 @@ exports.resetPassword = function (req, res) {
 			res.jsonp('{"msg": ' + err + '}');
 		} else {
             new Mail().then(function (mail) {
-                var html,
-                    text;
                 mail.setTo(newUser.email);
                 mail.setSubject('Génération d\'un nouveau mot de passe pour votre compte MyRunTrip');
-                html = 'Vous venez de demander la génération d\'un nouveau mot de passe sur notre site MyRunTrip.fr<br/>' +
-                'Voici votre nouveau mot de passe :' + password + '<br/>' +
-                '<br/> Merci l\'intérêt que vous porter à notre site';
-                text = 'Vous venez de demander la génération d\'un nouveau mot de passe sur notre site MyRunTrip.fr. ' +
-                'Voici votre nouveau mot de passe :' + password + '.' +
-                ' Merci l\'intérêt que vous porter à notre site';
-                mail.setContentHtml(html);
-                mail.setText(text);
-                mail.send();
-                res.redirect('/');
+                mail.generateContent('ResetPassword', {password: password})
+                    .then(function (mail) {
+                        mail.send();
+                        res.redirect('/');
+                    });
             });
 		}
 	});

@@ -143,6 +143,62 @@
 						</table>
 					</table>
 				</tab>
+				<tab heading="Email">
+					<h2>Templates email</h2>
+					<select class="form-control" ng-model="template"  ng-form="subForm"
+							ng-options="email.name for email in emailOption.emailTemplate">
+					</select>
+					<span>{{template.key}}</span>
+					<textarea ng-form="subForm" ng-model="template.html" class="form-control optionsEmailTemplate">
+						{{template.html}}
+					</textarea>
+					<h2>Configuration email</h2>
+					<div role="form" ng-form="emailConfigForm">
+						<div class="form-group">
+							<label for="email_host">Email host</label>
+							<input type="text" class="form-control input-sm" id="email_host"
+								   placeholder="Enter host" ng-model="emailOption.mailConfig.host">
+						</div>
+						<div class="form-group">
+							<label for="email_user">Email Account User</label>
+							<input type="text" class="form-control input-sm" id="email_user"
+								   placeholder="Entrer user" ng-model="emailOption.mailConfig.user">
+						</div>
+						<div class="form-group">
+							<label for="email_password">Email Account Password</label>
+							<input type="password" class="form-control input-sm" id="email_password"
+								   placeholder="Entrer password" ng-model="emailOption.mailConfig.password">
+						</div>
+						<div class="form-group">
+							<label for="email_transport">Email Transport</label>
+							<input type="text" class="form-control input-sm" id="email_transport"
+								   placeholder="Entrer transport" ng-model="emailOption.mailConfig.transport">
+						</div>
+						<div class="form-group">
+							<label for="email_from">Email Default Origin</label>
+							<input type="text" class="form-control input-sm" id="email_from"
+								   placeholder="Entrer email origin" ng-model="emailOption.mailConfig.from">
+						</div>
+						<div class="form-group">
+							<label for="email_to">Email Default Destination</label>
+							<input type="text" class="form-control input-sm" id="email_to"
+								   placeholder="Entrer email destination" ng-model="emailOption.mailConfig.to">
+						</div>
+						<div class="form-group">
+							<label for="email_bcc">Email Default BCC</label>
+							<input type="text" class="form-control input-sm" id="email_bcc"
+								   placeholder="Entrer email bcc" ng-model="emailOption.mailConfig.bcc">
+						</div>
+						<div class="form-group">
+							<label for="email_send">Send Email ?</label>
+							<input type="checkbox" id="email_send" ng-model="emailOption.mailConfig.send">
+						</div>
+					</div>
+					<button type="button" class="btn btn-default"
+                        ng-click="submitEmailOptions(emailOption)">
+						Save
+					</button>
+				</tab>
             </tabset>
         </div>
     </div>

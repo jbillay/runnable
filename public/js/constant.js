@@ -42,5 +42,7 @@ angular.module('runnable.constant', []).
         userNotDeleted:         'L\'utilisateur n\'a pas pu être supprimé',
         userDeleted:            'L\'utilisateur vient d\'être supprimé',
         userPictureSaved:       'Votre image a bien été sauvegardée',
-        userPictureRemoved:     'Votre image a bien été supprimée'
+        userPictureRemoved:     'Votre image a bien été supprimée',
+		emailOptionsNotSaved:	'Les informations sur les emails n\'ont pas été sauvegardées',
+		emailOptionsSaved:		'Les informations sur les emails ont été sauvegardées'
 	});

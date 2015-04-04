@@ -74,14 +74,14 @@ describe('Test of option API', function () {
         console.log('Test API option over !');
     });
 
-    describe('GET /get/option/:name', function () {
+    describe('GET /api/admin/option/:name', function () {
         var agent = superagent.agent(),
 			mailData = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false};
         before(loginUser(agent));
 
         it('should get emailConfig value', function (done) {
             agent
-                .get('http://localhost:9615/get/option/mailConfig')
+                .get('http://localhost:9615/api/admin/option/mailConfig')
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
@@ -92,14 +92,14 @@ describe('Test of option API', function () {
         });
     });
 
-    describe('GET /get/options', function () {
+    describe('GET /api/admin/options', function () {
         var agent = superagent.agent(),
             mailData = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false};
         before(loginUser(agent));
 
         it('should get all option values', function (done) {
             agent
-                .get('http://localhost:9615/get/options')
+                .get('http://localhost:9615/api/admin/options')
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
@@ -112,22 +112,20 @@ describe('Test of option API', function () {
         });
     });
 
-    describe('POST /set/options', function () {
+    describe('POST /api/admin/options', function () {
         var agent = superagent.agent();
 		
         before(loginUser(agent));
 
         it('should save options values', function (done) {
-            var optionData = [],
-				mailData = {host: 'mail.ovh.com', user: 'jbillay@gmail.com', password: 'noofs', transport: 'SMTP', from: 'My Run Trip <postmaster@myruntrip.com>', to: 'postmaster@myruntrip.com', bcc: 'jbillay@gmail.com'},
-				templateData = [{id: 0, name: 'Test', key: ['articleName', 'stockDate'], html: 'TEST Out of stock HTML', text: 'TEST Out of Stock TEXT'},
+            var optionData = {};
+			optionData.mailConfig = {host: 'mail.ovh.com', user: 'jbillay@gmail.com', password: 'noofs', transport: 'SMTP', from: 'My Run Trip <postmaster@myruntrip.com>', to: 'postmaster@myruntrip.com', bcc: 'jbillay@gmail.com', send: false};
+			optionData.emailTemplate = [{id: 0, name: 'Test', key: ['articleName', 'stockDate'], html: 'TEST Out of stock HTML', text: 'TEST Out of Stock TEXT'},
                     {id: 1, name: 'Tracking Generic', key: ['deliveryName', 'deliveryURL', 'trackingNumber'], html: 'TEST BDD', text: 'TEST Tracking Generic TEXT'},
                     {id: 3, name: 'Tracking Xpole', key: ['deliveryName', 'deliveryURL', 'trackingNumber'], html: 'TEST'}];
-			optionData.push(mailData);
-			optionData.push(templateData);
 			
             agent
-                .post('http://localhost:9615/set/options')
+                .post('http://localhost:9615/api/admin/options')
                 .send(optionData)
                 .end(function (err, res) {
                     if (err) {
@@ -135,14 +133,14 @@ describe('Test of option API', function () {
                     }
                     // Waiting 300 ms in order to finalized the update of values - maybe better to use bulkCreate in save
 					setTimeout(function(){ agent
-						.get('http://localhost:9615/get/options')
+						.get('http://localhost:9615/api/admin/options')
 						.end(function (err, res) {
 							if (err) {
 								return done(err);
 							}
 							var obj = JSON.parse(JSON.stringify(res.body));
 							assert.equal(Object.keys(obj).length, 2);
-							assert.deepEqual(obj.mailConfig, mailData);
+							assert.deepEqual(obj.mailConfig, optionData.mailConfig);
 							return done();
 						}); }, 300);
                 });

@@ -4,7 +4,7 @@
         "data": {
             "id": 1,
             "name": "emailTemplate",
-            "value": "[{\"id\": 0, \"name\": \"Out of Stock\", \"key\": [\"articleName\", \"stockDate\"], \"html\": \"TEST Out of stock {{articleName}} {{stockDate}} HTML\", \"text\": \"TEST Out of Stock TEXT\"}, {\"id\": 1, \"name\": \"Tracking Generic\", \"key\": [\"deliveryName\", \"deliveryURL\", \"trackingNumber\"], \"html\": \"TEST Tracking Generic HTML\", \"text\": \"TEST Tracking Generic TEXT\"}, {\"id\": 3, \"name\": \"Tracking Xpole\", \"key\": [\"deliveryName\", \"deliveryURL\", \"trackingNumber\"], \"html\": \"TEST\"}]"
+            "value": "[{\"id\": 0, \"name\": \"ActivationAccount\", \"key\": [\"url\", \"userId\", \"timekey\"], \"html\": \"TEST Out of stock {{userId}} {{timekey}} HTML\", \"text\": \"TEST Out of Stock TEXT\"}, {\"id\": 1, \"name\": \"Tracking Generic\", \"key\": [\"deliveryName\", \"deliveryURL\", \"trackingNumber\"], \"html\": \"TEST Tracking Generic HTML\", \"text\": \"TEST Tracking Generic TEXT\"}, {\"id\": 3, \"name\": \"Tracking Xpole\", \"key\": [\"deliveryName\", \"deliveryURL\", \"trackingNumber\"], \"html\": \"TEST\"}]"
         }
     },
     {

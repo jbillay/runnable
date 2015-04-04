@@ -71,6 +71,9 @@ module.exports = function (app, passport, auth) {
 	app.post('/api/admin/run/active', auth.requireAdmin, controllers.run.toggleActive);
 	app.post('/api/admin/user/active', auth.requireAdmin, controllers.user.toggleActive);
     app.post('/api/admin/user/remove', auth.requireAdmin, controllers.user.remove);
+    app.post('/api/admin/options', auth.requireAdmin, controllers.option.saveOptions);
+	app.get('/api/admin/option/:name', auth.requireAdmin, controllers.option.getOption);
+    app.get('/api/admin/options', auth.requireAdmin, controllers.option.getOptions);
 
     app.get('/api/invoice', auth.requiresLogin, controllers.invoice.getByUser);
     app.get('/api/invoice/driver', auth.requiresLogin, controllers.invoice.getByDriver);
@@ -80,10 +83,6 @@ module.exports = function (app, passport, auth) {
 
     app.post('/api/paypal/ipn', controllers.invoice.confirm);
 	
-	app.get('/get/option/:name', auth.requireAdmin, controllers.option.getOption);
-    app.get('/get/options', auth.requireAdmin, controllers.option.getOptions);
-    app.post('/set/options', auth.requireAdmin, controllers.option.saveOptions);
-
     app.get('/partials/:name', controllers.root.partials);
 
 	// For technical purpose

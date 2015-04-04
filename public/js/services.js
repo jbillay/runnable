@@ -104,6 +104,35 @@ angular.module('runnable.services', ['ngResource']).
             }
 		};
 	}).
+    factory('EmailOptions', function ($q, $http, $rootScope) {
+		return {
+			save: function (options) {
+                var deferred = $q.defer();
+                $http.post('/api/admin/options', options).
+					success(function (result) {
+						$rootScope.$broadcast('USER_MSG', result);
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ', data);
+						deferred.resolve(data);
+					});
+				return deferred.promise;
+			},
+			get: function () {
+                var deferred = $q.defer();
+                $http.get('/api/admin/options').
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ', data);
+						deferred.resolve(data);
+					});
+                return deferred.promise;
+            }
+		};
+	}).
     factory('User', function ($q, $http, $rootScope) {
 		return {
 			create: function (user) {

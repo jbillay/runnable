@@ -21,15 +21,15 @@ exports.getOptions = function (req, res) {
 exports.saveOptions = function (req, res) {
     'use strict';
     var modOptions = req.body,
-        emailTemplate = modOptions[0],
-        mailConfig = modOptions[1],
+        emailTemplate = modOptions.emailTemplate,
+        mailConfig = modOptions.mailConfig,
 		options = new Options();
     options.save(modOptions, function (err, options) {
         if (err) {
-            res.json({'res': 'ko', 'msg': err});
-            throw new Error('Not enable to get option');
+            console.log(new Error('Not enable to get option : ' + err));
+            res.jsonp('{"msg": "emailOptionsNotSaved", "type": "error"}');
         } else {
-			res.json({'res': 'ok'});
+			res.jsonp('{"msg": "emailOptionsSaved", "type": "success"}');
 		}
     });
 };

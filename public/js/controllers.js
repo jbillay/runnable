@@ -205,18 +205,20 @@ angular.module('runnable.controllers', []).
             fileReader.deletePicture($scope.file);
         };
     }).
-	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run, Journey, Join) {
+	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run, Journey, Join, EmailOptions) {
 		$scope.page = 'Admin';
 		var userListPromise = User.getList(),
 			runListPromise = Run.getList(),
 			journeyListPromise = Journey.getList(),
 			joinListPromise = Join.getList(),
-			all = $q.all([userListPromise, runListPromise, journeyListPromise, joinListPromise]);
+			EmailOptionsPromise = EmailOptions.get(),
+			all = $q.all([userListPromise, runListPromise, journeyListPromise, joinListPromise, EmailOptionsPromise]);
 		all.then(function (res) {
 			$scope.userList = res[0];
 			$scope.runList = res[1];
 			$scope.journeyList = res[2];
 			$scope.joinList = res[3];
+			$scope.emailOption = res[4];
 		});
 		$scope.userToggleActive = function(user) {
 			console.log('Toggle active for user : ' + user.id);
@@ -226,6 +228,9 @@ angular.module('runnable.controllers', []).
 			} else {
 				user.isActive = true;
 			}
+		};
+		$scope.submitEmailOptions = function (mailConfig) {
+			EmailOptions.save(mailConfig);
 		};
 		$scope.userEdit = function (user) {
 			console.log('Edit user ' + user.id);

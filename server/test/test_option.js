@@ -53,14 +53,15 @@ describe('Tests of option object', function () {
 
     it('Should load options values', function (done) {
         var options = new Options(),
-            mailData = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false};
+            mailConfig = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false};
         options.load(function (err, options) {
             if (err) {
                 console.log('Error: ' + err);
 				return done(err);
             }
-            assert.deepEqual(options.getMailConfig(), mailData);
-            assert.equal(options.getTemplateId('Out of Stock'), 0);
+            assert.deepEqual(options.getMailConfig(), mailConfig);
+            assert.equal(options.getTemplateId('Out of Stock'), null);
+            assert.equal(options.getTemplateId('ActivationAccount'), 0);
             assert.equal(options.getEmailTemplate(1), 'TEST Tracking Generic HTML');
             return done();
         });
@@ -68,10 +69,10 @@ describe('Tests of option object', function () {
 
     it('Should get mailConfig option value', function (done) {
         var options = new Options(),
-            mailData = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false};
+            mailConfig = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false};
         options.get('mailConfig')
             .then(function (value) {
-                assert.deepEqual(JSON.parse(value), mailData);
+                assert.deepEqual(JSON.parse(value), mailConfig);
                 return done();
             })
             .catch(function (err) {
@@ -82,13 +83,11 @@ describe('Tests of option object', function () {
 
     it('Should save options values', function (done) {
         var options = new Options(),
-			optionData = [],
-            mailData = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'noofs', transport: 'SMTP', from: 'My Run Trip <postmaster@myruntrip.com>', to: 'postmaster@myruntrip.com', bcc: 'jbillay@gmail.com'},
-			templateData = [{id: 0, name: 'Test', key: ['articleName', 'stockDate'], html: 'TEST Out of stock HTML', text: 'TEST Out of Stock TEXT'},
+			optionData = {};
+        optionData.mailConfig = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'noofs', transport: 'SMTP', from: 'My Run Trip <postmaster@myruntrip.com>', to: 'postmaster@myruntrip.com', bcc: 'jbillay@gmail.com'};
+		optionData.emailTemplate = [{id: 0, name: 'Test', key: ['articleName', 'stockDate'], html: 'TEST Out of stock HTML', text: 'TEST Out of Stock TEXT'},
                 {id: 1, name: 'Tracking Generic', key: ['deliveryName', 'deliveryURL', 'trackingNumber'], html: 'TEST BDD', text: 'TEST Tracking Generic TEXT'},
                 {id: 3, name: 'Tracking Xpole', key: ['deliveryName', 'deliveryURL', 'trackingNumber'], html: 'TEST'}];
-		optionData.push(mailData);
-		optionData.push(templateData);
         options.save(optionData, function (err, newOptions) {
             if (err) {
                 console.log('Error: ' + err);
@@ -101,7 +100,7 @@ describe('Tests of option object', function () {
 					console.log('Error: ' + err);
 					return done(err);
 				}
-				assert.deepEqual(newOptions.getMailConfig(), mailData);
+				assert.deepEqual(newOptions.getMailConfig(), optionData.mailConfig);
 				assert.equal(newOptions.getTemplateId('Test'), 0);
 				assert.equal(newOptions.getEmailTemplate(1), 'TEST BDD');
 				return done();

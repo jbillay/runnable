@@ -76,12 +76,12 @@ describe('Tests of mail object', function () {
             new Mail().then(function (mail) {
                 mail.setTo('jbillay@gmail.com');
                 mail.setSubject('Email template des tests unitaires');
-                mail.generateContent('Out of Stock', {articleName: 'name', stockDate: 'date'})
+                mail.generateContent('ActivationAccount', {url: 'url', timekey: 'timekey', userId: 'userId'})
                     .then(function (mail) {
                         sinon.stub(mail, 'send', function() {
                             assert.equal(this.user, 'jbillay@gmail.com');
                             assert.equal(this.password, 'test');
-                            assert.equal(this.text, 'TEST Out of stock name date HTML');
+                            assert.equal(this.text, 'TEST Out of stock userId timekey HTML');
                         });
                         mail.send();
                         return done();
