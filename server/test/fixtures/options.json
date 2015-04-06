@@ -4,7 +4,7 @@
         "data": {
             "id": 1,
             "name": "emailTemplate",
-            "value": "[{\"id\": 0, \"name\": \"ActivationAccount\", \"key\": [\"url\", \"userId\", \"timekey\"], \"html\": \"TEST Out of stock {{userId}} {{timekey}} HTML\", \"text\": \"TEST Out of Stock TEXT\", \"title\": \"Email pour user {{userId}}\"}, {\"id\": 1, \"name\": \"Tracking Generic\", \"key\": [\"deliveryName\", \"deliveryURL\", \"trackingNumber\"], \"html\": \"TEST Tracking Generic HTML\", \"text\": \"TEST Tracking Generic TEXT\", \"title\": \"Email pour test\"}, {\"id\": 3, \"name\": \"Tracking Xpole\", \"key\": [\"deliveryName\", \"deliveryURL\", \"trackingNumber\"], \"html\": \"TEST\", \"title\": \"Email pour test\"}]"
+            "value": "[{\"id\": 0, \"name\": \"ActivationAccount\", \"key\": [\"url\", \"userId\", \"timekey\"], \"html\": \"TEST Out of stock {{userId}} {{timekey}} HTML\", \"text\": \"TEST Out of Stock TEXT\", \"title\": \"Email pour user {{userId}}\"}, {\"id\": 1, \"name\": \"ResetPassword\", \"key\": [\"password\"], \"html\": \"TEST Tracking Generic HTML\", \"title\": \"Email pour test\"}, {\"id\": 3, \"name\": \"inboxTest\", \"key\": [\"message\", \"userId\"], \"html\": \"TEST {{message}}\", \"title\": \"Email pour {{userId}}\"}]"
         }
     },
     {

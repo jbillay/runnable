@@ -3,19 +3,41 @@
  */
 
 var Inbox = require('../objects/inbox');
+var Mail = require('../objects/mail');
+var User = require('../objects/user');
 
 exports.add = function (req, res) {
     'use strict';
-	var message = req.body.message,
-        title = req.body.title,
+	var template = req.body.template,
+        values = req.body.values,
 		userId = req.body.userId,
-		inbox = new Inbox();
-	inbox.add(message, title, userId, function (err, message){
-		if (err) {
-			res.jsonp('{"msg": "notAbleAddMessage", "type": "error"}');
-		}
-		res.jsonp('{"msg": "addMessage", "type": "success"}');
-	});
+		inbox = new Inbox(),
+        user = new User();
+    new Mail().then(function (mail) {
+        mail.generateContent(template, values)
+            .then(function (mail) {
+                user.getById(userId, function (err, user) {
+                    if (err) {
+                        res.jsonp(new Error('Unable to get user : ' + userId));
+                    } else {
+                        var message = mail.getContentHtml(),
+                            title = mail.getSubject();
+                        mail.setTo(user.email);
+                        mail.send();
+                        inbox.add(message, title, userId, function (err, message){
+                            if (err) {
+                                res.jsonp('{"msg": "notAbleAddMessage", "type": "error"}');
+                            } else {
+                                res.jsonp(message);
+                            }
+                        });
+                    }
+                });
+            })
+            .catch(function (err) {
+                res.jsonp(new Error('Unable to send mail : ' + err));
+            });
+    });
 };
 
 exports.getList = function (req, res) {

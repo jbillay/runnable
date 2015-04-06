@@ -464,9 +464,8 @@ angular.module('runnable.controllers', []).
 			}
 		};
 		$scope.joinJourney = function (placeOutward, placeReturn) {
-			var title = 'Validation inscription au voyage pour la course ' + $scope.journey.Run.name,
-                textMessage = 'Nous avons bien pris en compte votre inscriptions pour la course ' +
-                    $scope.journey.Run.name + '. Nous sommes en attente de la validation du paiement.';
+			var template = 'JourneySubmit',
+                values = {runName: $scope.journey.Run.name };
             placeOutward = placeOutward  || 0;
             placeReturn = placeReturn  || 0;
 			var amount = (placeOutward + placeReturn) * $scope.journey.amount +
@@ -478,7 +477,7 @@ angular.module('runnable.controllers', []).
 			$scope.reserved_outward = $scope.reserved_outward + placeOutward;
 			$scope.reserved_return = $scope.reserved_return + placeReturn;
 			Join.addJoin($scope.journeyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref);
-            Inbox.addMessage(title, textMessage, Session.userId);
+            Inbox.addMessage(template, values, Session.userId);
 		};
 		$scope.removeJoinJourney = function () {
 			$scope.joined = 0;
@@ -644,11 +643,12 @@ angular.module('runnable.controllers', []).
 			Discussion.addMessage(text, $scope.selectedJourney.id);
 			angular.forEach($scope.discussionUsers, function (user) {
 				if (user.id !== Session.userId) {
-                    var title = 'Nouveau message concernant le trajet pour la course ' +
-							$scope.selectedJourney.Run.name,
-						textMessage = Session.userFirstname + ' '+ Session.userLastname + 
-							' dit : "' + text + '"';
-					Inbox.addMessage(title, textMessage, user.id);
+                    var values = {runName: $scope.selectedJourney.Run.name,
+                                    userFirstname: Session.userFirstname,
+                                    userLastname: Session.userLastname,
+                                    text: text},
+                        template = 'JourneyMessage';
+                    Inbox.addMessage(template, values, user.id);
 				}
 			});
 		};

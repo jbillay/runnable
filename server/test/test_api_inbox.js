@@ -131,9 +131,12 @@ describe('Test of Inbox API', function () {
 
         it('should return create a new message', function (done) {
             var message = {
-                message: 'TEST Message',
-                title: 'TEST Title',
-                userId: 1
+                template: 'inboxTest',
+                values: {
+                    message: 'message Inbox',
+                    userId: 3
+                },
+                userId: 2
             };
             agent
                 .post('http://localhost:9615/api/inbox/msg')
@@ -142,7 +145,9 @@ describe('Test of Inbox API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(JSON.parse(res.body).msg, 'addMessage');
+                    assert.equal(res.body.title, 'Email pour 3');
+                    assert.equal(res.body.message, 'TEST message Inbox');
+                    assert.equal(res.body.UserId, message.userId);
                     return done();
                 });
         });

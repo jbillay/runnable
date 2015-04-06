@@ -638,9 +638,9 @@ angular.module('runnable.services', ['ngResource']).
     }).
 	factory('Inbox', function ($q, $http) {
 		return {
-			addMessage: function (title, message, userId) {
+			addMessage: function (template, values, userId) {
 				var deferred = $q.defer(),
-					info = {title: title, message: message, userId: userId};
+					info = {template: template, values: values, userId: userId};
 				$http.post('/api/inbox/msg', info).
 					success(function (result) {
 						deferred.resolve(result);

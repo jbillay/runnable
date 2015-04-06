@@ -83,6 +83,8 @@ describe('Tests of mail object', function () {
                             assert.equal(this.subject, 'Email pour user toto');
                             assert.equal(this.text, 'TEST Out of stock toto timekey HTML');
                         });
+                        assert.equal(mail.getContentHtml(), 'TEST Out of stock toto timekey HTML');
+                        assert.equal(mail.getSubject(), 'Email pour user toto');
                         mail.send();
                         return done();
                     })
@@ -92,6 +94,28 @@ describe('Tests of mail object', function () {
             })
             .catch(function (err) {
                 return done(err);
+            });
+        });
+
+        it('Test to send an mail with empty template', function (done) {
+            new Mail().then(function (mail) {
+                mail.setTo('jbillay@gmail.com');
+                mail.generateContent(null, {url: 'url', timekey: 'timekey', userId: 'toto'})
+                    .catch(function (err) {
+                        assert.isNotNull(err);
+                        return done();
+                    });
+            });
+        });
+
+        it('Test to send an mail with wrong template', function (done) {
+            new Mail().then(function (mail) {
+                mail.setTo('jbillay@gmail.com');
+                mail.generateContent('iruotu', {url: 'url', timekey: 'timekey', userId: 'toto'})
+                    .catch(function (err) {
+                        assert.isNotNull(err);
+                        return done();
+                    });
             });
         });
     });

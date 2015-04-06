@@ -149,6 +149,7 @@
 							ng-options="email.name for email in emailOption.emailTemplate">
 					</select>
 					<span>{{template.key}}</span>
+                    <input type="text" ng-form="subForm" ng-model="template.title" class="form-control">
 					<textarea ng-form="subForm" ng-model="template.html" class="form-control optionsEmailTemplate">
 						{{template.html}}
 					</textarea>

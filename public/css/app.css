@@ -58,6 +58,11 @@ section {
     text-shadow: 2px 2px 8px #494949;
 }
 
+.social_icon {
+    color: #fff;
+    text-shadow: 2px 2px 8px #494949;
+}
+
 .icon-bar {
     background-color:#fff;
 }

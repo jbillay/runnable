@@ -78,8 +78,16 @@ mail.prototype.setSubject = function (subject) {
     this.subject = subject;
 };
 
+mail.prototype.getSubject = function () {
+    return this.subject;
+};
+
 mail.prototype.setContentHtml = function (html) {
     this.html = html;
+};
+
+mail.prototype.getContentHtml = function () {
+    return this.html;
 };
 
 mail.prototype.setText = function (texte) {
@@ -105,10 +113,12 @@ mail.prototype.generateContent = function (templateName, keys) {
             var html,
                 text,
                 title,
+                find = 0,
                 noHTML = /(<([^>]+)>)/ig,
                 templates = JSON.parse(value);
             templates.forEach(function (template) {
                 if (template.name === templateName) {
+                    find = 1;
                     html = template.html;
                     title = template.title;
                     Object.keys(keys).forEach(function (key) {
@@ -123,7 +133,12 @@ mail.prototype.generateContent = function (templateName, keys) {
                     that.subject = title;
                 }
             });
-            deferred.resolve(that);
+            if (find === 0) {
+                console.log(new Error('Not able to get template : ' + template.name));
+                deferred.reject(new Error('Not able to get template : ' + template.name));
+            } else {
+                deferred.resolve(that);
+            }
         })
         .catch(function (err) {
             console.log(new Error('Not able to get template : ' + err));
