@@ -113,6 +113,10 @@ angular.module('runnable', [
                 templateUrl: 'partials/index',
                 controller: 'RunnableIndexController'
             }).
+            when('/page-:tag', {
+                templateUrl: 'partials/page',
+                controller: 'RunnablePageController'
+            }).
             otherwise({
                 redirectTo: '/'
             });

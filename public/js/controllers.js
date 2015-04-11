@@ -81,6 +81,15 @@ angular.module('runnable.controllers', []).
 			inviteData.inviteEmails = '';
 		};
 	}).
+	controller('RunnablePageController', function ($scope, $q, $routeParams, Page) {
+		$scope.tag = $routeParams.tag;
+		var pagePromise = Page.getByTag($routeParams.tag),
+			all = $q.all([pagePromise]);
+		all.then(function (res) {
+			$scope.page = res[0];
+			console.log($scope.page);
+		});
+	}).
 	controller('RunnableLoginController', function ($scope, $rootScope, AUTH_EVENTS, AuthService) {
 		$scope.credentials = {
 			username: '',
@@ -205,21 +214,26 @@ angular.module('runnable.controllers', []).
             fileReader.deletePicture($scope.file);
         };
     }).
-	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run, Journey, Join, EmailOptions) {
+	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run, Journey, Join, EmailOptions, Page) {
 		$scope.page = 'Admin';
 		var userListPromise = User.getList(),
 			runListPromise = Run.getList(),
 			journeyListPromise = Journey.getList(),
 			joinListPromise = Join.getList(),
 			EmailOptionsPromise = EmailOptions.get(),
-			all = $q.all([userListPromise, runListPromise, journeyListPromise, joinListPromise, EmailOptionsPromise]);
+			pageListPromise = Page.getList(),
+			all = $q.all([userListPromise, runListPromise, journeyListPromise, joinListPromise, EmailOptionsPromise, pageListPromise]);
 		all.then(function (res) {
 			$scope.userList = res[0];
 			$scope.runList = res[1];
 			$scope.journeyList = res[2];
 			$scope.joinList = res[3];
 			$scope.emailOption = res[4];
+			$scope.pageList = res[5];
 		});
+		$scope.createPageForm = {
+			'newPageName'     : ''};
+		$scope.originForm = angular.copy($scope.createPageForm);
 		$scope.userToggleActive = function(user) {
 			console.log('Toggle active for user : ' + user.id);
 			User.userToggleActive(user.id);
@@ -231,6 +245,26 @@ angular.module('runnable.controllers', []).
 		};
 		$scope.submitEmailOptions = function (mailConfig) {
 			EmailOptions.save(mailConfig);
+		};
+		$scope.editPage = function (page) {
+			$scope.editedPage = page;
+			angular.element('#adminEditPageModal').modal('show');
+		};
+		$scope.createPage = function () {
+			var trimName = $scope.createPageForm.newPageName.trim();
+			var withoutSpecChar = trimName.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+			var tag = withoutSpecChar.replace(/\s/gi, '-');
+			var page = {};
+			page.title = trimName;
+			page.tag = tag;
+			page.content = '';
+			$scope.pageList.push(page);
+			$scope.createPageForm = angular.copy($scope.originForm);
+			Page.save(page);
+		};
+		$scope.saveEditPage = function (editedPage) {
+			angular.element('#adminEditPageModal').modal('hide');
+			Page.save(editedPage);
 		};
 		$scope.userEdit = function (user) {
 			console.log('Edit user ' + user.id);

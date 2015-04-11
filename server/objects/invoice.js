@@ -1,7 +1,6 @@
 /**
  * Created by jeremy on 21/02/15.
  */
-/* user object */
 
 var models = require('../models');
 

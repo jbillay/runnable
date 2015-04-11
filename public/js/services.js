@@ -636,6 +636,44 @@ angular.module('runnable.services', ['ngResource']).
             }
         };
     }).
+	factory('Page', function ($q, $http, $rootScope) {
+        return {
+            getByTag: function (tag) {
+                var deferred = $q.defer();
+                $http.get('/api/page/' + tag).
+                    success(function (result) {
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        console.log('Error : ' + status);
+                    });
+                return deferred.promise;
+            },
+            getList: function () {
+                var deferred = $q.defer();
+                $http.get('/api/admin/pages').
+                    success(function (result) {
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        console.log('Error : ' + status);
+                    });
+                return deferred.promise;
+            },
+			save: function (newPage) {
+				var deferred = $q.defer();
+                $http.post('/api/admin/page', newPage).
+                    success(function (result) {
+                        $rootScope.$broadcast('USER_MSG', result);
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        console.log('Error : ' + status);
+                    });
+                return deferred.promise;
+			}
+        };
+    }).
 	factory('Inbox', function ($q, $http) {
 		return {
 			addMessage: function (template, values, userId) {

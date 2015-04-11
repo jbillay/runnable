@@ -1,0 +1,22 @@
+[
+    {
+        "model": "Page",
+        "data": {
+            "id": 1,
+            "title": "Page de test",
+            "tag": "test",
+            "content": "HTML TEXT",
+			"is_active": true
+        }
+    },
+    {
+        "model": "Page",
+        "data": {
+            "id": 2,
+            "title": "Page pour toto",
+            "tag": "toto",
+            "content": "ENCORE UN TEST",
+			"is_active": false
+        }
+    }
+]

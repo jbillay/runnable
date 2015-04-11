@@ -126,6 +126,10 @@ a.list-group-item.active,[class*='-info'] {
     height: 35px;
 }
 
+.htmlEditor {
+    height: 500px !important;
+}
+
 section.imgback {
     background:center no-repeat fixed url('/img/home.jpg');
     background-size: cover;

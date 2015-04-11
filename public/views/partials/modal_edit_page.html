@@ -1,0 +1,40 @@
+<div class="modal fade" id="adminEditPageModal" tabindex="-1" role="dialog"
+     aria-labelledby="adminEditPageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Edition de la page {{editedPage.title}}</h4>
+            </div>
+            <div class="row">
+                <div class="modal-body">
+                    <div class="col-sm-12">
+                        <form name="loginForm" ng-submit="saveEditPage(editedPage)" novalidate>
+                            <div class="form-group">
+								<label for="titlePage">Titre de la page</label>
+                                <input class="form-control" type="text" ng-model="editedPage.title"
+                                      id="titlePage" placeholder="Titre de la page">
+                            </div>
+                            <div class="form-group">
+								<label for="tagPage">Tag de la page (pas d'espace)</label>
+                                <input class="form-control" type="text" ng-model="editedPage.tag"
+                                       id="tagPage" placeholder="Tag de la page (pas d'espace)">
+                            </div>
+                            <div class="form-group">
+								<label for="tagPage">Contenu de la page</label>
+                                <textarea class="form-control htmlEditor" ng-model="editedPage.content">
+									{{editedPage.content}}
+								</textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

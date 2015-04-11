@@ -44,5 +44,6 @@ angular.module('runnable.constant', []).
         userPictureSaved:       'Votre image a bien été sauvegardée',
         userPictureRemoved:     'Votre image a bien été supprimée',
 		emailOptionsNotSaved:	'Les informations sur les emails n\'ont pas été sauvegardées',
-		emailOptionsSaved:		'Les informations sur les emails ont été sauvegardées'
+		emailOptionsSaved:		'Les informations sur les emails ont été sauvegardées',
+		pageSaved:				'Votre page a été sauvegardée'
 	});

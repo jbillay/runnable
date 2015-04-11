@@ -1,0 +1,15 @@
+<div ng-include="'partials/nav'"></div>
+
+<div class="container body">
+	<div class="row spacehead">
+		<div class="row">
+			<div class="col-sm-6">
+				<h2>{{page.title}}</h2>
+				<hr>
+			</div>
+			<tbody ng-bind-html="page.content"></tbody>
+		</div>
+	</div>
+</div>
+
+<div ng-include="'partials/footer'"></div>
