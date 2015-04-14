@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
     var Invoice = sequelize.define('Invoice', {
         status:	{
             type: DataTypes.ENUM,
-            values: ['pending', 'completed', 'cancelled', 'refused', 'done'],
+            values: ['pending', 'completed', 'cancelled', 'refused', 'refunded', 'done'],
             defaultValue: 'pending'
         },
         amount: DataTypes.FLOAT,

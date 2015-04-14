@@ -245,4 +245,19 @@ describe('Test of Invoice object', function () {
             return done();
         });
     });
+
+    it('Update invoice status to cancelled', function (done) {
+        var invoice = new Invoice();
+        invoice.updateStatus(2, 'cancelled', function (err, msg) {
+            if (err) return done(err);
+            assert.isNull(err);
+            invoice.getById(2, function (err, invoiceInfo) {
+                if (err) return done(err);
+                assert.isNull(err);
+                assert.equal(invoiceInfo.status, 'cancelled');
+                return done();
+            });
+        });
+    });
+
 });

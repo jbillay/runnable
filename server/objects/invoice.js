@@ -148,6 +148,25 @@ invoice.prototype.getByDriver = function (id, done) {
         });
 };
 
+invoice.prototype.updateStatus = function (id, status, done) {
+    'use strict';
+    console.log('Update status of invoice ' + id + ' to ' + status);
+    models.Invoice.find({where: {id: id}})
+        .then(function (invoiceData) {
+            invoiceData.status = status;
+            invoiceData.save()
+                .then(function (newInvoice) {
+                    done(null, newInvoice);
+                })
+                .catch(function (err) {
+                    done(new Error(err), null);
+                });
+        })
+        .catch(function(err) {
+            done(err, null);
+        });
+};
+
 invoice.prototype.updatePaymentStatus = function (invoiceRef, amount, status, transactionId, done) {
     'use strict';
     console.log('Update invoice ' + invoiceRef + ' to status ' + status);

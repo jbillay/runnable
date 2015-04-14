@@ -6,6 +6,7 @@
 var assert = require('chai').assert;
 var models = require('../models');
 var Join = require('../objects/join');
+var Invoice = require('../objects/invoice');
 var async = require('async');
 var q = require('q');
 
@@ -113,16 +114,21 @@ describe('Test of join object', function () {
             if (err) return done(err);
             assert.isNull(err);
             assert.equal(joinList.length, 2);
-            join.getByJourney(1, function (err, joinList) {
+            join.getByJourney(3, function (err, joinList) {
                 if (err) return done(err);
                 assert.isNull(err);
-                assert.equal(joinList.length, 1);
-                assert.equal(joinList[0].id, 1);
-                assert.equal(joinList[0].nb_place_outward, 2);
-                assert.equal(joinList[0].nb_place_return, 2);
-                join.getByJourney(-1, function (err, joinList) {
-                    assert.isNotNull(err);
-                    return done();
+                assert.equal(joinList.length, 0);
+                join.getByJourney(1, function (err, joinList) {
+                    if (err) return done(err);
+                    assert.isNull(err);
+                    assert.equal(joinList.length, 1);
+                    assert.equal(joinList[0].id, 1);
+                    assert.equal(joinList[0].nb_place_outward, 2);
+                    assert.equal(joinList[0].nb_place_return, 2);
+                    join.getByJourney(-1, function (err, joinList) {
+                        assert.isNotNull(err);
+                        return done();
+                    });
                 });
             });
         });
@@ -185,7 +191,7 @@ describe('Test of join object', function () {
         assert.equal(tmp.nb_place_return, 2);
         join.save(tmp, user, function (err, createdJoin) {
             if (err) console.log(err);
-            assert.isNotNull(err);
+            assert.isNull(err);
             join.getList(function (err, joinList) {
                 assert.isNull(err);
                 assert.equal(joinList.length, 5);
@@ -196,6 +202,21 @@ describe('Test of join object', function () {
                     assert.equal(joinInfo.nb_place_return, 2);
                     return done();
                 });
+            });
+        });
+    });
+
+    it('Cancel join by id', function (done) {
+        var join = new Join(),
+            invoice = new Invoice();
+        join.cancelById(2, function (err, joinInfo) {
+            if (err) return done(err);
+            assert.isNull(err);
+            invoice.getById(2, function (err, invoiceInfo) {
+                if (err) return done(err);
+                assert.isNull(err);
+                assert.equal(invoiceInfo.status, 'cancelled');
+                return done();
             });
         });
     });

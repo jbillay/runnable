@@ -1,6 +1,7 @@
 /* user object */
 
 var models = require('../models');
+var Invoice = require('./invoice');
 
 function join() {
     'use strict';
@@ -100,11 +101,13 @@ join.prototype.getByUser = function (id, done) {
 
 join.prototype.getByJourney = function (journeyId, done) {
     'use strict';
-	models.Journey.find({ where: {id: journeyId}})
-		.then(function (journey) {
-			journey.getJoins().then(function (joins) {
+	models.Join.findAll({ where: {JourneyId: journeyId}, include: [models.ValidationJourney,
+                    {
+                        model: models.Invoice,
+                        where: {status: 'completed'}
+                    }]})
+		.then(function (joins) {
 				done(null, joins);
-			});
 		})
 		.catch(function (err) {
 			done(err, null);
@@ -120,6 +123,24 @@ join.prototype.getList = function (done) {
 						}, models.User, models.Invoice]})
 		.then(function (joins) {
 			done(null, joins);
+		})
+		.catch(function (err) {
+			done(err, null);
+		});
+};
+
+join.prototype.cancelById = function (id, done) {
+	'use strict';
+	var invoice = new Invoice();
+	models.Join.find({ where: {id: id}, include: [models.Invoice]})
+		.then(function (join) {
+			invoice.updateStatus(join.Invoice.id, 'cancelled', function (err, invoice) {
+				if (err) {
+					done(err, null);
+				} else {
+					done(null, invoice);
+				}
+			})
 		})
 		.catch(function (err) {
 			done(err, null);
