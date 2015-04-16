@@ -65,7 +65,7 @@
 							Participer à ce voyage
 					</button>
 				</div>
-					<button type="button" class="btn btn-success" ng-if="joined">
+					<button type="button" class="btn btn-success" ng-if="joined" ng-click="askValidation()">
 							Je participe à ce voyage
 					</button>
 			</div>
@@ -74,6 +74,7 @@
             <div id="map_canvas" class="map"></div>
         </div>
     </div>
-    <div ng-include="'partials/modal_invoice'"></div>
+	<div ng-include="'partials/modal_invoice'"></div>
+	<div ng-include="'partials/modal_validation'"></div>
 </div>
 <div ng-include="'partials/footer'"></div>

@@ -217,4 +217,28 @@ describe('Test of join API', function () {
                 });
         });
     });
+
+    describe('GET /api/join/cancel/:id', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should cancel join 1', function(done) {
+            agent
+                .get('http://localhost:9615/api/join/cancel/1')
+                .end(function (err, res) {
+                    assert.equal(JSON.parse(res.body).msg, 'joinCancelled');
+                    return done();
+                });
+        });
+
+        it('Try to cancel a join that not exist', function(done) {
+            agent
+                .get('http://localhost:9615/api/join/cancel/42')
+                .end(function (err, res) {
+                    assert.equal(JSON.parse(res.body).msg, 'joinNotCancelled');
+                    return done();
+                });
+        });
+    });
 });

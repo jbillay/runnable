@@ -65,3 +65,19 @@ exports.list = function (req, res) {
 		}
 	});
 };
+
+exports.cancel = function (req, res) {
+    'use strict';
+	console.log('Cancel join ' + req.params.id);
+	var id = req.params.id;
+	var join = new Join();
+	join.cancelById(id, function (err, invoice) {
+		if (err) {
+			console.log('Join not cancelled ' + err);
+			res.jsonp('{"msg": "joinNotCancelled", "type": "error"}');
+		} else {
+			console.log('Join cancelled');
+			res.jsonp('{"msg": "joinCancelled", "type": "success"}');
+		}
+	});
+};

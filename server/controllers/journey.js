@@ -7,11 +7,11 @@ exports.create = function (req, res) {
 	var journey = new Journey();
 	journey.save(req.body.journey, req.user, function (err, journey) {
 		if (err) {
-			console.log('Journey not created ' + err);
-			res.redirect('/journey');
+            console.log('Journey not created ' + err);
+            res.jsonp('{"msg": "journeyNotCreated", "type": "error"}');
 		} else {
-			console.log('Journey created');
-			res.redirect('/journey');
+            console.log('Journey created');
+            res.jsonp('{"msg": "journeyCreated", "type": "success"}');
 		}
 	});
 };
@@ -83,6 +83,21 @@ exports.next = function (req, res) {
 			res.jsonp('{"msg": "ko"}');
 		} else {
 			res.jsonp(runs);
+		}
+	});
+};
+
+exports.bookSpace = function (req, res) {
+	'use strict';
+	var journeyId = req.params.id;
+	console.log('Get book space for journey ' + journeyId);
+	var journey = new Journey();
+	journey.getBookSpace(journeyId, function (err, spaces) {
+		if (err) {
+			console.log('Not able to get book space : ' + err);
+			res.jsonp('{"msg": "ko"}');
+		} else {
+			res.jsonp(spaces);
 		}
 	});
 };

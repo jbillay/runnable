@@ -156,7 +156,7 @@ describe('Test of journey API', function () {
                         return done(err);
                     }
                     assert.equal(res.body.length, 2);
-                    done();
+                    return done();
                 });
         });
     });
@@ -187,7 +187,7 @@ describe('Test of journey API', function () {
                     assert.equal(res.res.body.RunId, 5);
                     assert.equal(res.res.body.UserId, 1);
                     assert.equal(res.res.body.Run.name, 'Marathon du médoc');
-                    done();
+                    return done();
                 });
         });
     });
@@ -207,7 +207,7 @@ describe('Test of journey API', function () {
                     }
                     assert.equal(res.body.length, 1);
                     assert.equal(res.body[0].address_start, 'Nantes, France');
-                    done();
+                    return done();
                 });
         });
         it('should failed list of journey', function (done) {
@@ -218,7 +218,7 @@ describe('Test of journey API', function () {
                         return done(err);
                     }
                     assert.equal(JSON.parse(res.body).msg, 'ko');
-                    done();
+                    return done();
                 });
         });
     });
@@ -237,7 +237,7 @@ describe('Test of journey API', function () {
                         return done(err);
                     }
                     assert.equal(res.body.length, 2);
-                    done();
+                    return done();
                 });
         });
     });
@@ -281,6 +281,21 @@ describe('Test of journey API', function () {
                             assert.equal(res.body.length, 4);
                             return done();
                         });
+                });
+        });
+    });
+
+    describe('GET /api/journey/book/:id', function () {
+        it('should return book space for journey 1', function (done) {
+            request(app)
+                .get('/api/journey/book/1')
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    assert.equal(res.res.body.outward, 2);
+                    assert.equal(res.res.body.return, 2);
+                    return done();
                 });
         });
     });

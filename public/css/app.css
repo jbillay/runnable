@@ -51,6 +51,18 @@ section {
 	color: red;
 }
 
+.status-cancelled {
+	color: red;
+}
+
+.status-pending {
+	color: orange;
+}
+
+.status-completed {
+	color: green;
+}
+
 .v-center {
     color: #fff;
     padding-top: 2%;

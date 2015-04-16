@@ -134,8 +134,8 @@ mail.prototype.generateContent = function (templateName, keys) {
                 }
             });
             if (find === 0) {
-                console.log(new Error('Not able to get template : ' + template.name));
-                deferred.reject(new Error('Not able to get template : ' + template.name));
+                console.log(new Error('Not able to get template'));
+                deferred.reject(new Error('Not able to get template'));
             } else {
                 deferred.resolve(that);
             }

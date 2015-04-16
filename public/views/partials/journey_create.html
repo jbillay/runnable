@@ -9,12 +9,13 @@
 			</div>
 		</div>
 		<div class="col-sm-6 spacedown">
-			<form action="/api/journey" method="post" role="form" name="createJourney">
+			<!--action="/api/journey" method="post"-->
+			<form role="form" name="createJourney" ng-submit="submitJourney(journey)">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12">
 						<div class="form-group" ng-class="{ 'has-success' : createJourney.run_id_selector.$valid && createJourney.run_id_selector.$dirty,
 							'has-error' : createJourney.run_id_selector.$invalid && createJourney.run_id_selector.$dirty }">
-							<select ng-model="run_id" placeholder="Definir la course"
+							<select ng-model="journey.run" placeholder="Definir la course"
 									name="journey[run_id_selector]" id="run_id_selector" class="form-control"
                                     tabindex="1" ng-change="selectDestination(run_id)"
                                     ng-options="run as run.name for run in runList" required>
@@ -25,7 +26,7 @@
 								 ng-messages="createJourney.run_id_selector.$error">
 								<div ng-message="required">Définir la course est obligatoire.</div>
 							</div>
-							<input type="hidden" name="journey[run_id]" value="{{run_id.id}}" >
+							<input type="hidden" name="journey[run_id]" value="{{run_id.id}}" ng-model="journey.run_id">
 						</div>
 					</div>
 				</div>
@@ -33,7 +34,7 @@
 					<div class="col-xs-12 col-sm-12 col-md-12">
 						<div class="form-group" ng-class="{ 'has-success' : createJourney.address_start.$valid && createJourney.address_start.$dirty,
 							'has-error' : createJourney.address_start.$invalid && createJourney.address_start.$dirty }">
-							<input type="text" ng-model="startSelected" placeholder="Lieu de départ"
+							<input type="text" ng-model="journey.address_start" placeholder="Lieu de départ"
 								   typeahead="address for address in getLocation($viewValue)"
 								   typeahead-loading="loadingLocations" name="journey[address_start]" id="address_start"
 								   class="form-control"  tabindex="2" typeahead-on-select='selectSource($item)' required>
@@ -50,13 +51,13 @@
 					<div class="col-xs-6 col-sm-6 col-md-6">
 						<div class="form-group">
 							<input type="text" name="journey[distance]" id="distance" class="form-control"
-								   ng-model="distance" placeholder="Distance estimée" readonly>
+								   ng-model="journey.distance" placeholder="Distance estimée" readonly>
 						</div>
 					</div>
 					<div class="col-xs-6 col-sm-6 col-md-6">
 						<div class="form-group">
 							<input type="text" name="journey[duration]" id="duration" class="form-control"
-								   ng-model="duration" placeholder="Temps estimé" readonly>
+								   ng-model="journey.duration" placeholder="Temps estimé" readonly>
 						</div>
 					</div>
 				</div>
@@ -70,8 +71,8 @@
 								ng-change="journeyTypeChange()" required>
 							</select>
 							<div class="help-block text-danger"
-								 ng-if="createJourney.address_start.$dirty"
-								 ng-messages="createJourney.address_start.$error">
+								 ng-if="createJourney.journey_type_select.$dirty"
+								 ng-messages="createJourney.journey_type_select.$error">
 								<div ng-message="required">Définir le type de parcours est obligatoire.</div>
 							</div>
 						</div>
@@ -81,17 +82,34 @@
 				<p ng-if=outward>Aller</p>
 				<div class="row outward" ng-if=outward>
 					<div class="col-xs-4 col-sm-4 col-md-4">
-						<div class="form-group" ng-class="{ 'has-success' : createJourney.date_start_outward.$valid && createJourney.date_start_outward.$dirty,
+						<div class="input-group">
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default" ng-click="calendar.open($event, 'outward')">
+									<i class="glyphicon glyphicon-calendar"></i>
+								</button>
+							</span>
+							<div class="form-group" ng-class="{ 'has-success' : createJourney.date_start_outward.$valid && createJourney.date_start_outward.$dirty,
 							'has-error' : createJourney.date_start_outward.$invalid && createJourney.date_start_outward.$dirty }">
-							<input type="date" name="journey[date_start_outward]" id="date_start_outward"
-								   class="form-control" placeholder="Date" tabindex="4" required>
+								<input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
+								   ng-model="journey.date_start_outward" name="journey[date_start_outward]"
+								   is-open="calendar.opened.outward" min-date="today"
+								   datepicker-options="calendar.dateOptions" close-text="Fermer"
+								   data-toggle="tooltip" data-placement="bottom"
+								   title="Date aller" tabindex="4" required>
+							</div>
 						</div>
 					</div>
 					<div class="col-xs-4 col-sm-4 col-md-4">
 						<div class="form-group" ng-class="{ 'has-success' : createJourney.time_start_outward.$valid && createJourney.time_start_outward.$dirty,
 							'has-error' : createJourney.time_start_outward.$invalid && createJourney.time_start_outward.$dirty }">
-							<input type="time" name="journey[time_start_outward]" id="time_start_outward" class="form-control"
-								   placeholder="Heure" tabindex="5" required>
+                            <div class="input-group clockpicker" id="clockpicker_outward" data-autoclose="true">
+                                <input type="text" class="form-control" id="time_start_outward"
+                                       name="journey[time_start_outward]" ng-model="journey.time_start_outward"
+                                       placeholder="Heure" tabindex="5" required>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-time"></span>
+                                </span>
+                            </div>
 						</div>
 					</div>
 					<div class="col-xs-4 col-sm-4 col-md-4">
@@ -99,26 +117,44 @@
 						{ 	'has-success' : createJourney.nb_space_outward.$valid && createJourney.nb_space_outward.$dirty,
 							'has-error' : createJourney.nb_space_outward.$invalid && createJourney.nb_space_outward.$dirty }">
 							<input type="number" name="journey[nb_space_outward]" id="nb_space_outward" class="form-control"
-								   placeholder="Nombre de place" tabindex="6" min="0" required>
+								   ng-model="journey.nb_space_outward" placeholder="Nombre de place" tabindex="6"
+								   min="0" required>
 						</div>
 					</div>
 				</div>
 				<p ng-if=return>Retour</p>
 				<div class="row return" ng-if=return>
 					<div class="col-xs-4 col-sm-4 col-md-4">
-						<div class="form-group" ng-class="
-						{ 	'has-success' : createJourney.date_start_return.$valid && createJourney.date_start_return.$dirty,
-							'has-error' : createJourney.date_start_return.$invalid && createJourney.date_start_return.$dirty }">
-							<input type="date" name="journey[date_start_return]" id="date_start_return"
-								   class="form-control" placeholder="Date" tabindex="7" required>
+						<div class="input-group">
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default" ng-click="calendar.open($event, 'return')">
+									<i class="glyphicon glyphicon-calendar"></i>
+								</button>
+							</span>
+							<div class="form-group" ng-class="
+							{ 	'has-success' : createJourney.date_start_return.$valid && createJourney.date_start_return.$dirty,
+								'has-error' : createJourney.date_start_return.$invalid && createJourney.date_start_return.$dirty }">
+								<input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
+									   ng-model="journey.date_start_return" name="journey[date_start_return]"
+									   is-open="calendar.opened.return" min-date="today"
+									   datepicker-options="calendar.dateOptions" close-text="Fermer"
+									   data-toggle="tooltip" data-placement="bottom"
+									   title="Date retour" tabindex="7" required>
+							</div>
 						</div>
 					</div>
 					<div class="col-xs-4 col-sm-4 col-md-4">
 						<div class="form-group" ng-class="
 						{ 	'has-success' : createJourney.time_start_return.$valid && createJourney.time_start_return.$dirty,
 							'has-error' : createJourney.time_start_return.$invalid && createJourney.time_start_return.$dirty }">
-							<input type="time" name="journey[time_start_return]" id="time_start_return" class="form-control"
-								   placeholder="Heure" tabindex="8" required>
+                            <div class="input-group clockpicker" id="clockpicker_return" data-autoclose="true">
+                                <input type="text" class="form-control" id="time_start_return"
+                                       name="journey[time_start_return]" ng-model="journey.time_start_return"
+                                       placeholder="Heure" tabindex="8" required>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-time"></span>
+                                </span>
+                            </div>
 						</div>
 					</div>
 					<div class="col-xs-4 col-sm-4 col-md-4">
@@ -126,7 +162,8 @@
 						{ 	'has-success' : createJourney.nb_space_return.$valid && createJourney.nb_space_return.$dirty,
 							'has-error' : createJourney.nb_space_return.$invalid && createJourney.nb_space_return.$dirty }">
 							<input type="number" name="journey[nb_space_return]" id="nb_space_return" class="form-control"
-								   placeholder="Nombre de place" tabindex="9" min="0" required>
+								   ng-model="journey.nb_space_return" placeholder="Nombre de place" tabindex="9"
+								   min="0" required>
 						</div>
 					</div>
 				</div>
@@ -135,14 +172,8 @@
 						<div class="form-group" ng-class="{ 'has-success' : createJourney.car_type.$valid && createJourney.car_type.$dirty,
 							'has-error' : createJourney.car_type.$invalid && createJourney.car_type.$dirty }">
 							<select class="form-control" name="journey[car_type]" id="car_type"
-								placeholder="Type de course" tabindex="10" required>
-								<option value="citadine">Citadine</option>
-								<option value="berline">Berline</option>
-								<option value="break">Break</option>
-								<option value="monospace">Monospace</option>
-								<option value="suv">4x4, SUV</option>
-								<option value="coupe">Coupé</option>
-								<option value="cabriolet">Cabriolet</option>
+									ng-options="carType.code as carType.name for carType in carTypeList"
+									ng-model="journey.car_type" placeholder="Type de course" tabindex="10" required>
 							</select>
 							<div class="help-block text-danger"
 								 ng-if="createJourney.car_type.$dirty"
@@ -156,7 +187,8 @@
 							<div class="input-group" ng-class="{ 'has-success' : createJourney.amount.$valid && createJourney.amount.$dirty,
 							'has-error' : createJourney.amount.$invalid && createJourney.amount.$dirty }">
 								<input type="number" name="journey[amount]" id="amount" class="form-control"
-									   ng-model="amount" placeholder="Montant par place" tabindex="11" min="0" required>
+									   ng-model="journey.amount" placeholder="Montant par place" tabindex="11"
+									   min="0" required>
 								<span class="input-group-addon">€</span>
 								<div class="help-block text-danger"
 									 ng-if="createJourney.amount.$dirty"
@@ -169,7 +201,7 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-3 col-md-3 pull-right">
-						<input type="hidden" name="journey[owner_id]" value="{{user.id}}">
+						<input type="hidden" name="journey[owner_id]" value="{{user.id}}" ng-model="journey.owner_id">
 						<button type="submit" class="btn btn-primary btn-block" tabindex="12">
 							Publier
 						</button>

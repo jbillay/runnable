@@ -43,6 +43,7 @@ module.exports = function (app, passport, auth) {
 	app.get('/api/journey/:id', controllers.journey.detail);
     app.get('/api/journey/run/:id', controllers.journey.listForRun);
     app.get('/api/journey/next/:nb', controllers.journey.next);
+    app.get('/api/journey/book/:id', controllers.journey.bookSpace);
 
     app.post('/api/discussion/message', auth.requiresLogin, controllers.discussion.addMessage);
     app.get('/api/discussion/users/:id', auth.requiresLogin, controllers.discussion.getUsers);
@@ -59,6 +60,7 @@ module.exports = function (app, passport, auth) {
     app.post('/api/join', auth.requiresLogin, controllers.join.create);
 	app.get('/api/join/:id', auth.requiresLogin, controllers.join.detail);
     app.get('/api/join/journey/:id', controllers.join.listForJourney);
+    app.get('/api/join/cancel/:id', auth.requiresLogin, controllers.join.cancel);
 
     app.post('/api/participate/add', auth.requiresLogin, controllers.participate.add);
     app.get('/api/participate/user/list', auth.requiresLogin, controllers.participate.userList);

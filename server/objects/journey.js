@@ -80,7 +80,11 @@ journey.prototype.save = function (journey, user, done) {
 											done(err, null);
 										});
 								});
-						});
+						})
+                        .catch(function (err) {
+                            console.log(err);
+                            done(err, null);
+                        });
 				});
 		});
 };
@@ -175,7 +179,7 @@ journey.prototype.getById = function (id, done) {
 journey.prototype.getByUser = function (id, done) {
 	'use strict';
 	models.Journey.findAll({where: {userId: id},
-                            include: [models.Run, models.Join, models.User],
+                            include: [models.Run, models.User],
                             order: 'date_start_outward ASC'
                             })
 		.then(function (journeys) {
@@ -184,6 +188,38 @@ journey.prototype.getByUser = function (id, done) {
 		.catch(function (err) {
 			done(err, null);
 		});
+};
+
+journey.prototype.getBookSpace = function (id, done) {
+    'use strict';
+    var values = {
+        outward: 0,
+        return: 0
+    };
+    models.Journey.find({where: {id: id},
+                            include: [{
+                                model: models.Join,
+                                as: 'Joins',
+                                include: [{
+                                    model: models.Invoice,
+                                    where: {status: 'completed'}
+                                }]
+                            }],
+                            order: 'date_start_outward ASC'})
+        .then(function (journey) {
+            if (!journey) {
+                done(null, values);
+            } else {
+                journey.Joins.forEach(function (join) {
+                    values.outward += join.nb_place_outward;
+                    values.return += join.nb_place_return;
+                });
+                done(null, values);
+            }
+        })
+        .catch(function (err) {
+            done(err, null);
+        });
 };
 
 module.exports = journey;

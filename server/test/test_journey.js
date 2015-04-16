@@ -99,15 +99,38 @@ describe('Test of journey object', function () {
 
     it('Get user journeys list', function (done) {
         var journey = new Journey();
-        journey.getByUser(2, function (err, journeyList) {
-            assert.equal(journeyList.length, 1);
-            assert.equal(journeyList[0].id, 3);
-            assert.equal(journeyList[0].address_start, 'Rouen');
+        journey.getByUser(1, function (err, journeyList) {
+            if (err) return done(err);
+            assert.equal(journeyList.length, 2);
+            assert.equal(journeyList[0].id, 2);
+            assert.equal(journeyList[0].address_start, 'Nantes, France');
             assert.equal(journeyList[0].car_type, 'citadine');
-            assert.equal(journeyList[0].amount, 12);
+            assert.equal(journeyList[0].amount, 32);
+            assert.equal(journeyList[0].User.email, 'jbillay@gmail.com');
+            assert.equal(journeyList[0].Run.name, 'Les templiers');
             journey.getByUser(-1, function (err, journeyList) {
                 assert.isNotNull(err);
-                done();
+                return done();
+            });
+        });
+    });
+
+    it('Get free space for a journey', function (done) {
+        var journey = new Journey();
+        journey.getBookSpace(1, function (err, spaces) {
+            if (err) return done(err);
+            assert.equal(spaces.outward, 2);
+            assert.equal(spaces.return, 2);
+            journey.getBookSpace(2, function (err, spaces) {
+                if (err) return done(err);
+                assert.equal(spaces.outward, 2);
+                assert.equal(spaces.return, 0);
+                journey.getBookSpace(3, function (err, spaces) {
+                    if (err) return done(err);
+                    assert.equal(spaces.outward, 0);
+                    assert.equal(spaces.return, 0);
+                    return done();
+                });
             });
         });
     });
@@ -115,9 +138,7 @@ describe('Test of journey object', function () {
     it('Get journey info', function (done) {
         var journey = new Journey();
         journey.getById(3, function (err, journeyInfo) {
-            if (err) {
-                console.log(err);
-            }
+            if (err) return done(err);
             assert.equal(journeyInfo.id, 3);
             assert.equal(journeyInfo.address_start, 'Rouen');
             assert.equal(journeyInfo.car_type, 'citadine');
@@ -125,16 +146,14 @@ describe('Test of journey object', function () {
             assert.equal(journeyInfo.distance, '250 km');
             assert.equal(journeyInfo.duration, '2 heures 45 minutes');
             assert.equal(journeyInfo.journey_type, 'aller-retour');
-            assert.equal(journeyInfo.date_start_outward, 'Fri Dec 12 2014 00:00:00 GMT+0100 (CET)');
             assert.equal(journeyInfo.time_start_outward, '09:00');
             assert.equal(journeyInfo.nb_space_outward, 2);
-            assert.equal(journeyInfo.date_start_return, 'Sat Dec 13 2014 00:00:00 GMT+0100 (CET)');
             assert.equal(journeyInfo.time_start_return, '09:00');
             assert.equal(journeyInfo.nb_space_return, 2);
             assert.equal(journeyInfo.RunId, 4);
             journey.getById(-1, function (err, journeyInfo) {
                 assert.isNotNull(err);
-                done();
+                return done();
             });
         });
     });
@@ -142,11 +161,11 @@ describe('Test of journey object', function () {
     it('Get next journeys list', function (done) {
         var journey = new Journey();
         journey.getNextList(2, function (err, journeyList) {
-            if (err) console.log(err);
+            if (err) return done(err);
             assert.equal(journeyList.length, 2);
             journey.getNextList('dmkme', function (err, journeyList) {
                 assert.isNotNull(err);
-                done();
+                return done();
             });
         });
     });
@@ -154,11 +173,11 @@ describe('Test of journey object', function () {
     it('Get list of journey for a run', function (done) {
         var journey = new Journey();
         journey.getListForRun(5, function (err, journeyList) {
-            if (err) console.log(err);
+            if (err) return done(err);
             assert.equal(journeyList.length, 1);
             journey.getListForRun('dmkme', function (err, journeyList) {
                 assert.isNotNull(err);
-                done();
+                return done();
             });
         });
     });
@@ -166,9 +185,9 @@ describe('Test of journey object', function () {
     it('Get list of journey', function (done) {
         var journey = new Journey();
         journey.getList(function (err, journeyList) {
-            if (err) console.log(err);
+            if (err) return done(err);
             assert.equal(journeyList.length, 3);
-            done();
+            return done();
         });
     });
 
@@ -219,9 +238,9 @@ describe('Test of journey object', function () {
             assert.equal(newJourney.car_type, 'citadine');
             assert.equal(newJourney.amount, 5);
             journey.getList(function (err, journeyList) {
-                if (err) console.log(err);
+                if (err) return done(err);
                 assert.equal(journeyList.length, 4);
-                done();
+                return done();
             });
         });
     });

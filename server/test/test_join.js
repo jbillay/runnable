@@ -220,4 +220,14 @@ describe('Test of join object', function () {
             });
         });
     });
+
+    it('Cancel not existing join', function (done) {
+        var join = new Join(),
+            invoice = new Invoice();
+        join.cancelById(42, function (err, joinInfo) {
+            console.log(err);
+            assert.isNotNull(err);
+            return done();
+        });
+    });
 });

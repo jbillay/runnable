@@ -514,11 +514,9 @@ describe('Test of user API', function () {
                 .post('http://localhost:9615/api/user/invite')
                 .send({emails: 'jbillay@gmail.com, richard.couret@free.fr', message: 'should send email to friends'})
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
+                    if (err) return done(err);
                     assert.equal(JSON.parse(res.body).msg, 'Invitation(s) envoyée(s)');
-                    done();
+                    return done();
                 });
         });
     });

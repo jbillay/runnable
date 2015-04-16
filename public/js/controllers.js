@@ -329,7 +329,6 @@ angular.module('runnable.controllers', []).
 			}
 		});
 		$scope.createJourney = function () {
-			console.log('Email user : ' + Session.userEmail);
 			if (!Session.userEmail) {
 				$scope.showLogin();
 			} else {
@@ -433,7 +432,7 @@ angular.module('runnable.controllers', []).
 															Run, Journey, Join, GoogleMapApi, MyRunTripFees, Session,
                                                             Inbox) {
 		$scope.page = 'Journey';
-		$scope.journeyId = $routeParams.journeyId;
+		$scope.journeyId = parseInt($routeParams.journeyId);
 		var journeyPromise = Journey.getDetail($scope.journeyId),
 			joinPromise = Join.getListForJourney($scope.journeyId),
 			all = $q.all([journeyPromise, joinPromise]);
@@ -448,6 +447,7 @@ angular.module('runnable.controllers', []).
 				$scope.reserved_return += join.nb_place_return;
 				if (join.JourneyId === $scope.journeyId && join.UserId === $rootScope.currentUser.id) {
 					$scope.joined = 1;
+					$scope.userJoin = join;
 				}
 			});
 			$timeout( function() {
@@ -510,11 +510,38 @@ angular.module('runnable.controllers', []).
 			fees = fees.toFixed(2);
 			$scope.reserved_outward = $scope.reserved_outward + placeOutward;
 			$scope.reserved_return = $scope.reserved_return + placeReturn;
-			Join.addJoin($scope.journeyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref);
+			Join.add($scope.journeyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref);
             Inbox.addMessage(template, values, Session.userId);
 		};
+        $scope.askValidation = function () {
+            angular.element('#validationModal').modal('show');
+            $scope.validationMessage = 'Vous souhaitez annuler votre participation à ce voyage. ' +
+                'Si vous confirmer vous receverez un remboursement d\'ici quelques jours ' +
+                'du prix du voyage. Voulez vous confirmer cette demande ?';
+        };
+        $scope.cancelValidation = function () {
+            angular.element('#validationModal').modal('hide');
+        };
 		$scope.removeJoinJourney = function () {
+            angular.element('#validationModal').modal('hide');
+			var userTemplate = 'UserJoinJourneyCancel',
+				driverTemplate = 'DriverJoinJourneyCancel',
+                userValues = {runName: $scope.journey.Run.name },
+                driverValues = {runName: $scope.journey.Run.name},
+				placeOutwardReturn,
+				placeReturnReturn;
 			$scope.joined = 0;
+			if ($scope.userJoin.nb_place_outward) {
+				placeOutwardReturn = $scope.userJoin.nb_place_outward;
+			}
+			if ($scope.userJoin.nb_place_return) {
+				placeReturnReturn = $scope.userJoin.nb_place_return;
+			}
+			$scope.reserved_outward = $scope.reserved_outward - placeOutwardReturn;
+			$scope.reserved_return = $scope.reserved_return - placeReturnReturn;
+			Join.cancel($scope.userJoin.id);
+            Inbox.addMessage(driverTemplate, driverValues, $scope.journey.UserId);
+            Inbox.addMessage(userTemplate, userValues, $rootScope.currentUser.id);
 		};
 		$scope.calculateFees = function (outwardPlace, returnPlace, journey) {
 			var fees = 0;
@@ -531,7 +558,8 @@ angular.module('runnable.controllers', []).
 			return fees;
 		};
 	}).
-	controller('RunnableJourneyCreateController', function ($scope, $q, $timeout, Run, GoogleMapApi, $routeParams) {
+	controller('RunnableJourneyCreateController', function ($scope, $q, $timeout, $routeParams, $rootScope, $location,
+                                                            Journey, Run, Inbox, GoogleMapApi) {
         $scope.page = 'Journey';
 		var runPromise = Run.getActiveList(),
             all = $q.all([runPromise]);
@@ -543,19 +571,46 @@ angular.module('runnable.controllers', []).
 				{code: 'aller-retour', name: 'Aller-Retour'},
 				{code: 'aller', name: 'Aller'},
 				{code: 'retour', name: 'Retour'} ];
+            $scope.carTypeList = [
+                {code: 'citadine', name: 'Citadine'},
+                {code: 'berline', name: 'Berline'},
+                {code: 'break', name: 'Break'},
+                {code: 'monospace', name: 'Monospace'},
+                {code: 'suv', name: '4x4, SUV'},
+                {code: 'coupe', name: 'Coupé'},
+                {code: 'cabriolet', name: 'Cabriolet'}
+            ];
 			$scope.journey = {};
 			$scope.journey.journey_type = $scope.parcoursModeList[0].code;
+			$scope.journey.car_type = $scope.carTypeList[0].code;
 			$timeout( function() {
 				GoogleMapApi.initMap('map_canvas');
+                $('#clockpicker_outward').clockpicker();
+                $('#clockpicker_return').clockpicker();
 			});
             if ($routeParams.runId) {
                 $scope.runList.forEach(function (run) {
                     if (run.id === parseInt($routeParams.runId)) {
-                        $scope.run_id = run;
+                        $scope.journey.run = run;
+                        $scope.journey.run_id = run.id;
                         $scope.selectDestination(run);
                     }
                 });
             }
+            $scope.today = new Date();
+            $scope.calendar = {
+                opened: {},
+                dateFormat: 'dd/MM/yyyy',
+                dateOptions: {
+                    formatYear: 'yy',
+                    startingDay: 1
+                },
+                open: function($event, which) {
+                    $event.preventDefault();
+                    $event.stopPropagation();
+                    $scope.calendar.opened[which] = true;
+                }
+            };
 		});
 		$scope.journeyTypeChange = function () {
 			if ($scope.journey.journey_type ===  'aller-retour') {
@@ -564,9 +619,15 @@ angular.module('runnable.controllers', []).
 			} else if ($scope.journey.journey_type ===  'aller') {
 				$scope.outward = true;
 				$scope.return = false;
+                $scope.journey.date_start_return = null;
+                $scope.journey.time_start_return = null;
+                $scope.journey.nb_space_return = null;
 			} else if ($scope.journey.journey_type ===  'retour') {
 				$scope.outward = false;
 				$scope.return = true;
+                $scope.journey.date_start_outward = null;
+                $scope.journey.time_start_outward = null;
+                $scope.journey.nb_space_outward = null;
 			}
 		};
 		$scope.getLocation = function(val) {
@@ -576,8 +637,8 @@ angular.module('runnable.controllers', []).
 			GoogleMapApi.resetDirection('map_canvas');
 			GoogleMapApi.showDirection('map_canvas', $scope.source, $scope.destination);
 			GoogleMapApi.getDistance($scope.source, $scope.destination).then(function (result) {
-				$scope.distance = result.distance;
-				$scope.duration = result.duration;
+				$scope.journey.distance = result.distance;
+				$scope.journey.duration = result.duration;
 			});
 		};
 		$scope.selectDestination = function (run) {
@@ -594,9 +655,16 @@ angular.module('runnable.controllers', []).
 				$scope.showMapInfo();
 			}
 		};
+        $scope.submitJourney = function (journey) {
+            var template = 'JourneyCreated',
+                values = {runName: journey.run.name };
+            Journey.create(journey);
+            Inbox.addMessage(template, values, $rootScope.currentUser.id);
+            $location.path('/journey');
+        };
 	}).
-	controller('RunnableMyJourneyController', function ($scope, $q, $timeout, User, Discussion,
-														GoogleMapApi, Socket, Session, Inbox, ValidationJourney) {
+	controller('RunnableMyJourneyController', function ($scope, $q, $timeout, $rootScope, User, Discussion, Join,
+                                                        GoogleMapApi, Session, Inbox, ValidationJourney) {
 		$scope.page = 'MyJourney';
 		var userJourneyPromise = User.getJourney(),
 			userJoinPromise = User.getJoin(),
@@ -606,24 +674,26 @@ angular.module('runnable.controllers', []).
 			$scope.userJoin = res[1];
             $scope.dateActual = new Date().getTime();
 			angular.forEach($scope.userJourney, function (journey) {
-				var freeSpace = User.getJourneyFreeSpace(journey);
-				journey.nb_free_place_outward = freeSpace.nb_free_place_outward;
-				journey.nb_free_place_return = freeSpace.nb_free_place_return;
+				var freeSpacePromise = User.getJourneyFreeSpace(journey);
+                all = $q.all([freeSpacePromise]);
+                all.then(function (res) {
+                    journey.nb_free_place_outward = res[0].nb_free_place_outward;
+                    journey.nb_free_place_return = res[0].nb_free_place_return;
+                });
 			});
 			angular.forEach($scope.userJoin, function (join) {
-				var freeSpace = User.getJourneyFreeSpace(join.Journey);
+                // Check if journey has been validated by the user
                 angular.forEach(join.ValidationJourneys, function (validation) {
                     if (validation.UserId === Session.userId) {
                         join.validated = true;
                     }
                 });
+                // Define max date to show validation form
                 if (join.Journey.date_start_return > join.Journey.date_start_outward) {
                     join.Journey.date_max = new Date(join.Journey.date_start_return).getTime();
                 } else {
                     join.Journey.date_max = new Date(join.Journey.date_start_outward).getTime();
                 }
-				join.Journey.nb_free_place_outward = freeSpace.nb_free_place_outward;
-				join.Journey.nb_free_place_return = freeSpace.nb_free_place_return;
 			});
 		});
         $scope.showJourneyValidationModal = function (join) {
@@ -664,6 +734,26 @@ angular.module('runnable.controllers', []).
 				angular.element('#journeyModal').modal('show');
 			});
 		};
+        $scope.askValidation = function (join) {
+            angular.element('#validationModal').modal('show');
+            $scope.cancelJoin = join;
+            $scope.validationMessage = 'Vous souhaitez annuler votre participation à ce voyage. ' +
+            'Si vous confirmer vous receverez un remboursement d\'ici quelques jours ' +
+            'du prix du voyage. Voulez vous confirmer cette demande ?';
+        };
+        $scope.cancelValidation = function () {
+            angular.element('#validationModal').modal('hide');
+        };
+        $scope.removeJoinJourney = function () {
+            angular.element('#validationModal').modal('hide');
+            var userTemplate = 'UserJoinJourneyCancel',
+                driverTemplate = 'DriverJoinJourneyCancel',
+                userValues = {runName: $scope.cancelJoin.Journey.Run.name },
+                driverValues = {runName: $scope.cancelJoin.Journey.Run.name};
+            Join.cancel($scope.cancelJoin.id);
+            Inbox.addMessage(driverTemplate, driverValues, $scope.cancelJoin.Journey.UserId);
+            Inbox.addMessage(userTemplate, userValues, $rootScope.currentUser.id);
+        };
 		$scope.sendMessage = function () {
 			var text = String($scope.newMessageEntry).replace(/<[^>]+>/gm, '');
 			$scope.newMessageEntry = '';
@@ -761,7 +851,6 @@ angular.module('runnable.controllers', []).
 				}
 			};
 			$scope.removeMessage = function (id) {
-				// TO BE IMPLEMENTED
 				console.log('Delete message ' + id);
 				Inbox.deleteMessage(id);
 			};

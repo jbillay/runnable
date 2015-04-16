@@ -80,19 +80,28 @@ user.prototype.save = function (done) {
     'use strict';
 	var user = models.User.build(this);
 
-	user.provider = 'local';
-	user.salt = user.makeSalt();
-	user.hashedPassword = user.encryptPassword(this.password, user.salt);
-	console.log('New User (local) : { id: ' + user.id + ' email: ' + 
-					user.email + ' }');
-	user.save()
-		.then(function (newUser) {
-			done(null, newUser);
-		})
-		.catch(function (err) {
-			console.log(err);
-			done(err, null);
-		});
+    models.User.find({ where: {email: user.email}})
+        .then(function (existingUser) {
+            if (!existingUser) {
+                user.provider = 'local';
+                user.salt = user.makeSalt();
+                user.hashedPassword = user.encryptPassword(this.password, user.salt);
+                console.log('New User (local) : { id: ' + user.id + ' email: ' + user.email + ' }');
+                user.save()
+                    .then(function (newUser) {
+                        done(null, newUser);
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                        done(err, null);
+                    });
+            } else {
+                done(new Error('Existing user'), null);
+            }
+        })
+        .catch(function (err) {
+            done(err, null);
+        });
 };
 
 user.prototype.activate = function (id, hash, done) {

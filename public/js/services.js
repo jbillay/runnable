@@ -249,15 +249,21 @@ angular.module('runnable.services', ['ngResource']).
                 return deferred.promise;
 			},
 			getJourneyFreeSpace: function (journey) {
+                var deferred = $q.defer();
 				var ret = {
 						nb_free_place_outward: journey.nb_space_outward,
 						nb_free_place_return: journey.nb_space_return
 					};
-				angular.forEach(journey.Joins, function (join) {
-					ret.nb_free_place_outward = ret.nb_free_place_outward - join.nb_place_outward;
-					ret.nb_free_place_return = ret.nb_free_place_return - join.nb_place_return;
-				});
-				return ret;
+                $http.get('/api/journey/book/' + journey.id).
+                    success(function (result) {
+                        ret.nb_free_place_outward -= result.outward;
+                        ret.nb_free_place_return -= result.return;
+                        deferred.resolve(ret);
+                    }).
+                    error(function(data, status) {
+                        console.log('Error : ' + status);
+                    });
+                return deferred.promise;
 			},
 			getJoin: function () {
                 var deferred = $q.defer();
@@ -446,9 +452,9 @@ angular.module('runnable.services', ['ngResource']).
 			}
 		};
     }).
-    factory('Join', function ($q, $http) {
+    factory('Join', function ($q, $http, $rootScope) {
         return {
-			addJoin: function (id, nbSpaceOutward, nbSpaceReturn, amount, fees, ref) {
+			add: function (id, nbSpaceOutward, nbSpaceReturn, amount, fees, ref) {
 				var deferred = $q.defer(),
 					info = {journey_id: id,
 							nb_place_outward: nbSpaceOutward, 
@@ -481,6 +487,18 @@ angular.module('runnable.services', ['ngResource']).
 				var deferred = $q.defer();
 				$http.get('/api/admin/joins').
 					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ' + status);
+					});
+				return deferred.promise;
+			},
+			cancel: function (id) {
+				var deferred = $q.defer();
+				$http.get('/api/join/cancel/' + id).
+					success(function (result) {
+						$rootScope.$broadcast('USER_MSG', result);
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
@@ -560,9 +578,6 @@ angular.module('runnable.services', ['ngResource']).
             }
         };
 	}).
-    factory('Socket', function (socketFactory) {
-        return socketFactory();
-    }).
     factory('ValidationJourney', function ($q, $http, $rootScope) {
         return {
             validation: function (joinId, commentDriver, commentService, rate_driver, rate_service) {
@@ -881,7 +896,7 @@ angular.module('runnable.services', ['ngResource']).
             deletePicture: deletePicture
         };
     }).
-    factory('Journey', function ($q, $http) {
+    factory('Journey', function ($q, $http, $rootScope) {
         return {
 			getDetail: function (id) {
 				var deferred = $q.defer();
@@ -935,7 +950,21 @@ angular.module('runnable.services', ['ngResource']).
 						console.log('Error : ' + status);
 					});
                 return deferred.promise;
-			}
+			},
+            create: function (journey) {
+                var deferred = $q.defer();
+                console.log(journey);
+                $http.post('/api/journey', {journey: journey}).
+                    success(function (result) {
+                        $rootScope.$broadcast('USER_MSG', result);
+                        deferred.resolve(result);
+                    }).
+                    error(function (data, status) {
+                        console.log('Error : ' + status);
+                        deferred.resolve(data);
+                    });
+                return deferred.promise;
+            }
         };
     });
 

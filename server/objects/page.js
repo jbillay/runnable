@@ -6,6 +6,7 @@ var models = require('../models');
 var _ = require('lodash');
 
 function page() {
+    'use strict';
 	this.title = null;
 	this.tag = null;
 	this.content = null;
@@ -36,6 +37,7 @@ page.prototype.set = function (page) {
 };
 
 page.prototype.save = function (page, done) {
+    'use strict';
 	var that = this;
 	that.set(page);
 	models.Page.findOrCreate({where: {tag: that.tag}, 
@@ -57,9 +59,10 @@ page.prototype.save = function (page, done) {
 				.catch(function (err) {
 					done(err, null);
 				});
-}
+};
 
 page.prototype.getByTag = function (tag, done) {
+    'use strict';
 	models.Page.find({where: {tag: tag}})
 		.then(function (thePage) {
 			done(null, thePage);
@@ -67,9 +70,10 @@ page.prototype.getByTag = function (tag, done) {
 		.catch(function (err) {
 			done(err, null);
 		});
-}
+};
 
 page.prototype.getList = function (done) {
+    'use strict';
 	models.Page.findAll()
 		.then(function (pages) {
 			done(null, pages);
@@ -77,6 +81,6 @@ page.prototype.getList = function (done) {
 		.catch(function (err) {
 			done(err, null);
 		});
-}
+};
 
 module.exports = page;

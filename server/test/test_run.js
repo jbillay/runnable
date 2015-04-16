@@ -53,7 +53,7 @@ describe('Tests of run objects', function () {
                         });
                     }
                 ], function (err, result) {
-                    done();
+                    return done();
                 });
             });
     });
@@ -61,7 +61,7 @@ describe('Tests of run objects', function () {
     after(function (done) {
 		distance.get.restore();
         console.log('Test run over !');
-		done();
+		return done();
     });
 
     it('Should be able to show active runs', function (done) {
@@ -71,7 +71,7 @@ describe('Tests of run objects', function () {
                 console.log('Error: ' + err);
             }
             assert.equal(runs.length, 5);
-            done();
+            return done();
         });
     });
 
@@ -84,7 +84,7 @@ describe('Tests of run objects', function () {
             assert.equal(run.name, 'Maxicross');
             assert.equal(run.type, 'trail');
             assert.equal(run.address_start, 'Bouffémont, France');
-            done();
+            return done();
         });
     });
 
@@ -95,7 +95,7 @@ describe('Tests of run objects', function () {
                 console.log('Error: ' + err);
             }
             assert.equal(runs.length, 6);
-            done();
+            return done();
         });
     });
 
@@ -106,7 +106,7 @@ describe('Tests of run objects', function () {
                 console.log('Error: ' + err);
             }
             assert.equal(runs.length, 2);
-            done();
+            return done();
         });
     });
 
@@ -198,10 +198,11 @@ describe('Tests of run objects', function () {
         run.toggleActive(6, function (err) {
             if (err) {
                 console.log('Error: ' + err);
+                return done(err);
             }
             run.getActiveList(function (err, runs) {
                 assert.equal(runs.length, 6);
-                done();
+                return done();
             });
         });
     });
@@ -214,7 +215,7 @@ describe('Tests of run objects', function () {
             }
             run.getActiveList(function (err, runs) {
                 assert.equal(runs.length, 4);
-                done();
+                return done();
             });
         });
     });
@@ -244,13 +245,14 @@ describe('Tests of run objects', function () {
         run.save(function (err, newRun) {
             if (err) {
                 console.log('Error: ' + err);
+                return done(err);
             }
             assert.equal(newRun.name, 'Marathon du Mont Blanc');
             assert.equal(newRun.type, 'marathon');
             assert.equal(newRun.address_start, 'Chamonix, France');
             run.getActiveList(function (err, runs) {
                 assert.equal(runs.length, 6);
-                done();
+                return done();
             });
         });
     });

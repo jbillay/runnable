@@ -65,7 +65,7 @@ describe('Test of bank_account API', function () {
                         });
                     }
                 ], function (err, result) {
-                    done();
+                    return done();
                 });
             });
     });

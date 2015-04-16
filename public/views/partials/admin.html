@@ -135,7 +135,7 @@
 								<td><a href="/journey-{{join.Journey.id}}">{{join.Journey.address_start}}</a></td>
 								<td>{{join.nb_place_outward}}</td>
 								<td>{{join.nb_place_return}}</td>
-								<td>{{join.Invoice.status}}</td>
+								<td class="status-{{join.Invoice.status}}">{{join.Invoice.status}}</td>
 								<td>{{join.Invoice.createdAt | date:'dd/MM/yyyy'}}</td>
 								<td>{{join.Invoice.ref}}</td>
 							</tr>

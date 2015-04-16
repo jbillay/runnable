@@ -45,5 +45,9 @@ angular.module('runnable.constant', []).
         userPictureRemoved:     'Votre image a bien été supprimée',
 		emailOptionsNotSaved:	'Les informations sur les emails n\'ont pas été sauvegardées',
 		emailOptionsSaved:		'Les informations sur les emails ont été sauvegardées',
-		pageSaved:				'Votre page a été sauvegardée'
+		pageSaved:				'Votre page a été sauvegardée',
+        joinCancelled:          'Votre demande d\'annulation de voyage a bien été prise en compte',
+        joinNotCancelled:       'Votre demande d\'annulation de voyage n\'a malheureusement pas pu être prise en compte',
+        journeyCreated:         'Votre trajet vient d\'être créé',
+        journeyNotCreated:      'Malheureusement votre trajet n\'a pas pu être créé en raison d\'un problème technique'
 	});

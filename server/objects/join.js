@@ -134,13 +134,17 @@ join.prototype.cancelById = function (id, done) {
 	var invoice = new Invoice();
 	models.Join.find({ where: {id: id}, include: [models.Invoice]})
 		.then(function (join) {
-			invoice.updateStatus(join.Invoice.id, 'cancelled', function (err, invoice) {
-				if (err) {
-					done(err, null);
-				} else {
-					done(null, invoice);
-				}
-			})
+			if (!join) {
+				done(new Error('Join not found'), null);
+			} else {			
+				invoice.updateStatus(join.Invoice.id, 'cancelled', function (err, invoice) {
+					if (err) {
+						done(err, null);
+					} else {
+						done(null, invoice);
+					}
+				});
+			}
 		})
 		.catch(function (err) {
 			done(err, null);

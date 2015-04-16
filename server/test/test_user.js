@@ -285,7 +285,7 @@ describe('Test of user object', function () {
             user.set(newUser2);
             user.save(function (err, newUser) {
                 assert.isNotNull(err);
-                done();
+                return done();
             });
         });
     });
