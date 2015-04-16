@@ -498,8 +498,6 @@ angular.module('runnable.controllers', []).
 			}
 		};
 		$scope.joinJourney = function (placeOutward, placeReturn) {
-			console.log('Place pour aller : ' + placeOutward);
-			console.log('Place pour retour : ' + placeReturn);
 			var template = 'JourneySubmit',
                 values = {runName: $scope.journey.Run.name };
             placeOutward = placeOutward  || 0;
@@ -512,10 +510,8 @@ angular.module('runnable.controllers', []).
 			fees = fees.toFixed(2);
 			$scope.reserved_outward = $scope.reserved_outward + placeOutward;
 			$scope.reserved_return = $scope.reserved_return + placeReturn;
-			/*
 			Join.addJoin($scope.journeyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref);
             Inbox.addMessage(template, values, Session.userId);
-            */
 		};
 		$scope.removeJoinJourney = function () {
 			$scope.joined = 0;
