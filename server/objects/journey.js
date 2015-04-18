@@ -91,7 +91,7 @@ journey.prototype.save = function (journey, user, done) {
 
 journey.prototype.getList = function (done) {
     'use strict';
-	models.Journey.findAll({include: [models.Run]})
+	models.Journey.findAll({include: [models.Run, models.User]})
 		.then(function (journeys) {
 			done(null, journeys);
 		})

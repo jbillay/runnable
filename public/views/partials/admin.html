@@ -93,6 +93,7 @@
 								<th>Type de voiture</th>
 								<th>Montant</th>
 								<th>Création</th>
+								<th>User</th>
 							</tr>
 							<tbody ng-repeat="journey in journeyList">
 							<tr>
@@ -110,6 +111,7 @@
 								<td>{{journey.car_type}}</td>
 								<td>{{journey.amount | currency:'€ '}}</td>
 								<td>{{journey.createdAt | date:'dd/MM/yyyy'}}</td>
+								<td>{{journey.User.email}}</td>
 							</tr>
 							</tbody>
 						</table>
@@ -124,6 +126,8 @@
 								<th>Lieu départ</th>
 								<th>Nb de place Aller</th>
 								<th>Nb de place Retour</th>
+								<th>Montant</th>
+								<th>Fees</th>
 								<th>Statut</th>
 								<th>Paiement</th>
 								<th>Ref Paiement</th>
@@ -135,6 +139,8 @@
 								<td><a href="/journey-{{join.Journey.id}}">{{join.Journey.address_start}}</a></td>
 								<td>{{join.nb_place_outward}}</td>
 								<td>{{join.nb_place_return}}</td>
+								<td>{{join.Invoice.amount | currency:'€ '}}</td>
+								<td>{{join.Invoice.fees | currency:'€ '}}</td>
 								<td class="status-{{join.Invoice.status}}">{{join.Invoice.status}}</td>
 								<td>{{join.Invoice.createdAt | date:'dd/MM/yyyy'}}</td>
 								<td>{{join.Invoice.ref}}</td>

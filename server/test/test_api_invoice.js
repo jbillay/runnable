@@ -158,7 +158,7 @@ describe('Test of invoice API', function () {
             agent
                 .get('http://localhost:9615/api/invoice/driver')
                 .end(function (err, res) {
-                    assert.equal(res.body.length, 2);
+                    assert.equal(res.body.length, 3);
                     return done();
                 });
         });

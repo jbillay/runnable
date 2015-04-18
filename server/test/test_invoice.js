@@ -145,7 +145,7 @@ describe('Test of Invoice object', function () {
         invoice.getByDriver(1, function (err, invoiceInfo) {
             if (err) return done(err);
             assert.isNull(err);
-            assert.equal(invoiceInfo.length, 2);
+            assert.equal(invoiceInfo.length, 3);
             return done();
         });
     });
