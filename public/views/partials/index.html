@@ -1,8 +1,8 @@
 <div ng-include="'partials/nav_index'"></div>
 
 <section class="container-fluid imgback" id="inscription">
-    <h1 class="text-center v-center">Partager un trajet vers une même passion</h1>
-
+    <h1 ng-class="{text_img_auth_with_shadow: isAuthenticated, text_img_with_shadow: !isAuthenticated}"
+        class="text-center">Partager un trajet vers une même passion</h1>
     <div class="container">
         <div class="row">
             <div class="col-sm-4 col-sm-offset-4 text-center inscription-form" ng-if="!isAuthenticated">
@@ -68,8 +68,8 @@
 
 <section class="container-fluid itineraire imgback" id="itineraire">
     <div class="row">
-        <div class="col-sm-8 col-sm-offset-2 text-center">
-            <h1 class="v-center">Nos derniers itinéraires</h1>
+        <div class="col-sm-10 col-sm-offset-1 text-center">
+            <h1 class="text-with-shadow">Nos derniers itinéraires</h1>
             <br>
             <div class="row journey_list">
                 <div class="col-xs-3 journey_poster_home" ng-repeat="journey in listJourney">
@@ -93,8 +93,8 @@
 
 <section class="container-fluid course imgback" id="course">
     <div class="row">
-        <div class="col-sm-8 col-sm-offset-2 text-center">
-            <h1 class="v-center">Nos dernières courses</h1>
+        <div class="col-sm-10 col-sm-offset-1 text-center">
+            <h1 class="text-with-shadow">Nos dernières courses</h1>
             <br>
 			<div class="row run_list">
 				<div class="col-xs-3 run_poster_home" ng-repeat="run in listRun">
@@ -102,7 +102,7 @@
                         <img ng-if="run.type === 'trail'" src="/img/run_default.jpg" class="run_img" alt="Responsive image">
                         <img ng-if="run.type !== 'trail'" src="/img/run_default.jpg" class="run_img" alt="Responsive image">
                     </a>
-					<div class="run_title"><a href="/run-{{run.id}}">{{run.name | capitalize | limitTo:20}}</a></div>
+					<div class="run_title"><a href="/run-{{run.id}}">{{run.name | capitalize | limitTo:25}}</a></div>
 					<div class="run_desc">
 						<p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize | limitTo:21}}</p>
 						<p><i class="glyphicon glyphicon-calendar"></i> {{run.date_start | date:'dd / MM / yyyy'}}</p>
@@ -117,7 +117,7 @@
 </section>
 
 <section class="container-fluid fonctionnement imgback" id="fonctionnement">
-   <h2 class="text-center v-center">Partagez plus qu'une course</h2>
+   <h2 class="text-center text-without-shadow">Partagez plus qu'une course</h2>
      <div class="row">
          <div class="embed-responsive embed-responsive-16by9">
             <!--<iframe class="embed-responsive-item" src="//www.youtube.com/embed/zpOULjyy-n8?rel=0" allowfullscreen></iframe>-->
@@ -126,20 +126,20 @@
 </section>
 
 <section class="container imgback" id="apropos">
-    <h1 class="text-center v-center">Venez en savoir plus sur nous !</h1>
+    <h1 class="text-center text-with-shadow">Venez en savoir plus sur nous !</h1>
     <div class="row">
         <!--fontawesome icons-->
         <div class="col-sm-1 col-sm-offset-4 col-xs-4 text-center">
             <i class="fa fa-facebook fa-4x social_icon"></i>
         </div>
         <div class="col-sm-1 col-xs-4 text-center">
-            <i class="fa fa-google-plus fa-4x social_icon"></i>
+            <i class="fa fa-twitter fa-4x social_icon"></i>
         </div>
         <div class="col-sm-1 col-xs-4 text-center">
             <i class="fa fa-instagram fa-4x social_icon"></i>
         </div>
         <div class="col-sm-1 col-xs-4 text-center">
-            <i class="fa fa-pinterest fa-4x social_icon"></i>
+            <i class="fa fa-youtube fa-4x social_icon"></i>
         </div>
     </div><!--/row-->
     <div class="row col-sm-12">
