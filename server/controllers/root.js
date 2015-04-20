@@ -30,13 +30,15 @@ exports.auth = function (req, res) {
 // for dev purpose only -- To be removed
 exports.sync = function (req, res) {
     'use strict';
-	models.sequelize.sync({force: true})
-        .then(function() {
-            console.log('New database created !');
-        })
-        .catch(function (err) {
-			console.log('Error on sync db : ' + err);
-		});
+    if (process.env.NODE_ENV !== 'production') {
+        models.sequelize.sync({force: true})
+            .then(function () {
+                console.log('New database created !');
+            })
+            .catch(function (err) {
+                console.log('Error on sync db : ' + err);
+            });
+    }
 	res.redirect('/');
 };
 

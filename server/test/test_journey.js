@@ -115,6 +115,28 @@ describe('Test of journey object', function () {
         });
     });
 
+    it('Get filtered Journey already full with and without limit', function (done) {
+        var journey = new Journey();
+        models.Journey.findAll({include: [
+                {
+                    model: models.Join,
+                    as: 'Joins',
+                    include: [ models.Invoice ]
+                },
+                { model: models.Run }
+            ]})
+            .then(function (journeyList) {
+                var filteredJourney = journey.filterFullJourney(journeyList, 0);
+                assert.equal(filteredJourney.length, 2);
+                filteredJourney = journey.filterFullJourney(journeyList, 1);
+                assert.equal(filteredJourney.length, 1);
+                return done();
+            })
+            .catch(function (err) {
+                return done(err);
+            });
+    });
+
     it('Get free space for a journey', function (done) {
         var journey = new Journey();
         journey.getBookSpace(1, function (err, spaces) {
@@ -160,12 +182,16 @@ describe('Test of journey object', function () {
 
     it('Get next journeys list', function (done) {
         var journey = new Journey();
-        journey.getNextList(2, function (err, journeyList) {
+        journey.getNextList(3, function (err, journeyList) {
             if (err) return done(err);
             assert.equal(journeyList.length, 2);
-            journey.getNextList('dmkme', function (err, journeyList) {
-                assert.isNotNull(err);
-                return done();
+            journey.getNextList(2, function (err, journeyList) {
+                if (err) return done(err);
+                assert.equal(journeyList.length, 2);
+                journey.getNextList('dmkme', function (err, journeyList) {
+                    assert.isNotNull(err);
+                    return done();
+                });
             });
         });
     });
@@ -175,9 +201,13 @@ describe('Test of journey object', function () {
         journey.getListForRun(5, function (err, journeyList) {
             if (err) return done(err);
             assert.equal(journeyList.length, 1);
-            journey.getListForRun('dmkme', function (err, journeyList) {
-                assert.isNotNull(err);
-                return done();
+            journey.getListForRun(2, function (err, journeyList) {
+                if (err) return done(err);
+                assert.equal(journeyList.length, 0);
+                journey.getListForRun('dmkme', function (err, journeyList) {
+                    assert.isNotNull(err);
+                    return done();
+                });
             });
         });
     });
@@ -240,6 +270,19 @@ describe('Test of journey object', function () {
             journey.getList(function (err, journeyList) {
                 if (err) return done(err);
                 assert.equal(journeyList.length, 4);
+                return done();
+            });
+        });
+    });
+
+    it('Toggle payed status', function (done) {
+        var journey = new Journey();
+        journey.togglePayed(1, function (err, retJourney) {
+            if (err) return done(err);
+            assert.equal(retJourney.is_payed, true);
+            journey.togglePayed(1, function (err, retJourney) {
+                if (err) return done(err);
+                assert.equal(retJourney.is_payed, false);
                 return done();
             });
         });

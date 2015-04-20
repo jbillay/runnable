@@ -93,7 +93,7 @@
 								<th>Type de voiture</th>
 								<th>Montant</th>
 								<th>Création</th>
-								<th>User</th>
+								<th>Actions</th>
 							</tr>
 							<tbody ng-repeat="journey in journeyList">
 							<tr>
@@ -111,7 +111,11 @@
 								<td>{{journey.car_type}}</td>
 								<td>{{journey.amount | currency:'€ '}}</td>
 								<td>{{journey.createdAt | date:'dd/MM/yyyy'}}</td>
-								<td>{{journey.User.email}}</td>
+								<td>
+									<button class="btn btn-primary" ng-click="openJourneyAction(journey)">
+										Action
+									</button>
+								</td>
 							</tr>
 							</tbody>
 						</table>
@@ -238,6 +242,7 @@
     </div>
 	<div ng-include="'partials/modal_user_edit'"></div>
 	<div ng-include="'partials/modal_edit_page'"></div>
+	<div ng-include="'partials/modal_admin_journey_action'"></div>
 </div>
 
 <div ng-include="'partials/footer'"></div>

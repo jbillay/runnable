@@ -200,13 +200,13 @@ describe('Test of journey API', function () {
         });
         it('should return list of 1 journey', function (done) {
             request(app)
-                .get('/api/journey/run/2')
+                .get('/api/journey/run/4')
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
                     }
                     assert.equal(res.body.length, 1);
-                    assert.equal(res.body[0].address_start, 'Nantes, France');
+                    assert.equal(res.body[0].address_start, 'Rouen');
                     return done();
                 });
         });
@@ -295,6 +295,31 @@ describe('Test of journey API', function () {
                     }
                     assert.equal(res.res.body.outward, 2);
                     assert.equal(res.res.body.return, 2);
+                    return done();
+                });
+        });
+    });
+
+    describe('GET /api/admin/journey/payed', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('Should define journey 2 as payed', function(done) {
+            agent
+                .post('http://localhost:9615/api/admin/journey/payed')
+                .send({id: '2'})
+                .end(function (err, res) {
+                    assert.equal(JSON.parse(res.body).msg, 'journeyTogglePayed');
+                    request(app)
+                        .get('/api/journey/2')
+                        .end(function (err, res) {
+                            if (err) {
+                                return done(err);
+                            }
+                            assert.equal(res.res.body.is_payed, true);
+                            return done();
+                        });
                     return done();
                 });
         });

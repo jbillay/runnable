@@ -214,7 +214,8 @@ angular.module('runnable.controllers', []).
             fileReader.deletePicture($scope.file);
         };
     }).
-	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run, Journey, Join, EmailOptions, Page) {
+	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run,
+                                                    Journey, Join, EmailOptions, BankAccount, Page) {
 		$scope.page = 'Admin';
 		var userListPromise = User.getList(),
 			runListPromise = Run.getList(),
@@ -222,7 +223,8 @@ angular.module('runnable.controllers', []).
 			joinListPromise = Join.getList(),
 			EmailOptionsPromise = EmailOptions.get(),
 			pageListPromise = Page.getList(),
-			all = $q.all([userListPromise, runListPromise, journeyListPromise, joinListPromise, EmailOptionsPromise, pageListPromise]);
+			all = $q.all([userListPromise, runListPromise, journeyListPromise, joinListPromise,
+                            EmailOptionsPromise, pageListPromise]);
 		all.then(function (res) {
 			$scope.userList = res[0];
 			$scope.runList = res[1];
@@ -293,8 +295,22 @@ angular.module('runnable.controllers', []).
 				run.is_active = true;
 			}
 		};
+        $scope.openJourneyAction = function (journey) {
+            $scope.selectedJourney = journey;
+            var userRIBPromise = BankAccount.getByUser(journey.User.id),
+                journeyJoinsPromise = Join.getListForJourney(journey.id),
+                all = $q.all([userRIBPromise, journeyJoinsPromise]);
+            all.then(function (res) {
+                $scope.selectedJourneyUserRIB = res[0];
+                $scope.selectedJourneyJoins = res[1];
+                angular.element('#adminJourneyAction').modal('show');
+            });
+        };
+        $scope.closeAdminJourney = function () {
+            angular.element('#adminJourneyAction').modal('hide');
+        };
 	}).
-	controller('RunnableRunDetailController', function ($scope, $q, $timeout, $routeParams, $location,
+    controller('RunnableRunDetailController', function ($scope, $q, $timeout, $routeParams, $location,
 														Run, Journey, GoogleMapApi, Session, Participate) {
         $scope.page = 'Run';
 		$scope.runId = $routeParams.runId;

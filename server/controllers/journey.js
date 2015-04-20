@@ -46,16 +46,17 @@ exports.openList = function (req, res) {
 
 exports.listForRun = function (req, res) {
     'use strict';
-	console.log('Get list of journey for run' + req.params.id);
-	var journey = new Journey();
-	journey.getListForRun(req.params.id, function (err, journeys) {
-		if (err) {
-			console.log('Not able to get journey list : ' + err);
-			res.jsonp('{"msg": "ko"}');
-		} else {
-			res.jsonp(journeys);
-		}
-	});
+	console.log('Get list of journey for run ' + req.params.id);
+	var id = req.params.id,
+        journey = new Journey();
+    journey.getListForRun(id, function (err, journeys) {
+        if (err) {
+            console.log('Not able to get journey list : ' + err);
+            res.jsonp('{"msg": "ko"}');
+        } else {
+            res.jsonp(journeys);
+        }
+    });
 };
 
 exports.detail = function (req, res) {
@@ -100,4 +101,20 @@ exports.bookSpace = function (req, res) {
 			res.jsonp(spaces);
 		}
 	});
+};
+
+exports.togglePayed = function (req, res) {
+    'use strict';
+    console.log('Toggle payed for journey ' + req.body.id);
+    var id = req.body.id,
+        journey = new Journey();
+    journey.togglePayed(id, function (err, journey) {
+        if (err) {
+            console.log('Journey not toggle payed ' + err);
+            res.jsonp('{"msg": "journeyNotTogglePayed", "type": "error"}');
+        } else {
+            console.log('Journey toggle payed');
+            res.jsonp('{"msg": "journeyTogglePayed", "type": "success"}');
+        }
+    });
 };

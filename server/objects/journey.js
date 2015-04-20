@@ -1,6 +1,7 @@
 /* user object */
 
 var models = require('../models');
+var _ = require('lodash');
 
 function journey() {
     'use strict';
@@ -100,8 +101,43 @@ journey.prototype.getList = function (done) {
 		});
 };
 
+// Require to have Joins and Invoice included to be used
+journey.prototype.filterFullJourney = function (journeys, limit) {
+    'use strict';
+    var openJourney = [],
+        iterator = 0;
+    journeys.forEach(function (journey) {
+        var place = 0,
+            book_place = 0;
+        if (journey.nb_space_outward) {
+            place += journey.nb_space_outward;
+        }
+        if (journey.nb_space_return) {
+            place += journey.nb_space_return;
+        }
+        journey.Joins.forEach(function (join) {
+            if (join.nb_place_outward && join.Invoice.status === 'completed') {
+                book_place += join.nb_place_outward;
+            }
+            if (join.nb_place_return && join.Invoice.status === 'completed') {
+                book_place += join.nb_place_return;
+            }
+        });
+        if (place > book_place) {
+            if (limit && limit > iterator) {
+                iterator++;
+                openJourney.push(journey);
+            } else if (!limit) {
+                openJourney.push(journey);
+            }
+        }
+    });
+    return openJourney;
+};
+
 journey.prototype.getOpenList = function (done) {
     'use strict';
+    var that = this;
     models.Journey.findAll({include: [
                 {
                     model: models.Join,
@@ -111,28 +147,7 @@ journey.prototype.getOpenList = function (done) {
                 { model: models.Run }
             ]})
         .then(function (journeys) {
-            var openJourney = [];
-            journeys.forEach(function (journey) {
-                var place = 0,
-                    book_place = 0;
-                if (journey.nb_space_outward) {
-                    place += journey.nb_space_outward;
-                }
-                if (journey.nb_space_return) {
-                    place += journey.nb_space_return;
-                }
-                journey.Joins.forEach(function (join) {
-                    if (join.nb_place_outward && join.Invoice.status === 'completed') {
-                        book_place += join.nb_place_outward;
-                    }
-                    if (join.nb_place_return && join.Invoice.status === 'completed') {
-                        book_place += join.nb_place_return;
-                    }
-                });
-                if (place > book_place) {
-                    openJourney.push(journey);
-                }
-            });
+            var openJourney = that.filterFullJourney(journeys, 0);
             done(null, openJourney);
         })
         .catch(function (err) {
@@ -142,26 +157,46 @@ journey.prototype.getOpenList = function (done) {
 
 journey.prototype.getListForRun = function (id, done) {
     'use strict';
-	models.Run.find({where: {id: id}})
-		.then(function (run) {
-			run.getJourneys().then(function (journeys) {
-				done(null, journeys);
-			});
-		})
-		.catch(function (err) {
-			done(err, null);
-		});
+    var that = this;
+    models.Journey.findAll({where: {RunId: id}, include: [
+        {
+            model: models.Join,
+            as: 'Joins',
+            include: [ models.Invoice ]
+        },
+        { model: models.Run }
+    ]})
+        .then(function (journeys) {
+            if (!journeys.length) {
+                done(new Error('Not able to find journey for the run' + id), null);
+            } else {
+                var openJourney = that.filterFullJourney(journeys, 0);
+                done(null, openJourney);
+            }
+        })
+        .catch(function (err) {
+            done(err, null);
+        });
 };
 
 journey.prototype.getNextList = function (nb, done) {
     'use strict';
-	models.Journey.findAll({limit: nb, include: [models.Run]})
-		.then(function (runs) {
-			done(null, runs);
-		})
-		.catch(function (err) {
-			done(err, null);
-		});
+    var that = this;
+    models.Journey.findAll({include: [
+        {
+            model: models.Join,
+            as: 'Joins',
+            include: [ models.Invoice ]
+        },
+        { model: models.Run }
+    ]})
+        .then(function (journeys) {
+            var openJourney = that.filterFullJourney(journeys, nb);
+            done(null, openJourney);
+        })
+        .catch(function (err) {
+            done(err, null);
+        });
 };
 
 journey.prototype.getById = function (id, done) {
@@ -216,6 +251,24 @@ journey.prototype.getBookSpace = function (id, done) {
                 });
                 done(null, values);
             }
+        })
+        .catch(function (err) {
+            done(err, null);
+        });
+};
+
+journey.prototype.togglePayed = function (id, done) {
+    models.Journey.find({where: {id: id}})
+        .then(function (journey) {
+            if (journey.is_payed === true) {
+                journey.is_payed = false;
+            } else {
+                journey.is_payed = true;
+            }
+            journey.save()
+                .then(function (newJourney) {
+                    done(null, newJourney);
+                });
         })
         .catch(function (err) {
             done(err, null);

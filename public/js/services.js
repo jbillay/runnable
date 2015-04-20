@@ -101,7 +101,19 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(data);
 					});
                 return deferred.promise;
-            }
+            },
+			getByUser: function (id) {
+				var deferred = $q.defer();
+				$http.get('/api/admin/user/bankaccount/' + id).
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						console.log('Error : ', data);
+						deferred.resolve(data);
+					});
+				return deferred.promise;
+			}
 		};
 	}).
     factory('EmailOptions', function ($q, $http, $rootScope) {
