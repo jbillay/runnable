@@ -78,7 +78,8 @@ module.exports = function (app, passport, auth) {
     app.get('/api/admin/options', auth.requireAdmin, controllers.option.getOptions);
 	app.post('/api/admin/page', auth.requireAdmin, controllers.page.save);
 	app.get('/api/admin/pages', auth.requireAdmin, controllers.page.getList);
-	
+	app.get('/api/admin/user/bankaccount/:id', auth.requireAdmin, controllers.bank_account.getByUser);
+
 	app.get('/api/page/:tag', controllers.page.getByTag);
 
     app.get('/api/invoice', auth.requiresLogin, controllers.invoice.getByUser);

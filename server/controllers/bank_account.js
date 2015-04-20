@@ -33,3 +33,18 @@ exports.get = function (req, res) {
 		}
 	});
 };
+
+exports.getByUser = function (req, res) {
+    'use strict';
+    var id = req.params.id,
+        bankAccount = new BankAccount();
+    console.log('Get user ' + id + 'bank account');
+    bankAccount.getUserAccount(id, function (err, userBankAccount) {
+        if (err) {
+            console.log('Not able to get bank account : ' + err);
+            res.jsonp('{"msg": "ko", "type": "error"}');
+        } else {
+            res.jsonp(userBankAccount);
+        }
+    });
+};

@@ -9,5 +9,16 @@
             "BIC": "AGRIFRPP882",
             "UserId": 1
         }
+    },
+    {
+        "model": "BankAccount",
+        "data": {
+            "id": 2,
+            "owner": "Richard Couret",
+            "agency_name": "CIC",
+            "IBAN": "TESTIBAN",
+            "BIC": "TESTBIC",
+            "UserId": 2
+        }
     }
 ]

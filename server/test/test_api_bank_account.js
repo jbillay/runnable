@@ -95,6 +95,27 @@ describe('Test of bank_account API', function () {
         });
     });
 
+	describe('GET /api/admin/user/bankaccount/:id', function () {
+		var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+		it('should return a selected user bank account', function (done) {
+            agent
+                .get('http://localhost:9615/api/admin/user/bankaccount/2')
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    assert.equal(res.body.owner, 'Richard Couret');
+                    assert.equal(res.body.agency_name, 'CIC');
+                    assert.equal(res.body.IBAN, 'TESTIBAN');
+                    assert.equal(res.body.BIC, 'TESTBIC');
+                    return done();
+                });
+        });
+    });
+
 	describe('POST /api/user/bankaccount', function () {
 		var agent = superagent.agent();
 
