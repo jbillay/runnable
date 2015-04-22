@@ -701,7 +701,7 @@ angular.module('runnable.services', ['ngResource']).
 			}
         };
     }).
-	factory('Inbox', function ($q, $http) {
+	factory('Inbox', function ($q, $http, $rootScope) {
 		return {
 			addMessage: function (template, values, userId) {
 				var deferred = $q.defer(),
@@ -750,6 +750,16 @@ angular.module('runnable.services', ['ngResource']).
 				return deferred.promise;
 			},
 			deleteMessage: function (id) {
+                var deferred = $q.defer(),
+                    info = {messageId: id};
+                $http.post('/api/inbox/msg/delete', info).
+                    success(function (result) {
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        console.log('Error : ' + status);
+                    });
+                return deferred.promise;
 			},
 			nbUnreadMessage: function () {
 				var deferred = $q.defer();
@@ -981,6 +991,18 @@ angular.module('runnable.services', ['ngResource']).
                 var deferred = $q.defer();
                 $http.post('/api/admin/journey/payed', {id: journeyId}).
                     success(function (result) {
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        console.log('Error : ' + status);
+                    });
+                return deferred.promise;
+            },
+            cancel: function (journeyId) {
+                var deferred = $q.defer();
+                $http.post('/api/journey/cancel', {id: journeyId}).
+                    success(function (result) {
+                        $rootScope.$broadcast('USER_MSG', result);
                         deferred.resolve(result);
                     }).
                     error(function(data, status) {

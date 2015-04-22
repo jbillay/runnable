@@ -8,16 +8,12 @@
 					<span class="glyphicon glyphicon-search"></span>
 					<input type="search" ng-model="query" placeholder="Recherche..." />
 				</div>
-				<div class="panel-body">
+				<div class="panel-body fixed-panel">
 					<div class="list-group">
 						<a href="#" class="list-group-item" ng-repeat="message in inboxMessages | filter:query as results track by $index">
-							<h4 class="list-group-item-heading">
-								<span ng-if="!message.is_read" ng-click="showMessage(inboxMessages[$index])">
-									<strong>{{message.title}}</strong>
-								</span>
-								<span ng-if="message.is_read" ng-click="showMessage(message)">
-									{{message.title}}
-								</span>
+							<h4 class="list-group-item-heading" ng-click="showMessage(message, $index)">
+								<span ng-if="!message.is_read"><strong>{{message.title}}</strong></span>
+								<span ng-if="message.is_read">{{message.title}}</span>
 							</h4>
 						</a>
 					</div>
@@ -32,10 +28,10 @@
 				<div class="panel-heading">
 					<strong>Reçu le : </strong>{{selectedMessage.createdAt | date:'dd/MM/yyyy h:mma'}}
 					<div class="pull-right">
-						<i class="fa fa-trash fa-lg" ng-click="removeMessage(selectedMessage.id)" style="color:red"></i>
+						<i class="fa fa-trash fa-lg" ng-click="removeMessage(inboxMessages, selectedIndex)" style="color:red"></i>
 					</div>
 				</div>
-				<div class="panel-body">
+				<div class="panel-body fixed-panel">
 					<h4><span ng-bind-html="selectedMessage.message"></span></h4>
 				</div>
 			</div>

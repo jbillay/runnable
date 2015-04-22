@@ -209,25 +209,29 @@ describe('Test of join object', function () {
     it('Cancel join by id', function (done) {
         var join = new Join(),
             invoice = new Invoice();
-        join.cancelById(2, function (err, joinInfo) {
-            if (err) return done(err);
-            assert.isNull(err);
-            invoice.getById(2, function (err, invoiceInfo) {
-                if (err) return done(err);
-                assert.isNull(err);
-                assert.equal(invoiceInfo.status, 'cancelled');
-                return done();
-            });
-        });
+        join.cancelById(2)
+            .then(function (joinInfo) {
+                invoice.getById(2, function (err, invoiceInfo) {
+                    if (err) return done(err);
+                    assert.isNull(err);
+                    assert.equal(invoiceInfo.status, 'cancelled');
+                    return done();
+                });
+            })
+            .catch(function (err) {
+                return done(err);
+            })
     });
 
     it('Cancel not existing join', function (done) {
-        var join = new Join(),
-            invoice = new Invoice();
-        join.cancelById(42, function (err, joinInfo) {
-            console.log(err);
-            assert.isNotNull(err);
-            return done();
-        });
+        var join = new Join();
+        join.cancelById(42)
+            .then(function (joinInfo) {
+                return done(new Error('Should be an error'));
+            })
+            .catch(function (err) {
+                assert.isNotNull(err);
+                return done();
+            });
     });
 });

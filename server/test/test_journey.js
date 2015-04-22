@@ -6,6 +6,7 @@
 var assert = require('chai').assert;
 var models = require('../models');
 var Journey = require('../objects/journey');
+var Join = require('../objects/join');
 var async = require('async');
 var q = require('q');
 
@@ -39,6 +40,16 @@ describe('Test of journey object', function () {
                     },
                     function(callback) {
                         var fixtures = require('./fixtures/runs.json');
+                        var promises = [];
+                        fixtures.forEach(function (fix) {
+                            promises.push(loadData(fix));
+                        });
+                        q.all(promises).then(function() {
+                            callback(null);
+                        });
+                    },
+                    function(callback) {
+                        var fixtures = require('./fixtures/options.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
                             promises.push(loadData(fix));
@@ -117,7 +128,7 @@ describe('Test of journey object', function () {
 
     it('Get filtered Journey already full with and without limit', function (done) {
         var journey = new Journey();
-        models.Journey.findAll({include: [
+        models.Journey.findAll({where: {is_canceled: false}, include: [
                 {
                     model: models.Join,
                     as: 'Joins',
@@ -198,7 +209,7 @@ describe('Test of journey object', function () {
 
     it('Get list of journey for a run', function (done) {
         var journey = new Journey();
-        journey.getListForRun(5, function (err, journeyList) {
+        journey.getListForRun(4, function (err, journeyList) {
             if (err) return done(err);
             assert.equal(journeyList.length, 1);
             journey.getListForRun(2, function (err, journeyList) {
@@ -216,7 +227,7 @@ describe('Test of journey object', function () {
         var journey = new Journey();
         journey.getList(function (err, journeyList) {
             if (err) return done(err);
-            assert.equal(journeyList.length, 3);
+            assert.equal(journeyList.length, 4);
             return done();
         });
     });
@@ -233,7 +244,7 @@ describe('Test of journey object', function () {
     it('Create a new journey', function (done) {
         var journey = new Journey(),
             newJourney = {
-                id: 4,
+                id: 5,
                 address_start: 'Paris',
                 distance: '25 km',
                 duration: '20 minutes',
@@ -256,20 +267,20 @@ describe('Test of journey object', function () {
         journey.setJourney(newJourney);
         journey.setRun(run);
         var tmp = journey.get();
-        assert.equal(tmp.id, 4);
+        assert.equal(tmp.id, 5);
         assert.equal(tmp.distance, '25 km');
         assert.equal(tmp.journey_type, 'aller-retour');
         assert.equal(tmp.car_type, 'citadine');
         assert.equal(tmp.amount, 5);
         journey.save(tmp, user, function(err, newJourney) {
-            assert.equal(newJourney.id, 4);
+            assert.equal(newJourney.id, 5);
             assert.equal(newJourney.distance, '25 km');
             assert.equal(newJourney.journey_type, 'aller-retour');
             assert.equal(newJourney.car_type, 'citadine');
             assert.equal(newJourney.amount, 5);
             journey.getList(function (err, journeyList) {
                 if (err) return done(err);
-                assert.equal(journeyList.length, 4);
+                assert.equal(journeyList.length, 5);
                 return done();
             });
         });
@@ -284,6 +295,28 @@ describe('Test of journey object', function () {
                 if (err) return done(err);
                 assert.equal(retJourney.is_payed, false);
                 return done();
+            });
+        });
+    });
+
+    it('Cancel a journey', function (done) {
+        var journey = new Journey(),
+            join = new Join();
+        journey.getById(1, function (err, journeyInfo) {
+            if (err) return done(err);
+            assert.equal(journeyInfo.is_canceled, false);
+            journey.cancel(1, function (err, journeyUpdated) {
+                if (err) return done(err);
+                assert.equal(journeyUpdated.is_canceled, true);
+                journey.getByUser(1, function (err, journeyList) {
+                    if (err) return done(err);
+                    assert.equal(journeyList.length, 1);
+                    join.getByJourney(1, function (err, joinList) {
+                        if (err) return done(err);
+                        assert.equal(joinList.length, 0);
+                        return done();
+                    });
+                });
             });
         });
     });

@@ -13,11 +13,13 @@
                         </div>
                         <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                             <div class="panel-body">
-                                <div ng-repeat="join in userJoin">
+                                <div ng-repeat="join in userJoin track by $index">
                                     <div class="panel panel-default">
                                         <div class="panel-heading clearfix">
                                             <h6 class="panel-title pull-left"><a href="/journey-{{join.Journey.id}}">{{join.Journey.Run.name}}</a></h6>
-                                            <div class="pull-right"><span class="glyphicon glyphicon-remove red" ng-click=askValidation(join)></span></div>
+                                            <div class="pull-right">
+                                                <span class="glyphicon glyphicon-remove red" ng-click="askValidationJoinCancelFromMyJourney(join, $index)"></span>
+                                            </div>
                                         </div>
                                         <div class="panel-body">
                                             <div class="col-md-12">
@@ -63,11 +65,14 @@
                         </div>
                         <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
                             <div class="panel-body">
-                                <div ng-repeat="journey in userJourney">
+                                <div ng-repeat="journey in userJourney track by $index">
                                     <div class="panel panel-default">
                                         <div class="panel-heading clearfix">
                                             <h6 class="panel-title pull-left"><a href="/journey-{{journey.id}}">{{journey.Run.name}}</a></h6>
-                                            <div class="pull-right">{{journey.journey_type | capitalize}}</div>
+                                            <div class="pull-right">
+                                                {{journey.journey_type | capitalize}}
+                                                <span class="glyphicon glyphicon-remove red" ng-click="askValidationJourneyCancelFromMyJourney(journey, $index)"></span>
+                                            </div>
                                         </div>
                                         <div class="panel-body">
                                             <div class="col-md-12">

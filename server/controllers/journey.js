@@ -118,3 +118,19 @@ exports.togglePayed = function (req, res) {
         }
     });
 };
+
+exports.cancel = function (req, res) {
+    'use strict';
+    var id = req.body.id,
+        journey = new Journey();
+    console.log('Try to cancel journey ' + id);
+    journey.cancel(id, function (err, journey) {
+        if (err) {
+            console.log('Journey not canceled : ' + err);
+            res.jsonp('{"msg": "journeyNotCanceled", "type": "error"}');
+        } else {
+            console.log('Journey canceled');
+            res.jsonp('{"msg": "journeyCanceled", "type": "success"}');
+        }
+    });
+};

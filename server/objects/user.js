@@ -233,7 +233,7 @@ user.prototype.toggleActive = function (id, done) {
 
 user.prototype.getPublicDriverInfo = function (id, done) {
     'use strict';
-    models.Journey.findAll({where: {UserId: id}, include: [models.Join]})
+    models.Journey.findAll({where: {UserId: id, is_canceled: false}, include: [models.Join]})
         .then(function (journeys) {
             var joinList = [];
             journeys.forEach(function (journey) {
@@ -254,10 +254,16 @@ user.prototype.getPublicDriverInfo = function (id, done) {
 user.prototype.getPublicInfo = function (id, done) {
     'use strict';
 	models.User.find({  where: {id: id},
-                        include: [models.Journey, models.Join, {
-						   	model: models.Participate,
-							as: 'Participates',
-							include: [ models.Run ]}]
+                        include: [models.Join,
+                            {
+                                model: models.Participate,
+                                as: 'Participates',
+                                include: [ models.Run ]
+                            },
+                            {
+							    model: models.Journey,
+							    where: {is_canceled: false}
+						    }]
                      })
 		.then(function (user) {
 			done(null, user);

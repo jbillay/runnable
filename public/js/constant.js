@@ -49,5 +49,9 @@ angular.module('runnable.constant', []).
         joinCancelled:          'Votre demande d\'annulation de voyage a bien été prise en compte',
         joinNotCancelled:       'Votre demande d\'annulation de voyage n\'a malheureusement pas pu être prise en compte',
         journeyCreated:         'Votre trajet vient d\'être créé',
-        journeyNotCreated:      'Malheureusement votre trajet n\'a pas pu être créé en raison d\'un problème technique'
+        journeyNotCreated:      'Malheureusement votre trajet n\'a pas pu être créé en raison d\'un problème technique',
+        messageDeleted:         'Votre message a bien été supprimé',
+        NotAbleDeleteMessage:   'Malheureusement nous n\'avons pas réussi à supprimer votre message',
+        journeyCanceled:        'Votre demande d\'annulation de voyage a bien été prise en compte',
+        journeyNotCanceled:     'Votre demande d\'annulation de voyage n\'a malheureusement pas pu être prise en compte'
 	});

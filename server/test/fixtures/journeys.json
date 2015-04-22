@@ -61,5 +61,27 @@
       "RunId": 4,
       "UserId": 2
     }
+  },
+  {
+    "model": "Journey",
+    "data": {
+      "id": 4,
+      "address_start": "Nice",
+      "distance": "300 km",
+      "duration": "3 heures 10 minutes",
+      "journey_type": "aller-retour",
+      "date_start_outward": "2015-06-25 00:00:00",
+      "time_start_outward": "09:00",
+      "nb_space_outward": 1,
+      "date_start_return": "2015-06-26 00:00:00",
+      "time_start_return": "11:00",
+      "nb_space_return": 1,
+      "car_type": "citadine",
+      "amount": 26,
+      "is_canceled": true,
+      "updatedAt": "2015-02-02 05:02:11",
+      "RunId": 4,
+      "UserId": 2
+    }
   }
 ]

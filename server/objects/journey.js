@@ -2,6 +2,9 @@
 
 var models = require('../models');
 var _ = require('lodash');
+var Join = require('./join');
+var Inbox = require('./inbox');
+var q = require('q');
 
 function journey() {
     'use strict';
@@ -138,7 +141,7 @@ journey.prototype.filterFullJourney = function (journeys, limit) {
 journey.prototype.getOpenList = function (done) {
     'use strict';
     var that = this;
-    models.Journey.findAll({include: [
+    models.Journey.findAll({where: {is_canceled: false}, include: [
                 {
                     model: models.Join,
                     as: 'Joins',
@@ -158,7 +161,7 @@ journey.prototype.getOpenList = function (done) {
 journey.prototype.getListForRun = function (id, done) {
     'use strict';
     var that = this;
-    models.Journey.findAll({where: {RunId: id}, include: [
+    models.Journey.findAll({where: {RunId: id, is_canceled: false}, include: [
         {
             model: models.Join,
             as: 'Joins',
@@ -167,12 +170,8 @@ journey.prototype.getListForRun = function (id, done) {
         { model: models.Run }
     ]})
         .then(function (journeys) {
-            if (!journeys.length) {
-                done(new Error('Not able to find journey for the run' + id), null);
-            } else {
-                var openJourney = that.filterFullJourney(journeys, 0);
-                done(null, openJourney);
-            }
+            var openJourney = that.filterFullJourney(journeys, 0);
+            done(null, openJourney);
         })
         .catch(function (err) {
             done(err, null);
@@ -182,7 +181,7 @@ journey.prototype.getListForRun = function (id, done) {
 journey.prototype.getNextList = function (nb, done) {
     'use strict';
     var that = this;
-    models.Journey.findAll({include: [
+    models.Journey.findAll({where: {is_canceled: false}, include: [
         {
             model: models.Join,
             as: 'Joins',
@@ -213,7 +212,7 @@ journey.prototype.getById = function (id, done) {
 
 journey.prototype.getByUser = function (id, done) {
 	'use strict';
-	models.Journey.findAll({where: {userId: id},
+	models.Journey.findAll({where: {userId: id, is_canceled: false},
                             include: [models.Run, models.User],
                             order: 'date_start_outward ASC'
                             })
@@ -231,7 +230,7 @@ journey.prototype.getBookSpace = function (id, done) {
         outward: 0,
         return: 0
     };
-    models.Journey.find({where: {id: id},
+    models.Journey.find({where: {id: id, is_canceled: false},
                             include: [{
                                 model: models.Join,
                                 as: 'Joins',
@@ -258,7 +257,7 @@ journey.prototype.getBookSpace = function (id, done) {
 };
 
 journey.prototype.togglePayed = function (id, done) {
-    models.Journey.find({where: {id: id}})
+    models.Journey.find({where: {id: id, is_canceled: false}})
         .then(function (journey) {
             if (journey.is_payed === true) {
                 journey.is_payed = false;
@@ -268,6 +267,51 @@ journey.prototype.togglePayed = function (id, done) {
             journey.save()
                 .then(function (newJourney) {
                     done(null, newJourney);
+                });
+        })
+        .catch(function (err) {
+            done(err, null);
+        });
+};
+
+journey.prototype.cancelJoinsOfJourney = function (id, runame) {
+    var deferred = q.defer(),
+        join = new Join(),
+        inbox = new Inbox(),
+        template = 'UserJourneyCancel',
+        values = {runName: runame};
+    // cancel all join link to the Journey and send mail to user
+    join.getByJourney(id, function (err, journeyJoins) {
+        var promises = [];
+        if (err) {
+            deferred.reject(new Error(err));
+        } else {
+            journeyJoins.forEach(function (journeyJoin) {
+                promises.push(join.cancelById(journeyJoin.id));
+                inbox.add(template, values, journeyJoin.UserId);
+            });
+            q.all(promises).then(function () {
+                deferred.resolve(journeyJoins);
+            });
+        }
+    });
+    return deferred.promise;
+};
+
+journey.prototype.cancel = function (id, done) {
+    var that = this;
+    models.Journey.find({where: {id: id}, include: [models.Run]})
+        .then(function (journey) {
+            journey.is_canceled = true;
+            journey.save()
+                .then(function (newJourney) {
+                    that.cancelJoinsOfJourney(newJourney.id, newJourney.Run.name)
+                        .then(function (joins) {
+                            done(null, newJourney);
+                        })
+                        .catch(function (err) {
+                            done(err, null);
+                        });
                 });
         })
         .catch(function (err) {

@@ -2,11 +2,12 @@
   {
     "model": "Inbox",
     "data": {
-        "id": 1,
-        "title": "Nouveau message concernant le trajet pour la course Les templiers",
+      "id": 1,
+      "title": "Nouveau message concernant le trajet pour la course Les templiers",
       "message": "test à la con",
-        "is_read": 1,
-        "UserId": 2
+      "is_read": 1,
+      "UserId": 2,
+      "createdAt": "2015-01-28 09:57:02"
     }
   },
   {
@@ -16,17 +17,19 @@
       "title": "Nouveau message concernant le trajet pour la course Les templiers",
       "message": "Richard Couret dit : je sais que ça va marcher",
       "is_read": 0,
-      "UserId": 1
+      "UserId": 1,
+      "createdAt": "2015-01-28 09:57:02"
     }
   },
   {
     "model": "Inbox",
     "data": {
-        "id": 3,
-        "title": "Nouveau message concernant le trajet pour la course Les templiers",
-        "message": "Richard Couret dit : c est plutot une super nouvelle",
-        "is_read": 1,
-        "UserId": 1
+      "id": 3,
+      "title": "Nouveau message concernant le trajet pour la course Les templiers",
+      "message": "Richard Couret dit : c est plutot une super nouvelle",
+      "is_read": 1,
+      "UserId": 1,
+      "createdAt": "2015-01-28 09:57:02"
     }
   },
   {
@@ -36,7 +39,8 @@
       "title": "Validation inscription au voyage pour la course Corrida de Saint Germain en Laye",
       "message": "Nous avons bien pris en compte votre inscriptions pour la course Corrida de Saint Germain en Laye. Nous sommes en attente de la validation du paiement.",
       "is_read": 0,
-      "UserId": 2
+      "UserId": 2,
+      "createdAt": "2015-01-30 10:57:02"
     }
   }
 ]

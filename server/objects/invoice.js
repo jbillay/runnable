@@ -125,7 +125,7 @@ invoice.prototype.getByUser = function (id, done) {
 
 invoice.prototype.getByDriver = function (id, done) {
     'use strict';
-    models.Journey.findAll({where: {userId: id}})
+    models.Journey.findAll({where: {userId: id, is_canceled: false}})
         .then(function (journeys) {
             var journeyIdList = [];
             journeys.forEach(function (journey) {

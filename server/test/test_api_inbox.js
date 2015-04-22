@@ -117,7 +117,6 @@ describe('Test of Inbox API', function () {
                     if (err) {
                         return done(err);
                     }
-                    console.log(res.body);
                     assert.equal(res.body, 1);
                     return done();
                 });
@@ -206,6 +205,34 @@ describe('Test of Inbox API', function () {
                                 return done(err);
                             }
                             assert.equal(res.body, 2);
+                            return done();
+                        });
+                });
+        });
+    });
+
+    describe('POST /api/inbox/msg/delete', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should delete message 1', function (done) {
+            var message = {
+                messageId: 2
+            };
+            agent
+                .post('http://localhost:9615/api/inbox/msg/delete')
+                .send(message)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(JSON.parse(res.body).msg, 'messageDeleted');
+                    agent
+                        .get('http://localhost:9615/api/inbox/msg')
+                        .end(function (err, res) {
+                            if (err) {
+                                return done(err);
+                            }
+                            assert.equal(res.body.length, 1);
                             return done();
                         });
                 });

@@ -39,6 +39,7 @@ module.exports = function (app, passport, auth) {
     app.get('/api/run/next/:nb', controllers.run.next);
 
     app.post('/api/journey', auth.requiresLogin, controllers.journey.create);
+    app.post('/api/journey/cancel', auth.requiresLogin, controllers.journey.cancel);
     app.get('/api/journey/open', controllers.journey.openList);
 	app.get('/api/journey/:id', controllers.journey.detail);
     app.get('/api/journey/run/:id', controllers.journey.listForRun);
@@ -54,6 +55,7 @@ module.exports = function (app, passport, auth) {
     app.post('/api/inbox/msg', auth.requiresLogin, controllers.inbox.add);
     app.post('/api/inbox/msg/read', auth.requiresLogin, controllers.inbox.read);
     app.post('/api/inbox/msg/unread', auth.requiresLogin, controllers.inbox.unread);
+    app.post('/api/inbox/msg/delete', auth.requiresLogin, controllers.inbox.delete);
     app.get('/api/inbox/msg', auth.requiresLogin, controllers.inbox.getList);
     app.get('/api/inbox/unread/nb/msg', auth.requiresLogin, controllers.inbox.countUnread);
 

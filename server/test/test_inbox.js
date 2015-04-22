@@ -110,12 +110,12 @@ describe('Test of inbox object', function () {
     it('Get nb unread message for a user', function (done) {
         var inbox = new Inbox();
         inbox.countUnread(2, function (err, nb) {
-            if (err) console.log(err);
+            if (err) return done(err);
             assert.isNull(err);
             assert.equal(nb, 1);
             inbox.countUnread(-1, function (err, nb) {
                 assert.isNotNull(err);
-                done();
+                return done();
             });
         });
     });
@@ -123,14 +123,14 @@ describe('Test of inbox object', function () {
     it('Set a message as read', function (done) {
         var inbox = new Inbox();
         inbox.setIsRead(4, true, function (err, message) {
-            if (err) console.log(err);
+            if (err) return done(err);
             assert.isNull(err);
             assert.equal(message.is_read, 1);
             inbox.countUnread(2, function (err, nb) {
                 assert.equal(nb, 0);
                 inbox.setIsRead(4, true, function (err, message) {
                     assert.isNotNull(err);
-                    done();
+                    return done();
                 });
             });
         });
@@ -145,13 +145,14 @@ describe('Test of inbox object', function () {
                 id: -1
             };
         inbox.getList(user, function (err, messages) {
-            if (err) console.log(err);
+            if (err) return done(err);
             assert.isNull(err);
             assert.equal(messages.length, 2);
+            assert.equal(messages[0].title, 'Validation inscription au voyage pour la course Corrida de Saint Germain en Laye');
             inbox.getList(user2, function (err, messages) {
                 assert.isNotNull(err);
                 assert.isNull(messages);
-                done();
+                return done();
             });
         });
     });
@@ -180,14 +181,32 @@ describe('Test of inbox object', function () {
         assert.equal(tmp.userId, 1);
         assert.equal(tmp.is_read, false);
         inbox.add(template, values, userId, function (err, newMessage) {
-            if (err) console.log('Error :' + err);
+            if (err) return done(err);
             assert.isNull(err);
             assert.equal(newMessage.id, 5);
             assert.equal(newMessage.title, 'Email pour 3');
             assert.equal(newMessage.message, 'TEST message Inbox');
             assert.equal(newMessage.is_read, false);
             assert.equal(newMessage.UserId, userId);
-            done();
+            return done();
         });
     });
+
+    it('Remove message 1', function (done) {
+        var inbox = new Inbox(),
+            user = {
+                id: 2
+            };
+        inbox.delete(1, function (err, toRemoveMsg) {
+            if (err) return done(err);
+            assert.equal(toRemoveMsg, 'messageDeleted');
+            inbox.getList(user, function (err, messages) {
+                if (err) return done(err);
+                assert.equal(messages.length, 1);
+                assert.equal(messages[0].title, 'Validation inscription au voyage pour la course Corrida de Saint Germain en Laye');
+                return done();
+            });
+        });
+    });
+
 });

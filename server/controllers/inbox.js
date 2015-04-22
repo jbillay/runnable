@@ -66,3 +66,16 @@ exports.countUnread = function (req, res) {
 		res.jsonp(nb);
 	});
 };
+
+exports.delete = function (req, res) {
+	'use strict';
+	var messageId = req.body.messageId,
+        inbox = new Inbox();
+    inbox.delete(messageId, function (err, message) {
+        if (err) {
+            res.jsonp('{"msg": "NotAbleDeleteMessage", "type": "error"}');
+        } else {
+            res.jsonp('{"msg": "messageDeleted", "type": "success"}');
+        }
+    });
+};

@@ -18,7 +18,8 @@ module.exports = function(sequelize, DataTypes) {
 		nb_space_return:	DataTypes.INTEGER,
 		car_type: 			{ type: DataTypes.ENUM, values: ['citadine', 'berline', 'break', 'monospace', 'suv', 'coupe', 'cabriolet'] },
 		amount: 			DataTypes.FLOAT,
-		is_payed:			{ type: DataTypes.BOOLEAN, defaultValue: false }
+        is_payed:			{ type: DataTypes.BOOLEAN, defaultValue: false },
+        is_canceled:		{ type: DataTypes.BOOLEAN, defaultValue: false }
 	}, {
 		classMethods: {
 			associate: function(models) {

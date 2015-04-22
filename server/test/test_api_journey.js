@@ -136,7 +136,7 @@ describe('Test of journey API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(res.body.length, 3);
+                    assert.equal(res.body.length, 4);
                     return done();
                 });
         });
@@ -210,17 +210,6 @@ describe('Test of journey API', function () {
                     return done();
                 });
         });
-        it('should failed list of journey', function (done) {
-            request(app)
-                .get('/api/journey/run/a')
-                .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
-                    assert.equal(JSON.parse(res.body).msg, 'ko');
-                    return done();
-                });
-        });
     });
 
     describe('GET /api/journey/next/:nb', function () {
@@ -249,7 +238,7 @@ describe('Test of journey API', function () {
 
         it('should create a journey', function (done) {
             var journey = {
-                id: 4,
+                id: 5,
                 address_start: 'Paris',
                 distance: '25 km',
                 duration: '20 minutes',
@@ -278,7 +267,7 @@ describe('Test of journey API', function () {
                             if (err) {
                                 return done(err);
                             }
-                            assert.equal(res.body.length, 4);
+                            assert.equal(res.body.length, 5);
                             return done();
                         });
                 });
@@ -314,10 +303,32 @@ describe('Test of journey API', function () {
                     request(app)
                         .get('/api/journey/2')
                         .end(function (err, res) {
+                            if (err) return done(err);
+                            assert.equal(res.res.body.is_payed, true);
+                            return done();
+                        });
+                });
+        });
+    });
+
+    describe('POST /api/journey/cancel', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('Should cancel journey 3', function(done) {
+            agent
+                .post('http://localhost:9615/api/journey/cancel')
+                .send({id: '3'})
+                .end(function (err, res) {
+                    assert.equal(JSON.parse(res.body).msg, 'journeyCanceled');
+                    request(app)
+                        .get('/api/journey/3')
+                        .end(function (err, res) {
                             if (err) {
                                 return done(err);
                             }
-                            assert.equal(res.res.body.is_payed, true);
+                            assert.equal(res.res.body.is_canceled, true);
                             return done();
                         });
                     return done();

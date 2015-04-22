@@ -214,7 +214,7 @@ angular.module('runnable.controllers', []).
             fileReader.deletePicture($scope.file);
         };
     }).
-	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run,
+	controller('RunnableAdminController', function ($scope, $q, $rootScope, AuthService, User, Run,
                                                     Journey, Join, EmailOptions, BankAccount, Page) {
 		$scope.page = 'Admin';
 		var userListPromise = User.getList(),
@@ -335,6 +335,7 @@ angular.module('runnable.controllers', []).
         all.then(function (res) {
 			$scope.run = res[0];
 			$scope.journeyList = res[1];
+            console.log($scope.journeyList);
 			$scope.participateList = res[2];
             $scope.nbJoiner = $scope.participateList.length;
 			$timeout( function() {
@@ -458,7 +459,7 @@ angular.module('runnable.controllers', []).
             });
         };
     }).
-	controller('RunnableJourneyDetailController', function ($scope, $q, $routeParams, $rootScope, $timeout,
+	controller('RunnableJourneyDetailController', function ($scope, $q, $routeParams, $rootScope, $timeout, $location,
 															Run, Journey, Join, GoogleMapApi, MyRunTripFees, Session,
                                                             Inbox) {
 		$scope.page = 'Journey';
@@ -468,6 +469,9 @@ angular.module('runnable.controllers', []).
 			all = $q.all([journeyPromise, joinPromise]);
 		all.then(function (res) {
 			$scope.journey = res[0];
+            if ($scope.journey.is_canceled) {
+                $location.path('/journey');
+            }
 			$scope.joinList = res[1];
 			$scope.joined = 0;
 			$scope.reserved_outward = 0;
@@ -475,7 +479,9 @@ angular.module('runnable.controllers', []).
 			angular.forEach($scope.joinList, function (join) {
 				$scope.reserved_outward += join.nb_place_outward;
 				$scope.reserved_return += join.nb_place_return;
-				if (join.JourneyId === $scope.journeyId && join.UserId === $rootScope.currentUser.id) {
+				if ($rootScope.currentUser &&
+                    join.JourneyId === $scope.journeyId &&
+                    join.UserId === $rootScope.currentUser.id) {
 					$scope.joined = 1;
 					$scope.userJoin = join;
 				}
@@ -543,7 +549,7 @@ angular.module('runnable.controllers', []).
 			Join.add($scope.journeyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref);
             Inbox.addMessage(template, values, $rootScope.currentUser.id);
 		};
-        $scope.askValidation = function () {
+        $scope.askValidationJoinCancelFromJourney = function () {
             angular.element('#validationModal').modal('show');
             $scope.validationMessage = 'Vous souhaitez annuler votre participation à ce voyage. ' +
                 'Si vous confirmer vous receverez un remboursement d\'ici quelques jours ' +
@@ -552,7 +558,7 @@ angular.module('runnable.controllers', []).
         $scope.cancelValidation = function () {
             angular.element('#validationModal').modal('hide');
         };
-		$scope.removeJoinJourney = function () {
+		$scope.confirmValidation = function () {
             angular.element('#validationModal').modal('hide');
 			var userTemplate = 'UserJoinJourneyCancel',
 				driverTemplate = 'DriverJoinJourneyCancel',
@@ -694,7 +700,7 @@ angular.module('runnable.controllers', []).
         };
 	}).
 	controller('RunnableMyJourneyController', function ($scope, $q, $timeout, $rootScope, User, Discussion, Join,
-                                                        GoogleMapApi, Session, Inbox, ValidationJourney) {
+                                                        GoogleMapApi, Session, Inbox, ValidationJourney, Journey) {
 		$scope.page = 'MyJourney';
 		var userJourneyPromise = User.getJourney(),
 			userJoinPromise = User.getJoin(),
@@ -755,34 +761,47 @@ angular.module('runnable.controllers', []).
 			all.then(function (res) {
 				$scope.discussionUsers = res[0];
 				$scope.discussionMessages = res[1];
-				$timeout(function () {
-					var obj = 'map_canvas';
-					GoogleMapApi.initMap(obj);
-					GoogleMapApi.showDirection(obj, $scope.selectedJourney.address_start,
-						$scope.selectedJourney.Run.address_start);
-				});
 				angular.element('#journeyModal').modal('show');
 			});
 		};
-        $scope.askValidation = function (join) {
-            angular.element('#validationModal').modal('show');
-            $scope.cancelJoin = join;
-            $scope.validationMessage = 'Vous souhaitez annuler votre participation à ce voyage. ' +
-            'Si vous confirmer vous receverez un remboursement d\'ici quelques jours ' +
-            'du prix du voyage. Voulez vous confirmer cette demande ?';
-        };
-        $scope.cancelValidation = function () {
+        $scope.confirmValidationJourneyCancel = function () {
             angular.element('#validationModal').modal('hide');
+            var driverTemplate = 'DriverJourneyCancel',
+                values = {runName: $scope.cancelJourney.Run.name };
+            $scope.userJourney.splice($scope.indexToBeRemoved, 1);
+            Journey.cancel($scope.cancelJourney.id);
+            Inbox.addMessage(driverTemplate, values, $rootScope.currentUser.id);
         };
-        $scope.removeJoinJourney = function () {
+        $scope.askValidationJourneyCancelFromMyJourney = function (journey, index) {
+            angular.element('#validationModal').modal('show');
+            $scope.cancelJourney = journey;
+            $scope.indexToBeRemoved = index;
+            $scope.validationMessage = 'Vous souhaitez annuler votre voyage pour cette course. ' +
+            'Si vous confirmer tous les  participants seront informés de cette annulation. ' +
+            'Voulez vous confirmer votre annulation ?';
+            $scope.validationCallback = $scope.confirmValidationJourneyCancel;
+        };
+        $scope.confirmValidationJoinCancel = function () {
             angular.element('#validationModal').modal('hide');
             var userTemplate = 'UserJoinJourneyCancel',
                 driverTemplate = 'DriverJoinJourneyCancel',
-                userValues = {runName: $scope.cancelJoin.Journey.Run.name },
-                driverValues = {runName: $scope.cancelJoin.Journey.Run.name};
+                values = {runName: $scope.cancelJoin.Journey.Run.name }
+            $scope.userJoin.splice($scope.indexToBeRemoved, 1);
             Join.cancel($scope.cancelJoin.id);
-            Inbox.addMessage(driverTemplate, driverValues, $scope.cancelJoin.Journey.UserId);
-            Inbox.addMessage(userTemplate, userValues, $rootScope.currentUser.id);
+            Inbox.addMessage(driverTemplate, values, $scope.cancelJoin.Journey.UserId);
+            Inbox.addMessage(userTemplate, values, $rootScope.currentUser.id);
+        };
+        $scope.askValidationJoinCancelFromMyJourney = function (join, index) {
+            angular.element('#validationModal').modal('show');
+            $scope.cancelJoin = join;
+            $scope.indexToBeRemoved = index;
+            $scope.validationMessage = 'Vous souhaitez annuler votre participation à ce voyage. ' +
+            'Si vous confirmer vous receverez un remboursement d\'ici quelques jours ' +
+            'du prix du voyage. Voulez vous confirmer votre annulation ?';
+            $scope.validationCallback = $scope.confirmValidationJoinCancel;
+        };
+        $scope.cancelValidation = function () {
+            angular.element('#validationModal').modal('hide');
         };
 		$scope.sendMessage = function () {
 			var text = String($scope.newMessageEntry).replace(/<[^>]+>/gm, '');
@@ -873,16 +892,19 @@ angular.module('runnable.controllers', []).
             all = $q.all([inboxPromise]);
         all.then(function (res) {
 			$scope.inboxMessages = res[0];
-			$scope.showMessage = function (message) {
+			$scope.showMessage = function (message, index) {
+                $scope.selectedIndex = index;
 				$scope.selectedMessage = message;
 				if (!message.is_read) {
 					Inbox.setAsRead(message.id);
 					$rootScope.userUnreadEmail = $rootScope.userUnreadEmail - 1;
 				}
 			};
-			$scope.removeMessage = function (id) {
-				console.log('Delete message ' + id);
-				Inbox.deleteMessage(id);
+			$scope.removeMessage = function (list, index) {
+                var id = list[index].id;
+                list.splice(index, 1);
+                $scope.selectedMessage = 'Pas de message sélectionné';
+                Inbox.deleteMessage(id);
 			};
 		});
 	}).

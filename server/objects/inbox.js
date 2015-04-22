@@ -77,7 +77,7 @@ inbox.prototype.add = function (template, values, userId, done) {
 
 inbox.prototype.getList = function (user, done) {
 	console.log('get inbox messages for user : ' + user.id);
-	models.Inbox.findAll({where: {userId: user.id}})
+	models.Inbox.findAll({where: {userId: user.id}, order: 'createdAt DESC'})
 		.then(function (messages) {
 			done(null, messages);
 		})
@@ -113,6 +113,23 @@ inbox.prototype.countUnread = function (userId, done) {
 		.catch(function (err) {
 			done(err, null);
 		});			
+};
+
+inbox.prototype.delete = function (id, done) {
+    console.log('Delete message : ' + id);
+    models.Inbox.find({where: {id: id}})
+        .then(function (message) {
+            message.destroy()
+                .then(function () {
+                    done(null, 'messageDeleted');
+                })
+                .catch(function (err) {
+                    done(err, null);
+                });
+        })
+        .catch(function (err) {
+            done(err, null);
+        })
 };
 
 module.exports = inbox;

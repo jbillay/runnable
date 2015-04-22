@@ -2,6 +2,7 @@
 
 var models = require('../models');
 var Invoice = require('./invoice');
+var q = require('q');
 
 function join() {
     'use strict';
@@ -129,26 +130,28 @@ join.prototype.getList = function (done) {
 		});
 };
 
-join.prototype.cancelById = function (id, done) {
+join.prototype.cancelById = function (id) {
 	'use strict';
-	var invoice = new Invoice();
+	var deferred = q.defer(),
+        invoice = new Invoice();
 	models.Join.find({ where: {id: id}, include: [models.Invoice]})
 		.then(function (join) {
 			if (!join) {
-				done(new Error('Join not found'), null);
+                deferred.reject(new Error('Join not found'));
 			} else {			
 				invoice.updateStatus(join.Invoice.id, 'cancelled', function (err, invoice) {
 					if (err) {
-						done(err, null);
+                        deferred.reject(err);
 					} else {
-						done(null, invoice);
+                        deferred.resolve(invoice);
 					}
 				});
 			}
 		})
 		.catch(function (err) {
-			done(err, null);
+            deferred.reject(err);
 		});
+    return deferred.promise;
 };
 
 module.exports = join;

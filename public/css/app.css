@@ -43,6 +43,12 @@ section {
 	padding: 5px;
 }
 
+.fixed-panel {
+    min-height: 270px;
+    max-height: 270px;
+    overflow-y: scroll;
+}
+
 .green {
 	color: green;
 }
