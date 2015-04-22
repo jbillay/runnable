@@ -120,7 +120,7 @@ join.prototype.getList = function (done) {
 							model: models.Journey,
 							as: 'Journey',
 							include: [ models.Run ]
-						}, models.User, models.Invoice]})
+						}, models.User, models.Invoice, models.ValidationJourney]})
 		.then(function (joins) {
 			done(null, joins);
 		})

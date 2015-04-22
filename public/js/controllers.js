@@ -298,13 +298,27 @@ angular.module('runnable.controllers', []).
         $scope.openJourneyAction = function (journey) {
             $scope.selectedJourney = journey;
             var userRIBPromise = BankAccount.getByUser(journey.User.id),
-                journeyJoinsPromise = Join.getListForJourney(journey.id),
-                all = $q.all([userRIBPromise, journeyJoinsPromise]);
+                all = $q.all([userRIBPromise]);
             all.then(function (res) {
                 $scope.selectedJourneyUserRIB = res[0];
-                $scope.selectedJourneyJoins = res[1];
+                $scope.selectedJourneyJoins = [];
+                $scope.amountToPay = 0;
+                angular.forEach($scope.joinList, function (join) {
+                    if (join.JourneyId === $scope.selectedJourney.id && join.Invoice.status === 'completed') {
+                        $scope.amountToPay += join.Invoice.amount - join.Invoice.fees;
+                        $scope.selectedJourneyJoins.push(join);
+                    }
+                });
                 angular.element('#adminJourneyAction').modal('show');
             });
+        };
+        $scope.journeyPayedToggle = function (state) {
+            Journey.togglePayed($scope.selectedJourney.id);
+            if (state) {
+                $scope.selectedJourney.is_payed = false;
+            } else {
+                $scope.selectedJourney.is_payed = true;
+            }
         };
         $scope.closeAdminJourney = function () {
             angular.element('#adminJourneyAction').modal('hide');
@@ -527,7 +541,7 @@ angular.module('runnable.controllers', []).
 			$scope.reserved_outward = $scope.reserved_outward + placeOutward;
 			$scope.reserved_return = $scope.reserved_return + placeReturn;
 			Join.add($scope.journeyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref);
-            Inbox.addMessage(template, values, Session.userId);
+            Inbox.addMessage(template, values, $rootScope.currentUser.id);
 		};
         $scope.askValidation = function () {
             angular.element('#validationModal').modal('show');

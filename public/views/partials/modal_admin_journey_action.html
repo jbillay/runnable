@@ -1,4 +1,4 @@
-<div class="modal fade" id="adminJourneyAction" tabindex="-1" role="dialog" ng-controller="RunnableAdminJourneyController"
+<div class="modal fade" id="adminJourneyAction" tabindex="-1" role="dialog"
      aria-labelledby="adminJourneyActionLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -18,10 +18,29 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="col-sm-6">
-                                        <p class="pull-left"><i class="fa fa-envelope "></i> {{selectedJourney.User.email}}</p>
+                                        <p class="pull-left"><i class="fa fa-envelope"></i> {{selectedJourney.User.email}}</p>
                                         <div class="clearfix"></div>
-                                        RIB
-                                        {{selectedJourneyUserRIB}}
+                                        <p ng-if="!selectedJourneyUserRIB" class="pull-left red"><i class="fa fa-credit-card"></i> RIB</p>
+                                        <p ng-if="selectedJourneyUserRIB" class="pull-left green"><i class="fa fa-credit-card"></i> RIB</p>
+                                        <div ng-if="selectedJourneyUserRIB">
+                                            <div class="clearfix"></div>
+                                            <p class="pull-left">
+                                                <span><strong>Titulaire du compte : </strong></span>
+                                                <span>{{selectedJourneyUserRIB.owner}}</span>
+                                            </p>
+                                            <p class="pull-left">
+                                                <span><strong>Domiciliation (nom de l'agence) : </strong></span>
+                                                <span>{{selectedJourneyUserRIB.agency_name}}</span>
+                                            </p>
+                                            <p class="pull-left">
+                                                <span><strong>IBAN : </strong></span>
+                                                <span>{{selectedJourneyUserRIB.IBAN}}</span>
+                                            </p>
+                                            <p class="pull-left">
+                                                <span><strong>BIC (ou SWIFT) : </strong></span>
+                                                <span>{{selectedJourneyUserRIB.BIC}}</span>
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -30,9 +49,29 @@
                                     <span class="pull-left"><strong>Information sur les participations</strong></span>
                                 </div>
                                 <div class="panel-body">
-                                    <div class="col-sm-6">
-                                        {{selectedJourneyJoins}}
-                                    </div>
+                                    <table class="col-sm-12">
+                                        <table class="table">
+                                            <thead>
+                                                <th>Utilisateur</th>
+                                                <th>Montant</th>
+                                                <th>Fees</th>
+                                                <th>Statut</th>
+                                                <th>Paiement</th>
+                                                <th>Vadidation</th>
+                                            </thead>
+                                            <tbody ng-repeat="join in selectedJourneyJoins">
+                                                <td>{{join.User.email}}</td>
+                                                <td>{{join.Invoice.amount | currency:'€ '}}</td>
+                                                <td>{{join.Invoice.fees | currency:'€ '}}</td>
+                                                <td class="status-{{join.Invoice.status}}">{{join.Invoice.status}}</td>
+                                                <td>{{join.Invoice.createdAt | date:'dd/MM/yyyy'}}</td>
+                                                <td>
+                                                    <span ng-if="join.Validation" class="glyphicon glyphicon-ok green" aria-hidden="true"></span>
+                                                    <span ng-if="!join.Validation" class="glyphicon glyphicon-remove red" aria-hidden="true"></span>
+                                                </td>
+                                            </tbody>
+                                        </table>
+                                    </table>
                                 </div>
                             </div>
                             <div class="panel panel-default">
@@ -41,8 +80,11 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="col-sm-6">
-                                        Payé : {{selectedJourney.is_payed}}
+                                        <span>Payé : </span>
+                                        <span ng-if="selectedJourney.is_payed" class="glyphicon glyphicon-ok green" aria-hidden="true" ng-click="journeyPayedToggle(selectedJourney.is_payed)"></span>
+                                        <span ng-if="!selectedJourney.is_payed" class="glyphicon glyphicon-remove red" aria-hidden="true" ng-click="journeyPayedToggle(selectedJourney.is_payed)"></span>
                                     </div>
+                                    <div class="col-sm-6 journey_price_journey">{{amountToPay | currency:'€ '}}</div>
                                 </div>
                             </div>
                         </div>

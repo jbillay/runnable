@@ -5,6 +5,7 @@
 'use strict';
 
 var models = require('../models');
+var Mail = require('../objects/mail');
 
 function inbox() {
     this.userId = null;
@@ -40,25 +41,38 @@ inbox.prototype.set = function (inbox) {
     }
 };
 
-inbox.prototype.add = function (msg, title, userId, done) {
-    this.title = title;
-	this.message = msg;
-	this.is_read = false;
+inbox.prototype.add = function (template, values, userId, done) {
     var that = this;
+
     console.log('add a message for user : ' + userId);
-	models.User.find({where: {id: userId}})
-		.then(function(user) {
-			models.Inbox.create(that)
-				.then(function (newMessage) {
-					newMessage.setUser(user)
-						.then(function(newMessage) {
-							done(null, newMessage);
-						})
-						.catch(function(err) {
-							done(err, null);
-						});
-				});
-		});
+	new Mail().then(function (mail) {
+		mail.generateContent(template, values)
+			.then(function (mail) {
+                models.User.find({where: {id: userId}})
+                    .then(function(user) {
+						var message = mail.getContentHtml(),
+							title = mail.getSubject();
+						mail.setTo(user.email);
+						mail.send();
+                        that.title = title;
+                        that.message = message;
+                        that.is_read = false;
+						models.Inbox.create(that)
+							.then(function (newMessage) {
+								newMessage.setUser(user)
+									.then(function (newMessage) {
+										done(null, newMessage);
+									})
+									.catch(function (err) {
+										done(err, null);
+									});
+							});
+					});
+            })
+			.catch(function (err) {
+				done(new Error('Unable to send mail : ' + err), null);
+            });
+    });
 };
 
 inbox.prototype.getList = function (user, done) {

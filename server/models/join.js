@@ -15,7 +15,7 @@ module.exports = function(sequelize, DataTypes) {
 				Join.belongsTo(models.User),
 				Join.belongsTo(models.Journey),
 				Join.hasOne(models.Invoice),
-                Join.hasMany(models.ValidationJourney);
+                Join.hasOne(models.ValidationJourney);
                 /*jshint +W030 */
 			}
 		}

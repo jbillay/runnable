@@ -40,6 +40,16 @@ describe('Test of Invoice object', function () {
                             callback(null);
                         });
                     },
+                    function(callback) {
+                        var fixtures = require('./fixtures/options.json');
+                        var promises = [];
+                        fixtures.forEach(function (fix) {
+                            promises.push(loadData(fix));
+                        });
+                        q.all(promises).then(function() {
+                            callback(null);
+                        });
+                    },
                     function (callback) {
                         var fixtures = require('./fixtures/runs.json');
                         var promises = [];

@@ -976,6 +976,17 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(data);
                     });
                 return deferred.promise;
+            },
+            togglePayed : function (journeyId) {
+                var deferred = $q.defer();
+                $http.post('/api/admin/journey/payed', {id: journeyId}).
+                    success(function (result) {
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        console.log('Error : ' + status);
+                    });
+                return deferred.promise;
             }
         };
     });

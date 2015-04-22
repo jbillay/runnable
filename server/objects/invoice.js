@@ -3,6 +3,7 @@
  */
 
 var models = require('../models');
+var Inbox = require('./inbox');
 
 function invoice() {
     'use strict';
@@ -169,15 +170,25 @@ invoice.prototype.updateStatus = function (id, status, done) {
 
 invoice.prototype.updatePaymentStatus = function (invoiceRef, amount, status, transactionId, done) {
     'use strict';
+    var inbox = new Inbox();
+
     console.log('Update invoice ' + invoiceRef + ' to status ' + status);
-    models.Invoice.find({ where: {ref: invoiceRef}})
+    models.Invoice.find({ where: {ref: invoiceRef}, include: [{
+                            model: models.Journey,
+                            as: 'Journey',
+                            include: [models.Run]
+                        }]})
         .then(function (invoice) {
             if (invoice.amount === amount) {
                 invoice.status = status;
                 invoice.transaction = transactionId;
                 invoice.save()
                     .then(function (newInvoice) {
-                        done(null, newInvoice);
+                        var template = 'JoinValidated',
+                            values = {runName: newInvoice.Journey.Run.name};
+                        inbox.add(template, values, newInvoice.UserId, function (err, message) {
+                            done(null, newInvoice);
+                        });
                     })
                     .catch(function (err) {
                         done(new Error(err), null);

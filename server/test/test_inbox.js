@@ -158,6 +158,12 @@ describe('Test of inbox object', function () {
 
     it('Create a new Inbox message', function (done) {
         var inbox = new Inbox(),
+            template = 'inboxTest',
+            values = {
+                message: 'message Inbox',
+                userId: 3
+            },
+            userId = 2,
             message = {
                 id: 5,
                 title: 'Test unitaire',
@@ -173,14 +179,14 @@ describe('Test of inbox object', function () {
         assert.equal(tmp.message, 'Test unitaire pour la création d un message');
         assert.equal(tmp.userId, 1);
         assert.equal(tmp.is_read, false);
-        inbox.add(message.message, message.title, message.userId, function (err, newMessage) {
+        inbox.add(template, values, userId, function (err, newMessage) {
             if (err) console.log('Error :' + err);
             assert.isNull(err);
             assert.equal(newMessage.id, 5);
-            assert.equal(newMessage.title, 'Test unitaire');
-            assert.equal(newMessage.message, 'Test unitaire pour la création d un message');
+            assert.equal(newMessage.title, 'Email pour 3');
+            assert.equal(newMessage.message, 'TEST message Inbox');
             assert.equal(newMessage.is_read, false);
-            assert.equal(newMessage.UserId, 1);
+            assert.equal(newMessage.UserId, userId);
             done();
         });
     });
