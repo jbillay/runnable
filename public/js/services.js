@@ -362,7 +362,7 @@ angular.module('runnable.services', ['ngResource']).
 		];
 		return {
 			getTimeBeforeStart: function (startDate, startHour) {
-				var dateTime = startDate.toString().substr(0, 10) + ' ' + startHour,
+				var dateTime = startDate.toString().substr(0, 10) + 'T' + startHour + ':00.000Z',
 					start = Date.parse(dateTime),
 					now = Date.now();
 				return start - now;
