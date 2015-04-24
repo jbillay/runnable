@@ -257,6 +257,7 @@ journey.prototype.getBookSpace = function (id, done) {
 };
 
 journey.prototype.togglePayed = function (id, done) {
+    'use strict';
     models.Journey.find({where: {id: id, is_canceled: false}})
         .then(function (journey) {
             if (journey.is_payed === true) {
@@ -275,6 +276,7 @@ journey.prototype.togglePayed = function (id, done) {
 };
 
 journey.prototype.cancelJoinsOfJourney = function (id, runame) {
+    'use strict';
     var deferred = q.defer(),
         join = new Join(),
         inbox = new Inbox(),
@@ -299,6 +301,7 @@ journey.prototype.cancelJoinsOfJourney = function (id, runame) {
 };
 
 journey.prototype.cancel = function (id, done) {
+    'use strict';
     var that = this;
     models.Journey.find({where: {id: id}, include: [models.Run]})
         .then(function (journey) {

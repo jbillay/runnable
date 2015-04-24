@@ -785,7 +785,7 @@ angular.module('runnable.controllers', []).
             angular.element('#validationModal').modal('hide');
             var userTemplate = 'UserJoinJourneyCancel',
                 driverTemplate = 'DriverJoinJourneyCancel',
-                values = {runName: $scope.cancelJoin.Journey.Run.name }
+                values = {runName: $scope.cancelJoin.Journey.Run.name };
             $scope.userJoin.splice($scope.indexToBeRemoved, 1);
             Join.cancel($scope.cancelJoin.id);
             Inbox.addMessage(driverTemplate, values, $scope.cancelJoin.Journey.UserId);

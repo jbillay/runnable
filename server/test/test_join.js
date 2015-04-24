@@ -220,7 +220,7 @@ describe('Test of join object', function () {
             })
             .catch(function (err) {
                 return done(err);
-            })
+            });
     });
 
     it('Cancel not existing join', function (done) {

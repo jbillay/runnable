@@ -129,7 +129,7 @@ inbox.prototype.delete = function (id, done) {
         })
         .catch(function (err) {
             done(err, null);
-        })
+        });
 };
 
 module.exports = inbox;
