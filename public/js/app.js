@@ -62,6 +62,13 @@ angular.module('runnable', [
 					authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user]
 				}
             }).
+            when('/journey-update-:journeyId', {
+                templateUrl: 'partials/journey_update',
+                controller: 'RunnableJourneyUpdateController',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user]
+                }
+            }).
             when('/journey', {
                 templateUrl: 'partials/journey_list',
                 controller: 'RunnableJourneyController'

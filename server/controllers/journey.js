@@ -5,7 +5,7 @@ exports.create = function (req, res) {
     'use strict';
 	console.log('Create a journey for run : ' + req.body.journey.run_id);
 	var journey = new Journey();
-	journey.save(req.body.journey, req.user, function (err, journey) {
+	journey.save(req.body.journey, req.user.id, function (err, journey) {
 		if (err) {
             console.log('Journey not created ' + err);
             res.jsonp('{"msg": "journeyNotCreated", "type": "error"}');
@@ -14,6 +14,26 @@ exports.create = function (req, res) {
             res.jsonp('{"msg": "journeyCreated", "type": "success"}');
 		}
 	});
+};
+
+exports.update = function (req, res) {
+    'use strict';
+    console.log('Update the journey for run : ' + req.body.journey.id);
+    var journey = new Journey();
+    if (req.user.id === req.body.journey.UserId || req.user.role === 'admin') {
+        journey.save(req.body.journey, req.body.journey.UserId, function (err, journey) {
+            if (err) {
+                console.log('Journey not updated ' + err);
+                res.jsonp('{"msg": "journeyNotUpdated", "type": "error"}');
+            } else {
+                console.log('Journey updated');
+                res.jsonp('{"msg": "journeyUpdated", "type": "success"}');
+            }
+        });
+    } else {
+        console.log('Journey not created : ' + new Error('Not allow to update journey'));
+        res.jsonp('{"msg": "notAllowToUpdate", "type": "error"}');
+    }
 };
 
 exports.list = function (req, res) {

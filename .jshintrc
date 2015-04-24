@@ -26,6 +26,7 @@
         "google": true,
         "noty": true,
         "$": true,
+        "_": true,
         "ApplicationConfiguration": true
     },
     "predef": [ // Extra globals.

@@ -112,9 +112,8 @@
 								<td>{{journey.amount | currency:'€ '}}</td>
 								<td>{{journey.createdAt | date:'dd/MM/yyyy'}}</td>
 								<td>
-									<button class="btn btn-primary" ng-click="openJourneyAction(journey)">
-										Action
-									</button>
+                                    <a href="/journey-update-{{journey.id}}"><i class="fa fa-pencil-square-o"></i></a>
+                                    <i class="fa fa-credit-card" ng-click="openJourneyAction(journey)"></i>
 								</td>
 							</tr>
 							</tbody>

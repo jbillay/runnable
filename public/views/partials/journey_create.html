@@ -15,9 +15,9 @@
 					<div class="col-xs-12 col-sm-12 col-md-12">
 						<div class="form-group" ng-class="{ 'has-success' : createJourney.run_id_selector.$valid && createJourney.run_id_selector.$dirty,
 							'has-error' : createJourney.run_id_selector.$invalid && createJourney.run_id_selector.$dirty }">
-							<select ng-model="journey.run" placeholder="Definir la course"
+							<select ng-model="journey.Run" placeholder="Definir la course"
 									name="journey[run_id_selector]" id="run_id_selector" class="form-control"
-                                    tabindex="1" ng-change="selectDestination(run_id)"
+                                    tabindex="1" ng-change="selectDestination(journey.Run)"
                                     ng-options="run as run.name for run in runList" required>
 									<option value="">-- Choisir une course --</option>
                             </select>
@@ -26,7 +26,6 @@
 								 ng-messages="createJourney.run_id_selector.$error">
 								<div ng-message="required">Définir la course est obligatoire.</div>
 							</div>
-							<input type="hidden" name="journey[run_id]" value="{{run_id.id}}" ng-model="journey.run_id">
 						</div>
 					</div>
 				</div>
@@ -201,7 +200,6 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-3 col-md-3 pull-right">
-						<input type="hidden" name="journey[owner_id]" value="{{user.id}}" ng-model="journey.owner_id">
 						<button type="submit" class="btn btn-primary btn-block" tabindex="12">
 							Publier
 						</button>

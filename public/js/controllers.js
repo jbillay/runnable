@@ -335,7 +335,6 @@ angular.module('runnable.controllers', []).
         all.then(function (res) {
 			$scope.run = res[0];
 			$scope.journeyList = res[1];
-            console.log($scope.journeyList);
 			$scope.participateList = res[2];
             $scope.nbJoiner = $scope.participateList.length;
 			$timeout( function() {
@@ -625,13 +624,9 @@ angular.module('runnable.controllers', []).
                 $('#clockpicker_return').clockpicker();
 			});
             if ($routeParams.runId) {
-                $scope.runList.forEach(function (run) {
-                    if (run.id === parseInt($routeParams.runId)) {
-                        $scope.journey.run = run;
-                        $scope.journey.run_id = run.id;
-                        $scope.selectDestination(run);
-                    }
-                });
+                $scope.journey.Run = $scope.runList[_.findIndex($scope.runList, 'id', parseInt($routeParams.runId))];
+                $scope.selectDestination($scope.journey.Run);
+                console.log($scope.journey.Run);
             }
             $scope.today = new Date();
             $scope.calendar = {
@@ -693,7 +688,7 @@ angular.module('runnable.controllers', []).
 		};
         $scope.submitJourney = function (journey) {
             var template = 'JourneyCreated',
-                values = {runName: journey.run.name };
+                values = {runName: journey.Run.name };
             Journey.create(journey);
             Inbox.addMessage(template, values, $rootScope.currentUser.id);
             $location.path('/journey');
@@ -907,6 +902,111 @@ angular.module('runnable.controllers', []).
                 Inbox.deleteMessage(id);
 			};
 		});
+	}).
+	controller('RunnableJourneyUpdateController', function ($scope, $q, $routeParams, $rootScope, $timeout, $location,
+                                                            Run, Journey, Inbox, GoogleMapApi) {
+        $scope.page = 'Journey';
+        $scope.journeyId = parseInt($routeParams.journeyId);
+        var journeyPromise = Journey.getDetail($scope.journeyId),
+            runPromise = Run.getActiveList(),
+            all = $q.all([journeyPromise, runPromise]);
+        all.then(function (res) {
+            $scope.journey = res[0];
+            $scope.runList = res[1];
+            if ($scope.journey.is_canceled ||
+                !($rootScope.currentUser.role === 'admin' || $rootScope.currentUser.id === $scope.journey.UserId)) {
+                $location.path('/journey');
+            }
+            $scope.journey.Run = $scope.runList[_.findIndex($scope.runList, 'id', $scope.journey.Run.id)];
+            $scope.journeyTypeChange();
+            $scope.parcoursModeList = [
+                {code: 'aller-retour', name: 'Aller-Retour'},
+                {code: 'aller', name: 'Aller'},
+                {code: 'retour', name: 'Retour'} ];
+            $scope.carTypeList = [
+                {code: 'citadine', name: 'Citadine'},
+                {code: 'berline', name: 'Berline'},
+                {code: 'break', name: 'Break'},
+                {code: 'monospace', name: 'Monospace'},
+                {code: 'suv', name: '4x4, SUV'},
+                {code: 'coupe', name: 'Coupé'},
+                {code: 'cabriolet', name: 'Cabriolet'}
+            ];
+            $scope.journey.journey_type = $scope.parcoursModeList[_.findIndex($scope.parcoursModeList, 'code', $scope.journey.journey_type)].code;
+            $scope.journey.car_type = $scope.carTypeList[_.findIndex($scope.carTypeList, 'code', $scope.journey.car_type)].code;
+            $timeout( function() {
+                GoogleMapApi.initMap('map_canvas');
+                $('#clockpicker_outward').clockpicker();
+                $('#clockpicker_return').clockpicker();
+                $scope.selectDestination($scope.journey.Run);
+                $scope.selectSource($scope.journey.address_start);
+            });
+            $scope.today = new Date();
+            $scope.calendar = {
+                opened: {},
+                dateFormat: 'dd/MM/yyyy',
+                dateOptions: {
+                    formatYear: 'yy',
+                    startingDay: 1
+                },
+                open: function($event, which) {
+                    $event.preventDefault();
+                    $event.stopPropagation();
+                    $scope.calendar.opened[which] = true;
+                }
+            };
+        });
+        $scope.journeyTypeChange = function () {
+            if ($scope.journey.journey_type ===  'aller-retour') {
+                $scope.outward = true;
+                $scope.return = true;
+            } else if ($scope.journey.journey_type ===  'aller') {
+                $scope.outward = true;
+                $scope.return = false;
+                $scope.journey.date_start_return = null;
+                $scope.journey.time_start_return = null;
+                $scope.journey.nb_space_return = null;
+            } else if ($scope.journey.journey_type ===  'retour') {
+                $scope.outward = false;
+                $scope.return = true;
+                $scope.journey.date_start_outward = null;
+                $scope.journey.time_start_outward = null;
+                $scope.journey.nb_space_outward = null;
+            }
+        };
+        $scope.getLocation = function(val) {
+            return GoogleMapApi.getLocation(val);
+        };
+        $scope.showMapInfo = function () {
+            GoogleMapApi.resetDirection('map_canvas');
+            GoogleMapApi.showDirection('map_canvas', $scope.source, $scope.destination);
+            GoogleMapApi.getDistance($scope.source, $scope.destination).then(function (result) {
+                $scope.journey.distance = result.distance;
+                $scope.journey.duration = result.duration;
+            });
+        };
+        $scope.selectDestination = function (run) {
+            if (run) {
+                $scope.destination = run.address_start;
+                if ($scope.source) {
+                    $scope.showMapInfo();
+                }
+            }
+        };
+        $scope.selectSource = function (address) {
+            $scope.source = address;
+            if ($scope.destination) {
+                $scope.showMapInfo();
+            }
+        };
+        $scope.submitJourney = function (journey) {
+            var template = 'JourneyUpdated',
+                values = {runName: journey.Run.name };
+			console.log(journey);
+            Journey.update(journey);
+            Inbox.addMessage(template, values, $rootScope.currentUser.id);
+            $location.path('/journey');
+        };
 	}).
 	controller('RunnableJourneyController', function ($scope, $q, $timeout, Run, Journey, GoogleMapApi) {
         $scope.page = 'Journey';

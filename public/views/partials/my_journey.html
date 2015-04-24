@@ -71,6 +71,7 @@
                                             <h6 class="panel-title pull-left"><a href="/journey-{{journey.id}}">{{journey.Run.name}}</a></h6>
                                             <div class="pull-right">
                                                 {{journey.journey_type | capitalize}}
+                                                <a href="/journey-update-{{journey.id}}"><i class="fa fa-pencil-square-o"></i></a>
                                                 <span class="glyphicon glyphicon-remove red" ng-click="askValidationJourneyCancelFromMyJourney(journey, $index)"></span>
                                             </div>
                                         </div>

@@ -363,7 +363,7 @@ angular.module('runnable.services', ['ngResource']).
 		return {
 			getTimeBeforeStart: function (startDate, startHour) {
 				var dateTime = startDate.toString().substr(0, 10) + 'T' + startHour + ':00.000Z',
-					start = Date.parse(dateTime),
+                    start = Date.parse(dateTime),
 					now = Date.now();
 				return start - now;
 			},
@@ -975,8 +975,20 @@ angular.module('runnable.services', ['ngResource']).
 			},
             create: function (journey) {
                 var deferred = $q.defer();
-                console.log(journey);
                 $http.post('/api/journey', {journey: journey}).
+                    success(function (result) {
+                        $rootScope.$broadcast('USER_MSG', result);
+                        deferred.resolve(result);
+                    }).
+                    error(function (data, status) {
+                        console.log('Error : ' + status);
+                        deferred.resolve(data);
+                    });
+                return deferred.promise;
+            },
+            update: function (journey) {
+                var deferred = $q.defer();
+                $http.put('/api/journey', {journey: journey}).
                     success(function (result) {
                         $rootScope.$broadcast('USER_MSG', result);
                         deferred.resolve(result);

@@ -21,17 +21,12 @@ function journey() {
 	this.nb_space_return = null;
 	this.car_type = null;
 	this.amount = null;
-	this.run = null;
+	this.Run = null;
 }
 
 journey.prototype.get = function () {
     'use strict';
 	return this;
-};
-
-journey.prototype.setRun = function (run) {
-    'use strict';
-	this.run = run;
 };
 
 journey.prototype.setJourney = function (journey) {
@@ -62,9 +57,51 @@ journey.prototype.setJourney = function (journey) {
 		this.car_type = journey.car_type; }
 	if (journey.amount) {
 		this.amount = journey.amount; }
+	if (journey.Run) {
+		this.Run = journey.Run; }
 };
 
-journey.prototype.save = function (journey, user, done) {
+journey.prototype.save = function (journey, userId, done) {
+    'use strict';
+    var that = this;
+    models.User.find({where: {id: userId}})
+        .then(function (user) {
+            that.setJourney(journey);
+            models.Run.find({where: {id: journey.Run.id}})
+                .then(function (run) {
+                    models.Journey.findOrCreate({where: {id: journey.id}, defaults: that})
+                        .spread(function (journey, created) {
+                            if (created) {
+                                var newJourney = _.assign(journey, that);
+                                newJourney.setRun(run)
+                                    .then(function () {
+                                        newJourney.setUser(user)
+                                            .then(function(newJourney) {
+                                                done(null, newJourney);
+                                            });
+                                        });
+                            } else {
+                                var updateJourney = _.assign(journey, that);
+                                updateJourney.save()
+                                    .then(function (updatedJourney) {
+                                        updatedJourney.setRun(run)
+                                            .then(function () {
+                                                updatedJourney.setUser(user)
+                                                    .then(function(updatedJourney) {
+                                                        done(null, updatedJourney);
+                                                    });
+                                            });
+                                    });
+                            }
+                        })
+                        .catch(function (err) {
+                            done(err, null);
+                        });
+                });
+        });
+};
+
+journey.prototype.saveOld = function (journey, user, done) {
     'use strict';
 	var that = this;
 	models.User.find({where: {id: user.id}})
@@ -86,7 +123,6 @@ journey.prototype.save = function (journey, user, done) {
 								});
 						})
                         .catch(function (err) {
-                            console.log(err);
                             done(err, null);
                         });
 				});

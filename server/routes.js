@@ -39,6 +39,7 @@ module.exports = function (app, passport, auth) {
     app.get('/api/run/next/:nb', controllers.run.next);
 
     app.post('/api/journey', auth.requiresLogin, controllers.journey.create);
+    app.put('/api/journey', auth.requiresLogin, controllers.journey.update);
     app.post('/api/journey/cancel', auth.requiresLogin, controllers.journey.cancel);
     app.get('/api/journey/open', controllers.journey.openList);
 	app.get('/api/journey/:id', controllers.journey.detail);

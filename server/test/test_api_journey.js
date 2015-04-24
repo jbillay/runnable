@@ -251,8 +251,10 @@ describe('Test of journey API', function () {
                 nb_space_return: 2,
                 car_type: 'citadine',
                 amount: 5,
-                RunId: 4,
-                UserId: 1
+                UserId: 1,
+                Run: {
+                    id: 4
+                }
             };
             agent
                 .post('http://localhost:9615/api/journey')
@@ -264,10 +266,81 @@ describe('Test of journey API', function () {
                     agent
                         .get('http://localhost:9615/api/admin/journeys')
                         .end(function (err, res) {
+                            if (err) return done(err);
+                            assert.equal(res.body.length, 5);
+                            agent
+                                .get('http://localhost:9615/api/journey/5')
+                                .end(function (err, res) {
+                                    if (err) return done(err);
+                                    assert.equal(res.res.body.address_start, 'Paris');
+                                    assert.equal(res.res.body.distance, '25 km');
+                                    assert.equal(res.res.body.duration, '20 minutes');
+                                    assert.equal(res.res.body.journey_type, 'aller-retour');
+                                    assert.equal(res.res.body.time_start_outward, '09:00');
+                                    assert.equal(res.res.body.nb_space_outward, 2);
+                                    assert.equal(res.res.body.time_start_return, '09:00');
+                                    assert.equal(res.res.body.nb_space_return, 2);
+                                    assert.equal(res.res.body.car_type, 'citadine');
+                                    assert.equal(res.res.body.amount, 5);
+                                    assert.equal(res.res.body.RunId, 4);
+                                    assert.equal(res.res.body.UserId, 1);
+                                    assert.equal(res.res.body.Run.name, 'Corrida de Saint Germain en Laye');
+                                    return done();
+                                });
+                        });
+                });
+        });
+    });
+
+    describe('PUT /api/journey', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should update an existing journey', function (done) {
+            var journey = {
+                id: 2,
+                address_start: 'Paris',
+                distance: '25 km',
+                duration: '20 minutes',
+                journey_type: 'aller-retour',
+                date_start_outward: '2014-12-12 00:00:00',
+                time_start_outward: '09:00',
+                nb_space_outward: 2,
+                date_start_return: '2014-12-13 00:00:00',
+                time_start_return: '09:00',
+                nb_space_return: 2,
+                car_type: 'citadine',
+                amount: 5,
+                UserId: 2,
+                Run: {
+                    id: 4
+                }
+            };
+            agent
+                .put('http://localhost:9615/api/journey')
+                .send({journey: journey})
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    agent
+                        .get('http://localhost:9615/api/journey/2')
+                        .end(function (err, res) {
                             if (err) {
                                 return done(err);
                             }
-                            assert.equal(res.body.length, 5);
+                            assert.equal(res.res.body.address_start, 'Paris');
+                            assert.equal(res.res.body.distance, '25 km');
+                            assert.equal(res.res.body.duration, '20 minutes');
+                            assert.equal(res.res.body.journey_type, 'aller-retour');
+                            assert.equal(res.res.body.time_start_outward, '09:00');
+                            assert.equal(res.res.body.nb_space_outward, 2);
+                            assert.equal(res.res.body.time_start_return, '09:00');
+                            assert.equal(res.res.body.nb_space_return, 2);
+                            assert.equal(res.res.body.car_type, 'citadine');
+                            assert.equal(res.res.body.amount, 5);
+                            assert.equal(res.res.body.RunId, 4);
+                            assert.equal(res.res.body.UserId, 2);
+                            assert.equal(res.res.body.Run.name, 'Corrida de Saint Germain en Laye');
                             return done();
                         });
                 });
