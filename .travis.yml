@@ -5,6 +5,7 @@ services: sqlite3
 before_install:
  - npm install -g grunt-cli
  - npm install -g bower
+ - npm install -g sqlite3
  - sudo apt-get autoremove sqlite3
  - sudo apt-add-repository -y ppa:travis-ci/sqlite3
  - sudo apt-get -y update
