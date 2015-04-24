@@ -12,7 +12,7 @@
   },
   "scripts": {
     "start": "grunt",
-    "test": "grunt test",
+    "test": "grunt travis",
     "postinstall": "bower install --config.interactive=false"
   },
   "dependencies": {

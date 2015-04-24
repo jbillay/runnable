@@ -75,6 +75,9 @@ module.exports = function(grunt) {
         env: {
             test: {
                 NODE_ENV: 'test'
+            },
+            travis: {
+                NODE_ENV: 'travis'
             }
         },
         mocha_istanbul: {
@@ -95,6 +98,12 @@ module.exports = function(grunt) {
 
     // Test task.
     grunt.registerTask('test', ['env:test', 'mocha_istanbul:coverage']);
+
+    // Test task.
+    grunt.registerTask('test-travis', ['env:travis', 'mocha_istanbul:coverage']);
+
+    // Test task.
+    grunt.registerTask('travis', ['lint', 'test-travis']);
 
     // Test task.
     grunt.registerTask('package', ['concat:js', 'concat:css', 'uglify', 'cssmin']);

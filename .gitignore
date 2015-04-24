@@ -1,4 +1,6 @@
-conf/
+conf/test.js
+conf/development.js
+conf/production.js
 .idea/
 coverage/
 dist/

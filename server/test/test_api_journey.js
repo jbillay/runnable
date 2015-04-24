@@ -325,13 +325,10 @@ describe('Test of journey API', function () {
                     request(app)
                         .get('/api/journey/3')
                         .end(function (err, res) {
-                            if (err) {
-                                return done(err);
-                            }
+                            if (err) return done(err);
                             assert.equal(res.res.body.is_canceled, true);
                             return done();
                         });
-                    return done();
                 });
         });
     });
