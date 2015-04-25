@@ -74,24 +74,6 @@ describe('Test of option API', function () {
         console.log('Test API option over !');
     });
 
-    describe('GET /api/admin/option/:name', function () {
-        var agent = superagent.agent(),
-			mailData = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false};
-        before(loginUser(agent));
-
-        it('should get emailConfig value', function (done) {
-            agent
-                .get('http://localhost:9615/api/admin/option/mailConfig')
-                .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
-					assert.deepEqual(res.body, mailData);
-                    return done();
-                });
-        });
-    });
-
     describe('GET /api/admin/options', function () {
         var agent = superagent.agent(),
             mailData = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false};
@@ -107,6 +89,24 @@ describe('Test of option API', function () {
 					var obj = JSON.parse(JSON.stringify(res.body));
 					assert.equal(Object.keys(obj).length, 2);
 					assert.deepEqual(obj.mailConfig, mailData);
+                    return done();
+                });
+        });
+    });
+
+    describe('GET /api/admin/option/:name', function () {
+        var agent = superagent.agent(),
+            mailData = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false};
+        before(loginUser(agent));
+
+        it('should get emailConfig value', function (done) {
+            agent
+                .get('http://localhost:9615/api/admin/option/mailConfig')
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    assert.deepEqual(res.body, mailData);
                     return done();
                 });
         });
