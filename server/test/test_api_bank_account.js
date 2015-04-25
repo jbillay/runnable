@@ -135,7 +135,7 @@ describe('Test of bank_account API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(JSON.parse(res.body).msg, 'bankAccountSaved');
+                    assert.equal(res.body.msg, 'bankAccountSaved');
                     return done();
                 });
         });

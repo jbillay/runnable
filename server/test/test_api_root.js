@@ -132,7 +132,7 @@ describe('Test of root API', function () {
                 .post('/api/send/mail')
                 .send({ confirm: 'message envoyé', emails: 'jbillay@gmail.com,richard.couret@free.fr', message: 'test'})
                 .end(function (err, res) {
-                    assert.equal(JSON.parse(res.body).msg, 'message envoyé');
+                    assert.equal(res.body.msg, 'message envoyé');
                     return done();
                 });
         });

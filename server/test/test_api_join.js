@@ -207,7 +207,7 @@ describe('Test of join API', function () {
                 .post('http://localhost:9615/api/join')
                 .send(join)
                 .end(function (err, res) {
-                    assert.equal(JSON.parse(res.body).msg, 'userJoined');
+                    assert.equal(res.body.msg, 'userJoined');
                     agent
                         .get('http://localhost:9615/api/admin/joins')
                         .end(function (err, res) {
@@ -227,7 +227,7 @@ describe('Test of join API', function () {
             agent
                 .get('http://localhost:9615/api/join/cancel/1')
                 .end(function (err, res) {
-                    assert.equal(JSON.parse(res.body).msg, 'joinCancelled');
+                    assert.equal(res.body.msg, 'joinCancelled');
                     return done();
                 });
         });
@@ -236,7 +236,7 @@ describe('Test of join API', function () {
             agent
                 .get('http://localhost:9615/api/join/cancel/42')
                 .end(function (err, res) {
-                    assert.equal(JSON.parse(res.body).msg, 'joinNotCancelled');
+                    assert.equal(res.body.msg, 'joinNotCancelled');
                     return done();
                 });
         });

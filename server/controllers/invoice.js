@@ -10,7 +10,7 @@ exports.getByUser = function (req, res) {
     var invoice = new Invoice();
     invoice.getByUser(req.user.id, function (err, invoiceList) {
         if (err) {
-            res.jsonp('{"msg": "ko"}');
+            res.jsonp({msg: err, type: 'error'});
         } else {
             res.jsonp(invoiceList);
         }
@@ -22,7 +22,7 @@ exports.getByDriver = function (req, res) {
     var invoice = new Invoice();
     invoice.getByDriver(req.user.id, function (err, invoiceList) {
         if (err) {
-            res.jsonp('{"msg": "ko"}');
+            res.jsonp({msg: err, type: 'error'});
         } else {
             res.jsonp(invoiceList);
         }

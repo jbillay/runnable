@@ -11,8 +11,9 @@ exports.userFeedback = function (req, res) {
     console.log('get user feedback');
     validation.getUserFeedback(function (err, feedbacks) {
         if (err) {
-            res.jsonp(err);
+            res.jsonp({msg: err, type: 'error'});
+        } else {
+            res.jsonp(feedbacks);
         }
-        res.jsonp(feedbacks);
     });
 };

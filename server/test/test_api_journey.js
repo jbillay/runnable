@@ -372,7 +372,7 @@ describe('Test of journey API', function () {
                 .post('http://localhost:9615/api/admin/journey/payed')
                 .send({id: '2'})
                 .end(function (err, res) {
-                    assert.equal(JSON.parse(res.body).msg, 'journeyTogglePayed');
+                    assert.equal(res.body.msg, 'journeyTogglePayed');
                     request(app)
                         .get('/api/journey/2')
                         .end(function (err, res) {
@@ -394,7 +394,7 @@ describe('Test of journey API', function () {
                 .post('http://localhost:9615/api/journey/cancel')
                 .send({id: '3'})
                 .end(function (err, res) {
-                    assert.equal(JSON.parse(res.body).msg, 'journeyCanceled');
+                    assert.equal(res.body.msg, 'journeyCanceled');
                     request(app)
                         .get('/api/journey/3')
                         .end(function (err, res) {

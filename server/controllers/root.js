@@ -62,6 +62,6 @@ exports.sendMail = function (req, res) {
             mail.send();
             console.log('Mail sent to : ' + email);
         });
-        res.jsonp('{"msg": "' + confirmation + '", "type": "success"}');
+        res.jsonp({msg: confirmation, type: 'success'});
     });
 };

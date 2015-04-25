@@ -15,10 +15,10 @@ exports.remove = function(req, res) {
     user.delete(userId, function (err, msg) {
         if (err) {
             console.log('user account not deleted');
-            res.jsonp('{"msg": "userNotDeleted", "type": "error"}');
+            res.jsonp({msg: 'userNotDeleted', type: 'error'});
         } else {
             console.log('user account deleted');
-            res.jsonp('{"msg": "userDeleted", "type": "success"}');
+            res.jsonp({msg: 'userDeleted', type: 'success'});
         }
     });
 };
@@ -42,7 +42,7 @@ exports.invite = function(req, res) {
             mail.send();
             console.log('Invite sent to : ' + email);
         });
-        res.jsonp('{"msg": "Invitation(s) envoyée(s)"}');
+        res.jsonp({msg: 'Invitation(s) envoyée(s)'});
     });
 };
 
@@ -52,10 +52,10 @@ exports.update = function(req, res) {
     user.update(req.user.id, req.body, function (err, selectedUser) {
         if (err) {
             console.log('Account not updated ' + err);
-            res.jsonp('{"msg": "notUpdatedAccount", "type": "error"}');
+            res.jsonp({msg: 'notUpdatedAccount', type: 'error'});
         } else {
             console.log('Account updated !');
-            res.jsonp('{"msg": "accountUpdated", "type": "success"}');
+            res.jsonp({msg: 'accountUpdated', type: 'success'});
         }
     });
 };
@@ -69,7 +69,7 @@ exports.create = function(req, res) {
 		user.save(function (err, newUser) {
 			if (err) {
 				console.log('Account not created ' + err);
-				res.jsonp('{"msg": "existingAccount", "type": "error"}');
+				res.jsonp({msg: 'existingAccount', type: 'error'});
 			} else {
 				console.log('Account created');
 				user.getItraCode(newUser, function (err, code) {
@@ -87,14 +87,14 @@ exports.create = function(req, res) {
                     mail.generateContent('ActivationAccount', {url: url, userId: newUser.id, timekey: timekey})
                         .then(function (mail) {
                             mail.send();
-                            res.jsonp('{"msg": "accountCreated", "type": "success"}');
+                            res.jsonp({msg: 'accountCreated', type: 'success'});
                     });
                 });
 			}
 		});
 	} else {
 		console.log('Two passwords are different');
-		res.jsonp('{"msg": "wrongPassword", "type": "error"}');
+		res.jsonp({msg: 'wrongPassword', type: 'error'});
 	}
 };
 
@@ -124,7 +124,7 @@ exports.showJourneys = function (req, res) {
 	journey.getByUser(id, function (err, journeyList) {
 		if (err) {
 			console.log('Not able to get user journey : ' + err);
-			res.jsonp('{"msg": "ko"}');
+			res.jsonp({msg: 'Not able to get user journey', type: 'error'});
 		} else {
 			res.jsonp(journeyList);
 		}
@@ -138,7 +138,7 @@ exports.showJoins = function (req, res) {
 	join.getByUser(id, function (err, joinList) {
 		if (err) {
 			console.log('Not able to get user join : ' + err);
-			res.jsonp('{"msg": ' + err + '}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(joinList);
 		}
@@ -161,7 +161,7 @@ exports.resetPassword = function (req, res) {
 	user.updatePassword(email, password, function (err, newUser) {
 		if (err) {
 			console.log('Not able to reset password : ' + err);
-			res.jsonp('{"msg": ' + err + '}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
             new Mail().then(function (mail) {
                 mail.setTo(newUser.email);
@@ -184,27 +184,27 @@ exports.updatePassword = function (req, res) {
 		user = new User();
 	user.getByEmail(req.user.email, function (err, currentUser) {
 		if (err) {
-			res.jsonp('{"msg": ' + err + ', "type": "error"}');
+			res.jsonp({msg: err, type: 'error'});
 		} else if (!currentUser) {
 			console.log('User does not exist');
-			res.jsonp('{"msg": "userUnknow", "type": "error"}');
+			res.jsonp({msg: 'userUnknow', type: 'error'});
 		} else if (!currentUser.authenticate(oldPassword)) {
 			console.log('Old password not good');
-			res.jsonp('{"msg": "passwordWrong", "type": "error"}');
+			res.jsonp({msg: 'passwordWrong', type: 'error'});
 		} else if (currentUser.authenticate(oldPassword)) {
 			if (newPassword === newPasswordConfirm) {
 				user.updatePassword(req.user.email, newPassword, function (err, newUser) {
 					if (err) {
 						console.log('Not able to reset password : ' + err);
-						res.jsonp('{"msg": ' + err + ', "type": "error"}');
+						res.jsonp({msg: err, type: 'error'});
 					} else { 
 						console.log('Password reseted');
-						res.jsonp('{"msg": "passwordUpdated", "type": "success"}');
+						res.jsonp({msg: 'passwordUpdated', type: 'success'});
 					}
 				});
 			} else {
                 console.log('new passwords are differents');
-                res.jsonp('{"msg": "passwordDifferent", "type": "error"}');
+                res.jsonp({msg: 'passwordDifferent', type: 'error'});
             }
 		}
 	});
@@ -216,7 +216,7 @@ exports.list = function(req, res) {
 	user.getList(function (err, users) {
 		if (err) {
 			console.log('Not able to get user list : ' + err);
-			res.jsonp('{"msg": ' + err + '}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(users);
 		}
@@ -231,9 +231,9 @@ exports.toggleActive = function (req, res) {
 	user.toggleActive(id, function (err) {
 		if (err) {
 			console.log('Not able to toggle active flag for user : ' + err);
-			res.jsonp('{"msg": ' + err + ', "type": "error"}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
-			res.jsonp('{"msg": "userToggleActive", "type": "success"}');
+			res.jsonp({msg: 'userToggleActive', type: 'success'});
 		}
 	});
 };
@@ -257,7 +257,7 @@ exports.publicInfo = function (req, res) {
 	user.getPublicInfo(userId, function(err, user) {
 		if (err) {
 			console.log('[ERROR] Not able to user public info: ' + err);
-			res.jsonp('{"msg": ' + err + ', "type": "error"}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(user);
 		}
@@ -271,7 +271,7 @@ exports.publicDriverInfo = function (req, res) {
     user.getPublicDriverInfo(userId, function(err, feedback) {
         if (err) {
             console.log('[ERROR] Not able to user public info: ' + err);
-            res.jsonp('{"msg": ' + err + ', "type": "error"}');
+            res.jsonp({msg: err, type: 'error'});
         } else {
             res.jsonp(feedback);
         }
@@ -286,9 +286,9 @@ exports.uploadPicture = function (req, res) {
     user.addPicture(userId, path, function (err) {
         if (err) {
             console.log('[ERROR] Not able to save profil picture : ' + err);
-            res.jsonp('{"msg": ' + err + ', "type": "error"}');
+            res.jsonp({msg: err, type: 'error'});
         } else {
-            res.jsonp('{"msg": "userPictureSaved", "type": "success"}');
+            res.jsonp({msg: 'userPictureSaved', type: 'success'});
         }
     });
 };
@@ -300,9 +300,9 @@ exports.deletePicture = function (req, res) {
     user.deletePicture(userId, function (err) {
         if (err) {
             console.log('[ERROR] Not able to delete profil picture : ' + err);
-            res.jsonp('{"msg": ' + err + ', "type": "error"}');
+            res.jsonp({msg: err, type: 'error'});
         } else {
-            res.jsonp('{"msg": "userPictureRemoved", "type": "success"}');
+            res.jsonp({msg:'userPictureRemoved', type: 'success'});
         }
     });
 };

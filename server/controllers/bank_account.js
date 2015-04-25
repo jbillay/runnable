@@ -12,10 +12,10 @@ exports.save = function (req, res) {
 	bankAccount.save(function (err, newBankAccount) {
 		if (err) {
 			console.log('Bank Account not saved ' + err);
-			res.jsonp('{"msg": "bankAccountNotSaved", "type": "error"}');
+			res.jsonp({msg: 'bankAccountNotSaved', type: 'error'});
 		} else {
 			console.log('Bank Account saved');
-			res.jsonp('{"msg": "bankAccountSaved", "type": "success"}');
+			res.jsonp({msg: 'bankAccountSaved', type: 'success'});
 		}
 	});
 };
@@ -27,7 +27,7 @@ exports.get = function (req, res) {
 	bankAccount.getUserAccount(req.user.id, function (err, userBankAccount) {
 		if (err) {
 			console.log('Not able to get bank account : ' + err);
-			res.jsonp('{"msg": "ko", "type": "error"}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(userBankAccount);
 		}
@@ -42,7 +42,7 @@ exports.getByUser = function (req, res) {
     bankAccount.getUserAccount(id, function (err, userBankAccount) {
         if (err) {
             console.log('Not able to get bank account : ' + err);
-            res.jsonp('{"msg": "ko", "type": "error"}');
+            res.jsonp({msg: err, type: 'error'});
         } else {
             res.jsonp(userBankAccount);
         }

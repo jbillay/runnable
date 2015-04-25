@@ -13,7 +13,7 @@ exports.getUsers = function (req, res) {
     discussion.getUsers(journeyId, function(err, users) {
         if (err) {
             console.log('Not able to get discussion users for journey : ' + err);
-            res.jsonp('{"msg": "ko"}');
+            res.jsonp({msg: err, type: 'error'});
         } else {
             res.jsonp(users);
         }
@@ -27,7 +27,7 @@ exports.getMessages = function (req, res) {
     discussion.getMessages(journeyId, function(err, messages) {
         if (err) {
             console.log('Not able to get discussion messsages for journey : ' + err);
-            res.jsonp('{"msg": "ko"}');
+            res.jsonp({msg: err, type: 'error'});
         } else {
             res.jsonp(messages);
         }
@@ -42,9 +42,9 @@ exports.addMessage = function (req, res) {
 	discussion.addMessage(message, journeyId, user, function(err, messages) {
         if (err) {
             console.log('Not able to add discussion messsage for journey : ' + err);
-            res.jsonp('{"msg": "ko"}');
+            res.jsonp({msg: err, type: 'error'});
         } else {
-            res.jsonp('{"msg": "ok"}');
+            res.jsonp({msg: 'ok', type: 'success'});
         }
     });
 };

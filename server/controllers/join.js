@@ -9,15 +9,15 @@ exports.create = function (req, res) {
         invoice = new Invoice();
 	join.save(req.body, req.user, function (err, join) {
         if (err) {
-            res.jsonp('{"msg": "notJoined", "type": "error"}');
+            res.jsonp({msg: 'notJoined', type: 'error'});
         }
         req.body.join_id = join.id;
         invoice.save(req.body, req.user, function (err, Invoice) {
             if (err) {
-                res.jsonp('{"msg": "notJoined", "type": "error"}');
+                res.jsonp({msg: 'notJoined', type: 'error'});
             } else {
                 console.log('User joined the journey');
-                res.jsonp('{"msg": "userJoined", "type": "success"}');
+                res.jsonp({msg: 'userJoined', type: 'success'});
             }
         });
 	});
@@ -30,7 +30,7 @@ exports.listForJourney = function (req, res) {
 	join.getByJourney(req.params.id, function (err, joins) {
 		if (err) {
 			console.log('Not able to get join list : ' + err);
-			res.jsonp('{"msg": "ko"}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(joins);
 		}
@@ -45,7 +45,7 @@ exports.detail = function (req, res) {
 	join.getById(id, function (err, joinDetail) {
 		if (err) {
 			console.log('Not able to get info on the journey : ' + err);
-			res.jsonp('{"msg": "ko"}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(joinDetail);
 		}
@@ -59,7 +59,7 @@ exports.list = function (req, res) {
 	join.getList(function (err, joins) {
 		if (err) {
 			console.log('Not able to get join list : ' + err);
-			res.jsonp('{"msg": ' + err + '}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(joins);
 		}
@@ -74,10 +74,10 @@ exports.cancel = function (req, res) {
 	join.cancelById(id)
 		.then(function (invoice) {
 			console.log('Join cancelled');
-			res.jsonp('{"msg": "joinCancelled", "type": "success"}');
+			res.jsonp({msg: 'joinCancelled', type: 'success'});
 		})
 		.catch(function (err) {
 			console.log('Join not cancelled ' + err);
-			res.jsonp('{"msg": "joinNotCancelled", "type": "error"}');
+			res.jsonp({msg: 'joinNotCancelled', type: 'error'});
 		});
 };

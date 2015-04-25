@@ -139,10 +139,8 @@ describe('Test of Discussion API', function () {
             agent
                 .get('http://localhost:9615/api/discussion/users/876')
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
-                    assert.equal(JSON.parse(res.body).msg, 'ko');
+                    if (err) return done(err);
+                    assert.equal(res.body.type, 'error');
                     return done();
                 });
         });
@@ -173,7 +171,7 @@ describe('Test of Discussion API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(JSON.parse(res.body).msg, 'ko');
+                    assert.equal(res.body.type, 'error');
                     return done();
                 });
         });
@@ -196,7 +194,7 @@ describe('Test of Discussion API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(JSON.parse(res.body).msg, 'ok');
+                    assert.equal(res.body.msg, 'ok');
                     agent
                         .get('http://localhost:9615/api/discussion/users/3')
                         .end(function (err, res) {
@@ -221,7 +219,7 @@ describe('Test of Discussion API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(JSON.parse(res.body).msg, 'ko');
+                    assert.equal(res.body.type, 'error');
                     return done();
                 });
         });

@@ -131,7 +131,7 @@ describe('Test of page API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(JSON.parse(res.body).msg, 'pageSaved');
+                    assert.equal(res.body.msg, 'pageSaved');
 					agent
 						.get('http://localhost:9615/api/page/test-during-unit-test')
 						.end(function (err, res) {
@@ -173,7 +173,7 @@ describe('Test of page API', function () {
 							if (err) {
 								return done(err);
 							}
-							assert.equal(JSON.parse(res.body).msg, 'pageSaved');
+							assert.equal(res.body.msg, 'pageSaved');
 							return done();
 						});
 				});

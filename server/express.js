@@ -39,6 +39,7 @@ module.exports = function (app, passport) {
     app.engine('html', require('ejs').renderFile);
 	app.set('view engine', 'html');
 	
+	/* TO USE IF YOU NEED TO REFRESH OPTIONS EACH PAGE UPDATE
 	app.use(function (req, res, next) {
 		var options = new Options();
 		options.load(function (err, options) {
@@ -50,6 +51,7 @@ module.exports = function (app, passport) {
 			next();
 		});
 	});
+	 */
 
     //Enable jsonp
     app.enable('jsonp callback');

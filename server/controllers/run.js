@@ -23,7 +23,7 @@ exports.search = function (req, res) {
     run.search(req.body, function (err, runs) {
         if (err) {
             console.log('Not able to search run : ' + err);
-            res.jsonp('{"msg": "ko"}');
+            res.jsonp({msg: err, type: 'error'});
         } else {
             res.jsonp(runs);
         }
@@ -37,7 +37,7 @@ exports.activeList = function (req, res) {
 	run.getActiveList(function (err, runs) {
 		if (err) {
 			console.log('Not able to get active list : ' + err);
-			res.jsonp('{"msg": "ko"}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(runs);
 		}
@@ -52,7 +52,7 @@ exports.detail = function (req, res) {
 	run.getById(id, function (err, runDetail) {
 		if (err) {
 			console.log('Not able to get info on the run : ' + err);
-			res.jsonp('{"msg": "ko"}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(runDetail);
 		}
@@ -66,7 +66,7 @@ exports.next = function (req, res) {
 	run.getNextList(req.params.nb, function (err, runs) {
 		if (err) {
 			console.log('Not able to get active run list : ' + err);
-			res.jsonp('{"msg": ' + err + '}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(runs);
 		}
@@ -80,7 +80,7 @@ exports.list = function (req, res) {
 	run.getList(function (err, runs) {
 		if (err) {
 			console.log('Not able to get run list : ' + err);
-			res.jsonp('{"msg": ' + err + '}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(runs);
 		}
@@ -95,9 +95,9 @@ exports.toggleActive = function (req, res) {
 	run.toggleActive(id, function (err, run) {
 		if (err) {
 			console.log('Not able to get info on the run : ' + err);
-			res.jsonp('{"msg": ' + err + '}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
-			res.jsonp('{"msg": "done"}');
+			res.jsonp({msg: 'done', type: 'success'});
 		}
 	});
 };

@@ -150,7 +150,7 @@ describe('Test of Validation Journey API', function () {
                 .post('http://localhost:9615/api/validation')
 				.send(validation)
                 .end(function (err, res) {
-					assert.equal(JSON.parse(res.body).msg, 'journeyValidationDone');
+					assert.equal(res.body.msg, 'journeyValidationDone');
 					return done();
 				});
         });
@@ -167,7 +167,7 @@ describe('Test of Validation Journey API', function () {
                 .post('http://localhost:9615/api/validation')
 				.send(validation)
                 .end(function (err, res) {
-					assert.equal(JSON.parse(res.body).msg, 'journeyNotValidated');
+					assert.equal(res.body.msg, 'journeyNotValidated');
 					return done();
 				});
         });

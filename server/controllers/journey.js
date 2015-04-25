@@ -8,10 +8,10 @@ exports.create = function (req, res) {
 	journey.save(req.body.journey, req.user.id, function (err, journey) {
 		if (err) {
             console.log('Journey not created ' + err);
-            res.jsonp('{"msg": "journeyNotCreated", "type": "error"}');
+            res.jsonp({msg: 'journeyNotCreated', type: 'error'});
 		} else {
             console.log('Journey created');
-            res.jsonp('{"msg": "journeyCreated", "type": "success"}');
+            res.jsonp({msg: 'journeyCreated', type: 'success'});
 		}
 	});
 };
@@ -24,15 +24,15 @@ exports.update = function (req, res) {
         journey.save(req.body.journey, req.body.journey.UserId, function (err, journey) {
             if (err) {
                 console.log('Journey not updated ' + err);
-                res.jsonp('{"msg": "journeyNotUpdated", "type": "error"}');
+                res.jsonp({msg: 'journeyNotUpdated', type: 'error'});
             } else {
                 console.log('Journey updated');
-                res.jsonp('{"msg": "journeyUpdated", "type": "success"}');
+                res.jsonp({msg: 'journeyUpdated', type: 'success'});
             }
         });
     } else {
         console.log('Journey not created : ' + new Error('Not allow to update journey'));
-        res.jsonp('{"msg": "notAllowToUpdate", "type": "error"}');
+        res.jsonp({msg: 'notAllowToUpdate', type: 'error'});
     }
 };
 
@@ -43,7 +43,7 @@ exports.list = function (req, res) {
 	journey.getList(function (err, journeys) {
 		if (err) {
 			console.log('Not able to get journey list : ' + err);
-			res.jsonp('{"msg": "ko"}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(journeys);
 		}
@@ -57,7 +57,7 @@ exports.openList = function (req, res) {
     journey.getOpenList(function (err, journeys) {
         if (err) {
             console.log('Not able to get journey list : ' + err);
-            res.jsonp('{"msg": "ko"}');
+            res.jsonp({msg: err, type: 'error'});
         } else {
             res.jsonp(journeys);
         }
@@ -72,7 +72,7 @@ exports.listForRun = function (req, res) {
     journey.getListForRun(id, function (err, journeys) {
         if (err) {
             console.log('Not able to get journey list : ' + err);
-            res.jsonp('{"msg": "ko"}');
+            res.jsonp({msg: err, type: 'error'});
         } else {
             res.jsonp(journeys);
         }
@@ -87,7 +87,7 @@ exports.detail = function (req, res) {
 	journey.getById(id, function (err, journeyDetail) {
 		if (err) {
 			console.log('Not able to get info on the journey : ' + err);
-			res.jsonp('{"msg": "ko"}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(journeyDetail);
 		}
@@ -101,7 +101,7 @@ exports.next = function (req, res) {
 	journey.getNextList(req.params.nb, function (err, runs) {
 		if (err) {
 			console.log('Not able to get journey list : ' + err);
-			res.jsonp('{"msg": "ko"}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(runs);
 		}
@@ -116,7 +116,7 @@ exports.bookSpace = function (req, res) {
 	journey.getBookSpace(journeyId, function (err, spaces) {
 		if (err) {
 			console.log('Not able to get book space : ' + err);
-			res.jsonp('{"msg": "ko"}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(spaces);
 		}
@@ -131,10 +131,10 @@ exports.togglePayed = function (req, res) {
     journey.togglePayed(id, function (err, journey) {
         if (err) {
             console.log('Journey not toggle payed ' + err);
-            res.jsonp('{"msg": "journeyNotTogglePayed", "type": "error"}');
+            res.jsonp({msg: 'journeyNotTogglePayed', type: 'error'});
         } else {
             console.log('Journey toggle payed');
-            res.jsonp('{"msg": "journeyTogglePayed", "type": "success"}');
+            res.jsonp({msg: 'journeyTogglePayed', type: 'success'});
         }
     });
 };
@@ -147,10 +147,10 @@ exports.cancel = function (req, res) {
     journey.cancel(id, function (err, journey) {
         if (err) {
             console.log('Journey not canceled : ' + err);
-            res.jsonp('{"msg": "journeyNotCanceled", "type": "error"}');
+            res.jsonp({msg: 'journeyNotCanceled', type: 'error'});
         } else {
             console.log('Journey canceled');
-            res.jsonp('{"msg": "journeyCanceled", "type": "success"}');
+            res.jsonp({msg: 'journeyCanceled', type: 'success'});
         }
     });
 };

@@ -225,7 +225,7 @@ describe('Test of Inbox API', function () {
                 .send(message)
                 .end(function (err, res) {
                     if (err) return done(err);
-                    assert.equal(JSON.parse(res.body).msg, 'messageDeleted');
+                    assert.equal(res.body.msg, 'messageDeleted');
                     agent
                         .get('http://localhost:9615/api/inbox/msg')
                         .end(function (err, res) {

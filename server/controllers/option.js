@@ -27,9 +27,9 @@ exports.saveOptions = function (req, res) {
     options.save(modOptions, function (err, options) {
         if (err) {
             console.log(new Error('Not enable to get option : ' + err));
-            res.jsonp('{"msg": "emailOptionsNotSaved", "type": "error"}');
+            res.jsonp({msg: 'emailOptionsNotSaved', type: 'error'});
         } else {
-			res.jsonp('{"msg": "emailOptionsSaved", "type": "success"}');
+			res.jsonp({msg: 'emailOptionsSaved', type: 'success'});
 		}
     });
 };

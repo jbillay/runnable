@@ -187,7 +187,7 @@ describe('Test of participate API', function () {
                 .post('http://localhost:9615/api/participate/add')
 				.send(run)
                 .end(function (err, res) {
-					assert.equal(JSON.parse(res.body).msg, 'addParticipate');
+					assert.equal(res.body.msg, 'addParticipate');
 					agent
 						.get('http://localhost:9615/api/participate/user/list')
 						.end(function (err, res) {
@@ -205,7 +205,7 @@ describe('Test of participate API', function () {
                 .post('http://localhost:9615/api/participate/add')
 				.send(run)
                 .end(function (err, res) {
-					assert.equal(JSON.parse(res.body).msg, 'notAbleParticipate');
+					assert.equal(res.body.msg, 'notAbleParticipate');
 					return done();
                 });
         });

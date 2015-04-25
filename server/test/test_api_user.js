@@ -248,7 +248,7 @@ describe('Test of user API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(JSON.parse(res.body).msg, 'accountCreated');
+                    assert.equal(res.body.msg, 'accountCreated');
                     done();
                 });
         });
@@ -269,7 +269,7 @@ describe('Test of user API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(JSON.parse(res.body).msg, 'wrongPassword');
+                    assert.equal(res.body.msg, 'wrongPassword');
                     done();
                 });
         });
@@ -290,7 +290,7 @@ describe('Test of user API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(JSON.parse(res.body).msg, 'existingAccount');
+                    assert.equal(res.body.msg, 'existingAccount');
                     done();
                 });
         });
@@ -418,7 +418,7 @@ describe('Test of user API', function () {
                 .post('http://localhost:9615/api/user/password/update')
                 .send({ passwords: {old: 'noofs', new: 'test', newConfirm: 'test'}})
                 .end(function (err, res) {
-                    assert.equal(JSON.parse(res.body).msg, 'passwordUpdated');
+                    assert.equal(res.body.msg, 'passwordUpdated');
                     done();
                 });
         });
@@ -428,7 +428,7 @@ describe('Test of user API', function () {
                 .post('http://localhost:9615/api/user/password/update')
                 .send({ passwords: {old: 'kjdhkqshdk', new: 'test', newConfirm: 'test'}})
                 .end(function (err, res) {
-                    assert.equal(JSON.parse(res.body).msg, 'passwordWrong');
+                    assert.equal(res.body.msg, 'passwordWrong');
                     done();
                 });
         });
@@ -438,7 +438,7 @@ describe('Test of user API', function () {
                 .post('http://localhost:9615/api/user/password/update')
                 .send({ passwords: {old: 'noofs', new: 'test', newConfirm: 'test1'}})
                 .end(function (err, res) {
-                    assert.equal(JSON.parse(res.body).msg, 'passwordDifferent');
+                    assert.equal(res.body.msg, 'passwordDifferent');
                     done();
                 });
         });
@@ -469,7 +469,7 @@ describe('Test of user API', function () {
                 .post('http://localhost:9615/api/admin/user/active')
                 .send({id: '2'})
                 .end(function (err, res) {
-                    assert.equal(JSON.parse(res.body).msg, 'userToggleActive');
+                    assert.equal(res.body.msg, 'userToggleActive');
                     supertest(app)
                         .get('/api/user/public/info/2')
                         .end(function (err, res) {
@@ -515,7 +515,7 @@ describe('Test of user API', function () {
                 .send({emails: 'jbillay@gmail.com, richard.couret@free.fr', message: 'should send email to friends'})
                 .end(function (err, res) {
                     if (err) return done(err);
-                    assert.equal(JSON.parse(res.body).msg, 'Invitation(s) envoyée(s)');
+                    assert.equal(res.body.msg, 'Invitation(s) envoyée(s)');
                     return done();
                 });
         });
@@ -584,7 +584,7 @@ describe('Test of user API', function () {
                 .send(user)
                 .end(function (err, res) {
                     if (err) return done(err);
-                    assert.equal(JSON.parse(res.body).msg, 'userDeleted');
+                    assert.equal(res.body.msg, 'userDeleted');
                     return done();
                 });
         });
@@ -610,7 +610,7 @@ describe('Test of user API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(JSON.parse(res.body).msg, 'accountUpdated');
+                    assert.equal(res.body.msg, 'accountUpdated');
                     agent
                         .get('http://localhost:9615/api/user/me')
                         .end(function(err, res) {
@@ -636,7 +636,7 @@ describe('Test of user API', function () {
             agent
                 .get('http://localhost:9615/api/user/remove/picture')
                 .end(function (err, res) {
-                    assert.equal(JSON.parse(res.body).msg, 'userPictureRemoved');
+                    assert.equal(res.body.msg, 'userPictureRemoved');
                     return done();
                 });
         });

@@ -11,9 +11,9 @@ exports.save = function (req, res) {
 	page.save(req.body, function (err, newBankAccount) {
 		if (err) {
 			console.log(new Error('Page not saved ' + err));
-			res.jsonp('{"msg": "pageNotSaved", "type": "error"}');
+			res.jsonp({msg: 'pageNotSaved', type: 'error'});
 		} else {
-			res.jsonp('{"msg": "pageSaved", "type": "success"}');
+			res.jsonp({msg: 'pageSaved', type: 'success'});
 		}
 	});
 };
@@ -26,7 +26,7 @@ exports.getByTag = function (req, res) {
 	page.getByTag(tag, function (err, thePage) {
 		if (err) {
 			console.log(new Error('Not able to get page : ' + err));
-			res.jsonp('{"msg": "ko", "type": "error"}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(thePage);
 		}
@@ -40,7 +40,7 @@ exports.getList = function (req, res) {
 	page.getList(function (err, pages) {
 		if (err) {
 			console.log(new Error('Not able to get page : ' + err));
-			res.jsonp('{"msg": "ko", "type": "error"}');
+			res.jsonp({msg: err, type: 'error'});
 		} else {
 			res.jsonp(pages);
 		}

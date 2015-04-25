@@ -10,12 +10,10 @@ exports.add = function (req, res) {
         runId = req.body.runId,
         user = req.user;
     participate.add(runId, user, function (err, participate) {
-		console.log('Err : %j', err);
-		console.log('Part : %j', participate);
         if (err) {
-            res.jsonp('{"msg": "notAbleParticipate", "type": "error"}');
+            res.jsonp({msg: 'notAbleParticipate', type: 'error'});
         } else {
-			res.json('{"msg": "addParticipate", "type": "success"}');
+			res.json({msg: 'addParticipate', type: 'success'});
 		}
     });
 };
@@ -26,7 +24,7 @@ exports.userList = function (req, res) {
         userId = req.user.id;
     participate.userList(userId, function (err, participation) {
         if (err) {
-            res.jsonp('{"msg": "participateList", "type": "error"}');
+            res.jsonp({msg: err, type: 'error'});
         } else {
 			res.jsonp(participation);
 		}
@@ -39,7 +37,7 @@ exports.runList = function (req, res) {
         runId = req.params.id;
     participate.runList(runId, function (err, participation) {
         if (err) {
-            res.jsonp('{"msg": "participateList", "type": "error"}');
+            res.jsonp({msg: err, type: 'error'});
         } else {
 			res.jsonp(participation);
 		}

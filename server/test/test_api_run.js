@@ -153,10 +153,9 @@ describe('Test of run API', function () {
             request(app)
                 .get('/api/run/next/a')
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
-                    assert.include(res.body, 'SequelizeDatabaseError');
+                    if (err) return done(err);
+                    console.log(res.body);
+                    assert.equal(res.body.type, 'error');
                     done();
                 });
         });
@@ -193,7 +192,7 @@ describe('Test of run API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(JSON.parse(res.body).msg, 'done');
+                    assert.equal(res.body.msg, 'done');
                     request(app)
                         .get('/api/run/list')
                         .end(function (err, res) {
