@@ -27,7 +27,7 @@ function mail() {
     var option = new Options();
     option.get('mailConfig')
         .then(function (config) {
-            var settings = JSON.parse(config);
+            var settings = config;
             if (settings.service) {
                 that.service = settings.service;
             } else if (settings.host) {
@@ -115,7 +115,7 @@ mail.prototype.generateContent = function (templateName, keys) {
                 title,
                 find = 0,
                 noHTML = /(<([^>]+)>)/ig,
-                templates = JSON.parse(value);
+                templates = value;
             templates.forEach(function (template) {
                 if (template.name === templateName) {
                     find = 1;

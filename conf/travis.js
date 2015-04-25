@@ -9,5 +9,7 @@ module.exports = {
         dialect     : "sqlite",
         storage     : './database.sqlite',
         logging     : false
-    }
+    },
+    port        : process.env.NODE_PORT || 9615,
+    domain      : 'localhost:9615'
 };

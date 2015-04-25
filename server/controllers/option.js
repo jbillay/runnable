@@ -6,16 +6,29 @@ var Options = require('../objects/option');
 
 exports.getOption = function (req, res) {
     'use strict';
-    var name = req.params.name;
-	var value = res.locals.options[name];
+    var name = req.params.name,
+        options = new Options();
     console.log('Get option ' + name);
-    res.json(value);
+    options.get(name)
+        .then(function (value) {
+            res.jsonp(value);
+        })
+        .catch(function (err) {
+            res.jsonp({msg: err, type: 'error'});
+        });
 };
 
 exports.getOptions = function (req, res) {
     'use strict';
+    var options = new Options();
     console.log('Get all options');
-	res.json(res.locals.options);
+    options.load(function (err, values) {
+        if (err) {
+            res.jsonp({msg: err, type: 'error'});
+        } else {
+            res.jsonp(values);
+        }
+    });
 };
 
 exports.saveOptions = function (req, res) {

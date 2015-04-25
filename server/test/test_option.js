@@ -72,7 +72,7 @@ describe('Tests of option object', function () {
             mailConfig = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false};
         options.get('mailConfig')
             .then(function (value) {
-                assert.deepEqual(JSON.parse(value), mailConfig);
+                assert.deepEqual(value, mailConfig);
                 return done();
             })
             .catch(function (err) {

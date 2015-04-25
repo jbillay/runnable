@@ -17,7 +17,7 @@ Options.prototype.get = function (name) {
             if (!option) {
                 deferred.reject(new Error('Option not found'));
             } else {
-                deferred.resolve(option.value);
+                deferred.resolve(JSON.parse(option.value));
             }
         })
         .catch(function (err) {
