@@ -29,7 +29,6 @@ passport.use(new LocalStrategy({
 	function(req, email, password, done) {
 		console.log('Try authentificate user : ' + email);
 		var user = new User();
-		req.login = {};
 		user.getByEmail(email, function (err, user) {
 			if (err) {
 				console.log('Err with authentification: ' + err);
@@ -37,15 +36,13 @@ passport.use(new LocalStrategy({
 			}
 			if (!user) {
 				console.log('User not exist');
-				done(err, false);
+				done('accountNotExist', false, 'toto');
 			} else if (!user.isActivated()) {
 				console.log('Oops! Votre compte est pas encore activé');
-				done(err, false);
+				done('accountNotActive', false, 'toto');
 			} else if (!user.authenticate(password)) {
 				console.log('Erreur avec votre mot de passe');
-				req.login.status = 'error';
-				req.login.msg = 'Erreur avec votre mot de passe';
-				done(err, false);
+				done('accountWrongPassword', false, 'toto');
 			} else {
 				user.salt = user.hashedPassword = user.provider = null;
 				console.log('Login (local) : { id: ' + user.id + ', email ' + user.email + ' }');

@@ -10,7 +10,18 @@ module.exports = function (app, passport, auth) {
     // serve index and view partials
     app.get('/', controllers.root.default);
     app.get('/logout', controllers.root.logout);
-	app.post('/login', passport.authenticate('local'), controllers.root.auth);
+	app.post('/login', function(req, res, next) {
+		passport.authenticate('local', function(err, user, info) {
+			if (!user) {
+				res.jsonp({msg: err, type: 'error'});
+			} else {
+				req.logIn(user, function(err) {
+					if (err) { return next(err); }
+					res.jsonp({msg: user, type: 'success'});
+				});
+			}
+		})(req, res, next);
+	});
 	app.post('/api/send/mail', controllers.root.sendMail);
 
     app.get('/api/home/feedback', controllers.home.userFeedback);

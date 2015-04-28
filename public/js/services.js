@@ -46,13 +46,15 @@ angular.module('runnable.services', ['ngResource']).
 			return $http.post('/api/user/password/reset', {email: email});
 		};
 
-		authService.login = function (credentials) {
+		authService.loginOld = function (credentials) {
 			return $http.post('/login', credentials)
 				.then(function (res) {
 					Session.create(res.data);
 					return res.data;
 				})
 				.catch(function (err) {
+					console.log('Error : ');
+					console.log(err);
 					var obj_msg = {
 						msg : 'userAuthFailed',
 						type : 'error' };
@@ -61,6 +63,25 @@ angular.module('runnable.services', ['ngResource']).
 				});
 		};
 
+		authService.login = function (credentials) {
+			 var deferred = $q.defer();
+                $http.post('/login', credentials).
+					success(function (result) {
+						console.log(result);
+						if (result.type === 'error') {
+							$rootScope.$broadcast('USER_MSG', result);
+						} else {
+							Session.create(result.msg);
+						}
+						deferred.resolve(result.msg);
+					}).
+					error(function(data, status) {
+						console.log('Error : ', data);
+						deferred.resolve(data);
+					});
+				return deferred.promise;
+		};
+		
 		authService.isAuthenticated = function () {
 			return !!Session.userId;
 		};

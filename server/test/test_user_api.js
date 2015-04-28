@@ -311,14 +311,15 @@ describe('Test of user API', function () {
                 .post('/login')
                 .send({ email: 'jbillay@gmail.com', password: 'noofs' })
                 .end(function (err, res) {
-                    assert.equal(res.body.id, 1);
-                    assert.equal(res.body.firstname, 'Jeremy');
-                    assert.equal(res.body.lastname, 'Billay');
-                    assert.equal(res.body.address, 'Saint Germain en laye');
-                    assert.equal(res.body.phone, '0689876547');
-                    assert.equal(res.body.email, 'jbillay@gmail.com');
-                    assert.equal(res.body.role, 'admin');
-                    done();
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg.id, 1);
+                    assert.equal(res.body.msg.firstname, 'Jeremy');
+                    assert.equal(res.body.msg.lastname, 'Billay');
+                    assert.equal(res.body.msg.address, 'Saint Germain en laye');
+                    assert.equal(res.body.msg.phone, '0689876547');
+                    assert.equal(res.body.msg.email, 'jbillay@gmail.com');
+                    assert.equal(res.body.msg.role, 'admin');
+                    return done();
                 });
         });
 
@@ -327,9 +328,8 @@ describe('Test of user API', function () {
                 .post('/login')
                 .send({ email: 'jbillay@gmail.fr', password: 'noofs' })
                 .end(function (err, res) {
-                    var obj = {};
-                    assert.deepEqual(res.body, obj);
-                    done();
+                    assert.equal(res.body.msg, 'accountNotExist');
+                    return done();
                 });
         });
 
@@ -338,9 +338,8 @@ describe('Test of user API', function () {
                 .post('/login')
                 .send({ email: 'jbillay@gmail.com', password: 'test' })
                 .end(function (err, res) {
-                    var obj = {};
-                    assert.deepEqual(res.body, obj);
-                    done();
+                    assert.equal(res.body.msg, 'accountWrongPassword');
+                    return done();
                 });
         });
     });
@@ -542,8 +541,8 @@ describe('Test of user API', function () {
                         .send({ email: 'jbillay@gmail.com', password: 'noofs' })
                         .end(function (err, res) {
                             assert.isNull(err);
-                            assert.equal(res.statusCode, 401);
-                            done();
+                            assert.equal(res.body.msg, 'accountWrongPassword');
+                            return done();
                         });
                 });
         });

@@ -104,9 +104,6 @@ angular.module('runnable.controllers', []).
 					}
 				});
 				$scope.setCurrentUser(user, unread);
-				$rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
-			}, function () {
-				$rootScope.$broadcast(AUTH_EVENTS.loginFailed);
 			});
 			angular.element('#loginModal').modal('hide');
 		};
