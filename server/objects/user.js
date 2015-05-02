@@ -78,15 +78,16 @@ user.prototype.update = function (id, datas, done) {
 
 user.prototype.save = function (done) {
     'use strict';
-	var user = models.User.build(this);
+	var user = models.User.build(this),
+        password = this.password;
 
     models.User.find({ where: {email: user.email}})
         .then(function (existingUser) {
             if (!existingUser) {
                 user.provider = 'local';
                 user.salt = user.makeSalt();
-                user.hashedPassword = user.encryptPassword(this.password, user.salt);
-                console.log('New User (local) : { id: ' + user.id + ' email: ' + user.email + ' }');
+                user.hashedPassword = user.encryptPassword(password, user.salt);
+                console.log('New User (local) : { email: ' + user.email + ', hash : ' + user.hashedPassword + ' }');
                 user.save()
                     .then(function (newUser) {
                         done(null, newUser);

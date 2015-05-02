@@ -3,7 +3,7 @@
 module.exports = function(grunt) {
     // Unified Watch Object
     var watchFiles = {
-        serverJS: ['Gruntfile.js', 'server.js', 'config/*.js', 'server/**/*.js'],
+        serverJS: ['Gruntfile.js', 'server.js', 'config/*.js', 'server/**/*.js', 'test/**/*.js'],
         clientViews: ['public/views/**/*.html'],
         clientJS: ['public/js/*.js'],
         clientCSS: ['public/css/*.css']
@@ -28,23 +28,6 @@ module.exports = function(grunt) {
                 src: watchFiles.clientCSS
             }
         },
-        /*
-         Check why I should use ng-annotate
-         ngAnnotate: {
-         production: {
-         options: {
-         singleQuotes: true
-         },
-         files: [
-         {
-         expand: true,
-         src: watchFiles.clientJS,
-         ext: '.annotated.js'
-         }
-         ]
-         }
-         },
-         */
         concat: {
             js: {
                 src: [watchFiles.clientJS],
@@ -82,7 +65,7 @@ module.exports = function(grunt) {
         },
         mocha_istanbul: {
             coverage: {
-                src: 'server/test', // a folder works nicely
+                src: 'test/api', // a folder works nicely
                 options: {
                     mask: '*.js'
                 }

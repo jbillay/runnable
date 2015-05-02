@@ -87,7 +87,6 @@ angular.module('runnable.controllers', []).
 			all = $q.all([pagePromise]);
 		all.then(function (res) {
 			$scope.page = res[0];
-			console.log($scope.page);
 		});
 	}).
 	controller('RunnableLoginController', function ($scope, $rootScope, AUTH_EVENTS, AuthService) {

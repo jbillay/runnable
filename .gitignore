@@ -5,3 +5,4 @@ conf/production.js
 coverage/
 dist/
 public/uploads/
+server/public/uploads/

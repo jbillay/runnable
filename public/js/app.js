@@ -8,12 +8,10 @@
 
 angular.module('runnable', [
     'ngRoute',
-    'ngCookies',
     'ngSanitize',
     'ngMessages',
     'ui.calendar',
     'ui.bootstrap',
-    'btford.socket-io',
     'runnable.filters',
     'runnable.constant',
     'runnable.services',
