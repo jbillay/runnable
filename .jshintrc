@@ -27,6 +27,9 @@
         "noty": true,
         "$": true,
         "_": true,
+        "browser": true,
+        "element": true,
+        "by": true,
         "ApplicationConfiguration": true
     },
     "predef": [ // Extra globals.

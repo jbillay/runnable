@@ -49,15 +49,15 @@ describe('PhoneCat App', function() {
             query.sendKeys('tablet'); //let's narrow the dataset to make the test assertions shorter
 
             expect(getNames()).toEqual([
-                "Motorola XOOM\u2122 with Wi-Fi",
-                "MOTOROLA XOOM\u2122"
+                'Motorola XOOM\u2122 with Wi-Fi',
+                'MOTOROLA XOOM\u2122'
             ]);
 
             element(by.model('orderProp')).element(by.css('option[value="name"]')).click();
 
             expect(getNames()).toEqual([
-                "MOTOROLA XOOM\u2122",
-                "Motorola XOOM\u2122 with Wi-Fi"
+                'MOTOROLA XOOM\u2122',
+                'Motorola XOOM\u2122 with Wi-Fi'
             ]);
         });
 
