@@ -452,7 +452,7 @@ describe('Test of user API', function () {
             agent
                 .get('http://localhost:9615/api/admin/users')
                 .end(function (err, res) {
-                    assert.equal(res.body.length, 2);
+                    assert.equal(res.body.length, 3);
                     return done();
                 });
         });
@@ -496,7 +496,7 @@ describe('Test of user API', function () {
                         return done(err);
                     }
                     assert.isNotNull(res.body);
-                    done();
+                    return done();
                 });
         });
 

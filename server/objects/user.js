@@ -263,10 +263,17 @@ user.prototype.getPublicInfo = function (id, done) {
                             },
                             {
 							    model: models.Journey,
-							    where: {is_canceled: false}
+                                as: 'Journeys'
 						    }]
                      })
 		.then(function (user) {
+            if (user.Journeys) {
+                user.Journeys.forEach(function (journey, index, object) {
+                    if (journey.is_canceled) {
+                        object.splice(index, 1);
+                    }
+                });
+            }
 			done(null, user);
 		})
 		.catch(function (err) {

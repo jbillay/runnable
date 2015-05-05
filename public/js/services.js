@@ -16,8 +16,6 @@ angular.module('runnable.services', ['ngResource']).
 			this.userLastname = user.lastname;
 			this.userAddress = user.address;
 			this.userEmail = user.email;
-			this.userItra = user.itra;
-			this.userIsActive = user.isActive;
 			this.userRole = user.role;
 		};
 		this.destroy = function () {
@@ -26,8 +24,6 @@ angular.module('runnable.services', ['ngResource']).
 			this.userLastname = null;
 			this.userAddress = null;
 			this.userEmail = null;
-			this.userItra = null;
-			this.userIsActive = null;
 			this.userRole = null;
 		};
 		return this;
@@ -76,8 +72,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result.msg);
 					}).
 					error(function(data, status) {
-						console.log('Error : ', data);
-						deferred.resolve(data);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 		};
@@ -106,8 +101,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ', data);
-						deferred.resolve(data);
+						deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			},
@@ -118,8 +112,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ', data);
-						deferred.resolve(data);
+						deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
             },
@@ -130,8 +123,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ', data);
-						deferred.resolve(data);
+						deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			}
@@ -147,8 +139,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ', data);
-						deferred.resolve(data);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			},
@@ -159,8 +150,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ', data);
-						deferred.resolve(data);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
             }
@@ -176,8 +166,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ', data);
-						deferred.resolve(data);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			},
@@ -189,8 +178,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ', data);
-						deferred.resolve(data);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			},
@@ -202,8 +190,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function(data, status) {
-                        console.log('Error : ', data);
-                        deferred.resolve(data);
+                        deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             },
@@ -214,8 +201,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function(data, status) {
-                        console.log('Error : ', data);
-                        deferred.resolve(data);
+                        deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             },
@@ -226,8 +212,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ', data);
-						deferred.resolve(data);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
             },
@@ -238,8 +223,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ', data);
-						deferred.resolve(data);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
             },
@@ -250,8 +234,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ', data);
-						deferred.resolve(data);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
             },
@@ -266,7 +249,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			},
@@ -277,7 +260,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
 			},
@@ -294,7 +277,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(ret);
                     }).
                     error(function(data, status) {
-                        console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
 			},
@@ -305,7 +288,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
 			},
@@ -316,7 +299,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
 			},
@@ -327,7 +310,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			},
@@ -339,7 +322,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			},
@@ -352,7 +335,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			},
@@ -368,7 +351,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function (data, status) {
-                        console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             }
@@ -501,7 +484,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			},
@@ -512,7 +495,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
 			},
@@ -523,7 +506,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			},
@@ -535,7 +518,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			}
@@ -550,7 +533,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
 			},
@@ -561,7 +544,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
             },
@@ -572,7 +555,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
 			},
@@ -583,7 +566,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
 			},
@@ -594,7 +577,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
             },
@@ -605,7 +588,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function (data, status) {
-                        console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             }
@@ -624,7 +607,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function(data, status) {
-                        console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             },
@@ -635,7 +618,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function(data, status) {
-                        console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             }
@@ -652,7 +635,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function(data, status) {
-                        console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             }
@@ -667,7 +650,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function(data, status) {
-                        console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             },
@@ -678,7 +661,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function(data, status) {
-                        console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             }
@@ -693,7 +676,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function(data, status) {
-                        console.log('Error : ' + status);
+						deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             },
@@ -704,7 +687,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function(data, status) {
-                        console.log('Error : ' + status);
+						deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             },
@@ -716,13 +699,13 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function(data, status) {
-                        console.log('Error : ' + status);
+						deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
 			}
         };
     }).
-	factory('Inbox', function ($q, $http, $rootScope) {
+	factory('Inbox', function ($q, $http) {
 		return {
 			addMessage: function (template, values, userId) {
 				var deferred = $q.defer(),
@@ -732,7 +715,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+						deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			},
@@ -743,7 +726,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+						deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			},
@@ -754,7 +737,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+						deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			},
@@ -766,7 +749,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+						deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			},
@@ -778,7 +761,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function(data, status) {
-                        console.log('Error : ' + status);
+						deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
 			},
@@ -789,7 +772,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+						deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			}
@@ -804,8 +787,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ', data);
-						deferred.resolve(data);
+						deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			},
@@ -816,8 +798,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ', data);
-						deferred.resolve(data);
+						deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			},
@@ -828,8 +809,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ', data);
-						deferred.resolve(data);
+						deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
 			}
@@ -845,8 +825,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function (data, status) {
-                        console.log('Error : ' + status);
-                        deferred.resolve(data);
+						deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             },
@@ -857,8 +836,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function (data, status) {
-                        console.log('Error : ' + status);
-                        deferred.resolve(data);
+						deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             },
@@ -869,8 +847,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function (data, status) {
-                        console.log('Error : ' + status);
-                        deferred.resolve(data);
+						deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             }
@@ -916,7 +893,7 @@ angular.module('runnable.services', ['ngResource']).
                     deferred.resolve(result);
                 }).
                 error(function (data, status) {
-                    console.log('Error : ' + status);
+					deferred.reject('error ' + status + ' : ' + data);
                 });
             return deferred.promise;
         };
@@ -928,8 +905,7 @@ angular.module('runnable.services', ['ngResource']).
                     deferred.resolve(result);
                 }).
                 error(function(data, status) {
-                    console.log('Error : ', data);
-                    deferred.resolve(data);
+					deferred.reject('error ' + status + ' : ' + data);
                 });
             return deferred.promise;
         };
@@ -948,7 +924,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+						deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
 			},
@@ -959,6 +935,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
+						deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
             },
@@ -969,6 +946,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
+						deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
             },
@@ -979,7 +957,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+						deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
             },
@@ -990,7 +968,7 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.resolve(result);
 					}).
 					error(function(data, status) {
-						console.log('Error : ' + status);
+						deferred.reject('error ' + status + ' : ' + data);
 					});
                 return deferred.promise;
 			},
@@ -1002,8 +980,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function (data, status) {
-                        console.log('Error : ' + status);
-                        deferred.resolve(data);
+						deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             },
@@ -1015,8 +992,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function (data, status) {
-                        console.log('Error : ' + status);
-                        deferred.resolve(data);
+						deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             },
@@ -1027,7 +1003,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function(data, status) {
-                        console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             },
@@ -1039,7 +1015,7 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.resolve(result);
                     }).
                     error(function(data, status) {
-                        console.log('Error : ' + status);
+                        deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             }

@@ -9,9 +9,9 @@ describe('filter', function() {
     describe('capitalize', function() {
 
         it('should capitalize the word in parameter',
-            inject(function(capitalize) {
-                expect(capitalize('good')).toBe('Good');
-                expect(capitalize('BONJOUR')).toBe('Bonjour');
+            inject(function(capitalizeFilter) {
+                expect(capitalizeFilter('good')).toBe('Good');
+                expect(capitalizeFilter('BONJOUR')).toBe('Bonjour');
             }));
     });
 });

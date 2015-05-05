@@ -120,18 +120,28 @@ describe('Test of user object', function () {
 
     it('Get user public info', function (done) {
         var user = new User();
-        user.getPublicInfo(1, function (err, userInfo) {
+        user.getPublicInfo(2, function (err, userInfo) {
             if (err) return done(err);
-            assert.equal(userInfo.firstname, 'Jeremy');
-            assert.equal(userInfo.lastname, 'Billay');
-            assert.equal(userInfo.address, 'Saint Germain en laye');
+            assert.equal(userInfo.firstname, 'Richard');
+            assert.equal(userInfo.lastname, 'Couret');
+            assert.equal(userInfo.address, 'Bouffemont');
             assert.equal(userInfo.phone, '0689876547');
-            assert.equal(userInfo.email, 'jbillay@gmail.com');
-            assert.equal(userInfo.isActive, 1);
-            assert.equal(userInfo.role, 'admin');
-            user.getPublicInfo(-10, function (err, user) {
-                assert.isNotNull(err);
-                done();
+            assert.equal(userInfo.email, 'richard.couret@free.fr');
+            assert.equal(userInfo.isActive, 0);
+            assert.equal(userInfo.role, 'editor');
+            assert.equal(userInfo.Journeys.length, 1);
+            user.getPublicInfo(3, function (err, userInfo) {
+                if (err) return done(err);
+                assert.equal(userInfo.firstname, 'Toto');
+                assert.equal(userInfo.lastname, 'Titi');
+                assert.equal(userInfo.address, 'Nantes');
+                assert.equal(userInfo.email, 'toto.titi@tata.fr');
+                assert.equal(userInfo.isActive, 1);
+                assert.equal(userInfo.role, 'user');
+                user.getPublicInfo(-10, function (err, user) {
+                    assert.isNotNull(err);
+                    done();
+                });
             });
         });
     });
@@ -173,7 +183,7 @@ describe('Test of user object', function () {
                 assert.isNotNull(err);
                 user.updatePassword('jbillay@gmail.com', null, function (err, userChanged) {
                     assert.isNotNull(err);
-                    done();
+                    return done();
                 });
             });
         });
@@ -183,8 +193,8 @@ describe('Test of user object', function () {
         var user = new User();
         user.getList(function (err, userList) {
             if (err) return done(err);
-            assert.equal(userList.length, 2);
-            done();
+            assert.equal(userList.length, 3);
+            return done();
         });
     });
 
@@ -278,7 +288,6 @@ describe('Test of user object', function () {
         assert.equal(tmp.isActive, 1);
         user.save(function (err, newUser) {
             if (err) return done(err);
-            console.log(newUser);
             assert.equal(newUser.firstname, 'Emilie');
             assert.equal(newUser.lastname, 'Francisco');
             assert.equal(newUser.address, 'Saint Germain en laye');
@@ -298,7 +307,7 @@ describe('Test of user object', function () {
     it('First activation of a user', function (done) {
         var user = new User(),
             newUser = {
-                id: 3,
+                id: 4,
                 firstname: 'Emilie',
                 lastname: 'Francisco',
                 address: 'Saint Germain en laye',

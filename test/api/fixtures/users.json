@@ -24,6 +24,7 @@
             "firstname": "Richard",
             "lastname": "Couret",
             "address": "Bouffemont",
+            "phone": "0689876547",
             "email": "richard.couret@free.fr",
             "hashedPassword": "VMcLEoVLvXdolDlsRzF8cVjo2swFfV1Mo76ycRKObI00pVfBy73IwlYj/mX3Z+PH873k57Gu8vWCbWo9v/Cxuw==",
             "provider": "local",
@@ -31,6 +32,25 @@
             "itra": "?id=84500&nom=COURET#tab",
             "isActive": 0,
             "role": "editor",
+            "picture": null,
+            "createdAt": "2015-02-04 18:55:39",
+            "updatedAt": "2015-02-04 18:55:39"
+        }
+    },
+    {
+        "model": "User",
+        "data": {
+            "id": 3,
+            "firstname": "Toto",
+            "lastname": "Titi",
+            "address": "Nantes",
+            "email": "toto.titi@tata.fr",
+            "hashedPassword": "VMcLEoVLvXdolDlsRzF8cVjo2swFfV1Mo76ycRKObI00pVfBy73IwlYj/mX3Z+PH873k57Gu8vWCbWo9v/Cxuw==",
+            "provider": "local",
+            "salt": "d36OGvube+jUO8lcBpmr+Q==",
+            "itra": null,
+            "isActive": 1,
+            "role": "user",
             "picture": null,
             "createdAt": "2015-02-04 18:55:39",
             "updatedAt": "2015-02-04 18:55:39"

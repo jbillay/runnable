@@ -549,6 +549,7 @@ angular.module('runnable.controllers', []).
             $scope.validationMessage = 'Vous souhaitez annuler votre participation à ce voyage. ' +
                 'Si vous confirmer vous receverez un remboursement d\'ici quelques jours ' +
                 'du prix du voyage. Voulez vous confirmer cette demande ?';
+			$scope.validationCallback = $scope.confirmValidation;
         };
         $scope.cancelValidation = function () {
             angular.element('#validationModal').modal('hide');
