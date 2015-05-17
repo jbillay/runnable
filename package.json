@@ -86,6 +86,7 @@
     "superagent": "~0.21.0",
     "matchdep": "~0.3.0",
     "grunt-contrib-concat": "~0.5.1",
-    "multer": "~0.1.8"
+    "multer": "~0.1.8",
+    "jasmine": "~2.3.1"
   }
 }

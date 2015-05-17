@@ -472,13 +472,14 @@ angular.module('runnable.services', ['ngResource']).
         return {
 			add: function (id, nbSpaceOutward, nbSpaceReturn, amount, fees, ref) {
 				var deferred = $q.defer(),
-					info = {journey_id: id,
-							nb_place_outward: nbSpaceOutward, 
-							nb_place_return: nbSpaceReturn,
-							amount: amount,
-							fees: fees,
-							status: 'pending',
-							ref: ref};
+					info = {
+						journey_id: id,
+						nb_place_outward: nbSpaceOutward,
+						nb_place_return: nbSpaceReturn,
+						amount: amount,
+						fees: fees,
+						status: 'pending',
+						ref: ref };
 				$http.post('/api/join', info).
 					success(function (result) {
 						deferred.resolve(result);
