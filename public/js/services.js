@@ -471,6 +471,7 @@ angular.module('runnable.services', ['ngResource']).
     factory('Join', function ($q, $http, $rootScope) {
         return {
 			add: function (id, nbSpaceOutward, nbSpaceReturn, amount, fees, ref) {
+                console.log('Try to join journey' + id);
 				var deferred = $q.defer(),
 					info = {
 						journey_id: id,
@@ -480,6 +481,7 @@ angular.module('runnable.services', ['ngResource']).
 						fees: fees,
 						status: 'pending',
 						ref: ref };
+                console.log(info);
 				$http.post('/api/join', info).
 					success(function (result) {
 						deferred.resolve(result);
