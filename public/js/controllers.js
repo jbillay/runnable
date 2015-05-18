@@ -528,7 +528,8 @@ angular.module('runnable.controllers', []).
 				angular.element('#clientModal').modal('show');
 			}
 		};
-		$scope.joinJourney = function (placeOutward, placeReturn) {
+
+		$scope.joinJourney = function (placeOutward, placeReturn, form) {
 			var template = 'JourneySubmit',
                 values = {runName: $scope.journey.Run.name };
             placeOutward = placeOutward  || 0;
@@ -543,6 +544,7 @@ angular.module('runnable.controllers', []).
 			$scope.reserved_return = $scope.reserved_return + placeReturn;
 			Join.add($scope.journeyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref);
             Inbox.addMessage(template, values, $rootScope.currentUser.id);
+			form.commit();
 		};
         $scope.askValidationJoinCancelFromJourney = function () {
             angular.element('#validationModal').modal('show');
