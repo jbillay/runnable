@@ -32,7 +32,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="panel panel-default" ng-if="selectedJourney.journey_type === 'aller-retour' || selectedJourney.journey_type === 'aller'">
+                                    <div class="panel panel-default" ng-if="(selectedJourney.journey_type === 'aller-retour' || selectedJourney.journey_type === 'aller') && selectedJoin.nb_place_outward">
                                         <div class="panel-heading clearfix">
                                             <span class="pull-left"><strong>Aller</strong></span>
                                         </div>
@@ -48,7 +48,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="panel panel-default" ng-if="selectedJourney.journey_type === 'aller-retour' || selectedJourney.journey_type === 'retour'">
+                                    <div class="panel panel-default" ng-if="(selectedJourney.journey_type === 'aller-retour' || selectedJourney.journey_type === 'retour') && selectedJoin.nb_place_return">
                                         <div class="panel-heading clearfix">
                                             <span class="pull-left"><strong>Retour</strong></span>
                                         </div>

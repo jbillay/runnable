@@ -27,13 +27,13 @@
 											</div>
                                             <div class="col-md-8">
                                                 <table class="table journey_table">
-                                                    <tr ng-if="join.Journey.journey_type === 'aller-retour' || join.Journey.journey_type === 'aller'">
+                                                    <tr ng-if="(join.Journey.journey_type === 'aller-retour' || join.Journey.journey_type === 'aller') && join.nb_place_outward">
                                                         <td><strong>Aller </strong></td>
                                                         <td><i class="fa fa-calendar"></i> {{join.Journey.date_start_outward | date:'dd/MM/yyyy'}}</td>
                                                         <td><i class="fa fa-clock-o"></i> {{join.Journey.time_start_outward}}</td>
                                                         <td>{{join.nb_place_outward}} place(s) réservée(s)</td>
                                                     </tr>
-                                                    <tr ng-if="join.Journey.journey_type === 'aller-retour' || join.Journey.journey_type === 'retour'">
+                                                    <tr ng-if="(join.Journey.journey_type === 'aller-retour' || join.Journey.journey_type === 'retour') && join.nb_place_return">
                                                         <td><strong>Retour </strong></td>
                                                         <td><i class="fa fa-calendar"></i> {{join.Journey.date_start_return | date:'dd/MM/yyyy'}}</td>
                                                         <td><i class="fa fa-clock-o"></i> {{join.Journey.time_start_return}}</td>

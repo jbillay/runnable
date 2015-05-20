@@ -565,7 +565,6 @@ angular.module('runnable.controllers', []).
             Inbox.addMessage(template, values, $rootScope.currentUser.id);
 			Join.add($scope.journeyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref).
                 then(function (join) {
-                    console.log('Après ajout join : ' + join);
         			form.commit();
                 });
 		};
