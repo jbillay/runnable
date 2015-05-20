@@ -562,9 +562,12 @@ angular.module('runnable.controllers', []).
 			fees = fees.toFixed(2);
 			$scope.reserved_outward = $scope.reserved_outward + placeOutward;
 			$scope.reserved_return = $scope.reserved_return + placeReturn;
-			Join.add($scope.journeyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref);
             Inbox.addMessage(template, values, $rootScope.currentUser.id);
-			form.commit();
+			Join.add($scope.journeyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref).
+                then(function (join) {
+                    console.log('Après ajout join : ' + join);
+        			form.commit();
+                });
 		};
         $scope.askValidationJoinCancelFromJourney = function () {
             angular.element('#validationModal').modal('show');
