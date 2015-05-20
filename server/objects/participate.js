@@ -73,7 +73,7 @@ participate.prototype.userList = function (userId, done) {
         });
 };
 
-participate.prototype.runList = function (runId, done) {
+participate.prototype.userRunList = function (runId, done) {
     'use strict';
     console.log('get list of user for run : ' + runId);
     models.Participate.findAll({where: {runId: runId}})

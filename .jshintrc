@@ -30,6 +30,7 @@
         "browser": true,
         "element": true,
         "by": true,
+        "spyOn": true,
         "ApplicationConfiguration": true
     },
     "predef": [ // Extra globals.

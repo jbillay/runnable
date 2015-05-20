@@ -31,11 +31,11 @@ exports.userList = function (req, res) {
     });
 };
 
-exports.runList = function (req, res) {
+exports.userRunList = function (req, res) {
     'use strict';
     var participate = new Participate(),
         runId = req.params.id;
-    participate.runList(runId, function (err, participation) {
+    participate.userRunList(runId, function (err, participation) {
         if (err) {
             res.jsonp({msg: err, type: 'error'});
         } else {

@@ -9,15 +9,22 @@
 						<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
 					</div>
 				</div>
-                <a href=# ng-click="switchSearch()" ng-if="!advancedSearch">Recherche avancée</a>
-                <a href=# ng-click="switchSearch()" ng-if="advancedSearch">Recherche simple</a>
+                <button type="button" class="btn btn-default" ng-click="resetSearch()">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                </button>
+                <button type="button" class="btn btn-default" ng-click="switchSearch()" ng-if="!advancedSearch">
+                    Recherche avancée
+                </button>
+                <button type="button" class="btn btn-default" ng-click="switchSearch()" ng-if="advancedSearch">
+                    Recherche simple
+                </button>
 			</div>
             <div class="row run_advanced_search" ng-if="advancedSearch">
                 <div class="col-sm-12">
                     <form class="form-inline" ng-submit="launchSearch(searchForm)">
                         <div class="input-group">
                             <span class="input-group-addon"><span class="glyphicon glyphicon-road"></span></span>
-                            <select class="form-control" ng-model='searchForm.run_adv_type'
+                            <select class="form-control" ng-model='searchForm.run_adv_type' data-container="body"
 								data-toggle="tooltip" data-placement="bottom" title="Type de course">
                                 <option value="">Tous</option>
                                 <option value="trail">Trail</option>

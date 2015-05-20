@@ -100,11 +100,11 @@ describe('Test of participate object', function () {
 
     it('Get list user participate a run', function (done) {
         var participate = new Participate();
-        participate.runList(5, function (err, users) {
+        participate.userRunList(5, function (err, users) {
             if (err) console.log(err);
             assert.isNull(err);
             assert.equal(users.length, 2);
-            participate.runList(-1, function (err, users) {
+            participate.userRunList(-1, function (err, users) {
                 assert.isNotNull(err);
                 done();
             });

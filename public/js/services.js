@@ -584,6 +584,7 @@ angular.module('runnable.services', ['ngResource']).
             },
             search: function (searchInfo) {
                 var deferred = $q.defer();
+				console.log(searchInfo);
                 $http.post('/api/run/search', searchInfo).
                     success(function (result) {
                         deferred.resolve(result);
@@ -841,9 +842,9 @@ angular.module('runnable.services', ['ngResource']).
                     });
                 return deferred.promise;
             },
-            runList: function (runId) {
+			userRunList: function (runId) {
                 var deferred = $q.defer();
-                $http.get('/api/participate/run/list/' + runId).
+                $http.get('/api/participate/run/user/list/' + runId).
                     success(function (result) {
                         deferred.resolve(result);
                     }).

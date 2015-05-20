@@ -326,13 +326,12 @@ angular.module('runnable.controllers', []).
 		$scope.runId = $routeParams.runId;
 		var runPromise = Run.getDetail($scope.runId),
 			journeyPromise = Journey.getListForRun($scope.runId),
-            participatePromise = Participate.runList($scope.runId),
+            participatePromise = Participate.userRunList($scope.runId),
             all = $q.all([runPromise, journeyPromise, participatePromise]);
         all.then(function (res) {
 			$scope.run = res[0];
 			$scope.journeyList = res[1];
 			$scope.participateList = res[2];
-            $scope.nbJoiner = $scope.participateList.length;
 			$timeout( function() {
 				var obj = 'map_canvas_run';
 				GoogleMapApi.initMap(obj, $scope.run.address_start);
@@ -341,9 +340,10 @@ angular.module('runnable.controllers', []).
 				});
 			});
 			if (Session.userAddress) {
+                $scope.nbJoiner = $scope.participateList.length;
+				$scope.userJoined = false;
                 angular.forEach($scope.participateList, function (participate) {
-                    $scope.userJoined = false;
-                    if (participate.userId === Session.id) {
+                    if (participate.UserId === Session.id) {
                         $scope.userJoined = true;
                     }
                 });
@@ -410,6 +410,15 @@ angular.module('runnable.controllers', []).
     controller('RunnableRunController', function ($scope, $q, Run, $timeout, GoogleMapApi, DEFAULT_DISTANCE) {
         $scope.page = 'Run';
 		$scope.default_distance = DEFAULT_DISTANCE;
+		$scope.searchForm = {
+				run_adv_type: '',
+				run_adv_start_date: null,
+				run_adv_end_date: null,
+				run_adv_city: null,
+				run_adv_distance: DEFAULT_DISTANCE
+			};
+		$scope.run_name = '';
+		var cleanForm = angular.copy($scope.searchForm);
 		var runPromise = Run.getActiveList(),
             all = $q.all([runPromise]);
         all.then(function (res) {
@@ -438,6 +447,14 @@ angular.module('runnable.controllers', []).
         };
 		$scope.getLocation = function(val) {
 			return GoogleMapApi.getLocation(val);
+		};
+		$scope.resetSearch = function (advancedSearch) {
+			$scope.advancedSearch = 0;
+			$scope.run_name = '';
+			$scope.searchForm = angular.copy(cleanForm);
+			Run.search().then(function(runs) {
+                $scope.listRun = runs;
+            });
 		};
         $scope.launchSearch = function (advancedSearch) {
 			if (!advancedSearch.run_adv_distance) {

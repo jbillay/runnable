@@ -155,7 +155,7 @@ describe('Test of participate API', function () {
 
         it('should return list of user for the run 5', function(done) {
             agent
-                .get('http://localhost:9615/api/participate/run/list/5')
+                .get('http://localhost:9615/api/participate/run/user/list/5')
                 .end(function (err, res) {
                     assert.equal(res.body.length, 2);
                     return done();
@@ -164,7 +164,7 @@ describe('Test of participate API', function () {
 		
 		it('should return list of user for a not existing run', function(done) {
             agent
-                .get('http://localhost:9615/api/participate/run/list/5646')
+                .get('http://localhost:9615/api/participate/run/user/list/5646')
                 .end(function (err, res) {
 					var emptyObject = [];
 					console.log(res.body);
