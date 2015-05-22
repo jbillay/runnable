@@ -161,7 +161,7 @@ exports.resetPassword = function (req, res) {
 	user.updatePassword(email, password, function (err, newUser) {
 		if (err) {
 			console.log('Not able to reset password : ' + err);
-			res.jsonp({msg: err, type: 'error'});
+			res.jsonp({msg: 'passwordNotReset', type: 'error'});
 		} else {
             new Mail().then(function (mail) {
                 mail.setTo(newUser.email);
@@ -169,7 +169,7 @@ exports.resetPassword = function (req, res) {
                 mail.generateContent('ResetPassword', {password: password})
                     .then(function (mail) {
                         mail.send();
-                        res.redirect('/');
+                        res.jsonp({msg: 'passwordReset', type: 'success'});
                     });
             });
 		}

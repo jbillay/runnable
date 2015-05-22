@@ -1,6 +1,6 @@
-# karma-jasmine [![Build Status](https://travis-ci.org/karma-runner/karma-jasmine.png?branch=master)](https://travis-ci.org/karma-runner/karma-jasmine)
+# karma-jasmine [![Build Status](https://travis-ci.org/karma-runner/karma-jasmine.svg?branch=master)](https://travis-ci.org/karma-runner/karma-jasmine)
 
-> Adapter for the [Jasmine](http://pivotal.github.io/jasmine/) testing framework.
+> Adapter for the [Jasmine](http://jasmine.github.io/) testing framework.
 
 
 ## Installation
@@ -41,7 +41,11 @@ You can simple do it by:
 npm install karma-jasmine@2_0 --save-dev
 ```
 
-
+__Note:__
+Since `karma-jasmine 0.3.0` the jasmine library is no longer bundled with `karma-jasmine` and you have to install it on your own. You can simple do it by:
+```bash
+npm install jasmine-core --save-dev
+```
 ## Configuration
 ```js
 // karma.conf.js
@@ -52,6 +56,27 @@ module.exports = function(config) {
     files: [
       '*.js'
     ]
+  });
+};
+```
+
+If you want run only some tests matching a given pattern you can do this in the following way
+
+```bash
+karma start &
+karma run -- --grep=<pattern>
+```
+
+or
+
+```js
+module.exports = function(config) {
+  config.set({
+    ...
+    client: {
+      args: ['--grep', '<pattern>'],
+      ...
+    }
   });
 };
 ```

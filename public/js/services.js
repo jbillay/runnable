@@ -29,67 +29,52 @@ angular.module('runnable.services', ['ngResource']).
 		return this;
 	}).
 	factory('AuthService', function ($http, $q, $rootScope, Session, User) {
-		var authService = {};
-		
-		authService.init = function () {
-			return User.getUser().then(function (res) {
-				Session.create(res);
-				return res.data;
-			});
-		};
-		
-		authService.reset = function (email) {
-			return $http.post('/api/user/password/reset', {email: email});
-		};
-
-		authService.loginOld = function (credentials) {
-			return $http.post('/login', credentials)
-				.then(function (res) {
-					Session.create(res.data);
-					return res.data;
-				})
-				.catch(function (err) {
-					console.log('Error : ');
-					console.log(err);
-					var obj_msg = {
-						msg : 'userAuthFailed',
-						type : 'error' };
-					$rootScope.$broadcast('USER_MSG', obj_msg);
-					return err;
-				});
-		};
-
-		authService.login = function (credentials) {
-			 var deferred = $q.defer();
-                $http.post('/login', credentials).
-					success(function (result) {
-						console.log(result);
-						if (result.type === 'error') {
-							$rootScope.$broadcast('USER_MSG', result);
-						} else {
-							Session.create(result.msg);
-						}
-						deferred.resolve(result.msg);
-					}).
-					error(function(data, status) {
+        return {
+            init: function () {
+                return User.getUser().then(function (res) {
+                    Session.create(res);
+                    return res;
+                });
+            },
+            reset: function (email) {
+                var deferred = $q.defer();
+                $http.post('/api/user/password/reset', {email: email}).
+                    success(function (result) {
+                        $rootScope.$broadcast('USER_MSG', result);
+                        deferred.resolve(result);
+                    }).
+                    error(function (data, status) {
                         deferred.reject('error ' + status + ' : ' + data);
-					});
-				return deferred.promise;
-		};
-		
-		authService.isAuthenticated = function () {
-			return !!Session.userId;
-		};
-
-		authService.isAuthorized = function (authorizedRoles) {
-			if (!angular.isArray(authorizedRoles)) {
-				authorizedRoles = [authorizedRoles];
-			}
-			return (authService.isAuthenticated() &&
-			authorizedRoles.indexOf(Session.userRole) !== -1);
-		};
-
-		return authService;
+                    });
+                return deferred.promise;
+            },
+            login: function (credentials) {
+                var deferred = $q.defer();
+                $http.post('/login', credentials).
+                    success(function (result) {
+                        if (result.type === 'error') {
+                            $rootScope.$broadcast('USER_MSG', result);
+                        } else {
+                            Session.create(result.msg);
+                        }
+                        deferred.resolve(result.msg);
+                    }).
+                    error(function (data, status) {
+                        deferred.reject('error ' + status + ' : ' + data);
+                    });
+                return deferred.promise;
+            },
+            isAuthenticated: function () {
+                return !!Session.userId;
+            },
+            isAuthorized: function (authorizedRoles) {
+                if (!angular.isArray(authorizedRoles)) {
+                    authorizedRoles = [authorizedRoles];
+                }
+                return (!!Session.userId &&
+                    authorizedRoles.indexOf(Session.userRole) !== -1);
+            }
+        };
 	}).
     factory('BankAccount', function ($q, $http, $rootScope) {
 		return {
@@ -194,17 +179,6 @@ angular.module('runnable.services', ['ngResource']).
                     });
                 return deferred.promise;
             },
-            deleteMe: function () {
-                var deferred = $q.defer();
-                $http.get('/api/user/remove/me').
-                    success(function (result) {
-                        deferred.resolve(result);
-                    }).
-                    error(function(data, status) {
-                        deferred.reject('error ' + status + ' : ' + data);
-                    });
-                return deferred.promise;
-            },
             getUser: function () {
                 var deferred = $q.defer();
                 $http.get('/api/user/me').
@@ -240,11 +214,7 @@ angular.module('runnable.services', ['ngResource']).
             },
 			getItraRuns: function (userId) {
 				var deferred = $q.defer();
-				var url = '/api/user/runs';
-				if (userId) {
-					url = url + '/' + userId;
-				}
-				$http.get(url).
+				$http.get('/api/user/runs/' + userId).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -368,8 +338,9 @@ angular.module('runnable.services', ['ngResource']).
 			getTimeBeforeStart: function (startDate, startHour) {
 				var dateTime = startDate.toString().substr(0, 10) + 'T' + startHour + ':00.000Z',
                     start = Date.parse(dateTime),
-					now = Date.now();
-				return start - now;
+					now = Date.now(),
+                    value = start - now;
+				return value/1000;
 			},
 			getFees: function (startDate, startHour, amount) {
 				var timeBeforeStart = this.getTimeBeforeStart(startDate, startHour),
@@ -381,7 +352,7 @@ angular.module('runnable.services', ['ngResource']).
 						}
 					}
 				});
-				return fees;
+				return Number((fees).toFixed(2));
 			}
 		};
 	}).
@@ -491,7 +462,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
 			getListForJourney: function (journey_id) {
 				var deferred = $q.defer();
-                $http({method: 'GET', url: '/api/join/journey/' + journey_id}).
+                $http.get('/api/join/journey/' + journey_id).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -529,7 +500,7 @@ angular.module('runnable.services', ['ngResource']).
         return {
 			getDetail: function (id) {
 				var deferred = $q.defer();
-                $http({method: 'GET', url: '/api/run/' + id}).
+                $http.get('/api/run/' + id).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -540,7 +511,7 @@ angular.module('runnable.services', ['ngResource']).
 			},
             getActiveList: function () {
                 var deferred = $q.defer();
-                $http({method: 'GET', url: '/api/run/list'}).
+                $http.get('/api/run/list').
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -551,7 +522,7 @@ angular.module('runnable.services', ['ngResource']).
             },
 			getNextList: function (nb) {
 				var deferred = $q.defer();
-                $http({method: 'GET', url: '/api/run/next/' + nb}).
+                $http.get('/api/run/next/' + nb).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -571,7 +542,7 @@ angular.module('runnable.services', ['ngResource']).
 					});
                 return deferred.promise;
 			},
-			toogleActive: function (id) {
+            toggleActive: function (id) {
                 var deferred = $q.defer();
                 $http.post('/api/admin/run/active', {id: id}).
 					success(function (result) {
@@ -584,7 +555,6 @@ angular.module('runnable.services', ['ngResource']).
             },
             search: function (searchInfo) {
                 var deferred = $q.defer();
-				console.log(searchInfo);
                 $http.post('/api/run/search', searchInfo).
                     success(function (result) {
                         deferred.resolve(result);

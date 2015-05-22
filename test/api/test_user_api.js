@@ -503,7 +503,7 @@ describe('Test of user API', function () {
         restoreRequest();
     });
 
-    describe('GET /api/user/invite', function () {
+    describe('POST /api/user/invite', function () {
         var agent = superagent.agent();
 
         before(loginUser(agent));
@@ -525,7 +525,7 @@ describe('Test of user API', function () {
             supertest(app)
                 .post('/api/user/password/reset')
                 .send({ email: 'jbillay@gmail.com'})
-                .expect(302, done);
+                .expect(200, done);
         });
 
         it('Should reset user password', function (done) {
@@ -535,7 +535,7 @@ describe('Test of user API', function () {
                 .post('/api/user/password/reset')
                 .send({ email: 'jbillay@gmail.com'})
                 .end(function (err, res) {
-                    assert.equal(res.header.location, '/');
+                    assert.equal(res.body.msg, 'passwordReset');
                     agent
                         .post('http://localhost:9615/login')
                         .send({ email: 'jbillay@gmail.com', password: 'noofs' })

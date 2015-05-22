@@ -190,9 +190,6 @@ angular.module('runnable.controllers', []).
 			console.log('Save bank account : %j', bankAccountInfo);
 			BankAccount.save(bankAccountInfo);
 		};
-        $scope.erase = function () {
-            User.deleteMe();
-        };
         $scope.getFile = function (file) {
             fileReader.readAsDataUrl(file, $scope)
                 .then(function(result) {
@@ -210,7 +207,7 @@ angular.module('runnable.controllers', []).
             fileReader.deletePicture($scope.file);
         };
     }).
-	controller('RunnableAdminController', function ($scope, $q, $rootScope, AuthService, User, Run,
+	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run,
                                                     Journey, Join, EmailOptions, BankAccount, Page) {
 		$scope.page = 'Admin';
 		var userListPromise = User.getList(),
@@ -228,6 +225,9 @@ angular.module('runnable.controllers', []).
 			$scope.joinList = res[3];
 			$scope.emailOption = res[4];
 			$scope.pageList = res[5];
+            if (!$rootScope.isAdmin) {
+                $location.path('/');
+            }
 		});
 		$scope.createPageForm = {
 			'newPageName'     : ''};
@@ -284,7 +284,7 @@ angular.module('runnable.controllers', []).
 		};
 		$scope.runToggleActive = function(run) {
 			console.log('Toggle active for run : ' + run.id);
-			Run.toogleActive(run.id);
+			Run.toggleActive(run.id);
 			if (run.is_active) {
 				run.is_active = false;
 			} else {

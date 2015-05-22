@@ -10,12 +10,313 @@ describe('service', function() {
         rootScope;
 
     // Test service availability
-    it('check the existence of MyRunTripFees', inject(function(MyRunTripFees) {
-        expect(MyRunTripFees).toBeDefined();
-    }));
+    it('check version of Jasmine', function () {
+        expect(jasmine.version).toContain('2.3');
+    });
+
+
+    describe('Session Service', function() {
+
+        beforeEach(inject(function (Session) {
+            service = Session;
+        }));
+
+        it('check the existence of Session', function () {
+            expect(service).toBeDefined();
+        });
+
+        it('Should create a session for the user', function () {
+            var user = {
+                    id: 1,
+                    firstname : 'Test',
+                    lastname : 'Creation',
+                    address : 'Saint Germain en Laye',
+                    email : 'test.creation@user.fr',
+                    role : 'admin'
+                };
+
+            service.create(user);
+
+            expect(service.userId).toBe(1);
+            expect(service.userFirstname).toEqual('Test');
+            expect(service.userLastname).toEqual('Creation');
+            expect(service.userAddress).toEqual('Saint Germain en Laye');
+            expect(service.userEmail).toEqual('test.creation@user.fr');
+            expect(service.userRole).toEqual('admin');
+        });
+
+        it('Should delete a session for the user', function () {
+            var user = {
+                id: 1,
+                firstname : 'Test',
+                lastname : 'Creation',
+                address : 'Saint Germain en Laye',
+                email : 'test.creation@user.fr',
+                role : 'admin'
+            };
+
+            service.create(user);
+
+            expect(service.userId).toBe(1);
+
+            service.destroy();
+
+            expect(service.userId).toBe(null);
+            expect(service.userFirstname).toBe(null);
+            expect(service.userLastname).toBe(null);
+            expect(service.userAddress).toBe(null);
+            expect(service.userEmail).toBe(null);
+            expect(service.userRole).toBe(null);
+        });
+    });
+
+    describe('AuthService Service', function() {
+
+        beforeEach(function () {
+            module(function ($provide) {
+                $provide.constant('USER_ROLES', {
+                    all: '*',
+                    admin: 'admin',
+                    editor: 'editor',
+                    user: 'user'
+                });
+            });
+            inject(function (AuthService, _$httpBackend_, $rootScope, $injector) {
+                service = AuthService;
+                $httpBackend = _$httpBackend_;
+                rootScope = $rootScope;
+            });
+        });
+
+        it('check the existence of AuthService', function () {
+            expect(service).toBeDefined();
+        });
+
+        it('should reset user password', function () {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            $httpBackend.whenPOST('/api/user/password/reset').respond('passwordReset');
+
+            var message = null;
+
+            var promise = service.reset('jbillay@gmail.com');
+
+            promise.then(function(ret){
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message).toEqual('passwordReset');
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should failed to reset user password', function () {
+            $httpBackend.whenPOST('/api/user/password/reset').respond(500);
+
+            var message = null;
+
+            var promise = service.reset('jbillay@gmail.com');
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
+
+        it('should login user', function () {
+            var user = {
+                id: 1,
+                firstname: 'Jeremy',
+                lastname: 'Billay',
+                address: 'Saint Germain en laye',
+                phone: '0689876547',
+                email: 'jbillay@gmail.com',
+                hashedPassword: '30I/772+OK6uQNdlaY8nriTbNSGznAk9un1zRIXmREB9nOjMz7wDDe2XpiS2ggk9En6lxR4SLqJyzAcW/rni3w==',
+                provider: 'local',
+                salt: 'T75xyNJfL19hzc778A08HQ==',
+                itra: null,
+                isActive: 1,
+                role: 'admin',
+                picture: '/uploads/users/avatar_1.jpg'
+            };
+            $httpBackend.whenPOST('/login').respond({msg: user, type: 'success'});
+
+            var message = null;
+
+            var promise = service.login({username: 'jbillay@gmail.com', password: 'noofs'});
+
+            promise.then( function(ret) {
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message.id).toBe(1);
+        });
+
+        it('should fail to login user due to wrong password', function () {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            $httpBackend.whenPOST('/login').respond({msg: 'accountWrongPassword', type: 'error'});
+
+            var message = null;
+
+            var promise = service.login({username: 'jbillay@gmail.com', password: 'noofs'});
+
+            promise.then(function(ret){
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message).toEqual('accountWrongPassword');
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should failed to login user', function () {
+            $httpBackend.whenPOST('/login').respond(500);
+
+            var message = null;
+
+            var promise = service.login({username: 'jbillay@gmail.com', password: 'noofs'});
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
+
+        it('Should init AuthService', function () {
+            $httpBackend.whenGET('/api/user/me').respond({
+                id: 2,
+                firstname: 'Richard',
+                lastname: 'Couret',
+                address: 'Bouffemont',
+                phone: '0689876547',
+                email: 'richard.couret@free.fr',
+                itra: '?id=84500&nom=COURET#tab',
+                isActive: 0,
+                role: 'editor',
+                picture: null
+            });
+
+            var message = null;
+
+            var promise = service.init();
+
+            promise.then(function (ret) {
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message.id).toBe(2);
+        });
+
+        it('Should fail init AuthService', function () {
+            $httpBackend.whenGET('/api/user/me').respond(500);
+
+            var message = null;
+
+            var promise = service.init();
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
+
+        it('Should check authentification', function () {
+            $httpBackend.whenGET('/api/user/me').respond({
+                id: 2,
+                firstname: 'Richard',
+                lastname: 'Couret',
+                address: 'Bouffemont',
+                phone: '0689876547',
+                email: 'richard.couret@free.fr',
+                itra: '?id=84500&nom=COURET#tab',
+                isActive: 0,
+                role: 'editor',
+                picture: null
+            });
+
+            var message = null;
+
+            var promise = service.init();
+
+            promise.then(function (ret) {
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(service.isAuthenticated()).toBeTruthy();
+        });
+
+        it('Should failed authentification', function () {
+            expect(service.isAuthenticated()).toBeFalsy();
+        });
+
+        it('Should check authorization', inject(function($injector) {
+            $httpBackend.whenGET('/api/user/me').respond({
+                id: 2,
+                firstname: 'Richard',
+                lastname: 'Couret',
+                address: 'Bouffemont',
+                phone: '0689876547',
+                email: 'richard.couret@free.fr',
+                itra: '?id=84500&nom=COURET#tab',
+                isActive: 0,
+                role: 'editor',
+                picture: null
+            });
+
+            var message = null;
+
+            var promise = service.init();
+
+            promise.then(function (ret) {
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(service.isAuthorized($injector.get('USER_ROLES').editor)).toBeTruthy();
+        }));
+
+        it('Should failed on authorization', inject(function($injector) {
+            $httpBackend.whenGET('/api/user/me').respond({
+                id: 2,
+                firstname: 'Richard',
+                lastname: 'Couret',
+                address: 'Bouffemont',
+                phone: '0689876547',
+                email: 'richard.couret@free.fr',
+                itra: '?id=84500&nom=COURET#tab',
+                isActive: 0,
+                role: 'editor',
+                picture: null
+            });
+
+            var message = null;
+
+            var promise = service.init();
+
+            promise.then(function (ret) {
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(service.isAuthorized($injector.get('USER_ROLES').admin)).toBeFalsy();
+        }));
+    });
 
     describe('BankAccount Service', function() {
-
         beforeEach(inject(function(BankAccount, _$httpBackend_){
             service = BankAccount;
             $httpBackend = _$httpBackend_;
@@ -324,5 +625,708 @@ describe('service', function() {
             expect(service).toBeDefined();
         });
 
+        it('should create a user', function () {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            $httpBackend.whenPOST('/api/user').respond('accountCreated');
+
+            var user = {
+                    firstname : 'Test',
+                    lastname : 'Creation',
+                    address : 'Saint Germain en Laye',
+                    email : 'test.creation@user.fr',
+                    password : 'test',
+                    password_confirmation : 'test'
+                },
+                message = null;
+
+            var promise = service.create(user);
+
+            promise.then(function(ret){
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message).toEqual('accountCreated');
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should failed to create a user', function () {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            $httpBackend.whenPOST('/api/user').respond(500);
+
+            var user = {
+                    firstname : 'Test',
+                    lastname : 'Creation',
+                    address : 'Saint Germain en Laye',
+                    email : 'test.creation@user.fr',
+                    password : 'test',
+                    password_confirmation : 'test'
+                },
+                message = null;
+
+            var promise = service.create(user);
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
+
+        it('should update a user', function () {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            $httpBackend.whenPUT('/api/user').respond('accountUpdated');
+
+            var user = {
+                    firstname : 'Test',
+                    lastname : 'Creation',
+                    address : 'Saint Germain en Laye',
+                    email : 'test.creation@user.fr',
+                    password : 'test',
+                    password_confirmation : 'test'
+                },
+                message = null;
+
+            var promise = service.update(user);
+
+            promise.then(function(ret){
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message).toEqual('accountUpdated');
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should failed to update a user', function () {
+            $httpBackend.whenPUT('/api/user').respond(500);
+
+            var user = {
+                    firstname : 'Test',
+                    lastname : 'Creation',
+                    address : 'Saint Germain en Laye',
+                    email : 'test.creation@user.fr',
+                    password : 'test',
+                    password_confirmation : 'test'
+                },
+                message = null;
+
+            var promise = service.update(user);
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
+
+        it('should delete a user', function () {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            $httpBackend.whenPOST('/api/admin/user/remove').respond('userDeleted');
+
+            var userId = 1,
+                message = null;
+
+            var promise = service.delete(userId);
+
+            promise.then(function(ret){
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message).toEqual('userDeleted');
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should failed to delete a user', function () {
+            $httpBackend.whenPOST('/api/admin/user/remove').respond(500);
+
+            var userId = 1,
+                message = null;
+
+            var promise = service.delete(userId);
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
+
+        it('should get a user', function() {
+            $httpBackend.whenGET('/api/user/me').respond({
+                id: 2,
+                firstname: 'Richard',
+                lastname: 'Couret',
+                address: 'Bouffemont',
+                phone: '0689876547',
+                email: 'richard.couret@free.fr',
+                itra: '?id=84500&nom=COURET#tab',
+                isActive: 0,
+                role: 'editor',
+                picture: null
+            });
+            var promise = service.getUser(),
+                userInfo = null;
+
+            promise.then(function(ret){
+                userInfo = ret;
+            });
+            $httpBackend.flush();
+            expect(userInfo.id).toEqual(2);
+            expect(userInfo.firstname).toEqual('Richard');
+            expect(userInfo.lastname).toEqual('Couret');
+            expect(userInfo.address).toEqual('Bouffemont');
+            expect(userInfo.phone).toEqual('0689876547');
+            expect(userInfo.email).toEqual('richard.couret@free.fr');
+            expect(userInfo.itra).toEqual('?id=84500&nom=COURET#tab');
+            expect(userInfo.isActive).toBe(0);
+            expect(userInfo.role).toEqual('editor');
+            expect(userInfo.picture).toBe(null);
+        });
+
+        it('should fail to get a user', function() {
+            $httpBackend.whenGET('/api/user/me').respond(500);
+            var promise = service.getUser(),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toContain('error');
+        });
+
+        it('should get user public info', function() {
+            $httpBackend.whenGET('/api/user/public/info/1').respond({
+                id: 2,
+                firstname: 'Richard',
+                lastname: 'Couret',
+                address: 'Bouffemont',
+                phone: '0689876547',
+                email: 'richard.couret@free.fr',
+                isActive: 0,
+                role: 'editor',
+                Journeys: [
+                    { id: 1 }
+                ],
+                Participates: [
+                    { id: 1 }
+                ]
+            });
+            var promise = service.getPublicInfo(1),
+                userPublicInfo = null;
+
+            promise.then(function(ret){
+                userPublicInfo = ret;
+            });
+
+            $httpBackend.flush();
+            expect(userPublicInfo.id).toEqual(2);
+            expect(userPublicInfo.firstname).toEqual('Richard');
+            expect(userPublicInfo.lastname).toEqual('Couret');
+            expect(userPublicInfo.address).toEqual('Bouffemont');
+            expect(userPublicInfo.phone).toEqual('0689876547');
+            expect(userPublicInfo.email).toEqual('richard.couret@free.fr');
+            expect(userPublicInfo.isActive).toBe(0);
+            expect(userPublicInfo.role).toEqual('editor');
+            expect(userPublicInfo.Journeys instanceof Array).toBeTruthy();
+            expect(userPublicInfo.Participates instanceof Array).toBeTruthy();
+        });
+
+        it('should fail to get user public info', function() {
+            $httpBackend.whenGET('/api/user/public/info/1').respond(500);
+            var promise = service.getPublicInfo(1),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toContain('error');
+        });
+
+        it('should get user public info', function() {
+            $httpBackend.whenGET('/api/user/public/driver/1').respond([{
+                id: 1,
+                comment_driver: 'Conducteur moyen',
+                comment_service: 'Myruntrip est vraiment un service de qualité. Merci pour tout votre travail',
+                rate_driver: 3,
+                rate_service: 5,
+                JoinId: 4,
+                UserId: 1
+            }]);
+            var promise = service.getPublicDriverInfo(1),
+                userPublicDriverInfo = null;
+
+            promise.then(function(ret){
+                userPublicDriverInfo = ret;
+            });
+
+            $httpBackend.flush();
+            expect(userPublicDriverInfo[0].id).toBe(1);
+            expect(userPublicDriverInfo[0].comment_driver).toEqual('Conducteur moyen');
+            expect(userPublicDriverInfo[0].comment_service).toEqual('Myruntrip est vraiment un service de qualité. Merci pour tout votre travail');
+            expect(userPublicDriverInfo[0].rate_driver).toBe(3);
+            expect(userPublicDriverInfo[0].rate_service).toBe(5);
+        });
+
+        it('should fail to get user public info', function() {
+            $httpBackend.whenGET('/api/user/public/driver/1').respond(500);
+            var promise = service.getPublicDriverInfo(1),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toContain('error');
+        });
+
+        it('should get user itra runs', function() {
+            $httpBackend.whenGET('/api/user/runs/1').respond('HTML');
+            var promise = service.getItraRuns(1),
+                itraRun = null;
+
+            promise.then(function(ret){
+                itraRun = ret;
+            });
+
+            $httpBackend.flush();
+            expect(itraRun).toEqual('HTML');
+        });
+
+        it('should fail to get user itra runs', function() {
+            $httpBackend.whenGET('/api/user/runs/1').respond(500);
+            var promise = service.getItraRuns(1),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toContain('error');
+        });
+
+        it('should get user journeys', function() {
+            $httpBackend.whenGET('/api/user/journeys').respond([{
+                    id: 4,
+                    address_start: 'Nice',
+                    distance: '300 km',
+                    duration: '3 heures 10 minutes',
+                    journey_type: 'aller-retour',
+                    date_start_outward: '2015-06-25 00:00:00',
+                    time_start_outward: '09:00',
+                    nb_space_outward: 1,
+                    date_start_return: '2015-06-26 00:00:00',
+                    time_start_return: '11:00',
+                    nb_space_return: 1,
+                    car_type: 'citadine',
+                    amount: 26,
+                    is_canceled: true,
+                    RunId: 4,
+                    UserId: 2
+                }]);
+            var promise = service.getJourney(),
+                userJourneys = null;
+
+            promise.then(function(ret){
+                userJourneys = ret;
+            });
+
+            $httpBackend.flush();
+            expect(userJourneys[0].id).toBe(4);
+            expect(userJourneys[0].address_start).toEqual('Nice');
+            expect(userJourneys[0].distance).toEqual('300 km');
+            expect(userJourneys[0].duration).toEqual('3 heures 10 minutes');
+            expect(userJourneys[0].journey_type).toEqual('aller-retour');
+            expect(userJourneys[0].date_start_outward).toEqual('2015-06-25 00:00:00');
+            expect(userJourneys[0].time_start_outward).toEqual('09:00');
+            expect(userJourneys[0].nb_space_outward).toBe(1);
+            expect(userJourneys[0].date_start_return).toEqual('2015-06-26 00:00:00');
+            expect(userJourneys[0].time_start_return).toEqual('11:00');
+            expect(userJourneys[0].nb_space_return).toBe(1);
+            expect(userJourneys[0].amount).toBe(26);
+            expect(userJourneys[0].car_type).toEqual('citadine');
+        });
+
+        it('should fail to get user journeys', function() {
+            $httpBackend.whenGET('/api/user/journeys').respond(500);
+            var promise = service.getJourney(),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toContain('error');
+        });
+
+        it('should get journey free space', function() {
+            var ret = {
+                    outward: 2,
+                    return: 3
+                },
+                journey = {
+                    id: 1,
+                    nb_space_outward: 5,
+                    nb_space_return: 5
+                };
+            $httpBackend.whenGET('/api/journey/book/1').respond(ret);
+            var promise = service.getJourneyFreeSpace(journey),
+                retPlace = null;
+
+            promise.then(function(ret){
+                retPlace = ret;
+            });
+
+            $httpBackend.flush();
+            expect(retPlace.nb_free_place_outward).toBe(3);
+            expect(retPlace.nb_free_place_return).toBe(2);
+        });
+
+        it('should fail to get journey free space', function() {
+            var journey = {
+                id: 1,
+                nb_space_outward: 5,
+                nb_space_return: 5
+            };
+            $httpBackend.whenGET('/api/journey/book/1').respond(500);
+            var promise = service.getJourneyFreeSpace(journey),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toContain('error');
+        });
+
+        it('should get user joins', function() {
+            $httpBackend.whenGET('/api/user/joins').respond([{
+                id: 1,
+                nb_place_outward: 2,
+                nb_place_return: 2,
+                UserId: 1,
+                JourneyId: 1
+            }]);
+            var promise = service.getJoin(),
+                userJoins = null;
+
+            promise.then(function(ret){
+                userJoins = ret;
+            });
+
+            $httpBackend.flush();
+            expect(userJoins[0].id).toBe(1);
+            expect(userJoins[0].nb_place_outward).toBe(2);
+            expect(userJoins[0].nb_place_return).toBe(2);
+        });
+
+        it('should fail to get user joins', function() {
+            $httpBackend.whenGET('/api/user/joins').respond(500);
+            var promise = service.getJoin(),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toContain('error');
+        });
+
+        it('should get all users', function() {
+            $httpBackend.whenGET('/api/admin/users').respond([{
+                id: 1,
+                firstname: 'Jeremy',
+                lastname: 'Billay',
+                address: 'Saint Germain en laye',
+                phone: '0689876547',
+                email: 'jbillay@gmail.com',
+                hashedPassword: '30I/772+OK6uQNdlaY8nriTbNSGznAk9un1zRIXmREB9nOjMz7wDDe2XpiS2ggk9En6lxR4SLqJyzAcW/rni3w==',
+                provider: 'local',
+                salt: 'T75xyNJfL19hzc778A08HQ==',
+                itra: null,
+                isActive: 1,
+                role: 'admin',
+                picture: null
+            },{
+                id: 2,
+                firstname: 'Richard',
+                lastname: 'Couret',
+                address: 'Bouffemont',
+                phone: '0689876547',
+                email: 'richard.couret@free.fr',
+                hashedPassword: 'VMcLEoVLvXdolDlsRzF8cVjo2swFfV1Mo76ycRKObI00pVfBy73IwlYj/mX3Z+PH873k57Gu8vWCbWo9v/Cxuw==',
+                provider: 'local',
+                salt: 'd36OGvube+jUO8lcBpmr+Q==',
+                itra: '?id=84500&nom=COURET#tab',
+                isActive: 0,
+                role: 'editor',
+                picture: null,
+                createdAt: '2015-02-04 18:55:39',
+                updatedAt: '2015-02-04 18:55:39'
+            }]);
+            var promise = service.getList(),
+                allUsers = null;
+
+            promise.then(function(ret){
+                allUsers = ret;
+            });
+
+            $httpBackend.flush();
+            expect(allUsers instanceof Array).toBeTruthy();
+            expect(allUsers[1].id).toEqual(2);
+            expect(allUsers[1].firstname).toEqual('Richard');
+            expect(allUsers[1].lastname).toEqual('Couret');
+            expect(allUsers[1].address).toEqual('Bouffemont');
+            expect(allUsers[1].phone).toEqual('0689876547');
+            expect(allUsers[1].email).toEqual('richard.couret@free.fr');
+            expect(allUsers[1].itra).toEqual('?id=84500&nom=COURET#tab');
+            expect(allUsers[1].isActive).toBe(0);
+            expect(allUsers[1].role).toEqual('editor');
+            expect(allUsers[1].picture).toBe(null);
+        });
+
+        it('should fail to get all users', function() {
+            $httpBackend.whenGET('/api/admin/users').respond(500);
+            var promise = service.getList(),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toContain('error');
+        });
+
+        it('should toggle the activation of a user', function () {
+            $httpBackend.whenPOST('/api/admin/user/active').respond('userToggleActive');
+
+            var userId = 1,
+                message = null;
+
+            var promise = service.userToggleActive(userId);
+
+            promise.then(function(ret){
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message).toEqual('userToggleActive');
+        });
+
+        it('should failed to toggle the activation of a user', function () {
+            $httpBackend.whenPOST('/api/admin/user/active').respond(500);
+
+            var userId = 1,
+                message = null;
+
+            var promise = service.userToggleActive(userId);
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
+
+        it('should update user password', function () {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            $httpBackend.whenPOST('/api/user/password/update').respond('userToggleActive');
+
+            var message = null;
+
+            var promise = service.updatePassword('toto');
+
+            promise.then(function(ret){
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message).toEqual('userToggleActive');
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should failed to update user password', function () {
+            $httpBackend.whenPOST('/api/user/password/update').respond(500);
+
+            var message = null;
+
+            var promise = service.updatePassword('toto');
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
+
+        it('should invite friends', function () {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            $httpBackend.whenPOST('/api/user/invite').respond({msg: 'Invitation(s) envoyée(s)'});
+
+            var invite = {
+                    inviteEmails: 'jbillay@gmail.com',
+                    inviteMessage: 'Bonjour à tous'
+                },
+                message = null;
+
+            var promise = service.inviteFriends(invite);
+
+            promise.then(function(ret){
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message.msg).toEqual('Invitation(s) envoyée(s)');
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should failed to invite friends', function () {
+            $httpBackend.whenPOST('/api/user/invite').respond(500);
+
+            var invite = {
+                    inviteEmails: 'jbillay@gmail.com',
+                    inviteMessage: 'Bonjour à tous'
+                },
+                message = null;
+
+            var promise = service.inviteFriends(invite);
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
+
+        it('should upload user photo', function () {
+            $httpBackend.whenPOST('/api/user/picture').respond({
+                id: 1,
+                firstname: 'Jeremy',
+                lastname: 'Billay',
+                address: 'Saint Germain en laye',
+                phone: '0689876547',
+                email: 'jbillay@gmail.com',
+                hashedPassword: '30I/772+OK6uQNdlaY8nriTbNSGznAk9un1zRIXmREB9nOjMz7wDDe2XpiS2ggk9En6lxR4SLqJyzAcW/rni3w==',
+                provider: 'local',
+                salt: 'T75xyNJfL19hzc778A08HQ==',
+                itra: null,
+                isActive: 1,
+                role: 'admin',
+                picture: '/uploads/users/avatar_1.jpg'
+            });
+
+            var file = '.',
+                userDetail = null;
+
+            var promise = service.uploadPicture(file);
+
+            promise.then(function(ret){
+                userDetail = ret;
+            });
+
+            $httpBackend.flush();
+            expect(userDetail.id).toBe(1);
+            expect(userDetail.firstname).toEqual('Jeremy');
+            expect(userDetail.lastname).toEqual('Billay');
+            expect(userDetail.address).toEqual('Saint Germain en laye');
+            expect(userDetail.phone).toEqual('0689876547');
+            expect(userDetail.email).toEqual('jbillay@gmail.com');
+            expect(userDetail.itra).toBe(null);
+            expect(userDetail.isActive).toBe(1);
+            expect(userDetail.role).toEqual('admin');
+            expect(userDetail.picture).toEqual('/uploads/users/avatar_1.jpg');
+        });
+
+        it('should failed to upload user photo', function () {
+            $httpBackend.whenPOST('/api/user/picture').respond(500);
+
+            var file = '.',
+                message = null;
+
+            var promise = service.uploadPicture(file);
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
+    });
+
+    describe('MyRunTripFees Service', function() {
+
+        beforeEach(inject(function(MyRunTripFees, _$httpBackend_, $rootScope){
+            service = MyRunTripFees;
+            $httpBackend = _$httpBackend_;
+            rootScope = $rootScope;
+        }));
+
+        it('check the existence of MyRunTripFees', function() {
+            expect(service).toBeDefined();
+        });
+
+        it('check if time is correctly calculated', function () {
+            var newActualTime = new Date(2015, 9, 10, 10, 30, 0),
+                // Need to add 2 hours due to GMT +2 in france
+                startDate = new Date(2015, 9, 12, 2, 0, 0);
+
+            jasmine.clock().mockDate(newActualTime);
+
+            expect(service.getTimeBeforeStart(startDate.toISOString(), '08:30')).toBe(172800);
+        });
+
+        it('check if fees is correctly calculated', function () {
+            var newActualTime = new Date(2015, 9, 10, 10, 30, 0),
+                // Need to add 2 hours due to GMT +2 in france
+                startDateTwoDays = new Date(2015, 9, 12, 2, 0, 0),
+                startDateOneDays = new Date(2015, 9, 11, 2, 0, 0),
+                startDateSameDays = new Date(2015, 9, 10, 2, 0, 0),
+                startDateTenDays = new Date(2015, 9, 22, 2, 0, 0);
+
+            jasmine.clock().mockDate(newActualTime);
+
+            expect(service.getFees(startDateTwoDays.toISOString(), '10:30', 10)).toBe(2.02);
+            expect(service.getFees(startDateOneDays.toISOString(), '10:30', 10)).toBe(2.26);
+            expect(service.getFees(startDateSameDays.toISOString(), '10:30', 10)).toBe(2.44);
+            expect(service.getFees(startDateTenDays.toISOString(), '10:30', 10)).toBe(1.45);
+        });
     });
 });

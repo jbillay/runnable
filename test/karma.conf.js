@@ -4,6 +4,8 @@ module.exports = function(config) {
 
         basePath : '../',
 
+        logLevel: config.LOG_INFO,
+
         files : [
             'public/lib/jquery/dist/jquery.min.js',
             'public/lib/angular/angular.js',
@@ -25,26 +27,42 @@ module.exports = function(config) {
             'test/unit/*.js'
         ],
 
+        port : 9877,
+
+        singleRun: true,
+
         exclude : [
             'public/js/index.js'
         ],
 
-        autoWatch : true,
-
         frameworks: ['jasmine'],
 
-        browsers : ['Chrome'],
+        browsers : ['PhantomJS'],
 
         plugins : [
             'karma-chrome-launcher',
             'karma-firefox-launcher',
-            'karma-jasmine'
+            'karma-phantomjs-launcher',
+            'karma-jasmine',
+            'karma-coverage'
         ],
 
-        junitReporter : {
-            outputFile: 'coverage/unit.xml',
-            suite: 'unit'
-        }
+        // coverage reporter generates the coverage
+        reporters: ['progress', 'coverage'],
 
+        preprocessors: {
+            // source files, that you wanna generate coverage for
+            // do not include tests or libraries
+            // (these files will be instrumented by Istanbul)
+            'public/js/*.js': ['coverage']
+        },
+
+        // optionally, configure the reporter
+        coverageReporter: {
+            dir : 'coverage/',
+            reporters: [
+                { type: 'html', subdir: 'karma-report' }
+            ]
+        }
     });
 };

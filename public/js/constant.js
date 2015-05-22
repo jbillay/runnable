@@ -56,5 +56,7 @@ angular.module('runnable.constant', []).
         messageDeleted:         'Votre message a bien été supprimé',
         NotAbleDeleteMessage:   'Malheureusement nous n\'avons pas réussi à supprimer votre message',
         journeyCanceled:        'Votre demande d\'annulation de voyage a bien été prise en compte',
-        journeyNotCanceled:     'Votre demande d\'annulation de voyage n\'a malheureusement pas pu être prise en compte'
+        journeyNotCanceled:     'Votre demande d\'annulation de voyage n\'a malheureusement pas pu être prise en compte',
+        passwordReset:          'Un nouveau mot de passe vient de vous être envoyé par email',
+        passwordNotReset:       'En raison d\'un problème technique votre mot de passe n\'a pas pu être modifié'
 	});

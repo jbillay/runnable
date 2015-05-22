@@ -70,6 +70,11 @@ module.exports = function(grunt) {
                     mask: '*.js'
                 }
             }
+        },
+        karma: {
+            unit: {
+                configFile: 'test/karma.conf.js'
+            }
         }
     });
 
@@ -79,8 +84,14 @@ module.exports = function(grunt) {
     // Lint task(s).
     grunt.registerTask('lint', ['jshint', 'csslint']);
 
-    // Test task.
-    grunt.registerTask('test', ['env:test', 'mocha_istanbul:coverage']);
+    // Node Test task.
+    grunt.registerTask('node-unit-test', ['env:test', 'mocha_istanbul:coverage']);
+
+    // Angular Test task.
+    grunt.registerTask('angular-unit-test', ['env:test', 'karma']);
+
+    // Test task(s).
+    grunt.registerTask('test', ['lint', 'node-unit-test', 'angular-unit-test']);
 
     // Test task.
     grunt.registerTask('test-travis', ['env:travis', 'mocha_istanbul:coverage']);
@@ -90,7 +101,4 @@ module.exports = function(grunt) {
 
     // Test task.
     grunt.registerTask('package', ['concat:js', 'concat:css', 'uglify', 'cssmin']);
-
-    // Build task(s).
-    grunt.registerTask('build', ['lint', 'test', 'package']);
 };
