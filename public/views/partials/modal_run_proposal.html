@@ -1,0 +1,63 @@
+<div class="modal fade" id="runProposalModal" tabindex="-1" role="dialog" aria-labelledby="runProposalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Proposer une course</h4>
+            </div>
+            <div class="row">
+                <div class="modal-body">
+                    <div class="col-sm-12 text-center">
+                        <form novalidate class="simple-form">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" ng-model="runProposalForm.runName" class="form-control"
+                                               placeholder="Nom de la course" tabindex="1">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <div class="form-group">
+                                        <select class="form-control" ng-model="runProposalForm.runType"
+                                                placeholder="Type de course" tabindex="2">
+                                            <option value="trail">Trail</option>
+                                            <option value="ultra">Ultra</option>
+                                            <option value="10k">10k</option>
+                                            <option value="20k">20k</option>
+                                            <option value="semi">Semi</option>
+                                            <option value="marathon">Marathon</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <div class="form-group">
+                                        <input type="date" ng-model="runProposalForm.runDate"
+                                               class="form-control" placeholder="Date" tabindex="3">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" ng-model="runProposalForm.runLink" class="form-control"
+                                               placeholder="Lien vers le site de la course" tabindex="4">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <div class="form-group">
+                                        <input type="email" ng-model="runProposalForm.runEmail" class="form-control"
+                                               placeholder="Votre email" tabindex="5">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" ng-click="cancelRunProposal()">Annuler</button>
+                <button class="btn btn-success" ng-click="submitRunProposal(runProposalForm)">Proposer</button>
+            </div>
+        </div>
+    </div>
+</div>

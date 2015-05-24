@@ -89,21 +89,14 @@
 					</div>
 				</div>
                 <div class="col-sm-6 run_noresult" ng-if="!results.length">
-					Aucune course ne correspond à votre recherche. 
+					Aucune course ne correspond à votre recherche.<br>
+                    <a href="#" ng-click="openRunProposal()">Vous souhaitez proposer l'ajout d'une course</a><br>
 					Vous la trouverez certainement chez notre partenaire
 					<a href="http://www.goforun.com/courses/affiches">GoFoRun</a>
 				</div>
 			</div>
         </div>
     </div>
+    <div ng-include="'partials/modal_run_proposal'"></div>
 </div>
-<script type='javascript'>
-	/* Activation of bootstrap tooltip */
-	alert('Test');
-	$(function () {
-		
-		alert('Tooltip activated');
-	})
-</script>
-
 <div ng-include="'partials/footer'"></div>

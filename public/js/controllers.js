@@ -143,7 +143,7 @@ angular.module('runnable.controllers', []).
         $scope.sendContact = function (contact) {
             var data = {};
             $scope.mailContact = {};
-            data.emails = 'jbillay@gmail.com';
+            data.emails = 'contact@myruntrip.com';
             data.title = '[My Run Trip] Demande info : ' + contact.demande;
             data.message = 'Information concernant' + contact.demande + '<br>' +
                             'De la part de : ' + contact.email + '<br>' +
@@ -410,7 +410,7 @@ angular.module('runnable.controllers', []).
 		};
 		$scope.calFormat = 'dd/MM/yyyy';
     }).
-    controller('RunnableRunController', function ($scope, $q, Run, $timeout, GoogleMapApi, DEFAULT_DISTANCE) {
+    controller('RunnableRunController', function ($scope, $q, Run, $timeout, GoogleMapApi, Email, DEFAULT_DISTANCE) {
         $scope.page = 'Run';
 		$scope.default_distance = DEFAULT_DISTANCE;
 		$scope.searchForm = {
@@ -451,7 +451,7 @@ angular.module('runnable.controllers', []).
 		$scope.getLocation = function(val) {
 			return GoogleMapApi.getLocation(val);
 		};
-		$scope.resetSearch = function (advancedSearch) {
+		$scope.resetSearch = function () {
 			$scope.advancedSearch = 0;
 			$scope.run_name = '';
 			$scope.searchForm = angular.copy(cleanForm);
@@ -472,6 +472,25 @@ angular.module('runnable.controllers', []).
 					advancedSearch.run_adv_distance = null;
 				}
             });
+        };
+        $scope.openRunProposal = function () {
+            angular.element('#runProposalModal').modal('show');
+        };
+        $scope.cancelRunProposal = function () {
+            angular.element('#runProposalModal').modal('hide');
+        };
+        $scope.submitRunProposal = function (form) {
+            angular.element('#runProposalModal').modal('hide');
+            var data = {};
+            data.emails = 'jbillay@gmail.com';
+            data.title = '[My Run Trip] Création course : ' + form.runName;
+            data.message = 'Le user ' + form.runEmail + '<br>' +
+                'Propose de créer la course : ' + form.runName + '<br>' +
+                'De type :' + form.runType + '<br>' +
+                'Ayant lieu le :' + form.runDate + '<br>' +
+                'Site de la course :' + form.runLink + '<br>';
+            data.confirm = 'runRequestReceived';
+            Email.send(data);
         };
     }).
 	controller('RunnableJourneyDetailController', function ($scope, $q, $routeParams, $rootScope, $timeout, $location,
