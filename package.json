@@ -51,7 +51,8 @@
     "socket.io": "~1.2.1",
     "sqlite3": "~3.0.4",
     "chai-as-promised": "5.*.*",
-    "google-distance": "~1.0.1"
+    "google-distance": "~1.0.1",
+    "paypal-ipn": "~3.0.0"
   },
   "devDependencies": {
     "mocha": "~1.21.3",

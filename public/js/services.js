@@ -28,6 +28,21 @@ angular.module('runnable.services', ['ngResource']).
 		};
 		return this;
 	}).
+    factory('Technical', function ($http, $q) {
+        return {
+            version: function () {
+                var deferred = $q.defer();
+                $http.get('/api/version').
+                    success(function (result) {
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        deferred.reject('error ' + status + ' : ' + data);
+                    });
+                return deferred.promise;
+            }
+        };
+    }).
 	factory('AuthService', function ($http, $q, $rootScope, Session, User) {
         return {
             init: function () {

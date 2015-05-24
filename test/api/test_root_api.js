@@ -137,4 +137,15 @@ describe('Test of root API', function () {
                 });
         });
     });
+
+    describe('GET /api/version', function () {
+        it('Should return version', function (done) {
+            request(app)
+                .get('/api/version')
+                .end(function (err, res) {
+                    assert.equal(res.body, 'DEV');
+                    return done();
+                });
+        });
+    });
 });

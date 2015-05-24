@@ -14,8 +14,31 @@ describe('service', function() {
         expect(jasmine.version).toContain('2.3');
     });
 
+    describe('Technical Service', function() {
 
-    describe('Session Service', function() {
+        beforeEach(inject(function (Technical, _$httpBackend_) {
+            service = Technical;
+            $httpBackend = _$httpBackend_;
+        }));
+
+        it('check the existence of Technical', function () {
+            expect(service).toBeDefined();
+        });
+
+        it('should get version', function () {
+            $httpBackend.whenGET('/api/version').respond('DEV');
+            var promise = service.version(),
+                version = null;
+
+            promise.then(function (ret) {
+                version = ret;
+            });
+            $httpBackend.flush();
+            expect(version).toEqual('DEV');
+        });
+    });
+
+        describe('Session Service', function() {
 
         beforeEach(inject(function (Session) {
             service = Session;

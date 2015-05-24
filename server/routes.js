@@ -22,6 +22,7 @@ module.exports = function (app, passport, auth) {
 			}
 		})(req, res, next);
 	});
+    app.get('/api/version', controllers.root.version);
 	app.post('/api/send/mail', controllers.root.sendMail);
 
     app.get('/api/home/feedback', controllers.home.userFeedback);

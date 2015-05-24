@@ -208,7 +208,7 @@ angular.module('runnable.controllers', []).
         };
     }).
 	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run,
-                                                    Journey, Join, EmailOptions, BankAccount, Page) {
+                                                    Journey, Join, EmailOptions, BankAccount, Page, Technical) {
 		$scope.page = 'Admin';
 		var userListPromise = User.getList(),
 			runListPromise = Run.getList(),
@@ -216,8 +216,9 @@ angular.module('runnable.controllers', []).
 			joinListPromise = Join.getList(),
 			EmailOptionsPromise = EmailOptions.get(),
 			pageListPromise = Page.getList(),
+            versionPromise = Technical.version(),
 			all = $q.all([userListPromise, runListPromise, journeyListPromise, joinListPromise,
-                            EmailOptionsPromise, pageListPromise]);
+                            EmailOptionsPromise, pageListPromise, versionPromise]);
 		all.then(function (res) {
 			$scope.userList = res[0];
 			$scope.runList = res[1];
@@ -225,6 +226,7 @@ angular.module('runnable.controllers', []).
 			$scope.joinList = res[3];
 			$scope.emailOption = res[4];
 			$scope.pageList = res[5];
+            $scope.version = res[6];
             if (!$rootScope.isAdmin) {
                 $location.path('/');
             }

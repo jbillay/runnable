@@ -2,6 +2,7 @@
 var models = require('../models');
 var Mail = require('../objects/mail');
 var _ = require('lodash');
+var fs = require('fs');
 
 /*jslint node: true */
 
@@ -40,6 +41,18 @@ exports.sync = function (req, res) {
             });
     }
 	res.redirect('/');
+};
+
+exports.version = function (req, res) {
+    'use strict';
+    var version = '';
+    fs.readFile('.version', 'utf8', function (err, data) {
+        if (err) {
+            res.json('Version not defined');
+        } else {
+            res.json(data);
+        }
+    });
 };
 
 exports.sendMail = function (req, res) {
