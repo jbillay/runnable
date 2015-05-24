@@ -99,8 +99,8 @@
 			<div class="row run_list">
 				<div class="col-xs-3 run_poster_home" ng-repeat="run in listRun">
 					<a href="/run-{{run.id}}">
-                        <img ng-if="run.type === 'trail'" src="/img/run_default.jpg" class="run_img" alt="Responsive image">
-                        <img ng-if="run.type !== 'trail'" src="/img/run_default.jpg" class="run_img" alt="Responsive image">
+                        <img ng-if="run.type === 'trail'" src="/img/trail_default.jpg" class="run_img" alt="Image de la course">
+                        <img ng-if="run.type !== 'trail'" src="/img/run_default.jpg" class="run_img" alt="Image de la course">
                     </a>
 					<div class="run_title"><a href="/run-{{run.id}}">{{run.name | capitalize | limitTo:25}}</a></div>
 					<div class="run_desc">
@@ -130,16 +130,16 @@
     <div class="row">
         <!--fontawesome icons-->
         <div class="col-sm-1 col-sm-offset-4 col-xs-4 text-center">
-            <i class="fa fa-facebook fa-4x social_icon"></i>
+            <a href="https://www.facebook.com/myruntrip" target="_blank"><i class="fa fa-facebook fa-4x social_icon"></i></a>
         </div>
         <div class="col-sm-1 col-xs-4 text-center">
-            <i class="fa fa-twitter fa-4x social_icon"></i>
+            <a href="https://www.twitter.com/myruntrip" target="_blank"><i class="fa fa-twitter fa-4x social_icon"></i></a>
         </div>
         <div class="col-sm-1 col-xs-4 text-center">
-            <i class="fa fa-instagram fa-4x social_icon"></i>
+            <a href="https://www.youtube.com/myruntrip" target="_blank"><i class="fa fa-instagram fa-4x social_icon"></i></a>
         </div>
         <div class="col-sm-1 col-xs-4 text-center">
-            <i class="fa fa-youtube fa-4x social_icon"></i>
+            <a href="https://www.instagram.com/myruntrip" target="_blank"><i class="fa fa-youtube fa-4x social_icon"></i></a>
         </div>
     </div><!--/row-->
     <div class="row col-sm-12">
