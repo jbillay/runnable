@@ -496,19 +496,28 @@ angular.module('runnable.controllers', []).
         };
     }).
 	controller('RunnableJourneyDetailController', function ($scope, $q, $routeParams, $rootScope, $timeout, $location,
-															Run, Journey, Join, GoogleMapApi, MyRunTripFees, Session,
-                                                            Inbox) {
+															$sce, Run, Journey, Join, GoogleMapApi, MyRunTripFees,
+                                                            Session, Inbox, Technical) {
 		$scope.page = 'Journey';
 		$scope.journeyId = parseInt($routeParams.journeyId);
 		var journeyPromise = Journey.getDetail($scope.journeyId),
 			joinPromise = Join.getListForJourney($scope.journeyId),
-			all = $q.all([journeyPromise, joinPromise]);
+            versionPromise = Technical.version(),
+			all = $q.all([journeyPromise, joinPromise, versionPromise]);
 		all.then(function (res) {
 			$scope.journey = res[0];
             if ($scope.journey.is_canceled) {
                 $location.path('/journey');
             }
 			$scope.joinList = res[1];
+            $scope.version = res[2];
+            if ($scope.version === 'DEV') {
+                $scope.url_paypal = $sce.trustAsResourceUrl('https://www.sandbox.paypal.com/cgi-bin/webscr');
+                $scope.key_paypal = '622WFSZHPNBH4';
+            } else {
+                $scope.url_paypal = $sce.trustAsResourceUrl('https://www.paypal.com/cgi-bin/webscr');
+                $scope.key_paypal = 'ST4SRXB6PJAGC';
+            }
 			$scope.joined = 0;
 			$scope.reserved_outward = 0;
 			$scope.reserved_return = 0;

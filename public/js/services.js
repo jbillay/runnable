@@ -344,10 +344,10 @@ angular.module('runnable.services', ['ngResource']).
     }).
 	factory('MyRunTripFees', function () {
 		var feesMap = [
-			{timeMin: 259200, 	timeMax: null, 		fixed: 0.66, variable: 7.92},
-			{timeMin: 172800, 	timeMax: 259201, 	fixed: 0.95, variable: 10.68},
-			{timeMin: 86400, 	timeMax: 172801, 	fixed: 1.07, variable: 11.88},
-			{timeMin: null,		timeMax: 86401, 	fixed: 1.19, variable: 12.48}
+			{timeMin: 259200, 	timeMax: null, 		fixed: 1, variable: 12},
+			{timeMin: 172800, 	timeMax: 259201, 	fixed: 1, variable: 12},
+			{timeMin: 86400, 	timeMax: 172801, 	fixed: 1, variable: 12},
+			{timeMin: null,		timeMax: 86401, 	fixed: 1, variable: 12}
 		];
 		return {
 			getTimeBeforeStart: function (startDate, startHour) {

@@ -3,6 +3,7 @@ var models = require('../models');
 var Mail = require('../objects/mail');
 var _ = require('lodash');
 var fs = require('fs');
+var path = require('path');
 
 /*jslint node: true */
 
@@ -45,9 +46,9 @@ exports.sync = function (req, res) {
 
 exports.version = function (req, res) {
     'use strict';
-    var version = '';
-    fs.readFile('.version', 'utf8', function (err, data) {
+    fs.readFile(path.normalize(path.join(__dirname, '../../.version')), 'utf8', function (err, data) {
         if (err) {
+            console.log('[ERROR] Version file : ' + err);
             res.json('Version not defined');
         } else {
             res.json(data);

@@ -1346,10 +1346,10 @@ describe('service', function() {
 
             jasmine.clock().mockDate(newActualTime);
 
-            expect(service.getFees(startDateTwoDays.toISOString(), '10:30', 10)).toBe(2.02);
-            expect(service.getFees(startDateOneDays.toISOString(), '10:30', 10)).toBe(2.26);
-            expect(service.getFees(startDateSameDays.toISOString(), '10:30', 10)).toBe(2.44);
-            expect(service.getFees(startDateTenDays.toISOString(), '10:30', 10)).toBe(1.45);
+            expect(service.getFees(startDateTwoDays.toISOString(), '10:30', 10)).toBe(2.2);
+            expect(service.getFees(startDateOneDays.toISOString(), '10:30', 10)).toBe(2.2);
+            expect(service.getFees(startDateSameDays.toISOString(), '10:30', 10)).toBe(2.2);
+            expect(service.getFees(startDateTenDays.toISOString(), '10:30', 10)).toBe(2.2);
         });
     });
 });
