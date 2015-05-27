@@ -41,6 +41,5 @@
   },
   "_source": "git://github.com/weareoutman/clockpicker.git",
   "_target": "~0.0.7",
-  "_originalSource": "clockpicker",
-  "_direct": true
+  "_originalSource": "clockpicker"
 }

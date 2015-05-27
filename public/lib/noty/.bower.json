@@ -15,6 +15,5 @@
   },
   "_source": "git://github.com/needim/noty.git",
   "_target": "~2.2.10",
-  "_originalSource": "noty",
-  "_direct": true
+  "_originalSource": "noty"
 }
