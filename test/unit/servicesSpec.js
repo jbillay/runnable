@@ -36,6 +36,22 @@ describe('service', function() {
             $httpBackend.flush();
             expect(version).toEqual('DEV');
         });
+
+        it('should fail to get version', function () {
+            $httpBackend.whenGET('/api/version').respond(500);
+            var message = null;
+
+            var promise = service.version();
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
     });
 
         describe('Session Service', function() {
