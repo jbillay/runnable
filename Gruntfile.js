@@ -94,7 +94,7 @@ module.exports = function(grunt) {
     grunt.registerTask('test', ['lint', 'node-unit-test', 'angular-unit-test']);
 
     // Test task.
-    grunt.registerTask('test-travis', ['env:travis', 'mocha_istanbul:coverage', 'angular-unit-test']);
+    grunt.registerTask('test-travis', ['env:travis', 'mocha_istanbul:coverage']);
 
     // Test task.
     grunt.registerTask('travis', ['lint', 'test-travis']);
