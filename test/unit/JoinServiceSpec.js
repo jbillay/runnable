@@ -48,7 +48,7 @@ describe('Join Service', function() {
             expect(message).toEqual('userJoined');
         });
 
-        it('should failed to create a user', function () {
+        it('should failed to create a join', function () {
             $httpBackend.whenPOST('/api/join').respond(500);
 
             var info = {

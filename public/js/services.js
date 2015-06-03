@@ -423,7 +423,7 @@ angular.module('runnable.services', ['ngResource']).
 				return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
 					params: {
 						address: val,
-						components: 'country:FR',
+						//components: 'country:FR',
 						sensor: false
 					}
 				}).then(function(response){
@@ -906,7 +906,7 @@ angular.module('runnable.services', ['ngResource']).
         return {
 			getDetail: function (id) {
 				var deferred = $q.defer();
-                $http({method: 'GET', url: '/api/journey/' + id}).
+                $http.get('/api/journey/' + id).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -939,7 +939,7 @@ angular.module('runnable.services', ['ngResource']).
             },
             getListForRun: function (id) {
                 var deferred = $q.defer();
-                $http({method: 'GET', url: '/api/journey/run/' + id}).
+                $http.get('/api/journey/run/' + id).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -950,7 +950,7 @@ angular.module('runnable.services', ['ngResource']).
             },
 			getNextList: function (nb) {
 				var deferred = $q.defer();
-                $http({method: 'GET', url: '/api/journey/next/' + nb}).
+                $http.get('/api/journey/next/' + nb).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
