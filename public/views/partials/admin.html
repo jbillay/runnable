@@ -60,6 +60,7 @@
 								<th>Elévation(s)</th>
 								<th>Active</th>
 								<th>Création</th>
+								<th>Actions</th>
 							</tr>
 							<tbody ng-repeat="run in runList">
 								<tr>
@@ -75,6 +76,9 @@
 										<span class="glyphicon glyphicon-remove red" ng-if=!run.is_active ng-click=runToggleActive(run)></span>
 									</td>
 									<td>{{run.createdAt | date:'dd/MM/yyyy'}}</td>
+                                    <td>
+                                        <a href="/run-update-{{run.id}}"><i class="fa fa-pencil-square-o"></i></a>
+                                    </td>
 								</tr>
 							</tbody>
 						</table>

@@ -187,7 +187,6 @@ angular.module('runnable.controllers', []).
 			User.update(userData);
 		};
 		$scope.saveBankAccount = function (bankAccountInfo) {
-			console.log('Save bank account : %j', bankAccountInfo);
 			BankAccount.save(bankAccountInfo);
 		};
         $scope.getFile = function (file) {
@@ -236,7 +235,6 @@ angular.module('runnable.controllers', []).
 			'newPageName'     : ''};
 		$scope.originForm = angular.copy($scope.createPageForm);
 		$scope.userToggleActive = function(user) {
-			console.log('Toggle active for user : ' + user.id);
 			User.userToggleActive(user.id);
 			if (user.isActive) {
 				user.isActive = false;
@@ -268,12 +266,10 @@ angular.module('runnable.controllers', []).
 			Page.save(editedPage);
 		};
 		$scope.userEdit = function (user) {
-			console.log('Edit user ' + user.id);
 			$scope.userEdited = user;
 			angular.element('#userEditModal').modal('show');
 		};
 		$scope.userSave = function (user) {
-			console.log('Save edited user ' + user.firstname);
 			angular.element('#userEditModal').modal('hide');
 			$scope.userEdited = null;
 		};
@@ -286,7 +282,6 @@ angular.module('runnable.controllers', []).
             User.delete(user.id);
 		};
 		$scope.runToggleActive = function(run) {
-			console.log('Toggle active for run : ' + run.id);
 			Run.toggleActive(run.id);
 			if (run.is_active) {
 				run.is_active = false;
@@ -722,7 +717,6 @@ angular.module('runnable.controllers', []).
             if ($routeParams.runId) {
                 $scope.journey.Run = $scope.runList[_.findIndex($scope.runList, 'id', parseInt($routeParams.runId))];
                 $scope.selectDestination($scope.journey.Run);
-                console.log($scope.journey.Run);
             }
             $scope.today = new Date();
             $scope.calendar = {
@@ -1098,7 +1092,6 @@ angular.module('runnable.controllers', []).
         $scope.submitJourney = function (journey) {
             var template = 'JourneyUpdated',
                 values = {runName: journey.Run.name };
-			console.log(journey);
             Journey.update(journey);
             Inbox.addMessage(template, values, $rootScope.currentUser.id);
             $location.path('/journey');
