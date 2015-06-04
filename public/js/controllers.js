@@ -227,6 +227,7 @@ angular.module('runnable.controllers', []).
 			$scope.emailOption = res[4];
 			$scope.pageList = res[5];
             $scope.version = res[6];
+            $scope.nbUser = $scope.userList.length;
             if (!$rootScope.isAdmin) {
                 $location.path('/');
             }
@@ -412,6 +413,50 @@ angular.module('runnable.controllers', []).
 		};
 		$scope.calFormat = 'dd/MM/yyyy';
     }).
+    controller('RunnableRunUpdateController', function ($scope, $q, $timeout, $routeParams, $rootScope, $location,
+                                                        Run, GoogleMapApi) {
+        $scope.page = 'Run';
+        $scope.runId = parseInt($routeParams.runId);
+		var runPromise = Run.getDetail($scope.runId),
+            all = $q.all([runPromise]);
+        all.then(function (res) {
+			$scope.currentRun = res[0];
+            if (!$rootScope.currentUser &&
+                !($rootScope.currentUser.role === 'admin' || $rootScope.currentUser.id === $scope.currentRun.UserId)) {
+                $location.path('/run');
+            }
+            $timeout( function() {
+                $('#clockpicker').clockpicker();
+                GoogleMapApi.initMap('map_canvas');
+                GoogleMapApi.selectedAddress('map_canvas', $scope.currentRun.address_start);
+			});
+		});
+        $scope.getLocation = function(val) {
+			return GoogleMapApi.getLocation(val);
+		};
+		$scope.selectedAddress = function (address) {
+			GoogleMapApi.selectedAddress('map_canvas', address);
+		};
+        $scope.today = new Date();
+        $scope.calendar = {
+            opened: false,
+            dateFormat: 'dd/MM/yyyy',
+            dateOptions: {
+                formatYear: 'yy',
+                startingDay: 1
+            },
+            open: function($event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+                $scope.calendar.opened = true;
+            }
+        };
+        $scope.submitRun = function (updatedRun) {
+            Run.update(updatedRun).then(function () {
+                    $location.path('/run');
+            });
+        };
+    }).
     controller('RunnableRunController', function ($scope, $q, Run, $timeout, GoogleMapApi, Email, DEFAULT_DISTANCE) {
         $scope.page = 'Run';
 		$scope.default_distance = DEFAULT_DISTANCE;
@@ -484,7 +529,7 @@ angular.module('runnable.controllers', []).
         $scope.submitRunProposal = function (form) {
             angular.element('#runProposalModal').modal('hide');
             var data = {};
-            data.emails = 'jbillay@gmail.com';
+            data.emails = 'contact@myruntrip.com';
             data.title = '[My Run Trip] Création course : ' + form.runName;
             data.message = 'Le user ' + form.runEmail + '<br>' +
                 'Propose de créer la course : ' + form.runName + '<br>' +

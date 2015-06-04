@@ -38,6 +38,13 @@ angular.module('runnable', [
 					authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor]
 				}
             }).
+            when('/run-update-:runId', {
+                templateUrl: 'partials/run_update',
+                controller: 'RunnableRunUpdateController',
+				data: {
+					authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor]
+				}
+            }).
             when('/run', {
                 templateUrl: 'partials/run_list',
                 controller: 'RunnableRunController'
@@ -132,23 +139,25 @@ angular.module('runnable', [
     }).
 	run(function ($rootScope, AUTH_EVENTS, AuthService, $location) {
 		$rootScope.$on('$routeChangeStart', function (event, next) {
-			AuthService.init().then(function () {
-				if (next.data) {
-					var authorizedRoles = next.data.authorizedRoles;
-					if (!AuthService.isAuthorized(authorizedRoles)) {
-						event.preventDefault();
-						if (AuthService.isAuthenticated()) {
-							// user is not allowed
-							console.log(AUTH_EVENTS.notAuthorized);
-							$rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
-						} else {
-							// user is not logged in
-							console.log(AUTH_EVENTS.notAuthenticated);
-							$rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
-						}
-						$location.path('/');
-					}
-				}
-			});
+            if (next.data) {
+                AuthService.init()
+                    .then(function () {
+                        var authorizedRoles = next.data.authorizedRoles;
+                        if (!AuthService.isAuthorized(authorizedRoles)) {
+                            event.preventDefault();
+                            if (AuthService.isAuthenticated()) {
+                                // user is not allowed
+                                $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
+                            } else {
+                                // user is not logged in
+                                $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
+                            }
+                            $location.path('/');
+                        }
+                    })
+                    .catch(function () {
+                        $location.path('/');
+                    });
+            }
 		});
 	});

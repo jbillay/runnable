@@ -318,5 +318,58 @@ describe('Run Service', function() {
             $httpBackend.flush();
             expect(message).toContain('error');
         });
+
+        it('should update a run', function() {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            $httpBackend.whenPUT('/api/run').respond('runUpdated');
+            var run = {
+                    id: 1,
+                    name: 'Maxicross',
+                    type: 'trail',
+                    address_start: 'Bouffémont, France',
+                    date_start: '2015-02-02 00:00:00',
+                    time_start: '09:15',
+                    distances: '15k - 30k - 7k',
+                    elevations: '500+ - 1400+',
+                    info: 'Toutes les infos sur le maxicross',
+                    is_active: 1
+                },
+                promise = service.update(run),
+                message = null;
+
+            promise.then(function(ret){
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message).toEqual('runUpdated');
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should fail to update a run', function() {
+            $httpBackend.whenPUT('/api/run').respond(500);
+            var run = {
+                    id: 1,
+                    name: 'Maxicross',
+                    type: 'trail',
+                    address_start: 'Bouffémont, France',
+                    date_start: '2015-02-02 00:00:00',
+                    time_start: '09:15',
+                    distances: '15k - 30k - 7k',
+                    elevations: '500+ - 1400+',
+                    info: 'Toutes les infos sur le maxicross',
+                    is_active: 1
+                },
+                promise = service.update(run),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toContain('error');
+        });
     });
 });

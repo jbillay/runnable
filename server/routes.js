@@ -45,6 +45,7 @@ module.exports = function (app, passport, auth) {
     app.get('/api/user/joins', auth.requiresLogin, controllers.user.showJoins);
 
     app.post('/api/run', auth.requiresLogin, controllers.run.create);
+    app.put('/api/run', auth.requiresLogin, controllers.run.update);
     app.post('/api/run/search', controllers.run.search);
     app.get('/api/run/list', controllers.run.activeList);
     app.get('/api/run/:id', controllers.run.detail);

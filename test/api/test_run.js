@@ -242,7 +242,7 @@ describe('Tests of run objects', function () {
         assert.equal(tmp.name, 'Marathon du Mont Blanc');
         assert.equal(tmp.type, 'marathon');
         assert.equal(tmp.address_start, 'Chamonix, France');
-        run.save(function (err, newRun) {
+        run.save(tmp, data_user, function (err, newRun) {
             if (err) {
                 console.log('Error: ' + err);
                 return done(err);

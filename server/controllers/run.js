@@ -5,8 +5,7 @@ exports.create = function (req, res) {
     'use strict';
 	console.log('Create the run : ' + req.body.run.name);
 	var run = new Run();
-	run.set(req.body.run, req.user);
-	run.save(function (err, run) {
+	run.save(req.body.run, req.user, function (err, run) {
 		if (err) {
 			console.log('Run not created ' + err);
 			res.redirect('/run');
@@ -100,4 +99,17 @@ exports.toggleActive = function (req, res) {
 			res.jsonp({msg: 'done', type: 'success'});
 		}
 	});
+};
+
+exports.update = function (req, res) {
+    'use strict';
+    console.log('Update the run ' + req.body.run.id);
+    var run = new Run();
+    run.save(req.body.run, req.user, function (err, run) {
+        if (err) {
+            res.jsonp({msg: err, type: 'error'});
+        } else {
+            res.jsonp({msg: 'runUpdated', type: 'success'});
+        }
+    });
 };

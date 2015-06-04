@@ -511,8 +511,20 @@ angular.module('runnable.services', ['ngResource']).
 			}
         };
     }).
-    factory('Run', function ($q, $http) {
+    factory('Run', function ($q, $http, $rootScope) {
         return {
+            update: function (run) {
+                var deferred = $q.defer();
+                $http.put('/api/run', {run: run}).
+                    success(function (result) {
+                        $rootScope.$broadcast('USER_MSG', result);
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        deferred.reject('error ' + status + ' : ' + data);
+                    });
+                return deferred.promise;
+            },
 			getDetail: function (id) {
 				var deferred = $q.defer();
                 $http.get('/api/run/' + id).

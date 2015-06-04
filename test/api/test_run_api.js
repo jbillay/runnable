@@ -253,6 +253,52 @@ describe('Test of run API', function () {
                 });
         });
     });
+
+    describe('PUT /api/run', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should update a run', function (done) {
+            var run = {
+                id: 1,
+                name: 'Maxicross',
+                type: 'trail',
+                address_start: 'Bouffémont, France',
+                date_start: '2015-02-02 00:00:00',
+                time_start: '06:20',
+                distances: '15k - 30k - 7k',
+                elevations: '1500 D+',
+                info: 'Test Maxicross',
+                is_active: 1
+            };
+            agent
+                .put('http://localhost:9615/api/run')
+                .send({run: run})
+                .end(function (err, res) {
+                    if (err) {
+                        return done(err);
+                    }
+                    agent
+                        .get('http://localhost:9615/api/run/1')
+                        .end(function (err, res) {
+                            if (err) {
+                                return done(err);
+                            }
+                            assert.equal(res.res.body.name, 'Maxicross');
+                            assert.equal(res.res.body.type, 'trail');
+                            assert.equal(res.res.body.address_start, 'Bouffémont, France');
+                            assert.equal(res.res.body.time_start, '06:20');
+                            assert.equal(res.res.body.distances, '15k - 30k - 7k');
+                            assert.equal(res.res.body.elevations, '1500 D+');
+                            assert.equal(res.res.body.info, 'Test Maxicross');
+                            assert.equal(res.res.body.is_active, 1);
+                            done();
+                        });
+                });
+        });
+    });
+
     describe('POST /api/run/search', function () {
         it('should return a Maxicross runs', function (done) {
             var searchInfo = {

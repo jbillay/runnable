@@ -2,6 +2,7 @@
 
 var models = require('../models');
 var distance = require('google-distance');
+var _ = require('lodash');
 
 function run() {
     'use strict';
@@ -49,22 +50,31 @@ run.prototype.set = function (run, user) {
 		this.user_id = user.id; }
 };
 
-run.prototype.save = function (done) {
+run.prototype.save = function (run, user, done) {
     'use strict';
 	var that = this;
-	console.log('try to create run : ' + this.name);
-	models.User.find({where: {id: this.user_id}})
+	console.log('try to save run : ' + run.name);
+	models.User.find({where: {id: user.id}})
 		.then(function (user) {
-			models.Run.create(that)
-				.then(function(newRun) {
-					newRun.setUser(user)
-						.then(function(newRun) {
-							done(null, newRun);
-						})
-						.catch(function(err) {
-							done(err, null);
-						});
-				});
+            that.set(run, user);
+            models.Run.findOrCreate({where: {id: run.id}, defaults: that})
+                .spread(function (run, created) {
+                    if (created) {
+                        run.setUser(user)
+                            .then(function (newRun) {
+                                done(null, newRun);
+                            });
+                    } else {
+                        var updateRun = _.assign(run, that);
+                        updateRun.save()
+                            .then(function (updatedRun) {
+                                done(null, updatedRun);
+                            });
+                    }
+                })
+                .catch(function (err) {
+                    done(err, null);
+                });
 		});
 };
 
