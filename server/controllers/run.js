@@ -6,13 +6,11 @@ exports.create = function (req, res) {
 	console.log('Create the run : ' + req.body.run.name);
 	var run = new Run();
 	run.save(req.body.run, req.user, function (err, run) {
-		if (err) {
-			console.log('Run not created ' + err);
-			res.redirect('/run');
-		} else {
-			console.log('Run created');
-			res.redirect('/run');
-		}
+        if (err) {
+            res.jsonp({msg: err, type: 'error'});
+        } else {
+            res.jsonp({msg: 'runCreated', type: 'success'});
+        }
 	});
 };
 

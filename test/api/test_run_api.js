@@ -241,6 +241,7 @@ describe('Test of run API', function () {
                     if (err) {
                         return done(err);
                     }
+                    assert.equal(res.body.msg, 'runCreated');
                     agent
                         .get('http://localhost:9615/api/admin/runs')
                         .end(function (err, res) {
@@ -279,6 +280,7 @@ describe('Test of run API', function () {
                     if (err) {
                         return done(err);
                     }
+                    assert.equal(res.body.msg, 'runUpdated');
                     agent
                         .get('http://localhost:9615/api/run/1')
                         .end(function (err, res) {

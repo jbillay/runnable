@@ -153,7 +153,7 @@ run.prototype.search = function (searchInfo, done) {
 
 run.prototype.getNextList = function (nb, done) {
     'use strict';
-	models.Run.findAll({limit: nb, where: {is_active: true}, order: 'updatedAt ASC '})
+	models.Run.findAll({limit: nb, where: {is_active: true}, order: 'updatedAt DESC'})
 		.then(function (runs) {
 			done(null, runs);
 		})
