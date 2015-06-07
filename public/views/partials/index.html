@@ -106,7 +106,7 @@
 					<div class="run_desc">
 						<p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize | limitTo:21}}</p>
 						<p><i class="glyphicon glyphicon-calendar"></i> {{run.date_start | date:'dd / MM / yyyy'}}</p>
-						<p><i class="glyphicon glyphicon-text-width"></i> {{run.distances}}</p>
+						<p><i class="glyphicon glyphicon-text-width"></i> {{run.distances | limitTo:28}}</p>
 						<p><i class="glyphicon glyphicon-road"></i> {{run.type | capitalize}}</p>
 					</div>
 				</div>				
