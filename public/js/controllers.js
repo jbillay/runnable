@@ -1060,18 +1060,22 @@ angular.module('runnable.controllers', []).
             if ($scope.journey.journey_type ===  'aller-retour') {
                 $scope.outward = true;
                 $scope.return = true;
+                $timeout( function() {
+                    $('#clockpicker_outward').clockpicker();
+                    $('#clockpicker_return').clockpicker();
+                });
             } else if ($scope.journey.journey_type ===  'aller') {
                 $scope.outward = true;
                 $scope.return = false;
-                $scope.journey.date_start_return = null;
-                $scope.journey.time_start_return = null;
-                $scope.journey.nb_space_return = null;
+                $timeout( function() {
+                    $('#clockpicker_outward').clockpicker();
+                });
             } else if ($scope.journey.journey_type ===  'retour') {
                 $scope.outward = false;
                 $scope.return = true;
-                $scope.journey.date_start_outward = null;
-                $scope.journey.time_start_outward = null;
-                $scope.journey.nb_space_outward = null;
+                $timeout( function() {
+                    $('#clockpicker_return').clockpicker();
+                });
             }
         };
         $scope.getLocation = function(val) {
@@ -1102,6 +1106,15 @@ angular.module('runnable.controllers', []).
         $scope.submitJourney = function (journey) {
             var template = 'JourneyUpdated',
                 values = {runName: journey.Run.name };
+            if (journey.journey_type === 'aller') {
+                journey.date_start_return = null;
+                journey.time_start_return = null;
+                journey.nb_space_return = null;
+            } else if (journey.journey_type === 'retour') {
+                journey.date_start_outward = null;
+                journey.time_start_outward = null;
+                journey.nb_space_outward = null;
+            }
             Journey.update(journey);
             Inbox.addMessage(template, values, $rootScope.currentUser.id);
             $location.path('/journey');
