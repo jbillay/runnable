@@ -26,4 +26,74 @@ describe('testing config block', function() {
         });
     });
 
+    describe('Test Run', function() {
+        it('should load a page with authentification check', function() {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            $httpBackend.whenGET('/api/user/me').respond({
+                id: 2,
+                firstname: 'Richard',
+                lastname: 'Couret',
+                address: 'Bouffemont',
+                phone: '0689876547',
+                email: 'richard.couret@free.fr',
+                itra: '?id=84500&nom=COURET#tab',
+                isActive: 0,
+                role: 'editor',
+                picture: null
+            });
+            $httpBackend.whenGET('partials/profile').respond({});
+            location.path('/profile');
+            rootScope.$digest();
+            $httpBackend.flush();
+            expect(route.current.controller).toBe('RunnableProfileController');
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should load a page with authentification but user not authenticated', function() {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            $httpBackend.whenGET('/api/user/me').respond({});
+            $httpBackend.whenGET('partials/profile').respond({});
+            $httpBackend.whenGET('partials/index').respond({});
+            location.path('/profile');
+            rootScope.$digest();
+            $httpBackend.flush();
+            expect(route.current.controller).toBe('RunnableIndexController');
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should load a page with admin authentification check', function() {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            $httpBackend.whenGET('/api/user/me').respond({
+                id: 2,
+                firstname: 'Richard',
+                lastname: 'Couret',
+                address: 'Bouffemont',
+                phone: '0689876547',
+                email: 'richard.couret@free.fr',
+                itra: '?id=84500&nom=COURET#tab',
+                isActive: 0,
+                role: 'editor',
+                picture: null
+            });
+            $httpBackend.whenGET('partials/admin').respond({});
+            $httpBackend.whenGET('partials/index').respond({});
+            location.path('/admin');
+            rootScope.$digest();
+            $httpBackend.flush();
+            expect(route.current.controller).toBe('RunnableIndexController');
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should fail to load a page with authentification check', function() {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            $httpBackend.whenGET('/api/user/me').respond(500);
+            $httpBackend.whenGET('partials/profile').respond({});
+            $httpBackend.whenGET('partials/index').respond({});
+            location.path('/profile');
+            rootScope.$digest();
+            $httpBackend.flush();
+            expect(route.current.controller).toBe('RunnableIndexController');
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+    });
 });

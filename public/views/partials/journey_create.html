@@ -196,6 +196,11 @@
 								</div>
 							</div>
 						</div>
+                        <div>
+                            <span class='green' ng-if="journey.journey_type === 'aller-retour' && journey.amount">
+                                Soit {{journey.amount * 2 | currency: '€ '}} l'aller-retour
+                            </span>
+                        </div>
 					</div>
 				</div>
 				<div class="row">
