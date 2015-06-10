@@ -231,8 +231,7 @@ describe('Test of run API', function () {
                 time_start: '06:20',
                 distances: '80km - 42km - 23km - 10km - 3.8km',
                 elevations: '3214+',
-                info: 'dkqsd lqldsj lqkjdsllq ksjdlq',
-                is_active: 1
+                info: 'dkqsd lqldsj lqkjdsllq ksjdlq'
             };
             agent
                 .post('http://localhost:9615/api/run')
@@ -249,7 +248,22 @@ describe('Test of run API', function () {
                                 return done(err);
                             }
                             assert.equal(res.body.length, 7);
-                            return done();
+                            agent
+                                .get('http://localhost:9615/api/run/7')
+                                .end(function (err, res) {
+                                    if (err) {
+                                        return done(err);
+                                    }
+                                    assert.equal(res.res.body.name, 'Marathon du Mont Blanc');
+                                    assert.equal(res.res.body.type, 'marathon');
+                                    assert.equal(res.res.body.address_start, 'Chamonix, France');
+                                    assert.equal(res.res.body.time_start, '06:20');
+                                    assert.equal(res.res.body.distances, '80km - 42km - 23km - 10km - 3.8km');
+                                    assert.equal(res.res.body.elevations, '3214+');
+                                    assert.equal(res.res.body.info, 'dkqsd lqldsj lqkjdsllq ksjdlq');
+                                    assert.equal(res.res.body.is_active, 0);
+                                    return done();
+                                });
                         });
                 });
         });

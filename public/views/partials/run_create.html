@@ -1,16 +1,16 @@
 <div ng-include="'partials/nav'"></div>
 
-<div class="container body" ng-controller="RunnableRunController">
+<div class="container body" ng-controller="RunnableRunCreateController">
     <div class="row spacehead">
 		<div class="col-sm-6">
 			<h2>Créer une course</h2>
 			<hr>
-			<form action="/api/run" method="post" role="form">
+			<form role="form" name="createRun" ng-submit="submitRun(newRun)">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12">
 						<div class="form-group">
 							<input type="text" name="run[name]" id="name" class="form-control"
-								   placeholder="Nom de la course" tabindex="1">
+                                   ng-model="newRun.name" placeholder="Nom de la course" tabindex="1">
 						</div>
 					</div>
 				</div>
@@ -18,7 +18,7 @@
 					<div class="col-xs-6 col-sm-6 col-md-6">
 						<div class="form-group">
 							<select class="form-control" name="run[type]" id="type"
-								placeholder="Type de course" tabindex="2">
+                                    ng-model="newRun.type" placeholder="Type de course" tabindex="2">
 								<option value="trail">Trail</option>
 								<option value="ultra">Ultra</option>
 								<option value="10k">10k</option>
@@ -32,7 +32,7 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12">
 						<div class="form-group">
-							<input type="text" ng-model="asyncSelected" placeholder="Lieu de départ"
+							<input type="text" ng-model="newRun.address_start" placeholder="Lieu de départ"
 								   typeahead="address for address in getLocation($viewValue)"
 								   typeahead-loading="loadingLocations" name="run[address_start]" id="address_start"
 								   class="form-control"  tabindex="3" typeahead-on-select='selectedAddress($item, $model, $label)'>
@@ -42,23 +42,42 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-6 col-sm-6 col-md-6">
-						<div class="form-group">
-							<input type="date" name="run[date_start]" id="date_start"
-								   class="form-control" placeholder="Date" tabindex="4">
-						</div>
+                        <div class="form-group">
+                            <div class="input-group">
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default" ng-click="calendar.open($event)">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+							</span>
+                                <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
+                                       ng-model="newRun.date_start" name="run[date_start]"
+                                       is-open="calendar.opened" min-date="today"
+                                       datepicker-options="calendar.dateOptions" close-text="Fermer"
+                                       data-toggle="tooltip" data-placement="bottom"
+                                       title="Date course" tabindex="4" required>
+                            </div>
+                        </div>
 					</div>
 					<div class="col-xs-6 col-sm-6 col-md-6">
-						<div class="form-group">
-							<input type="time" name="run[time_start]" id="time_start" class="form-control"
-								   placeholder="Heure" tabindex="5">
-						</div>
+                        <div class="form-group">
+                            <div class="form-group">
+                                <div class="input-group clockpicker" id="clockpicker" data-autoclose="true">
+                                    <input type="text" class="form-control" id="time_start"
+                                           name="run[time_start]" ng-model="newRun.time_start"
+                                           placeholder="Heure" tabindex="5" required>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-time"></span>
+                                </span>
+                                </div>
+                            </div>
+                        </div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12">
 						<div class="form-group">
 							<input type="text" name="run[distances]" id="distances" class="form-control"
-								   placeholder="Distance(s)" tabindex="6">
+                                   ng-model="newRun.distances" placeholder="Distance(s)" tabindex="6">
 						</div>
 					</div>
 				</div>
@@ -66,7 +85,7 @@
 					<div class="col-xs-12 col-sm-12 col-md-12">
 						<div class="form-group">
 							<input type="text" name="run[elevations]" id="elevations" class="form-control"
-								   placeholder="Dénivelé(s)" tabindex="7">
+                                   ng-model="newRun.elevations" placeholder="Dénivelé(s)" tabindex="7">
 						</div>
 					</div>
 				</div>
@@ -74,7 +93,7 @@
 					<div class="col-xs-12 col-sm-12 col-md-12">
 						<div class="form-group">
 							<textarea class="form-control" name="run[info]" id="info" 
-								rows="3" placeholder="Informations" tabindex="8"></textarea>
+								rows="3" placeholder="Informations" tabindex="8" ng-model="newRun.info"></textarea>
 							<input type="hidden" name="run[owner_id]" value="{{user.id}}">
 						</div>
 					</div>

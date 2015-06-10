@@ -60,5 +60,6 @@ angular.module('runnable.constant', []).
         journeyNotCanceled:     'Votre demande d\'annulation de voyage n\'a malheureusement pas pu être prise en compte',
         passwordReset:          'Un nouveau mot de passe vient de vous être envoyé par email',
         passwordNotReset:       'En raison d\'un problème technique votre mot de passe n\'a pas pu être modifié',
-        runUpdated:             'La course a été mise à jour'
+        runUpdated:             'La course a été mise à jour',
+        runCreated:             'La course a bien été créée'
 	});

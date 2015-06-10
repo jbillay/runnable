@@ -319,6 +319,59 @@ describe('Run Service', function() {
             expect(message).toContain('error');
         });
 
+        it('should create a run', function() {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            $httpBackend.whenPOST('/api/run').respond('runCreated');
+            var run = {
+                    id: 10,
+                    name: 'Nouvelle course',
+                    type: 'ultra',
+                    address_start: 'Paris, France',
+                    date_start: '2015-08-09 00:00:00',
+                    time_start: '19:56',
+                    distances: '15k',
+                    elevations: '500+',
+                    info: 'Toutes les infos',
+                    is_active: 1
+                },
+                promise = service.create(run),
+                message = null;
+
+            promise.then(function(ret){
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message).toEqual('runCreated');
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should fail to create a run', function() {
+            $httpBackend.whenPOST('/api/run').respond(500);
+            var run = {
+                    id: 10,
+                    name: 'Nouvelle course',
+                    type: 'ultra',
+                    address_start: 'Paris, France',
+                    date_start: '2015-08-09 00:00:00',
+                    time_start: '19:56',
+                    distances: '15k',
+                    elevations: '500+',
+                    info: 'Toutes les infos',
+                    is_active: 1
+                },
+                promise = service.create(run),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toContain('error');
+        });
+
         it('should update a run', function() {
             spyOn(rootScope, '$broadcast').and.callThrough();
             $httpBackend.whenPUT('/api/run').respond('runUpdated');

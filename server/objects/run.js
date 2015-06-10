@@ -46,6 +46,9 @@ run.prototype.set = function (run, user) {
 		this.info = run.info; }
 	if (run.is_active) {
 		this.is_active = run.is_active; }
+    else {
+        this.is_active = false;
+    }
 	if (user.id) {
 		this.user_id = user.id; }
 };

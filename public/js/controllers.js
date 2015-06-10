@@ -371,14 +371,15 @@ angular.module('runnable.controllers', []).
             }
         };
     }).
-    controller('RunnableRunCreateController', function ($scope, $q, $timeout, Run, GoogleMapApi) {
+    controller('RunnableRunCreateController', function ($scope, $q, $timeout, $location, Run, GoogleMapApi) {
         $scope.page = 'Run';
 		var runPromise = Run.getActiveList(),
             all = $q.all([runPromise]);
         all.then(function (res) {
 			$scope.listRun = res[0];
 			$timeout( function() {
-				GoogleMapApi.initMap('map_canvas');
+                $('#clockpicker').clockpicker();
+                GoogleMapApi.initMap('map_canvas');
 			});
 		});
         $scope.getLocation = function(val) {
@@ -387,26 +388,27 @@ angular.module('runnable.controllers', []).
 		$scope.selectedAddress = function (address) {
 			GoogleMapApi.selectedAddress('map_canvas', address);
 		};
-		$scope.today = function() {
-			$scope.dt = new Date();
-		};
-		$scope.clear = function () {
-			$scope.dt = null;
-		};
-		$scope.toggleMin = function() {
-			$scope.minDate = $scope.minDate ? null : new Date();
-		};
-		$scope.toggleMin();
-		$scope.openCal = function($event) {
-			$event.preventDefault();
-			$event.stopPropagation();
-			$scope.calOpened = true;
-		};
-		$scope.dateOptions = {
-			formatYear: 'yy',
-			startingDay: 1
-		};
-		$scope.calFormat = 'dd/MM/yyyy';
+        $scope.newRun = {};
+        $scope.newRun.type = 'trail';
+        $scope.today = new Date();
+        $scope.calendar = {
+            opened: false,
+            dateFormat: 'dd/MM/yyyy',
+            dateOptions: {
+                formatYear: 'yy',
+                startingDay: 1
+            },
+            open: function($event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+                $scope.calendar.opened = true;
+            }
+        };
+        $scope.submitRun = function (newRun) {
+            Run.create(newRun).then(function () {
+                $location.path('/run');
+            });
+        };
     }).
     controller('RunnableRunUpdateController', function ($scope, $q, $timeout, $routeParams, $rootScope, $location,
                                                         Run, GoogleMapApi) {

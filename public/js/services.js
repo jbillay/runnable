@@ -513,6 +513,18 @@ angular.module('runnable.services', ['ngResource']).
     }).
     factory('Run', function ($q, $http, $rootScope) {
         return {
+            create: function (run) {
+                var deferred = $q.defer();
+                $http.post('/api/run', {run: run}).
+                    success(function (result) {
+                        $rootScope.$broadcast('USER_MSG', result);
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        deferred.reject('error ' + status + ' : ' + data);
+                    });
+                return deferred.promise;
+            },
             update: function (run) {
                 var deferred = $q.defer();
                 $http.put('/api/run', {run: run}).
