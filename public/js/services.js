@@ -227,9 +227,9 @@ angular.module('runnable.services', ['ngResource']).
 					});
                 return deferred.promise;
             },
-			getItraRuns: function (userId) {
+			getItraRuns: function () {
 				var deferred = $q.defer();
-				$http.get('/api/user/runs/' + userId).
+				$http.get('/api/user/runs').
 					success(function (result) {
 						deferred.resolve(result);
 					}).

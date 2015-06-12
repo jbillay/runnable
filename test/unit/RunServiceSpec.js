@@ -246,7 +246,7 @@ describe('Run Service', function() {
         });
 
         it('should toggle run active flag', function() {
-            $httpBackend.whenPOST('/api/admin/run/active').respond('done');
+            $httpBackend.whenPOST('/api/admin/run/active').respond({msg: 'done', type: 'success'});
             var promise = service.toggleActive(1),
                 message = null;
 
@@ -254,7 +254,7 @@ describe('Run Service', function() {
                 message = ret;
             });
             $httpBackend.flush();
-            expect(message).toEqual('done');
+            expect(message.msg).toEqual('done');
         });
 
         it('should fail to toggle run active flag', function() {
@@ -321,7 +321,7 @@ describe('Run Service', function() {
 
         it('should create a run', function() {
             spyOn(rootScope, '$broadcast').and.callThrough();
-            $httpBackend.whenPOST('/api/run').respond('runCreated');
+            $httpBackend.whenPOST('/api/run').respond({msg: 'runCreated', type: 'success'});
             var run = {
                     id: 10,
                     name: 'Nouvelle course',
@@ -342,7 +342,7 @@ describe('Run Service', function() {
             });
 
             $httpBackend.flush();
-            expect(message).toEqual('runCreated');
+            expect(message.msg).toEqual('runCreated');
             expect(rootScope.$broadcast).toHaveBeenCalled();
         });
 
@@ -374,7 +374,7 @@ describe('Run Service', function() {
 
         it('should update a run', function() {
             spyOn(rootScope, '$broadcast').and.callThrough();
-            $httpBackend.whenPUT('/api/run').respond('runUpdated');
+            $httpBackend.whenPUT('/api/run').respond({msg: 'runUpdated', type: 'success'});
             var run = {
                     id: 1,
                     name: 'Maxicross',
@@ -395,7 +395,7 @@ describe('Run Service', function() {
             });
 
             $httpBackend.flush();
-            expect(message).toEqual('runUpdated');
+            expect(message.msg).toEqual('runUpdated');
             expect(rootScope.$broadcast).toHaveBeenCalled();
         });
 

@@ -19,7 +19,7 @@ angular.module('runnable.controllers', []).
 		$scope.setCurrentUser = function (user, unread) {
 			Session.create(user);
 			$rootScope.userUnreadEmail = unread;
-			$rootScope.isAuthenticated = user.isActive;
+            $rootScope.isAuthenticated = user.isActive;
 			$rootScope.isAdmin = AuthService.isAuthorized([USER_ROLES.admin]);
 			$rootScope.currentUser = user;
 		};
@@ -98,7 +98,7 @@ angular.module('runnable.controllers', []).
 			AuthService.login(credentials).then(function (user) {
 				var unread = 0;
 				angular.forEach(user.Inboxes, function (inbox) {
-					if (inbox.is_read === false) {
+					if (inbox.is_read === 0) {
 						unread = unread + 1;
 					}
 				});

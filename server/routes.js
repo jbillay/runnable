@@ -38,7 +38,6 @@ module.exports = function (app, passport, auth) {
     app.get('/api/user/:id/:hash', controllers.user.active);
     app.get('/api/user/public/info/:id', controllers.user.publicInfo);
     app.get('/api/user/public/driver/:id', controllers.user.publicDriverInfo);
-    app.get('/api/user/runs/:id', controllers.user.showRuns);
     app.get('/api/user/me', auth.requiresLogin, controllers.user.me);
     app.get('/api/user/runs', auth.requiresLogin, controllers.user.showRuns);
     app.get('/api/user/journeys', auth.requiresLogin, controllers.user.showJourneys);

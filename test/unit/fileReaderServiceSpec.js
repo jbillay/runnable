@@ -47,7 +47,7 @@ describe('fileReader Service', function() {
 
         it('should save a picture', function () {
             spyOn(rootScope, '$broadcast').and.callThrough();
-            $httpBackend.whenPOST('/api/user/picture').respond('userPictureSaved');
+            $httpBackend.whenPOST('/api/user/picture').respond({msg: 'userPictureSaved', type: 'success'});
 
             var message = null;
 
@@ -58,7 +58,7 @@ describe('fileReader Service', function() {
             });
 
             $httpBackend.flush();
-            expect(message).toEqual('userPictureSaved');
+            expect(message.msg).toEqual('userPictureSaved');
             expect(rootScope.$broadcast).toHaveBeenCalled();
         });
 
@@ -81,7 +81,7 @@ describe('fileReader Service', function() {
 
         it('should delete a picture', function () {
             spyOn(rootScope, '$broadcast').and.callThrough();
-            $httpBackend.whenGET('/api/user/remove/picture').respond('userPictureRemoved');
+            $httpBackend.whenGET('/api/user/remove/picture').respond({msg: 'userPictureRemoved', type: 'success'});
 
             var message = null;
 
@@ -92,7 +92,7 @@ describe('fileReader Service', function() {
             });
 
             $httpBackend.flush();
-            expect(message).toEqual('userPictureRemoved');
+            expect(message.msg).toEqual('userPictureRemoved');
             expect(rootScope.$broadcast).toHaveBeenCalled();
         });
 

@@ -133,7 +133,7 @@ describe('service', function() {
 
         it('should reset user password', function () {
             spyOn(rootScope, '$broadcast').and.callThrough();
-            $httpBackend.whenPOST('/api/user/password/reset').respond('passwordReset');
+            $httpBackend.whenPOST('/api/user/password/reset').respond({msg: 'passwordReset', type: 'success'});
 
             var message = null;
 
@@ -144,7 +144,7 @@ describe('service', function() {
             });
 
             $httpBackend.flush();
-            expect(message).toEqual('passwordReset');
+            expect(message.msg).toEqual('passwordReset');
             expect(rootScope.$broadcast).toHaveBeenCalled();
         });
 
@@ -366,10 +366,8 @@ describe('service', function() {
         });
 
         it('should get bank account', function() {
-            $httpBackend.whenGET('/api/user/bankaccount').respond([
-                { id: 1, owner: 'Jeremy Billay', agency_name: 'Crédit Agricole', IBAN: 'FR7618206000576025840255308', BIC: 'AGRIFRPP882', UserId: 1},
-                { id: 2, owner: 'Richard Couret', agency_name: 'CIC', IBAN: 'TESTIBAN', BIC: 'TESTBIC', UserId: 2}
-            ]);
+            $httpBackend.whenGET('/api/user/bankaccount').respond(
+                { id: 2, owner: 'Richard Couret', agency_name: 'CIC', IBAN: 'TESTIBAN', BIC: 'TESTBIC', UserId: 2});
             var promise = service.get(),
                 bankAccounts = null;
 
@@ -377,9 +375,7 @@ describe('service', function() {
                 bankAccounts = ret;
             });
             $httpBackend.flush();
-            expect(bankAccounts instanceof Array).toBeTruthy();
-            expect(bankAccounts.length).toBe(2);
-            expect(bankAccounts[1]).toEqual({ id: 2, owner: 'Richard Couret', agency_name: 'CIC', IBAN: 'TESTIBAN', BIC: 'TESTBIC', UserId: 2});
+            expect(bankAccounts).toEqual({ id: 2, owner: 'Richard Couret', agency_name: 'CIC', IBAN: 'TESTIBAN', BIC: 'TESTBIC', UserId: 2});
         });
 
         it('should fail to get bank account', function() {
@@ -428,7 +424,7 @@ describe('service', function() {
         });
 
         it('should save user 1 bank account', function() {
-            $httpBackend.whenPOST('/api/user/bankaccount').respond('bankAccountSaved');
+            $httpBackend.whenPOST('/api/user/bankaccount').respond({msg: 'bankAccountSaved', type: 'success'});
             var account = { id: 1, owner: 'Jeremy Billay', agency_name: 'Crédit Agricole', IBAN: 'FR7618206000576025840255308', BIC: 'AGRIFRPP882', UserId: 1},
                 promise = service.save(account),
                 message = null;
@@ -437,8 +433,7 @@ describe('service', function() {
                 message = ret;
             });
             $httpBackend.flush();
-            expect(message).toEqual('bankAccountSaved');
-
+            expect(message.msg).toEqual('bankAccountSaved');
         });
 
         it('should fail to resolve bank account call', function() {
@@ -532,7 +527,7 @@ describe('service', function() {
         });
 
         it('should save new page', function() {
-            $httpBackend.whenPOST('/api/admin/page').respond('pageSaved');
+            $httpBackend.whenPOST('/api/admin/page').respond({msg: 'pageSaved', type: 'success'});
             var newPage = { id: 3, title: 'Page pour test', tag: 'mrt', content: 'MRT the Best', is_active: true},
                 promise = service.save(newPage),
                 message = null;
@@ -541,7 +536,7 @@ describe('service', function() {
                 message = ret;
             });
             $httpBackend.flush();
-            expect(message).toEqual('pageSaved');
+            expect(message.msg).toEqual('pageSaved');
 
         });
 
@@ -611,7 +606,7 @@ describe('service', function() {
 
         it('should save email options', function () {
             spyOn(rootScope, '$broadcast').and.callThrough();
-            $httpBackend.whenPOST('/api/admin/options').respond('emailOptionsSaved');
+            $httpBackend.whenPOST('/api/admin/options').respond({msg: 'emailOptionsSaved', type: 'success'});
 
             var optionData = {},
                 message = null;
@@ -627,7 +622,7 @@ describe('service', function() {
             });
 
             $httpBackend.flush();
-            expect(message).toEqual('emailOptionsSaved');
+            expect(message.msg).toEqual('emailOptionsSaved');
             expect(rootScope.$broadcast).toHaveBeenCalled();
         });
 
@@ -716,7 +711,7 @@ describe('service', function() {
 
         it('should update a user', function () {
             spyOn(rootScope, '$broadcast').and.callThrough();
-            $httpBackend.whenPUT('/api/user').respond('accountUpdated');
+            $httpBackend.whenPUT('/api/user').respond({msg: 'accountUpdated', type: 'success'});
 
             var user = {
                     firstname : 'Test',
@@ -735,7 +730,7 @@ describe('service', function() {
             });
 
             $httpBackend.flush();
-            expect(message).toEqual('accountUpdated');
+            expect(message.msg).toEqual('accountUpdated');
             expect(rootScope.$broadcast).toHaveBeenCalled();
         });
 
@@ -936,7 +931,7 @@ describe('service', function() {
         });
 
         it('should get user itra runs', function() {
-            $httpBackend.whenGET('/api/user/runs/1').respond('HTML');
+            $httpBackend.whenGET('/api/user/runs').respond('HTML');
             var promise = service.getItraRuns(1),
                 itraRun = null;
 
@@ -949,7 +944,7 @@ describe('service', function() {
         });
 
         it('should fail to get user itra runs', function() {
-            $httpBackend.whenGET('/api/user/runs/1').respond(500);
+            $httpBackend.whenGET('/api/user/runs').respond(500);
             var promise = service.getItraRuns(1),
                 result = null;
 
@@ -1163,7 +1158,7 @@ describe('service', function() {
         });
 
         it('should toggle the activation of a user', function () {
-            $httpBackend.whenPOST('/api/admin/user/active').respond('userToggleActive');
+            $httpBackend.whenPOST('/api/admin/user/active').respond({msg: 'userToggleActive', type: 'success'});
 
             var userId = 1,
                 message = null;
@@ -1175,7 +1170,7 @@ describe('service', function() {
             });
 
             $httpBackend.flush();
-            expect(message).toEqual('userToggleActive');
+            expect(message.msg).toEqual('userToggleActive');
         });
 
         it('should failed to toggle the activation of a user', function () {
@@ -1198,7 +1193,7 @@ describe('service', function() {
 
         it('should update user password', function () {
             spyOn(rootScope, '$broadcast').and.callThrough();
-            $httpBackend.whenPOST('/api/user/password/update').respond('userToggleActive');
+            $httpBackend.whenPOST('/api/user/password/update').respond({msg: 'userToggleActive', type: 'success'});
 
             var message = null;
 
@@ -1209,7 +1204,7 @@ describe('service', function() {
             });
 
             $httpBackend.flush();
-            expect(message).toEqual('userToggleActive');
+            expect(message.msg).toEqual('userToggleActive');
             expect(rootScope.$broadcast).toHaveBeenCalled();
         });
 
