@@ -579,9 +579,15 @@ angular.module('runnable.controllers', []).
 				GoogleMapApi.showDirection(obj, $scope.journey.address_start, $scope.journey.Run.address_start);
 			});
 			$scope.nbFreeSpaceOutward = function () {
+                if ($scope.journey.nb_space_outward === null) {
+                    return 0;
+                }
 				return parseInt($scope.journey.nb_space_outward) - parseInt($scope.reserved_outward);
 			};
 			$scope.nbFreeSpaceReturn = function () {
+                if ($scope.journey.nb_space_return === null) {
+                    return 0;
+                }
 				return parseInt($scope.journey.nb_space_return) - parseInt($scope.reserved_return);
 			};
 			$scope.nbFreeSpace = function () {
