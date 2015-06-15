@@ -15,7 +15,10 @@ exports.save = function (req, res) {
 		} else {
 			res.jsonp({msg: 'pageSaved', type: 'success'});
 		}
+		err = null;
+		newBankAccount = null;
 	});
+	page = null;
 };
 
 exports.getByTag = function (req, res) {
@@ -30,7 +33,11 @@ exports.getByTag = function (req, res) {
 		} else {
 			res.jsonp(thePage);
 		}
+		err = null;
+		thePage = null;
 	});
+	tag = null;
+	page = null;
 };
 
 exports.getList = function (req, res) {
@@ -44,5 +51,8 @@ exports.getList = function (req, res) {
 		} else {
 			res.jsonp(pages);
 		}
+		err = null;
+		pages = null;
 	});
+	page = null;
 };

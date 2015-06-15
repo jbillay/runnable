@@ -17,7 +17,10 @@ exports.save = function (req, res) {
 			console.log('Bank Account saved');
 			res.jsonp({msg: 'bankAccountSaved', type: 'success'});
 		}
+		err = null;
+		newBankAccount = null;
 	});
+	bankAccount = null;
 };
 
 exports.get = function (req, res) {
@@ -31,7 +34,10 @@ exports.get = function (req, res) {
 		} else {
 			res.jsonp(userBankAccount);
 		}
+		err = null;
+		userBankAccount = null;
 	});
+	bankAccount = null;
 };
 
 exports.getByUser = function (req, res) {
@@ -46,5 +52,9 @@ exports.getByUser = function (req, res) {
         } else {
             res.jsonp(userBankAccount);
         }
+		err = null;
+		userBankAccount = null;
     });
+	id = null;
+	bankAccount = null;
 };

@@ -268,6 +268,38 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
         });
 
+        it ('Cancel Journey', function () {
+            var journey = {
+                    id: 1,
+                    address_start: 'Saint-Germain-en-Laye, France',
+                    distance: '585 km',
+                    duration: '5 heures 29 minutes',
+                    journey_type: 'aller-retour',
+                    date_start_outward: '2015-09-06 00:00:00',
+                    time_start_outward: '06:00',
+                    nb_space_outward: 2,
+                    date_start_return: '2015-09-07 00:00:00',
+                    time_start_return: '09:00',
+                    nb_space_return: 3,
+                    car_type: 'monospace',
+                    amount: 23,
+                    is_canceled: false,
+                    updatedAt: '2014-12-22 09:08:16',
+                    RunId: 5,
+                    UserId: 1,
+                    Run: {
+                        name: 'Maxicross'
+                    }
+                },
+                credentials = {
+                    username: 'richard.couret@free.fr',
+                    password: 'richard'
+                };
+            scope.login(credentials);
+            $httpBackend.flush();
+            scope.journeyCancel(journey);
+        });
+
         it ('Edit Page', function () {
             var page = {
                 id: 2,

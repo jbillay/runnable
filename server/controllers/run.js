@@ -11,7 +11,10 @@ exports.create = function (req, res) {
         } else {
             res.jsonp({msg: 'runCreated', type: 'success'});
         }
+		err = null;
+		run = null;
 	});
+	run = null;
 };
 
 exports.search = function (req, res) {
@@ -24,7 +27,10 @@ exports.search = function (req, res) {
         } else {
             res.jsonp(runs);
         }
+		err = null;
+		runs = null;
     });
+	run = null;
 };
 
 exports.activeList = function (req, res) {
@@ -38,7 +44,10 @@ exports.activeList = function (req, res) {
 		} else {
 			res.jsonp(runs);
 		}
+		err = null;
+		runs = null;
 	});
+	run = null;
 };
 
 exports.detail = function (req, res) {
@@ -53,7 +62,11 @@ exports.detail = function (req, res) {
 		} else {
 			res.jsonp(runDetail);
 		}
+		err = null;
+		runDetail = null;
 	});
+	run = null;
+	id = null;
 };
 
 exports.next = function (req, res) {
@@ -67,7 +80,10 @@ exports.next = function (req, res) {
 		} else {
 			res.jsonp(runs);
 		}
+		err = null;
+		runs = null;
 	});
+	run = null;
 };
 
 exports.list = function (req, res) {
@@ -81,13 +97,16 @@ exports.list = function (req, res) {
 		} else {
 			res.jsonp(runs);
 		}
+		err = null;
+		runs = null;
 	});
+	run = null;
 };
 
 exports.toggleActive = function (req, res) {
     'use strict';
 	console.log('Toggle active for run ' + req.body.id);
-	var id= req.body.id,
+	var id = req.body.id,
 		run = new Run();
 	run.toggleActive(id, function (err, run) {
 		if (err) {
@@ -96,7 +115,11 @@ exports.toggleActive = function (req, res) {
 		} else {
 			res.jsonp({msg: 'done', type: 'success'});
 		}
+		err = null;
+		run = null;
 	});
+	id = null;
+	run = null;
 };
 
 exports.update = function (req, res) {
@@ -109,5 +132,8 @@ exports.update = function (req, res) {
         } else {
             res.jsonp({msg: 'runUpdated', type: 'success'});
         }
+		err = null;
+		run = null;
     });
+	run = null;
 };

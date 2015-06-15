@@ -20,7 +20,11 @@ exports.remove = function(req, res) {
             console.log('user account deleted');
             res.jsonp({msg: 'userDeleted', type: 'success'});
         }
+		err = null;
+		msg = null;
     });
+	userId = null;
+	user = null;
 };
 
 exports.invite = function(req, res) {
@@ -43,6 +47,7 @@ exports.invite = function(req, res) {
             console.log('Invite sent to : ' + email);
         });
         res.jsonp({msg: 'Invitation(s) envoyée(s)'});
+        emails = null;
     });
 };
 
@@ -57,7 +62,10 @@ exports.update = function(req, res) {
             console.log('Account updated !');
             res.jsonp({msg: 'accountUpdated', type: 'success'});
         }
+		err = null;
+		selectedUser = null;
     });
+	user = null;
 };
 
 exports.create = function(req, res) {
@@ -78,7 +86,8 @@ exports.create = function(req, res) {
 					} else {
                         console.log('ITRA code is : ' + code);
                     }
-				});
+                    user = null;
+                });
 				var url = settings.domain,
 					timekey = new Date(newUser.createdAt).getTime();
                 new Mail().then(function (mail) {
@@ -90,6 +99,8 @@ exports.create = function(req, res) {
                             res.jsonp({msg: 'accountCreated', type: 'success'});
                     });
                 });
+				url = null;
+				timekey = null;
 			}
 		});
 	} else {
@@ -114,7 +125,11 @@ exports.showRuns = function(req, res) {
 		} else {
 			res.jsonp(runs);
 		}
+		err = null;
+		runs = null;
 	});
+	currentUser = null;
+	user = null;
 };
 
 exports.showJourneys = function (req, res) {
@@ -128,7 +143,10 @@ exports.showJourneys = function (req, res) {
 		} else {
 			res.jsonp(journeyList);
 		}
+		err = null;
 	});
+	id = null;
+	journey = null;
 };
 
 exports.showJoins = function (req, res) {
@@ -142,7 +160,11 @@ exports.showJoins = function (req, res) {
 		} else {
 			res.jsonp(joinList);
 		}
+		err = null;
+		joinList = null;
 	});
+	id = null;
+	join = null;
 };
 
 // should be in a tool file
@@ -170,10 +192,13 @@ exports.resetPassword = function (req, res) {
                     .then(function (mail) {
                         mail.send();
                         res.jsonp({msg: 'passwordReset', type: 'success'});
+                        email = null;
+                        password = null;
                     });
             });
 		}
 	});
+	user = null;
 };
 
 exports.updatePassword = function (req, res) {
@@ -201,12 +226,16 @@ exports.updatePassword = function (req, res) {
 						console.log('Password reseted');
 						res.jsonp({msg: 'passwordUpdated', type: 'success'});
 					}
+					err = null;
+					newUser = null;
 				});
 			} else {
                 console.log('new passwords are differents');
                 res.jsonp({msg: 'passwordDifferent', type: 'error'});
             }
 		}
+		err = null;
+		currentUser = null;
 	});
 };
 
@@ -220,6 +249,8 @@ exports.list = function(req, res) {
 		} else {
 			res.jsonp(users);
 		}
+		err = null;
+		users = null;
 	});
 };
 
@@ -235,7 +266,10 @@ exports.toggleActive = function (req, res) {
 		} else {
 			res.jsonp({msg: 'userToggleActive', type: 'success'});
 		}
+		err = null;
 	});
+	id = null;
+	user = null;
 };
 
 exports.active = function(req, res) {
@@ -243,11 +277,11 @@ exports.active = function(req, res) {
 	console.log('Try to activate account ' + req.params.id);
 	var user = new User();
 	user.activate(req.params.id, req.params.hash, function (err, data) {
-		if (err) {
-			res.redirect('/');
-		}
 		res.redirect('/');
+		err = null;
+		data = null;
 	});
+	user = null;
 };
 
 exports.publicInfo = function (req, res) {
@@ -261,7 +295,11 @@ exports.publicInfo = function (req, res) {
 		} else {
 			res.jsonp(user);
 		}
+		err = null;
+		user = null;
 	});
+	userId = null;
+	user = null;
 };
 
 exports.publicDriverInfo = function (req, res) {
@@ -275,7 +313,11 @@ exports.publicDriverInfo = function (req, res) {
         } else {
             res.jsonp(feedback);
         }
+		err = null;
+		feedback = null;
     });
+	userId = null;
+	user = null;
 };
 
 exports.uploadPicture = function (req, res) {
@@ -290,12 +332,16 @@ exports.uploadPicture = function (req, res) {
         } else {
             res.jsonp({msg: 'userPictureSaved', type: 'success'});
         }
+		err = null;
     });
+	userId = null;
+	path = null;
+	user = null;
 };
 
 exports.deletePicture = function (req, res) {
     'use strict';
-    var userId= req.user.id,
+    var userId = req.user.id,
         user = new User();
     user.deletePicture(userId, function (err) {
         if (err) {
@@ -304,5 +350,8 @@ exports.deletePicture = function (req, res) {
         } else {
             res.jsonp({msg:'userPictureRemoved', type: 'success'});
         }
+		err = null;
     });
+	userId = null;
+	user = null;
 };

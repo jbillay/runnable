@@ -207,7 +207,7 @@ angular.module('runnable.controllers', []).
         };
     }).
 	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run,
-                                                    Journey, Join, EmailOptions, BankAccount, Page, Technical) {
+                                                    Journey, Join, EmailOptions, BankAccount, Page, Inbox, Technical) {
 		$scope.page = 'Admin';
 		var userListPromise = User.getList(),
 			runListPromise = Run.getList(),
@@ -248,6 +248,13 @@ angular.module('runnable.controllers', []).
 		$scope.editPage = function (page) {
 			$scope.editedPage = page;
 			angular.element('#adminEditPageModal').modal('show');
+		};
+		$scope.journeyCancel = function (journey) {
+			var driverTemplate = 'DriverJourneyCancel',
+				values = {runName: journey.Run.name };
+			journey.is_canceled = true;
+			Journey.cancel(journey.id);
+			Inbox.addMessage(driverTemplate, values, $rootScope.currentUser.id);
 		};
 		$scope.createPage = function () {
 			var trimName = $scope.createPageForm.newPageName.trim();

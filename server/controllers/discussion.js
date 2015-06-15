@@ -17,7 +17,11 @@ exports.getUsers = function (req, res) {
         } else {
             res.jsonp(users);
         }
+        err = null;
+        users = null;
     });
+    discussion = null;
+    journeyId = null;
 };
 
 exports.getMessages = function (req, res) {
@@ -31,7 +35,11 @@ exports.getMessages = function (req, res) {
         } else {
             res.jsonp(messages);
         }
+        err = null;
+        messages = null;
     });
+    discussion = null;
+    journeyId = null;
 };
 
 exports.addMessage = function (req, res) {
@@ -46,5 +54,9 @@ exports.addMessage = function (req, res) {
         } else {
             res.jsonp({msg: 'ok', type: 'success'});
         }
+        err = null;
+        messages = null;
     });
+    discussion = null;
+    journeyId = null;
 };

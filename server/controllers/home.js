@@ -15,5 +15,8 @@ exports.userFeedback = function (req, res) {
         } else {
             res.jsonp(feedbacks);
         }
+        err = null;
+        feedbacks = null;
     });
+    validation = null;
 };

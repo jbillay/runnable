@@ -14,7 +14,10 @@ exports.getByUser = function (req, res) {
         } else {
             res.jsonp(invoiceList);
         }
+        err = null;
+        invoiceList = null;
     });
+    invoice = null;
 };
 
 exports.getByDriver = function (req, res) {
@@ -26,7 +29,10 @@ exports.getByDriver = function (req, res) {
         } else {
             res.jsonp(invoiceList);
         }
+        err = null;
+        invoiceList = null;
     });
+    invoice = null;
 };
 
 /*
@@ -85,13 +91,16 @@ exports.confirm = function (req, res) {
             var amount = parseFloat(req.body.mc_gross),
                 status = req.body.payment_status.toLowerCase(),
                 invoice = new Invoice();
-            invoice.updatePaymentStatus(req.body.invoice, amount, status, req.body.txn_id,
-                function (err, res) {
-                    if (err) {
-                        console.log('IPN Error: ' + err);
-                    }
-                    console.log('IPN VERIFIED');
-                });
+                invoice.updatePaymentStatus(req.body.invoice, amount, status, req.body.txn_id,
+                    function (err, res) {
+                        if (err) {
+                            console.log('IPN Error: ' + err);
+                        } else {
+                            console.log('IPN VERIFIED');
+                        }
+                        err = null;
+                        res = null;
+                    });
         }
     });
 };

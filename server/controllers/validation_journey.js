@@ -23,5 +23,9 @@ exports.validate = function (req, res) {
         } else {
 			res.jsonp({msg: 'journeyValidationDone', type: 'success'});
 		}
+        err = null;
+        validation = null;
     });
+    validationObj = null;
+    validation = null;
 };

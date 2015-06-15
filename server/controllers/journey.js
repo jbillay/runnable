@@ -13,7 +13,10 @@ exports.create = function (req, res) {
             console.log('Journey created');
             res.jsonp({msg: 'journeyCreated', type: 'success'});
 		}
-	});
+        err = null;
+        journey = null;
+    });
+    journey = null;
 };
 
 exports.update = function (req, res) {
@@ -29,11 +32,14 @@ exports.update = function (req, res) {
                 console.log('Journey updated');
                 res.jsonp({msg: 'journeyUpdated', type: 'success'});
             }
+            err = null;
+            journey = null;
         });
     } else {
         console.log('Journey not created : ' + new Error('Not allow to update journey'));
         res.jsonp({msg: 'notAllowToUpdate', type: 'error'});
     }
+    journey = null;
 };
 
 exports.list = function (req, res) {
@@ -47,7 +53,10 @@ exports.list = function (req, res) {
 		} else {
 			res.jsonp(journeys);
 		}
+        err = null;
+        journeys = null;
 	});
+    journey = null;
 };
 
 exports.openList = function (req, res) {
@@ -61,7 +70,10 @@ exports.openList = function (req, res) {
         } else {
             res.jsonp(journeys);
         }
+        err = null;
+        journeys = null;
     });
+    journey = null;
 };
 
 exports.listForRun = function (req, res) {
@@ -76,7 +88,11 @@ exports.listForRun = function (req, res) {
         } else {
             res.jsonp(journeys);
         }
+        err = null;
+        journeys = null;
     });
+    id = null;
+    journey = null;
 };
 
 exports.detail = function (req, res) {
@@ -91,7 +107,11 @@ exports.detail = function (req, res) {
 		} else {
 			res.jsonp(journeyDetail);
 		}
+        err = null;
+        journeyDetail = null;
 	});
+    id = null;
+    journey = null;
 };
 
 exports.next = function (req, res) {
@@ -105,7 +125,10 @@ exports.next = function (req, res) {
 		} else {
 			res.jsonp(runs);
 		}
+        err = null;
+        runs = null;
 	});
+    journey = null;
 };
 
 exports.bookSpace = function (req, res) {
@@ -120,7 +143,11 @@ exports.bookSpace = function (req, res) {
 		} else {
 			res.jsonp(spaces);
 		}
+        err = null;
+        spaces = null;
 	});
+    journeyId = null;
+    journey = null;
 };
 
 exports.togglePayed = function (req, res) {
@@ -136,7 +163,11 @@ exports.togglePayed = function (req, res) {
             console.log('Journey toggle payed');
             res.jsonp({msg: 'journeyTogglePayed', type: 'success'});
         }
+        err = null;
+        journey = null;
     });
+    id = null;
+    journey = null;
 };
 
 exports.cancel = function (req, res) {
@@ -152,5 +183,9 @@ exports.cancel = function (req, res) {
             console.log('Journey canceled');
             res.jsonp({msg: 'journeyCanceled', type: 'success'});
         }
+        err = null;
+        journey = null;
     });
+    id = null;
+    journey = null;
 };

@@ -53,6 +53,8 @@ exports.version = function (req, res) {
         } else {
             res.json(data);
         }
+        err = null;
+        data = null;
     });
 };
 

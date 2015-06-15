@@ -10,16 +10,21 @@ exports.create = function (req, res) {
 	join.save(req.body, req.user, function (err, join) {
         if (err) {
             res.jsonp({msg: 'notJoined', type: 'error'});
-        }
-        req.body.join_id = join.id;
-        invoice.save(req.body, req.user, function (err, Invoice) {
-            if (err) {
-                res.jsonp({msg: 'notJoined', type: 'error'});
-            } else {
-                console.log('User joined the journey');
-                res.jsonp({msg: 'userJoined', type: 'success'});
-            }
-        });
+        } else {
+			req.body.join_id = join.id;
+			invoice.save(req.body, req.user, function (err, Invoice) {
+				if (err) {
+					res.jsonp({msg: 'notJoined', type: 'error'});
+				} else {
+					console.log('User joined the journey');
+					res.jsonp({msg: 'userJoined', type: 'success'});
+				}
+				err = null;
+				Invoice = null;
+			});
+		}
+		err = null;
+		join = null;
 	});
 };
 
@@ -34,7 +39,10 @@ exports.listForJourney = function (req, res) {
 		} else {
 			res.jsonp(joins);
 		}
+		err = null;
+		joins = null;
 	});
+	join = null;
 };
 
 exports.detail = function (req, res) {
@@ -49,7 +57,11 @@ exports.detail = function (req, res) {
 		} else {
 			res.jsonp(joinDetail);
 		}
+		err = null;
+		joinDetail = null;
 	});
+	id = null;
+	join = null;
 };
 
 exports.list = function (req, res) {
@@ -63,7 +75,10 @@ exports.list = function (req, res) {
 		} else {
 			res.jsonp(joins);
 		}
+		err = null;
+		joins = null;
 	});
+	join = null;
 };
 
 exports.cancel = function (req, res) {
@@ -75,9 +90,13 @@ exports.cancel = function (req, res) {
 		.then(function (invoice) {
 			console.log('Join cancelled');
 			res.jsonp({msg: 'joinCancelled', type: 'success'});
+			invoice = null;
 		})
 		.catch(function (err) {
 			console.log('Join not cancelled ' + err);
 			res.jsonp({msg: 'joinNotCancelled', type: 'error'});
+			err = null;
 		});
+	id = null;
+	join = null;
 };

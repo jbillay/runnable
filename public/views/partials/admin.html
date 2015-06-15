@@ -102,6 +102,7 @@
 								<th>Type de voiture</th>
 								<th>Montant</th>
 								<th>Création</th>
+								<th>Active</th>
 								<th>Actions</th>
 							</tr>
 							<tbody ng-repeat="journey in journeyList">
@@ -120,6 +121,10 @@
 								<td>{{journey.car_type}}</td>
 								<td>{{journey.amount | currency:'€ '}}</td>
 								<td>{{journey.createdAt | date:'dd/MM/yyyy'}}</td>
+								<td>
+									<span class="glyphicon glyphicon-ok green" ng-if=!journey.is_canceled ng-click=journeyCancel(journey)></span>
+									<span class="glyphicon glyphicon-remove red" ng-if=journey.is_canceled></span>
+								</td>
 								<td>
                                     <a href="/journey-update-{{journey.id}}"><i class="fa fa-pencil-square-o"></i></a>
                                     <i class="fa fa-credit-card" ng-click="openJourneyAction(journey)"></i>

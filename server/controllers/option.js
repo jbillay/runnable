@@ -12,10 +12,13 @@ exports.getOption = function (req, res) {
     options.get(name)
         .then(function (value) {
             res.jsonp(value);
+            value = null;
         })
         .catch(function (err) {
             res.jsonp({msg: err, type: 'error'});
         });
+    name = null;
+    options = null;
 };
 
 exports.getOptions = function (req, res) {

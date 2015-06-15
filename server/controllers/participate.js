@@ -15,7 +15,12 @@ exports.add = function (req, res) {
         } else {
 			res.json({msg: 'addParticipate', type: 'success'});
 		}
+        err = null;
+        participate = null;
     });
+    participate = null;
+    runId = null;
+    user = null;
 };
 
 exports.userList = function (req, res) {
@@ -28,7 +33,11 @@ exports.userList = function (req, res) {
         } else {
 			res.jsonp(participation);
 		}
+        err = null;
+        participation = null;
     });
+    participate = null;
+    userId = null;
 };
 
 exports.userRunList = function (req, res) {
@@ -41,5 +50,9 @@ exports.userRunList = function (req, res) {
         } else {
 			res.jsonp(participation);
 		}
+        err = null;
+        participation = null;
     });
+    participate = null;
+    runId = null;
 };
