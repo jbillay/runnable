@@ -7,7 +7,7 @@
 module.exports = function(sequelize, DataTypes) {
 	var Run = sequelize.define('Run', {
 		name:			DataTypes.STRING,
-		type: 			{ type: DataTypes.ENUM, values: ['trail', 'ultra', '10k', '20k', 'semi', 'marathon'] },
+		type: 			{ type: DataTypes.ENUM, values: ['trail', 'ultra', '10k', '20k', 'semi', 'marathon', 'triathlon'] },
 		address_start:	DataTypes.STRING,
 		date_start: 	DataTypes.DATE,
 		time_start: 	DataTypes.STRING,
