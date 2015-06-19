@@ -3,7 +3,7 @@
 <div class="container body">
     <div class="row spacehead">
         <div class="col-sm-12">
-            <h2><img ng-src="{{userPublicInfo.picture}}" class="img-rounded img-user-public">
+            <h2><img ng-if="userPublicInfo.picture" ng-src="{{userPublicInfo.picture}}" class="img-rounded img-user-public">
         	{{userPublicInfo.firstname | capitalize}} {{userPublicInfo.lastname | capitalize}}</h2>
         	<hr>
             <div class="col-sm-7">

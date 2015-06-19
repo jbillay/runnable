@@ -99,8 +99,6 @@ exports.create = function(req, res) {
                             res.jsonp({msg: 'accountCreated', type: 'success'});
                     });
                 });
-				url = null;
-				timekey = null;
 			}
 		});
 	} else {

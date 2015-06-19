@@ -57,6 +57,8 @@ journey.prototype.setJourney = function (journey) {
 		this.car_type = journey.car_type; }
 	if (journey.amount) {
 		this.amount = journey.amount; }
+    else {
+        this.amount = 0; }
 	if (journey.Run) {
 		this.Run = journey.Run; }
 };
@@ -101,39 +103,30 @@ journey.prototype.save = function (journey, userId, done) {
         });
 };
 
-journey.prototype.saveOld = function (journey, user, done) {
+journey.prototype.filterPastJourney = function (journeys) {
     'use strict';
-	var that = this;
-	models.User.find({where: {id: user.id}})
-		.then(function (user) {
-			that.setJourney(journey);
-			models.Run.find({where: {id: journey.run_id}})
-				.then(function (run) {
-					models.Journey.create(that)
-						.then(function(newJourney) {
-							newJourney.setRun(run)
-								.then(function () {
-									newJourney.setUser(user)
-										.then(function(newJourney) {
-											done(null, newJourney);
-										})
-										.catch(function(err) {
-											done(err, null);
-										});
-								});
-						})
-                        .catch(function (err) {
-                            done(err, null);
-                        });
-				});
-		});
+    var filterJourney = [],
+        today = new Date();
+    journeys.forEach(function (journey) {
+        if (today < journey.date_start_outward || today < journey.date_start_return) {
+            filterJourney.push(journey);
+        }
+    });
+    return filterJourney;
 };
 
-journey.prototype.getList = function (done) {
+journey.prototype.getList = function (old_journey, done) {
     'use strict';
-	models.Journey.findAll({include: [models.Run, models.User]})
+    var that = this;
+    models.Journey.findAll({include: [models.Run, models.User]})
 		.then(function (journeys) {
-			done(null, journeys);
+            var filterJourney = [];
+            if (old_journey === 0) {
+                filterJourney = that.filterPastJourney(journeys);
+            } else {
+                filterJourney = journeys;
+            }
+			done(null, filterJourney);
 		})
 		.catch(function (err) {
 			done(err, null);
@@ -145,6 +138,7 @@ journey.prototype.filterFullJourney = function (journeys, limit) {
     'use strict';
     var openJourney = [],
         iterator = 0;
+    journeys = this.filterPastJourney(journeys);
     journeys.forEach(function (journey) {
         var place = 0,
             book_place = 0;

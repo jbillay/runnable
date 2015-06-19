@@ -90,7 +90,7 @@ exports.list = function (req, res) {
     'use strict';
 	console.log('Get list of run');
 	var run = new Run();
-	run.getList(function (err, runs) {
+	run.getList(0, function (err, runs) {
 		if (err) {
 			console.log('Not able to get run list : ' + err);
 			res.jsonp({msg: err, type: 'error'});

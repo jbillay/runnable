@@ -46,7 +46,7 @@ exports.list = function (req, res) {
     'use strict';
 	console.log('Get list of journey');
 	var journey = new Journey();
-	journey.getList(function (err, journeys) {
+	journey.getList(0, function (err, journeys) {
 		if (err) {
 			console.log('Not able to get journey list : ' + err);
 			res.jsonp({msg: err, type: 'error'});

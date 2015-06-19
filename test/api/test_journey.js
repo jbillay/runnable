@@ -112,13 +112,13 @@ describe('Test of journey object', function () {
         var journey = new Journey();
         journey.getByUser(1, function (err, journeyList) {
             if (err) return done(err);
-            assert.equal(journeyList.length, 2);
-            assert.equal(journeyList[0].id, 2);
-            assert.equal(journeyList[0].address_start, 'Nantes, France');
-            assert.equal(journeyList[0].car_type, 'citadine');
-            assert.equal(journeyList[0].amount, 32);
-            assert.equal(journeyList[0].User.email, 'jbillay@gmail.com');
-            assert.equal(journeyList[0].Run.name, 'Les templiers');
+            assert.equal(journeyList.length, 3);
+            assert.equal(journeyList[1].id, 2);
+            assert.equal(journeyList[1].address_start, 'Nantes, France');
+            assert.equal(journeyList[1].car_type, 'citadine');
+            assert.equal(journeyList[1].amount, 32);
+            assert.equal(journeyList[1].User.email, 'jbillay@gmail.com');
+            assert.equal(journeyList[1].Run.name, 'Les templiers');
             journey.getByUser(-1, function (err, journeyList) {
                 assert.isNotNull(err);
                 return done();
@@ -141,6 +141,26 @@ describe('Test of journey object', function () {
                 assert.equal(filteredJourney.length, 2);
                 filteredJourney = journey.filterFullJourney(journeyList, 1);
                 assert.equal(filteredJourney.length, 1);
+                return done();
+            })
+            .catch(function (err) {
+                return done(err);
+            });
+    });
+
+    it('Get filtered past Journey', function (done) {
+        var journey = new Journey();
+        models.Journey.findAll({where: {is_canceled: false}, include: [
+                {
+                    model: models.Join,
+                    as: 'Joins',
+                    include: [ models.Invoice ]
+                },
+                { model: models.Run }
+            ]})
+            .then(function (journeyList) {
+                var filteredJourney = journey.filterPastJourney(journeyList);
+                assert.equal(filteredJourney.length, 3);
                 return done();
             })
             .catch(function (err) {
@@ -225,9 +245,18 @@ describe('Test of journey object', function () {
 
     it('Get list of journey', function (done) {
         var journey = new Journey();
-        journey.getList(function (err, journeyList) {
+        journey.getList(0, function (err, journeyList) {
             if (err) return done(err);
             assert.equal(journeyList.length, 4);
+            return done();
+        });
+    });
+
+    it('Get list of journey with old one', function (done) {
+        var journey = new Journey();
+        journey.getList(1, function (err, journeyList) {
+            if (err) return done(err);
+            assert.equal(journeyList.length, 5);
             return done();
         });
     });
@@ -248,10 +277,10 @@ describe('Test of journey object', function () {
                 distance: '25 km',
                 duration: '20 minutes',
                 journey_type: 'aller-retour',
-                date_start_outward: '2014-12-12 00:00:00',
+                date_start_outward: '2016-12-12 00:00:00',
                 time_start_outward: '09:00',
                 nb_space_outward: 2,
-                date_start_return: '2014-12-13 00:00:00',
+                date_start_return: '2016-12-13 00:00:00',
                 time_start_return: '09:00',
                 nb_space_return: 2,
                 car_type: 'citadine',
@@ -272,14 +301,14 @@ describe('Test of journey object', function () {
         assert.equal(tmp.amount, 5);
         journey.save(tmp, user, function(err, newJourney) {
             if (err) return done(err);
-            assert.equal(newJourney.id, 5);
+            assert.equal(newJourney.id, 6);
             assert.equal(newJourney.distance, '25 km');
             assert.equal(newJourney.journey_type, 'aller-retour');
             assert.equal(newJourney.car_type, 'citadine');
             assert.equal(newJourney.amount, 5);
-            journey.getList(function (err, journeyList) {
+            journey.getList(1, function (err, journeyList) {
                 if (err) return done(err);
-                assert.equal(journeyList.length, 5);
+                assert.equal(journeyList.length, 6);
                 return done();
             });
         });
@@ -309,7 +338,7 @@ describe('Test of journey object', function () {
                 assert.equal(journeyUpdated.is_canceled, true);
                 journey.getByUser(1, function (err, journeyList) {
                     if (err) return done(err);
-                    assert.equal(journeyList.length, 1);
+                    assert.equal(journeyList.length, 2);
                     join.getByJourney(1, function (err, joinList) {
                         if (err) return done(err);
                         assert.equal(joinList.length, 0);

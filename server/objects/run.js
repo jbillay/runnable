@@ -83,7 +83,7 @@ run.prototype.save = function (run, user, done) {
 
 run.prototype.getActiveList = function (done) {
     'use strict';
-	models.Run.findAll({where: {is_active: true},
+	models.Run.findAll({where: {is_active: true, date_start: {$gte: new Date()}},
                         order: 'date_start ASC'})
 		.then(function (runs) {
 			done(null, runs);
@@ -105,8 +105,12 @@ run.prototype.search = function (searchInfo, done) {
     }
     if (searchInfo.run_adv_start_date && searchInfo.run_adv_start_date.length !== 0) {
         var start_date = new Date(searchInfo.run_adv_start_date);
-        searchParams.push({date_start: {$gte: start_date}});
-    }
+		if (start_date > new Date()) {
+			searchParams.push({date_start: {$gte: start_date}});
+		}
+    } else {
+		searchParams.push({date_start: {$gte: new Date()}});
+	}
     if (searchInfo.run_adv_end_date && searchInfo.run_adv_end_date.length !== 0) {
         var end_date = new Date(searchInfo.run_adv_end_date);
         searchParams.push({date_start: {$lte: end_date}});
@@ -132,11 +136,11 @@ run.prototype.search = function (searchInfo, done) {
 				distance.get(options, function(err, data) {
 					if (err) return done(err);
 					if (data.length) {
+						var searchDistance = parseFloat(searchInfo.run_adv_distance);
 						data.forEach(function (journey, index) {
 							if (index % iterator === 0) {
 								var newDistance = journey.distance.substr(0, journey.distance.lastIndexOf(' ')),
-								    distanceFloat = parseFloat(newDistance),
-                                    searchDistance = parseFloat(searchInfo.run_adv_distance);
+								    distanceFloat = parseFloat(newDistance);
 								if (distanceFloat <= searchDistance) {
 									filterRuns.push(runs[index / iterator]);
 								}
@@ -156,7 +160,7 @@ run.prototype.search = function (searchInfo, done) {
 
 run.prototype.getNextList = function (nb, done) {
     'use strict';
-	models.Run.findAll({limit: nb, where: {is_active: true}, order: 'updatedAt DESC'})
+	models.Run.findAll({limit: nb, where: {is_active: true, date_start: {$gte: new Date()}}, order: 'updatedAt DESC'})
 		.then(function (runs) {
 			done(null, runs);
 		})
@@ -176,9 +180,12 @@ run.prototype.getById = function (id, done) {
 		});
 };
 
-run.prototype.getList = function (done) {
+run.prototype.getList = function (old_run, done) {
     'use strict';
-	models.Run.findAll()
+	var where = {date_start: {$gte: new Date()}};
+	if (old_run === 1) where = {};
+	models.Run.findAll({where: [where],
+						order: 'date_start ASC'})
 		.then(function (runs) {
 			done(null, runs);
 		})

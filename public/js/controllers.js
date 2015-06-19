@@ -940,12 +940,10 @@ angular.module('runnable.controllers', []).
 		$scope.userId = $routeParams.userId;
 		var userPromise = User.getPublicInfo($scope.userId),
 			userDriverPromise = User.getPublicDriverInfo($scope.userId),
-			userItraRunPromise = User.getItraRuns($scope.userId),
-			all = $q.all([userPromise, userDriverPromise, userItraRunPromise]);
+			all = $q.all([userPromise, userDriverPromise]);
 		all.then(function (res) {
 			$scope.userPublicInfo = res[0];
 			$scope.userDriverPublicInfo = res[1];
-			$scope.userItraRun = res[2];
             $scope.driverComments = [];
             $scope.driverRate = 0;
             var ratesSum = 0;
@@ -959,7 +957,7 @@ angular.module('runnable.controllers', []).
             }
 			var now = new Date().getTime(),
 				creation = new Date($scope.userPublicInfo.createdAt).getTime();
-			$scope.sinceCreation = parseInt((now-creation)/(24*3600*1000));
+			$scope.sinceCreation = parseInt((now-creation)/(24*3600*1000)) + 1;
 			$scope.userNbJoin = $scope.userPublicInfo.Joins.length;
 			$scope.userNbJourney = $scope.userPublicInfo.Journeys.length;
 		});

@@ -12,6 +12,7 @@ var q = require('q');
 var request = require('request');
 var sinon = require('sinon');
 var distance = require('google-distance');
+var fakeDate;
 
 var loadData = function (fix) {
     var deferred = q.defer();
@@ -57,6 +58,7 @@ describe('Tests of run objects', function () {
                 });
             });
     });
+
     //After all the tests have run, output all the sequelize logging.
     after(function (done) {
 		distance.get.restore();
@@ -67,20 +69,17 @@ describe('Tests of run objects', function () {
     it('Should be able to show active runs', function (done) {
         var run = new Run();
         run.getActiveList(function (err, runs) {
-            if (err) {
-                console.log('Error: ' + err);
-            }
-            assert.equal(runs.length, 5);
+            if (err) return done(err);
+            assert.equal(runs.length, 3);
             return done();
         });
+
     });
 
     it('Should be able to get Maxicross run', function (done) {
         var run = new Run();
         run.getById(1, function (err, run) {
-            if (err) {
-                console.log('Error: ' + err);
-            }
+            if (err) return done(err);
             assert.equal(run.name, 'Maxicross');
             assert.equal(run.type, 'trail');
             assert.equal(run.address_start, 'Bouffémont, France');
@@ -90,10 +89,17 @@ describe('Tests of run objects', function () {
 
     it('Should be able to get all runs', function (done) {
         var run = new Run();
-        run.getList(function (err, runs) {
-            if (err) {
-                console.log('Error: ' + err);
-            }
+        run.getList(0, function (err, runs) {
+            if (err) return done(err);
+            assert.equal(runs.length, 4);
+            return done();
+        });
+    });
+
+    it('Should be able to get all runs with old one included', function (done) {
+        var run = new Run();
+        run.getList(1, function (err, runs) {
+            if (err) return done(err);
             assert.equal(runs.length, 6);
             return done();
         });
@@ -102,9 +108,7 @@ describe('Tests of run objects', function () {
     it('Should be able to limited number of runs', function (done) {
         var run = new Run();
         run.getNextList(2, function (err, runs) {
-            if (err) {
-                console.log('Error: ' + err);
-            }
+            if (err) return done(err);
             assert.equal(runs.length, 2);
             return done();
         });
@@ -120,10 +124,7 @@ describe('Tests of run objects', function () {
                 run_name: 'maxi'
             };
         run.search(searchInfo, function (err, runs) {
-            if (err) {
-                console.log('Error: ' + err);
-                return done(err);
-            }
+            if (err) return done(err);
             assert.equal(runs.length, 1);
             assert.equal(runs[0].name, 'Maxicross');
             assert.equal(runs[0].type, 'trail');
@@ -143,10 +144,7 @@ describe('Tests of run objects', function () {
                 run_name: ''
             };
         run.search(searchInfo, function (err, runs) {
-            if (err) {
-                console.log('Error: ' + err);
-                return done(err);
-            }
+            if (err) return done(err);
             assert.equal(runs.length, 2);
             return done();
         });
@@ -162,11 +160,8 @@ describe('Tests of run objects', function () {
                 run_name: ''
             };
         run.search(searchInfo, function (err, runs) {
-            if (err) {
-                console.log('Error: ' + err);
-                return done(err);
-            }
-            assert.equal(runs.length, 2);
+            if (err) return done(err);
+            assert.equal(runs.length, 1);
             return done();
         });
     });
@@ -181,10 +176,7 @@ describe('Tests of run objects', function () {
                 run_name: 'templ'
             };
         run.search(searchInfo, function (err, runs) {
-            if (err) {
-                console.log('Error: ' + err);
-                return done(err);
-            }
+            if (err) return done(err);
             assert.equal(runs.length, 1);
             assert.equal(runs[0].name, 'Les templiers');
             assert.equal(runs[0].type, 'trail');
@@ -196,12 +188,10 @@ describe('Tests of run objects', function () {
     it('Should be able to activate the run', function (done) {
         var run = new Run();
         run.toggleActive(6, function (err) {
-            if (err) {
-                console.log('Error: ' + err);
-                return done(err);
-            }
+            if (err) return done(err);
             run.getActiveList(function (err, runs) {
-                assert.equal(runs.length, 6);
+                if (err) return done(err);
+                assert.equal(runs.length, 4);
                 return done();
             });
         });
@@ -209,12 +199,11 @@ describe('Tests of run objects', function () {
 
     it('Should be able to deactivate the run', function (done) {
         var run = new Run();
-        run.toggleActive(1, function (err) {
-            if (err) {
-                console.log('Error: ' + err);
-            }
+        run.toggleActive(2, function (err) {
+            if (err) return done(err);
             run.getActiveList(function (err, runs) {
-                assert.equal(runs.length, 4);
+                if (err) return done(err);
+                assert.equal(runs.length, 2);
                 return done();
             });
         });
@@ -243,15 +232,13 @@ describe('Tests of run objects', function () {
         assert.equal(tmp.type, 'marathon');
         assert.equal(tmp.address_start, 'Chamonix, France');
         run.save(tmp, data_user, function (err, newRun) {
-            if (err) {
-                console.log('Error: ' + err);
-                return done(err);
-            }
+            if (err) return done(err);
             assert.equal(newRun.name, 'Marathon du Mont Blanc');
             assert.equal(newRun.type, 'marathon');
             assert.equal(newRun.address_start, 'Chamonix, France');
             run.getActiveList(function (err, runs) {
-                assert.equal(runs.length, 6);
+                if (err) return done(err);
+                assert.equal(runs.length, 4);
                 return done();
             });
         });
@@ -259,28 +246,12 @@ describe('Tests of run objects', function () {
 
 	it('Should be able to find race within less then 30km', function (done) {
 		var obj = [
-			{index:null, distance:'35.4 km', distanceValue:27466,   duration:'44 mins',         durationValue:2612,     origin:'Bouffémont, France',            destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
-			{index:null, distance:'35.4 km', distanceValue:27466,   duration:'44 mins',         durationValue:2612,     origin:'Bouffémont, France',            destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
-			{index:null, distance:'35.4 km', distanceValue:27466,   duration:'44 mins',         durationValue:2612,     origin:'Bouffémont, France',            destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
-			{index:null, distance:'35.4 km', distanceValue:27466,   duration:'44 mins',         durationValue:2612,     origin:'Bouffémont, France',            destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
-			{index:null, distance:'35.4 km', distanceValue:27466,   duration:'44 mins',         durationValue:2612,     origin:'Bouffémont, France',            destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
-			{index:null, distance:'642 km',  distanceValue:642143,  duration:'5 hours 44 mins', durationValue:20636,    origin:'Millau, France',                destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
-			{index:null, distance:'642 km',  distanceValue:642143,  duration:'5 hours 44 mins', durationValue:20636,    origin:'Millau, France',                destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
 			{index:null, distance:'642 km',  distanceValue:642143,  duration:'5 hours 44 mins', durationValue:20636,    origin:'Millau, France',                destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
 			{index:null, distance:'642 km',  distanceValue:642143,  duration:'5 hours 44 mins', durationValue:20636,    origin:'Millau, France',                destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
 			{index:null, distance:'642 km',  distanceValue:642143,  duration:'5 hours 44 mins', durationValue:20636,    origin:'Millau, France',                destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
 			{index:null, distance:'22.5 km', distanceValue:22523,   duration:'36 mins',         durationValue:2142,     origin:'Saint-Germain-en-Laye, France', destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
 			{index:null, distance:'22.5 km', distanceValue:22523,   duration:'36 mins',         durationValue:2142,     origin:'Saint-Germain-en-Laye, France', destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
 			{index:null, distance:'22.5 km', distanceValue:22523,   duration:'36 mins',         durationValue:2142,     origin:'Saint-Germain-en-Laye, France', destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
-			{index:null, distance:'22.5 km', distanceValue:22523,   duration:'36 mins',         durationValue:2142,     origin:'Saint-Germain-en-Laye, France', destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
-			{index:null, distance:'22.5 km', distanceValue:22523,   duration:'36 mins',         durationValue:2142,     origin:'Saint-Germain-en-Laye, France', destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
-			{index:null, distance:'1 m',     distanceValue:0,       duration:'1 min',           durationValue:0,        origin:'Paris, France',                 destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
-			{index:null, distance:'1 m',     distanceValue:0,       duration:'1 min',           durationValue:0,        origin:'Paris, France',                 destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
-			{index:null, distance:'1 m',     distanceValue:0,       duration:'1 min',           durationValue:0,        origin:'Paris, France',                 destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
-			{index:null, distance:'1 m',     distanceValue:0,       duration:'1 min',           durationValue:0,        origin:'Paris, France',                 destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
-			{index:null, distance:'1 m',     distanceValue:0,       duration:'1 min',           durationValue:0,        origin:'Paris, France',                 destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
-			{index:null, distance:'594 km',  distanceValue:587210,  duration:'5 hours 23 mins', durationValue:19362,    origin:'Saint-Émilion, France',         destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
-			{index:null, distance:'594 km',  distanceValue:587210,  duration:'5 hours 23 mins', durationValue:19362,    origin:'Saint-Émilion, France',         destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
 			{index:null, distance:'594 km',  distanceValue:587210,  duration:'5 hours 23 mins', durationValue:19362,    origin:'Saint-Émilion, France',         destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
 			{index:null, distance:'594 km',  distanceValue:587210,  duration:'5 hours 23 mins', durationValue:19362,    origin:'Saint-Émilion, France',         destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
 			{index:null, distance:'594 km',  distanceValue:587210,  duration:'5 hours 23 mins', durationValue:19362,    origin:'Saint-Émilion, France',         destination:'Paris, France',    mode:'driving', units:'metric', language:'en', avoid:null, sensor:false},
@@ -298,11 +269,8 @@ describe('Tests of run objects', function () {
 				run_name: ''
 			};
 		run.search(searchInfo, function (err, runs) {
-			if (err) {
-				console.log('Error: ' + err);
-				return done(err);
-			}
-			assert.equal(runs.length, 2);
+			if (err) return done(err);
+			assert.equal(runs.length, 1);
 			return done();
 		});
     });

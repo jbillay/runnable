@@ -215,7 +215,7 @@ describe('Test of user API', function () {
     });
 
     describe('POST /api/user', function () {
-
+        // TODO: mock Mail send function to check if hash and domain are well sent
         mockItraCode();
 
         it('should return code 200', function (done) {
@@ -374,7 +374,7 @@ describe('Test of user API', function () {
             agent
                 .get('http://localhost:9615/api/user/journeys')
                 .end(function (err, res) {
-                    assert.equal(res.body.length, 2);
+                    assert.equal(res.body.length, 3);
                     return done();
                 });
         });
@@ -606,9 +606,7 @@ describe('Test of user API', function () {
                 .put('http://localhost:9615/api/user')
                 .send(user)
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
+                    if (err) return done(err);
                     assert.equal(res.body.msg, 'accountUpdated');
                     agent
                         .get('http://localhost:9615/api/user/me')

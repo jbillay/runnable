@@ -9,7 +9,9 @@ var request = require('supertest'),
     app = require('../../server.js'),
     async = require('async'),
     q = require('q'),
-    superagent = require('superagent');
+    sinon = require('sinon'),
+    superagent = require('superagent'),
+    fakeDate;
 
 
 var loadData = function (fix) {
@@ -66,11 +68,11 @@ describe('Test of run API', function () {
                         });
                     }
                 ], function (err, result) {
-                    done();
+                    return done();
                 });
             });
     });
-    //After all the tests have run, output all the sequelize logging.
+
     after(function () {
         console.log('Test API run over !');
     });
@@ -81,15 +83,13 @@ describe('Test of run API', function () {
                 .get('/api/run/list')
                 .expect(200, done);
         });
-        it('should return list of 5 runs', function (done) {
+        it('should return list of 3 runs', function (done) {
             request(app)
                 .get('/api/run/list')
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
-                    assert.equal(res.body.length, 5);
-                    done();
+                    if (err) return done(err);
+                    assert.equal(res.body.length, 3);
+                    return done();
                 });
         });
     });
@@ -104,9 +104,7 @@ describe('Test of run API', function () {
             request(app)
                 .get('/api/run/1')
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
+                    if (err) return done(err);
                     assert.equal(res.res.body.name, 'Maxicross');
                     assert.equal(res.res.body.type, 'trail');
                     assert.equal(res.res.body.address_start, 'Bouffémont, France');
@@ -115,19 +113,17 @@ describe('Test of run API', function () {
                     assert.equal(res.res.body.elevations, '500+ - 1400+');
                     assert.equal(res.res.body.info, 'Toutes les infos sur le maxicross');
                     assert.equal(res.res.body.is_active, 1);
-                    done();
+                    return done();
                 });
         });
         it('should failed to retrieve a run', function (done) {
             request(app)
                 .get('/api/run/-1')
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
+                    if (err) return done(err);
                     var obj = {};
                     assert.deepEqual(res.body, obj);
-                    done();
+                    return done();
                 });
         });
     });
@@ -142,11 +138,9 @@ describe('Test of run API', function () {
             request(app)
                 .get('/api/run/next/2')
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
+                    if (err) return done(err);
                     assert.equal(res.body.length, 2);
-                    done();
+                    return done();
                 });
         });
         it('should return failed to return runs', function (done) {
@@ -156,7 +150,7 @@ describe('Test of run API', function () {
                     if (err) return done(err);
                     console.log(res.body);
                     assert.equal(res.body.type, 'error');
-                    done();
+                    return done();
                 });
         });
     });
@@ -170,11 +164,9 @@ describe('Test of run API', function () {
             agent
                 .get('http://localhost:9615/api/admin/runs')
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
-                    assert.equal(res.body.length, 6);
-                    done();
+                    if (err) return done(err);
+                    assert.equal(res.body.length, 4);
+                    return done();
                 });
         });
     });
@@ -189,17 +181,13 @@ describe('Test of run API', function () {
                 .post('http://localhost:9615/api/admin/run/active')
                 .send({id: 6})
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
+                    if (err) return done(err);
                     assert.equal(res.body.msg, 'done');
                     request(app)
                         .get('/api/run/list')
                         .end(function (err, res) {
-                            if (err) {
-                                return done(err);
-                            }
-                            assert.equal(res.body.length, 6);
+                            if (err) return done(err);
+                            assert.equal(res.body.length, 4);
                             return done();
                         });
                 });
@@ -237,23 +225,17 @@ describe('Test of run API', function () {
                 .post('http://localhost:9615/api/run')
                 .send({run: run})
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
+                    if (err) return done(err);
                     assert.equal(res.body.msg, 'runCreated');
                     agent
                         .get('http://localhost:9615/api/admin/runs')
                         .end(function (err, res) {
-                            if (err) {
-                                return done(err);
-                            }
-                            assert.equal(res.body.length, 7);
+                            if (err) return done(err);
+                            assert.equal(res.body.length, 5);
                             agent
                                 .get('http://localhost:9615/api/run/7')
                                 .end(function (err, res) {
-                                    if (err) {
-                                        return done(err);
-                                    }
+                                    if (err) return done(err);
                                     assert.equal(res.res.body.name, 'Marathon du Mont Blanc');
                                     assert.equal(res.res.body.type, 'marathon');
                                     assert.equal(res.res.body.address_start, 'Chamonix, France');
@@ -291,16 +273,12 @@ describe('Test of run API', function () {
                 .put('http://localhost:9615/api/run')
                 .send({run: run})
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
+                    if (err) return done(err);
                     assert.equal(res.body.msg, 'runUpdated');
                     agent
                         .get('http://localhost:9615/api/run/1')
                         .end(function (err, res) {
-                            if (err) {
-                                return done(err);
-                            }
+                            if (err) return done(err);
                             assert.equal(res.res.body.name, 'Maxicross');
                             assert.equal(res.res.body.type, 'trail');
                             assert.equal(res.res.body.address_start, 'Bouffémont, France');
@@ -309,7 +287,7 @@ describe('Test of run API', function () {
                             assert.equal(res.res.body.elevations, '1500 D+');
                             assert.equal(res.res.body.info, 'Test Maxicross');
                             assert.equal(res.res.body.is_active, 1);
-                            done();
+                            return done();
                         });
                 });
         });
@@ -328,11 +306,9 @@ describe('Test of run API', function () {
                 .post('/api/run/search')
                 .send(searchInfo)
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
+                    if (err) return done(err);
                     assert.equal(res.body.length, 1);
-                    done();
+                    return done();
                 });
         });
     });
