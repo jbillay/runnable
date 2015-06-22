@@ -598,7 +598,7 @@ angular.module('runnable.controllers', []).
 				return parseInt($scope.journey.nb_space_return) - parseInt($scope.reserved_return);
 			};
 			$scope.nbFreeSpace = function () {
-				return $scope.nbFreeSpaceOutward + $scope.nbFreeSpaceReturn;
+				return $scope.nbFreeSpaceOutward() + $scope.nbFreeSpaceReturn();
 			};
 			$scope.getFreeSpaceOutward = function() {
 				var result = [], start = 1,
@@ -669,8 +669,8 @@ angular.module('runnable.controllers', []).
 				driverTemplate = 'DriverJoinJourneyCancel',
                 userValues = {runName: $scope.journey.Run.name },
                 driverValues = {runName: $scope.journey.Run.name},
-				placeOutwardReturn,
-				placeReturnReturn;
+				placeOutwardReturn = 0,
+				placeReturnReturn = 0;
 			$scope.joined = 0;
 			if ($scope.userJoin.nb_place_outward) {
 				placeOutwardReturn = $scope.userJoin.nb_place_outward;
@@ -836,9 +836,11 @@ angular.module('runnable.controllers', []).
                 });
                 // Define max date to show validation form
                 if (join.Journey.date_start_return > join.Journey.date_start_outward) {
-                    join.Journey.date_max = new Date(join.Journey.date_start_return).getTime();
+                    var dsr = join.Journey.date_start_return.split(/[- :]/);
+                    join.Journey.date_max = new Date(dsr[0], dsr[1]-1, dsr[2], dsr[3], dsr[4], dsr[5]).getTime();
                 } else {
-                    join.Journey.date_max = new Date(join.Journey.date_start_outward).getTime();
+                    var dso = join.Journey.date_start_outward.split(/[- :]/);
+                    join.Journey.date_max = new Date(dso[0], dso[1]-1, dso[2], dso[3], dso[4], dso[5]).getTime();
                 }
 			});
 		});
@@ -956,7 +958,8 @@ angular.module('runnable.controllers', []).
                 $scope.driverRate = ratesSum / $scope.userDriverPublicInfo.length;
             }
 			var now = new Date().getTime(),
-				creation = new Date($scope.userPublicInfo.createdAt).getTime();
+                ca = $scope.userPublicInfo.createdAt.split(/[- :]/),
+				creation = new Date(ca[0], ca[1]-1, ca[2], ca[3], ca[4], ca[5]).getTime();
 			$scope.sinceCreation = parseInt((now-creation)/(24*3600*1000)) + 1;
 			$scope.userNbJoin = $scope.userPublicInfo.Joins.length;
 			$scope.userNbJourney = $scope.userPublicInfo.Journeys.length;

@@ -26,7 +26,7 @@ describe('ValidationJourney Service', function() {
 
         it('should validate a journey', function () {
             spyOn(rootScope, '$broadcast').and.callThrough();
-            $httpBackend.whenPOST('/api/validation').respond('journeyValidationDone');
+            $httpBackend.whenPOST('/api/validation').respond({msg: 'journeyValidationDone', type: 'success'});
 
             var info = {
                     joinId: 1,
@@ -45,7 +45,7 @@ describe('ValidationJourney Service', function() {
             });
 
             $httpBackend.flush();
-            expect(message).toEqual('journeyValidationDone');
+            expect(message.msg).toEqual('journeyValidationDone');
             expect(rootScope.$broadcast).toHaveBeenCalled();
         });
 

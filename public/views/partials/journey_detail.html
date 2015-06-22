@@ -2,8 +2,20 @@
 <div class="container body">
     <div class="row spacehead">
         <div class="col-sm-12">
-            <h2>Parcours pour la course <a href="/run-{{journey.Run.id}}">{{journey.Run.name}}</a></h2>
-            <hr>
+            <div class="col-sm-9"><h2>Parcours pour la course <a href="/run-{{journey.Run.id}}">{{journey.Run.name}}</a></h2></div>
+            <div class="col-sm-3 pull-right">
+                <div ng-if="nbFreeSpace()">
+                    <button type="button" class="btn btn-primary" ng-if="!joined" ng-click="showJoinForm()">
+                        Participer à ce voyage
+                    </button>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-danger" ng-if="joined" ng-click="askValidationJoinCancelFromJourney()">
+                        Je souhaite annuler ma participation
+                    </button>
+                </div>
+            </div>
+            <div><hr class="col-sm-12"></div>
 		</div>
         <div class="col-sm-6">
 			<div class="panel panel-default">
@@ -12,27 +24,67 @@
 					<div class="pull-right">{{journey.journey_type | capitalize}}</div>
 				</div>
 				<div class="panel-body">
-					<div class="col-sm-8">
-						<table class="table table-no-border">
-							<tr>
-								<td><i class="fa fa-arrows-h"></i></td><td>{{journey.distance}}</td>
-							</tr>
-							<tr>
-								<td><i class="fa fa-history"></i></td><td>{{journey.duration}}</td>
-							</tr>
-							<tr>
-								<td><i class="fa fa-car"></i></td><td>{{journey.car_type | capitalize}}</td>
-							</tr>
-							<tr>
-								<td><i class="fa fa-user"></i></td><td><a href="/user-{{journey.User.id}}">{{journey.User.firstname}} {{journey.User.lastname}}</a></td>
-							</tr>
-						</table>
-					</div>
-					<div class="col-sm-4 journey_price_journey">
-						<div class="pull-right journey_price_journey">{{journey.amount | currency:'€ '}}</div>
-					</div>
-				</div>
-			</div>
+                    <div class="col-sm-12">
+                        <div class="col-sm-8">
+                            <table class="table table-no-border">
+                                <tr>
+                                    <td><i class="fa fa-user"></i></td><td><a href="/user-{{journey.User.id}}">{{journey.User.firstname}} {{journey.User.lastname}}</a></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-car"></i></td><td>{{journey.car_type | capitalize}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-sm-4 journey_price_journey">
+                            <div class="pull-right journey_price_journey">{{journey.amount | currency:'€ '}}</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12"><hr></div>
+                    <div class="col-sm-12">
+                        <table class="table table-no-border">
+                            <tr ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'aller'">
+                                <td><span class="pull-left"><strong>Aller</strong></span></td>
+                                <td><i class="glyphicon glyphicon-calendar"></i> {{journey.date_start_outward | date:'dd/MM/yyyy'}} {{journey.time_start_outward}}</td>
+                                <td><span class="pull-right journey_space_positive">{{journey.nb_space_outward - reserved_outward}} place(s)</span></td>
+                            </tr>
+                            <tr ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'retour'">
+                                <td><span class="pull-left"><strong>Retour</strong></span></td>
+                                <td><i class="glyphicon glyphicon-calendar"></i> {{journey.date_start_return | date:'dd/MM/yyyy'}} {{journey.time_start_return}}</td>
+                                <td><span class="pull-right journey_space_positive">{{journey.nb_space_return - reserved_return}} place(s)</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <span>Questions publiques</span>
+                </div>
+                <div class="panel-body">
+                    <div class="panel panel-default">
+                        <div class="panel-body discussion_board">
+                            <div class="panel panel-default" ng-class-odd="'pull-left'" ng-class-even="'pull-right'" ng-repeat="message in publicMessages">
+                                <div class="panel-body discussion_message">
+                                    <div class="panel-body discussion_message">
+                                        <p class="discussion_message_text">{{message.message}}</p>
+                                        <span class="discussion_message_info pull-right">{{message.createdAt | date:'medium'}} by {{message.User.firstname | capitalize}} {{message.User.lastname | capitalize}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <form name="discussionForm" ng-submit='sendMessage()'>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Entrer votre message" ng-model="newMessageEntry">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="submit">Envoyer</button>
+                                        </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+                    <!--
 			<div class="panel panel-default" ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'aller'">
 				<div class="panel-heading clearfix">
 					<span class="pull-left"><strong>Aller</strong></span>
@@ -69,9 +121,18 @@
 							Je souhaite annuler ma participation
 					</button>
 			</div>
+			-->
         </div>
-        <div class="col-sm-5">
-            <div id="map_canvas" class="map"></div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <span class="pull-left"><i class="fa fa-arrows-h"></i> {{journey.distance}}</span>
+                    <span class="pull-right"><i class="fa fa-history"></i> {{journey.duration}}</span>
+                </div>
+                <div class="panel-body">
+                    <div id="map_canvas" class="map"></div>
+                </div>
+            </div>
         </div>
     </div>
 	<div ng-include="'partials/modal_invoice'"></div>

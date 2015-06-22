@@ -170,7 +170,7 @@ describe('Join Service', function() {
 
         it('should cancel a join', function() {
             spyOn(rootScope, '$broadcast').and.callThrough();
-            $httpBackend.whenGET('/api/join/cancel/1').respond('joinCancelled');
+            $httpBackend.whenGET('/api/join/cancel/1').respond({msg: 'joinCancelled', type: 'success'});
             var promise = service.cancel(1),
                 message = null;
 
@@ -179,7 +179,7 @@ describe('Join Service', function() {
             });
 
             $httpBackend.flush();
-            expect(message).toEqual('joinCancelled');
+            expect(message.msg).toEqual('joinCancelled');
             expect(rootScope.$broadcast).toHaveBeenCalled();
         });
 
