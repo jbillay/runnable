@@ -63,11 +63,11 @@
                 <div class="panel-body">
                     <div class="panel panel-default">
                         <div class="panel-body discussion_board">
-                            <div class="panel panel-default" ng-class-odd="'pull-left'" ng-class-even="'pull-right'" ng-repeat="message in publicMessages">
+                            <div class="panel panel-default col-sm-9" ng-class-odd="'pull-left'" ng-class-even="'pull-right'" ng-repeat="message in publicMessages">
                                 <div class="panel-body discussion_message">
                                     <div class="panel-body discussion_message">
                                         <p class="discussion_message_text">{{message.message}}</p>
-                                        <span class="discussion_message_info pull-right">{{message.createdAt | date:'medium'}} by {{message.User.firstname | capitalize}} {{message.User.lastname | capitalize}}</span>
+                                        <span class="discussion_message_info pull-right">{{message.createdAt | date:'medium'}}</span>
                                     </div>
                                 </div>
                             </div>

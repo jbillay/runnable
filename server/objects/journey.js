@@ -218,7 +218,7 @@ journey.prototype.getNextList = function (nb, done) {
             include: [ models.Invoice ]
         },
         { model: models.Run }
-    ]})
+    ], order: 'Journey.updatedAt DESC'})
         .then(function (journeys) {
             var openJourney = that.filterFullJourney(journeys, nb);
             done(null, openJourney);

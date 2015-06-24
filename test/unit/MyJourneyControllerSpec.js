@@ -137,7 +137,7 @@ describe('Runnable Controllers', function() {
                 role: 'editor',
                 picture: null
             }]);
-            $httpBackend.whenGET('/api/discussion/messages/4').respond([{
+            $httpBackend.whenGET('/api/discussion/private/messages/4').respond([{
                 id: 1,
                 message: 'test à la con',
                 UserId: 2,

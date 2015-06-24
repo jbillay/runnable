@@ -151,27 +151,24 @@ describe('Test of Discussion API', function () {
 
         before(loginUser(agent));
 
-        it('should return messages for Journey 3', function (done) {
+        it('should return private messages for Journey 3', function (done) {
             agent
-                .get('http://localhost:9615/api/discussion/messages/3')
+                .get('http://localhost:9615/api/discussion/private/messages/3')
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
+                    if (err) return done(err);
                     assert.equal(res.body.length, 1);
                     assert.equal(res.body[0].message, 'Super cette discussion');
                     return done();
                 });
         });
 
-        it('should return message for Journey not exist', function (done) {
+        it('should return public messages for Journey 3', function (done) {
             agent
-                .get('http://localhost:9615/api/discussion/users/278')
+                .get('http://localhost:9615/api/discussion/public/messages/3')
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
-                    assert.equal(res.body.type, 'error');
+                    if (err) return done(err);
+                    assert.equal(res.body.length, 2);
+                    assert.equal(res.body[0].message, 'C est notre site mon ami !!!');
                     return done();
                 });
         });
@@ -182,13 +179,36 @@ describe('Test of Discussion API', function () {
 
         before(loginUser(agent));
 
-        it('should add a messages for Journey 3', function (done) {
+        it('should add a private messages for Journey 3', function (done) {
             var message = {
                 message: 'TEST MESSAGE',
+                is_public: false,
                 journeyId: 3
             };
             agent
-                .post('http://localhost:9615/api/discussion/message')
+                .post('http://localhost:9615/api/discussion/private/message')
+                .send(message)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.msg, 'ok');
+                    agent
+                        .get('http://localhost:9615/api/discussion/private/messages/3')
+                        .end(function (err, res) {
+                            if (err) return done(err);
+                            assert.equal(res.body.length, 2);
+                            return done();
+                        });
+                });
+        });
+
+        it('should add a public messages for Journey 3 on auth user', function (done) {
+            var message = {
+                message: 'TEST MESSAGE PUBLIC',
+                is_public: true,
+                journeyId: 3
+            };
+            agent
+                .post('http://localhost:9615/api/discussion/public/message')
                 .send(message)
                 .end(function (err, res) {
                     if (err) {
@@ -196,31 +216,14 @@ describe('Test of Discussion API', function () {
                     }
                     assert.equal(res.body.msg, 'ok');
                     agent
-                        .get('http://localhost:9615/api/discussion/users/3')
+                        .get('http://localhost:9615/api/discussion/public/messages/3')
                         .end(function (err, res) {
                             if (err) {
                                 return done(err);
                             }
-                            assert.equal(res.body.length, 2);
+                            assert.equal(res.body.length, 3);
                             return done();
                         });
-                });
-        });
-
-        it('should add a message for Journey not exist', function (done) {
-            var message = {
-                message: 'TEST MESSAGE',
-                journeyId: 2736
-            };
-            agent
-                .post('http://localhost:9615/api/discussion/message')
-                .send(message)
-                .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
-                    assert.equal(res.body.type, 'error');
-                    return done();
                 });
         });
     });

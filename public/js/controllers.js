@@ -546,13 +546,14 @@ angular.module('runnable.controllers', []).
     }).
 	controller('RunnableJourneyDetailController', function ($scope, $q, $routeParams, $rootScope, $timeout, $location,
 															$sce, Run, Journey, Join, GoogleMapApi, MyRunTripFees,
-                                                            Session, Inbox, Technical) {
+                                                            Session, Inbox, Technical, Discussion) {
 		$scope.page = 'Journey';
 		$scope.journeyId = parseInt($routeParams.journeyId);
 		var journeyPromise = Journey.getDetail($scope.journeyId),
 			joinPromise = Join.getListForJourney($scope.journeyId),
             versionPromise = Technical.version(),
-			all = $q.all([journeyPromise, joinPromise, versionPromise]);
+			publicMessagesPromise = Discussion.getPublicMessages($scope.journeyId, 1),
+			all = $q.all([journeyPromise, joinPromise, versionPromise, publicMessagesPromise]);
 		all.then(function (res) {
 			$scope.journey = res[0];
             if ($scope.journey.is_canceled) {
@@ -560,6 +561,7 @@ angular.module('runnable.controllers', []).
             }
 			$scope.joinList = res[1];
             $scope.version = res[2];
+            $scope.publicMessages = res[3];
             if ($scope.version === 'DEV') {
                 $scope.url_paypal = $sce.trustAsResourceUrl('https://www.sandbox.paypal.com/cgi-bin/webscr');
                 $scope.key_paypal = '622WFSZHPNBH4';
@@ -697,6 +699,27 @@ angular.module('runnable.controllers', []).
 															journey.amount);
 			}
 			return fees;
+		};
+		// TODO: to finish
+		$scope.sendMessage = function () {
+			var text = String($scope.newMessageEntry).replace(/<[^>]+>/gm, '');
+			$scope.newMessageEntry = '';
+			$scope.publicMessages.unshift(
+				{	message: text,
+					createdAt: Date.now()
+				});
+			Discussion.addPublicMessage(text, $scope.journeyId);
+			// TODO: send email to journey owner
+			/*
+			if (user.id !== Session.userId) {
+				var values = {runName: $scope.selectedJourney.Run.name,
+						userFirstname: Session.userFirstname,
+						userLastname: Session.userLastname,
+						text: text},
+					template = 'JourneyMessage';
+				Inbox.addMessage(template, values, user.id);
+			}
+			*/
 		};
 	}).
 	controller('RunnableJourneyCreateController', function ($scope, $q, $timeout, $routeParams, $rootScope, $location,
@@ -862,7 +885,7 @@ angular.module('runnable.controllers', []).
         };
 		$scope.showJourneyModal = function (journey, join) {
 			var discussionUsersPromise = Discussion.getUsers(journey.id),
-				discussionMessagesPromise = Discussion.getMessages(journey.id),
+				discussionMessagesPromise = Discussion.getPrivateMessages(journey.id, 0),
 				all = $q.all([discussionUsersPromise, discussionMessagesPromise]);
 			$scope.selectedJourney = journey;
 			if (join) {
@@ -925,7 +948,7 @@ angular.module('runnable.controllers', []).
 						{	firstname: Session.userFirstname,
 							lastname: Session.userLastname}
 				});
-			Discussion.addMessage(text, $scope.selectedJourney.id);
+			Discussion.addPrivateMessage(text, $scope.selectedJourney.id);
 			angular.forEach($scope.discussionUsers, function (user) {
 				if (user.id !== Session.userId) {
                     var values = {runName: $scope.selectedJourney.Run.name,

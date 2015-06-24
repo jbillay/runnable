@@ -59,9 +59,11 @@ module.exports = function (app, passport, auth) {
     app.get('/api/journey/next/:nb', controllers.journey.next);
     app.get('/api/journey/book/:id', controllers.journey.bookSpace);
 
-    app.post('/api/discussion/message', auth.requiresLogin, controllers.discussion.addMessage);
+    app.post('/api/discussion/private/message', auth.requiresLogin, controllers.discussion.addPrivateMessage);
+    app.post('/api/discussion/public/message', controllers.discussion.addPublicMessage);
     app.get('/api/discussion/users/:id', auth.requiresLogin, controllers.discussion.getUsers);
-    app.get('/api/discussion/messages/:id', auth.requiresLogin, controllers.discussion.getMessages);
+    app.get('/api/discussion/public/messages/:id', controllers.discussion.getPublicMessages);
+    app.get('/api/discussion/private/messages/:id', auth.requiresLogin, controllers.discussion.getPrivateMessages);
 
     app.post('/api/validation', auth.requiresLogin, controllers.validation_journey.validate);
 

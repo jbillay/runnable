@@ -9,6 +9,7 @@ var models = require('../models');
 function discussion() {
     this.id = null;
     this.message = null;
+    this.is_public = null;
     this.createdAt = null;
     this.updatedAt = null;
 }
@@ -23,6 +24,11 @@ discussion.prototype.set = function (discussion) {
     }
     if (discussion.message) {
         this.message = discussion.message;
+    }
+    if (discussion.is_public !== undefined) {
+        this.is_public = discussion.is_public;
+    } else {
+        this.is_public = true;
     }
     if (discussion.createdAt) {
         this.createdAt = discussion.createdAt;
@@ -53,9 +59,9 @@ discussion.prototype.getUsers = function (journeyId, done) {
         });
 };
 
-discussion.prototype.getMessages = function (journeyId, done) {
-    models.Discussion.findAll({where: {JourneyId:   journeyId},
-                                        include:    [models.User],
+discussion.prototype.getMessages = function (journeyId, isPublic, done) {
+    models.Discussion.findAll({where: {JourneyId:   journeyId, is_public: isPublic},
+                                        include:    [{model: models.User, required: false}],
                                         order:      'Discussion.createdAt DESC'})
         .then(function (messages) {
             done(null, messages);
@@ -65,31 +71,43 @@ discussion.prototype.getMessages = function (journeyId, done) {
         });
 };
 
-discussion.prototype.addMessage = function (message, journeyId, user, done) {
+discussion.prototype.addMessage = function (message, journeyId, isPublic, user, done) {
 	var that = this;
 	that.message = message;
+    that.is_public = isPublic;
 	console.log('try to add message to journey run : ' + journeyId);
 	models.Journey.find({where: {id: journeyId}})
         .then(function (journey) {
             if (!journey) {
                 done(new Error('No Journey found'), null);
+            } else {
+                models.Discussion.create(that)
+                    .then(function (newDiscussion) {
+                        newDiscussion.setJourney(journey)
+                            .then(function (newDiscussion) {
+                                if (user) {
+                                    models.User.find({where: {id: user.id}})
+                                        .then(function(user) {
+                                            newDiscussion.setUser(user)
+                                                .then(function (newDiscussion) {
+                                                    done(null, newDiscussion);
+                                                })
+                                                .catch(function (err) {
+                                                    done(err, null);
+                                                });
+                                    });
+                                } else {
+                                    newDiscussion.setUser(null)
+                                        .then(function (newDiscussion) {
+                                            done(null, newDiscussion);
+                                        })
+                                        .catch(function (err) {
+                                            done(err, null);
+                                        });
+                                }
+                            });
+                    });
             }
-			models.User.find({where: {id: user.id}})
-				.then(function(user) {
-					models.Discussion.create(that)
-						.then(function (newDiscussion) {
-							newDiscussion.setUser(user)
-								.then(function(newDiscussion) {
-									newDiscussion.setJourney(journey)
-										.then(function (newDiscussion) {
-											done(null, newDiscussion);
-										})
-										.catch(function(err) {
-											done(err, null);
-										});
-								});
-						});
-				});
 		});
 };
 

@@ -6,12 +6,13 @@
 
 module.exports = function(sequelize, DataTypes) {
     var Discussion = sequelize.define('Discussion', {
-        message: DataTypes.TEXT
+        message:    DataTypes.TEXT,
+        is_public:  DataTypes.BOOLEAN
     }, {
         classMethods: {
             associate: function(models) {
                 /*jshint -W030 */
-                Discussion.belongsTo(models.User),
+                Discussion.belongsTo(models.User, {constraints: false}),
                 Discussion.belongsTo(models.Journey);
                 /*jshint +W030 */
             }

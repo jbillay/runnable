@@ -802,9 +802,9 @@ angular.module('runnable.services', ['ngResource']).
 					});
 				return deferred.promise;
 			},
-			getMessages: function (journeyId) {
+			getPublicMessages: function (journeyId) {
 				var deferred = $q.defer();
-				$http.get('/api/discussion/messages/' + journeyId).
+				$http.get('/api/discussion/public/messages/' + journeyId).
 					success(function (result) {
 						deferred.resolve(result);
 					}).
@@ -813,9 +813,31 @@ angular.module('runnable.services', ['ngResource']).
 					});
 				return deferred.promise;
 			},
-			addMessage: function(message, journeyId) {
+			getPrivateMessages: function (journeyId) {
 				var deferred = $q.defer();
-				$http.post('/api/discussion/message', {message: message, journeyId: journeyId}).
+				$http.get('/api/discussion/private/messages/' + journeyId).
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						deferred.reject('error ' + status + ' : ' + data);
+					});
+				return deferred.promise;
+			},
+			addPrivateMessage: function(message, journeyId) {
+				var deferred = $q.defer();
+				$http.post('/api/discussion/private/message', {message: message, journeyId: journeyId}).
+					success(function (result) {
+						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						deferred.reject('error ' + status + ' : ' + data);
+					});
+				return deferred.promise;
+			},
+			addPublicMessage: function(message, journeyId) {
+				var deferred = $q.defer();
+				$http.post('/api/discussion/public/message', {message: message, journeyId: journeyId}).
 					success(function (result) {
 						deferred.resolve(result);
 					}).

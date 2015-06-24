@@ -4,6 +4,7 @@
     "data": {
       "id": 1,
       "message": "test à la con",
+      "is_public": false,
       "UserId": 2,
       "JourneyId": 2,
       "createdAt": "2015-01-28 09:57:02"
@@ -14,6 +15,7 @@
     "data": {
       "id": 2,
       "message": "je sais que ça va marcher",
+      "is_public": false,
       "UserId": 1,
       "JourneyId": 2,
       "createdAt": "2015-01-28 11:29:13"
@@ -23,7 +25,8 @@
     "model": "Discussion",
     "data": {
       "id": 3,
-      "message": "Très bonne nouvelle",
+      "message": "Tres bonne nouvelle",
+      "is_public": false,
       "UserId": 1,
       "JourneyId": 1,
       "createdAt": "2015-01-28 11:29:22"
@@ -34,9 +37,32 @@
     "data": {
       "id": 4,
       "message": "Super cette discussion",
+      "is_public": false,
       "UserId": 2,
       "JourneyId": 3,
       "createdAt": "2015-01-28 11:32:27"
+    }
+  },
+  {
+    "model": "Discussion",
+    "data": {
+      "id": 5,
+      "message": "C est quoi ce site de ouf ?",
+      "is_public": true,
+      "UserId": null,
+      "JourneyId": 3,
+      "createdAt": "2015-05-28 11:32:27"
+    }
+  },
+  {
+    "model": "Discussion",
+    "data": {
+      "id": 6,
+      "message": "C est notre site mon ami !!!",
+      "is_public": true,
+      "UserId": 1,
+      "JourneyId": 3,
+      "createdAt": "2015-05-28 12:11:27"
     }
   }
 ]

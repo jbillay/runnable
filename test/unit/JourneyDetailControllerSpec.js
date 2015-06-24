@@ -78,6 +78,21 @@ describe('Runnable Controllers', function() {
             });
             $httpBackend.whenPOST('/api/join').respond('userJoined');
             $httpBackend.whenGET('/api/join/cancel/1').respond({msg: 'joinCancelled', type: 'success'});
+            $httpBackend.whenGET('/api/discussion/public/messages/4').respond([{
+                id: 4,
+                message: 'test à la con',
+                is_public: true,
+                UserId: 2,
+                JourneyId: 2,
+                createdAt: '2015-01-28 09:57:02'
+            },{
+                id: 5,
+                message: 'je sais que ça va marcher',
+                is_public: true,
+                UserId: 1,
+                JourneyId: 2,
+                createdAt: '2015-01-28 11:29:13'
+            }]);
             var formElem = angular.element('<form ng-form-commit name="form"><input type="text" name="number"></form>');
             $compile(formElem)(scope);
 
@@ -264,6 +279,21 @@ describe('Runnable Controllers', function() {
             });
             $httpBackend.whenPOST('/api/join').respond('userJoined');
             $httpBackend.whenGET('/api/join/cancel/1').respond({msg: 'joinCancelled', type: 'success'});
+            $httpBackend.whenGET('/api/discussion/public/messages/4').respond([{
+                id: 4,
+                message: 'test à la con',
+                is_public: true,
+                UserId: 2,
+                JourneyId: 2,
+                createdAt: '2015-01-28 09:57:02'
+            },{
+                id: 5,
+                message: 'je sais que ça va marcher',
+                is_public: true,
+                UserId: 1,
+                JourneyId: 2,
+                createdAt: '2015-01-28 11:29:13'
+            }]);
             var formElem = angular.element('<form ng-form-commit name="form"><input type="text" name="number"></form>');
             $compile(formElem)(scope);
 
@@ -388,6 +418,21 @@ describe('Runnable Controllers', function() {
             $httpBackend.whenGET('/api/version').respond('DEV');
             $httpBackend.whenGET('/api/user/me').respond(401);
             $httpBackend.whenGET('/api/inbox/unread/nb/msg').respond(401);
+            $httpBackend.whenGET('/api/discussion/public/messages/4').respond([{
+                id: 4,
+                message: 'test à la con',
+                is_public: true,
+                UserId: 2,
+                JourneyId: 2,
+                createdAt: '2015-01-28 09:57:02'
+            },{
+                id: 5,
+                message: 'je sais que ça va marcher',
+                is_public: true,
+                UserId: 1,
+                JourneyId: 2,
+                createdAt: '2015-01-28 11:29:13'
+            }]);
 
             ctrlMain = $controller('RunnableMainController',
                 {$scope: scope, $rootScope: rootScope});
@@ -509,6 +554,21 @@ describe('Runnable Controllers', function() {
                 picture: null
             });
             $httpBackend.whenGET('/api/inbox/unread/nb/msg').respond(200, 2);
+            $httpBackend.whenGET('/api/discussion/public/messages/4').respond([{
+                id: 4,
+                message: 'test à la con',
+                is_public: true,
+                UserId: 2,
+                JourneyId: 2,
+                createdAt: '2015-01-28 09:57:02'
+            },{
+                id: 5,
+                message: 'je sais que ça va marcher',
+                is_public: true,
+                UserId: 1,
+                JourneyId: 2,
+                createdAt: '2015-01-28 11:29:13'
+            }]);
 
             ctrlMain = $controller('RunnableMainController',
                 {$scope: scope, $rootScope: rootScope});
