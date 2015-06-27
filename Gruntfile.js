@@ -74,6 +74,9 @@ module.exports = function(grunt) {
         karma: {
             unit: {
                 configFile: 'test/karma.conf.js'
+            },
+            travis: {
+                configFile: 'test/karma.travis.conf.js'
             }
         }
     });
@@ -88,13 +91,13 @@ module.exports = function(grunt) {
     grunt.registerTask('node-unit-test', ['env:test', 'mocha_istanbul:coverage']);
 
     // Angular Test task.
-    grunt.registerTask('angular-unit-test', ['env:test', 'karma']);
+    grunt.registerTask('angular-unit-test', ['env:test', 'karma:unit']);
 
     // Test task(s).
     grunt.registerTask('test', ['lint', 'node-unit-test', 'angular-unit-test']);
 
     // Test task.
-    grunt.registerTask('test-travis', ['env:travis', 'mocha_istanbul:coverage']);
+    grunt.registerTask('test-travis', ['env:travis', 'karma:travis', 'mocha_istanbul:coverage']);
 
     // Test task.
     grunt.registerTask('travis', ['lint', 'test-travis']);

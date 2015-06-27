@@ -107,8 +107,9 @@ journey.prototype.filterPastJourney = function (journeys) {
     'use strict';
     var filterJourney = [],
         today = new Date();
+    today.setHours(0,0,0,0);
     journeys.forEach(function (journey) {
-        if (today < journey.date_start_outward || today < journey.date_start_return) {
+        if (today <= journey.date_start_outward || today <= journey.date_start_return) {
             filterJourney.push(journey);
         }
     });

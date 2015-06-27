@@ -89,7 +89,13 @@ describe('Runnable Controllers', function() {
 
         it ('get a file', function () {
             // TODO: Test when readAsDataUrl has been called
-            scope.getFile('.jshintrc');
+            /*
+            var formData = new FormData();
+            var content = '<a id="a"><b id="b">hey!</b></a>';
+            var blob = new Blob([content], { type: 'text/xml' });
+            formData.append('webmasterfile', blob);
+            scope.getFile(blob);
+             */
             $httpBackend.flush();
         });
 

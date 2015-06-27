@@ -353,6 +353,7 @@ angular.module('runnable.controllers', []).
 				angular.forEach($scope.journeyList, function (journey) {
 					GoogleMapApi.showDirection(obj, journey.address_start, $scope.run.address_start);
 				});
+                $(document).scrollTop(0);
 			});
 			if (Session.userAddress) {
 				angular.forEach($scope.journeyList, function (journey) {
@@ -586,6 +587,7 @@ angular.module('runnable.controllers', []).
 				var obj = 'map_canvas';
 				GoogleMapApi.initMap(obj);
 				GoogleMapApi.showDirection(obj, $scope.journey.address_start, $scope.journey.Run.address_start);
+                $(document).scrollTop(0);
 			});
 			$scope.nbFreeSpaceOutward = function () {
                 if ($scope.journey.nb_space_outward === null) {

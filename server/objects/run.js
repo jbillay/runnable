@@ -83,7 +83,9 @@ run.prototype.save = function (run, user, done) {
 
 run.prototype.getActiveList = function (done) {
     'use strict';
-	models.Run.findAll({where: {is_active: true, date_start: {$gte: new Date()}},
+    var day = new Date();
+    day.setHours(0,0,0,0);
+    models.Run.findAll({where: {is_active: true, date_start: {$gte: day}},
                         order: 'date_start ASC'})
 		.then(function (runs) {
 			done(null, runs);
@@ -109,7 +111,9 @@ run.prototype.search = function (searchInfo, done) {
 			searchParams.push({date_start: {$gte: start_date}});
 		}
     } else {
-		searchParams.push({date_start: {$gte: new Date()}});
+        var day = new Date();
+        day.setHours(0,0,0,0);
+        searchParams.push({date_start: {$gte: day}});
 	}
     if (searchInfo.run_adv_end_date && searchInfo.run_adv_end_date.length !== 0) {
         var end_date = new Date(searchInfo.run_adv_end_date);
@@ -160,7 +164,9 @@ run.prototype.search = function (searchInfo, done) {
 
 run.prototype.getNextList = function (nb, done) {
     'use strict';
-	models.Run.findAll({limit: nb, where: {is_active: true, date_start: {$gte: new Date()}}, order: 'updatedAt DESC'})
+    var day = new Date();
+    day.setHours(0,0,0,0);
+	models.Run.findAll({limit: nb, where: {is_active: true, date_start: {$gte: day}}, order: 'updatedAt DESC'})
 		.then(function (runs) {
 			done(null, runs);
 		})
@@ -182,7 +188,9 @@ run.prototype.getById = function (id, done) {
 
 run.prototype.getList = function (old_run, done) {
     'use strict';
-	var where = {date_start: {$gte: new Date()}};
+    var day = new Date();
+    day.setHours(0,0,0,0);
+    var where = {date_start: {$gte: day}};
 	if (old_run === 1) where = {};
 	models.Run.findAll({where: [where],
 						order: 'date_start ASC'})
