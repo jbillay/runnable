@@ -41,8 +41,6 @@ module.exports = function(config) {
         browsers : ['PhantomJS'],
 
         plugins : [
-            'karma-chrome-launcher',
-            'karma-firefox-launcher',
             'karma-phantomjs-launcher',
             'karma-jasmine',
             'karma-coverage'
