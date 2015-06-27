@@ -6,8 +6,9 @@ env:
 before_install:
  - npm install -g grunt-cli
  - npm install -g bower
- - "sh -e rm -rf node_modules"
- - "sh -e rm -rf public/lib/*"
+ - npm install -g karma
+ - npm install -g phantomjs
+ - npm install karma-phantomjs-launcher
  - npm install sequelize
  - npm install sqlite3
  - "export DISPLAY=:99.0"
