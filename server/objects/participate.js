@@ -3,6 +3,7 @@
  */
 
 var models = require('../models');
+var Mail = require('../objects/mail');
 
 function participate() {
     'use strict';
@@ -82,6 +83,28 @@ participate.prototype.userRunList = function (runId, done) {
         })
         .catch(function (err) {
             done(err, null);
+        });
+};
+
+participate.prototype.notify = function (run, done) {
+    'use strict';
+    var template = 'NotifyNewJourney',
+        values = {'runName': run.name};
+    new Mail().then(function (mail) {
+        mail.generateContent(template, values)
+            .then(function (mail) {
+                models.Participate.findAll({where: {runId: run.id}, include: [models.User]})
+                    .then(function (participations) {
+                        participations.forEach(function (participation) {
+                            mail.setTo(participation.User.email);
+                            mail.send();
+                            done(null, null);
+                        });
+                    })
+                    .catch(function (err) {
+                        done(err, null);
+                    });
+            });
         });
 };
 

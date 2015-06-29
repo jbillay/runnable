@@ -56,3 +56,16 @@ exports.userRunList = function (req, res) {
     participate = null;
     runId = null;
 };
+
+exports.notify = function (req, res) {
+    'use strict';
+    console.log('Notify users following the run : ' + req.Run.id);
+    var participate = new Participate(),
+        run = req.Run;
+    participate.notify(run, function (err, notif) {
+        err = null;
+        notif = null;
+    });
+    participate = null;
+    run = null;
+};

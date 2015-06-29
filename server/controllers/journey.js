@@ -1,10 +1,11 @@
 
 var Journey = require('../objects/journey');
 
-exports.create = function (req, res) {
+exports.create = function (req, res, next) {
     'use strict';
-	console.log('Create a journey for run : ' + req.body.journey.run_id);
+	console.log('Create a journey for run : ' + req.body.journey.Run.id);
 	var journey = new Journey();
+    req.Run = req.body.journey.Run;
 	journey.save(req.body.journey, req.user.id, function (err, journey) {
 		if (err) {
             console.log('Journey not created ' + err);
@@ -12,6 +13,7 @@ exports.create = function (req, res) {
 		} else {
             console.log('Journey created');
             res.jsonp({msg: 'journeyCreated', type: 'success'});
+            next();
 		}
         err = null;
         journey = null;
