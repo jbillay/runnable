@@ -98,12 +98,16 @@ participate.prototype.notify = function (run, done) {
                         participations.forEach(function (participation) {
                             mail.setTo(participation.User.email);
                             mail.send();
-                            done(null, null);
+                            console.log('Journey notification sent to ' + participation.User.email);
                         });
+                        done(null, participations);
                     })
                     .catch(function (err) {
                         done(err, null);
                     });
+            })
+            .catch(function (err) {
+                done(err, null);
             });
         });
 };

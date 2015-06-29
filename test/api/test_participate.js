@@ -49,6 +49,16 @@ describe('Test of participate object', function () {
                         });
                     },
                     function (callback) {
+                        var fixtures = require('./fixtures/options.json');
+                        var promises = [];
+                        fixtures.forEach(function (fix) {
+                            promises.push(loadData(fix));
+                        });
+                        q.all(promises).then(function () {
+                            callback(null);
+                        });
+                    },
+                    function (callback) {
                         var fixtures = require('./fixtures/journeys.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -141,12 +151,29 @@ describe('Test of participate object', function () {
         assert.equal(tmp.userId, 2);
         assert.equal(tmp.runId, 4);
         participate.add(runId, user, function (err, participate) {
-            if (err) console.log(err);
+            if (err) return done(err);
             assert.isNull(err);
             assert.equal(participate.id, 6);
             assert.equal(participate.UserId, 2);
             assert.equal(participate.RunId, 4);
-            done();
+            return done();
+        });
+    });
+
+    it('Get list of participate a user', function (done) {
+        var participate = new Participate(),
+            run = {
+                id: 5,
+                name: 'Test'
+            };
+        participate.notify(run, function (err, notif) {
+            if (err) return done(err);
+            assert.isNull(err);
+            assert.equal(notif.length, 2);
+            assert.equal(notif[0].User.firstname, 'Jeremy');
+            assert.equal(notif[0].User.lastname, 'Billay');
+            assert.equal(notif[0].User.email, 'jbillay@gmail.com');
+            return done();
         });
     });
 });

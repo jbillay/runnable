@@ -216,7 +216,7 @@ describe('Tests of run objects', function () {
                 name: 'Marathon du Mont Blanc',
                 type: 'marathon',
                 address_start: 'Chamonix, France',
-                date_start: '2015-06-28 00:00:00',
+                date_start: '2015-07-28 00:00:00',
                 time_start: '06:20',
                 distances: '80km - 42km - 23km - 10km - 3.8km',
                 elevations: '3214+',
