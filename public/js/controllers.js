@@ -194,7 +194,10 @@ angular.module('runnable.controllers', []).
                 .then(function(result) {
                     $scope.file = file;
                     $scope.imageSrc = result;
-                });
+                })
+				.catch(function (err) {
+					console.log(err);
+			}	);
         };
         $scope.saveFile = function () {
             if ($scope.file) {
@@ -255,6 +258,12 @@ angular.module('runnable.controllers', []).
 			journey.is_canceled = true;
 			Journey.cancel(journey.id);
 			Inbox.addMessage(driverTemplate, values, $rootScope.currentUser.id);
+		};
+		$scope.exportUsers = function () {
+			var blob = new Blob([document.getElementById('usertab').innerHTML], {
+				type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'
+			});
+			saveAs(blob, 'ExportUsers.xls');
 		};
 		$scope.createPage = function () {
 			var trimName = $scope.createPageForm.newPageName.trim();
@@ -702,7 +711,6 @@ angular.module('runnable.controllers', []).
 			}
 			return fees;
 		};
-		// TODO: to finish
 		$scope.sendMessage = function () {
 			var text = String($scope.newMessageEntry).replace(/<[^>]+>/gm, '');
 			$scope.newMessageEntry = '';
@@ -711,17 +719,12 @@ angular.module('runnable.controllers', []).
 					createdAt: Date.now()
 				});
 			Discussion.addPublicMessage(text, $scope.journeyId);
-			// TODO: send email to journey owner
-			/*
-			if (user.id !== Session.userId) {
-				var values = {runName: $scope.selectedJourney.Run.name,
-						userFirstname: Session.userFirstname,
-						userLastname: Session.userLastname,
-						text: text},
-					template = 'JourneyMessage';
-				Inbox.addMessage(template, values, user.id);
-			}
-			*/
+            var values = {runName: $scope.selectedJourney.Run.name,
+                    userFirstname: Session.userFirstname,
+                    userLastname: Session.userLastname,
+                    text: text},
+                template = 'JourneyPublicMessage';
+            Inbox.addMessage(template, values, $scope.journey.User.id);
 		};
 	}).
 	controller('RunnableJourneyCreateController', function ($scope, $q, $timeout, $routeParams, $rootScope, $location,
@@ -957,7 +960,7 @@ angular.module('runnable.controllers', []).
                                     userFirstname: Session.userFirstname,
                                     userLastname: Session.userLastname,
                                     text: text},
-                        template = 'JourneyMessage';
+                        template = 'JourneyPrivateMessage';
                     Inbox.addMessage(template, values, user.id);
 				}
 			});

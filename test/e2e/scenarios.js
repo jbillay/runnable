@@ -26,12 +26,12 @@ describe('Runnable App', function() {
                                         expect(items.length).toBe(12);
                                         console.log(items[0].getText());
                                         //expect(items[0].getText()).toBe('First');
-                                    });
-                                });
-                            });
-                        });
-                    });
-                });
+                                    }, 5000);
+                                }, 5000);
+                            }, 5000);
+                        }, 5000);
+                    }, 5000);
+                }, 5000);
             });
         });
     });

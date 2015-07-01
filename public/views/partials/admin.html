@@ -9,20 +9,23 @@
         <div class="col-sm-12">
             <tabset>
                 <tab heading="Utilisateurs ({{nbUser}})">
-					<table class="col-sm-12 user">
+					<button class="btn btn-primary" ng-click="exportUsers()">Export</button>
+					<div id="usertab" class="col-sm-12 user">
 						<table class="table userlist">
-							<tr>
-								<th>Prénom</th>
-								<th>Nom</th>
-								<th>Email</th>
-								<th>Adresse</th>
-								<th>Provider</th>
-								<th>Itra Code</th>
-								<th>Active</th>
-								<th>Role</th>
-								<th>Création</th>
-								<th>Actions</th>
-							</tr>
+							<thead>
+								<tr>
+									<th>Prénom</th>
+									<th>Nom</th>
+									<th>Email</th>
+									<th>Adresse</th>
+									<th>Provider</th>
+									<th>Itra Code</th>
+									<th>Active</th>
+									<th>Role</th>
+									<th>Création</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
 							<tbody ng-repeat="user in userList">
 								<tr>
 									<td>{{user.firstname}}</td>
@@ -45,7 +48,7 @@
 								</tr>
 							</tbody>
 						</table>
-                    </table>
+                    </div>
 				</tab>
                 <tab heading="Courses">
 					<table class="col-sm-12 user">

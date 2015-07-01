@@ -47,7 +47,8 @@
         "inject",
         "expect",
         "angular",
-        "google"
+        "google",
+        "saveAs"
     ],
     "indent": 4, // Specify indentation spacing
     "devel": true, // Allow development statements e.g. `console.log();`.
