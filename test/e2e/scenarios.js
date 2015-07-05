@@ -17,17 +17,15 @@ describe('Runnable App', function() {
                     expect(element(by.model('credentials.email')).isPresent()).toBe(true);
                     expect(element(by.model('credentials.password')).isPresent()).toBe(true);
                     expect(element(by.id('connection')).isPresent()).toBe(true);
-                    element(by.model('credentials.email')).sendKeys('jbillay@gmail.com').then(function () {
-                        element(by.model('credentials.password')).sendKeys('uCfU-mlc').then(function () {
-                            element(by.id('connection')).click().then(function () {
-                                browser.getLocationAbsUrl().then(function(url) {
-                                    expect(url).toBe('/');
-                                    element.all(by.css('.navbar-right li')).then(function(items) {
-                                        expect(items.length).toBe(12);
-                                        console.log(items[0].getText());
-                                        //expect(items[0].getText()).toBe('First');
-                                    }, 5000);
-                                }, 5000);
+                    element(by.model('credentials.email')).sendKeys('jbillay@gmail.com');
+                    element(by.model('credentials.password')).sendKeys('noofs');
+                    element(by.id('connection')).click().then(function () {
+                        browser.getLocationAbsUrl().then(function(url) {
+                            expect(url).toBe('/');
+                            element.all(by.css('.navbar-right li')).then(function(items) {
+                                expect(items.length).toBe(12);
+                                console.log(items[0].getText());
+                                //expect(items[0].getText()).toBe('First');
                             }, 5000);
                         }, 5000);
                     }, 5000);

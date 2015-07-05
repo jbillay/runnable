@@ -12,7 +12,7 @@ exports.create = function (req, res, next) {
             res.jsonp({msg: 'journeyNotCreated', type: 'error'});
 		} else {
             console.log('Journey created');
-            res.jsonp({msg: 'journeyCreated', type: 'success'});
+            res.jsonp({msg: 'journeyCreated', type: 'success', journey: journey});
             next();
 		}
         err = null;

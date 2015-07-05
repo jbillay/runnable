@@ -123,7 +123,7 @@ describe('Test of journey API', function () {
     after(function () {
         console.log('Test API journey over !');
     });
-
+/*
     describe('GET /api/admin/journeys', function () {
         var agent = superagent.agent();
 
@@ -230,7 +230,7 @@ describe('Test of journey API', function () {
                 });
         });
     });
-
+*/
     describe('POST /api/journey', function () {
         var agent = superagent.agent();
 
@@ -263,6 +263,19 @@ describe('Test of journey API', function () {
                     if (err) {
                         return done(err);
                     }
+                    assert.equal(res.body.journey.address_start, 'Paris');
+                    assert.equal(res.body.journey.distance, '25 km');
+                    assert.equal(res.body.journey.duration, '20 minutes');
+                    assert.equal(res.body.journey.journey_type, 'aller-retour');
+                    assert.equal(res.body.journey.time_start_outward, '09:00');
+                    assert.equal(res.body.journey.nb_space_outward, 2);
+                    assert.equal(res.body.journey.time_start_return, '09:00');
+                    assert.equal(res.body.journey.nb_space_return, 2);
+                    assert.equal(res.body.journey.car_type, 'citadine');
+                    assert.equal(res.body.journey.amount, 5);
+                    assert.equal(res.body.journey.RunId, 4);
+                    assert.equal(res.body.journey.UserId, 1);
+
                     agent
                         .get('http://localhost:9615/api/admin/journeys')
                         .end(function (err, res) {
@@ -291,7 +304,7 @@ describe('Test of journey API', function () {
                 });
         });
     });
-
+/*
     describe('PUT /api/journey', function () {
         var agent = superagent.agent();
 
@@ -405,4 +418,5 @@ describe('Test of journey API', function () {
                 });
         });
     });
+    */
 });

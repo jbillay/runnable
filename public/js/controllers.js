@@ -728,7 +728,7 @@ angular.module('runnable.controllers', []).
 		};
 	}).
 	controller('RunnableJourneyCreateController', function ($scope, $q, $timeout, $routeParams, $rootScope, $location,
-                                                            Journey, Run, Inbox, GoogleMapApi) {
+                                                            Journey, Run, Inbox, GoogleMapApi, $facebook) {
         $scope.page = 'Journey';
 		var runPromise = Run.getActiveList(),
             all = $q.all([runPromise]);
@@ -830,11 +830,30 @@ angular.module('runnable.controllers', []).
 			}
 		};
         $scope.submitJourney = function (journey) {
+            var fb_titre = 'Mon voyage pour la course ' + journey.Run.name,
+                fb_desc = 'Je vous propose un ' + journey.journey_type + ' au départ de ' +
+                    journey.address_start + ' pour ';
+            if ($scope.outward && $scope.return) {
+                fb_desc += journey.amount * 2;
+            } else {
+                fb_desc += journey.amount;
+            }
+            fb_desc += ' € par passager.';
             var template = 'JourneyCreated',
                 values = {runName: journey.Run.name };
-            Journey.create(journey);
-            Inbox.addMessage(template, values, $rootScope.currentUser.id);
-            $location.path('/journey');
+            Journey.create(journey).then(function (newJourney) {
+                var fb_link = 'http://localhost:9615/journey-' + newJourney.journey.id;
+                $facebook.ui({
+                    method: 'feed',
+                    link: fb_link,
+                    caption: 'My Run Trip',
+                    picture: 'http://www.myruntrip.com/img/myruntrip_100.jpg',
+                    name: fb_titre,
+                    description: fb_desc
+                }, function(response){});
+                Inbox.addMessage(template, values, $rootScope.currentUser.id);
+                $location.path('/journey');
+            });
         };
 	}).
 	controller('RunnableMyJourneyController', function ($scope, $q, $timeout, $rootScope, User, Discussion, Join,
