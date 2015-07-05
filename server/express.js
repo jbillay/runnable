@@ -93,6 +93,19 @@ module.exports = function (app, passport) {
             },
             onFileUploadComplete: function (file) {
                 console.log(file.fieldname + ' uploaded to  ' + file.path);
+            },
+            onParseStart: function() {
+                console.log('Starting to parse request!');
+            },
+            onParseEnd: function(req, next) {
+                console.log('Done parsing!');
+                next();
+            },
+            onError: function(e, next) {
+                if (e) {
+                    console.log(e.stack);
+                }
+                next();
             }
         }));
 		
