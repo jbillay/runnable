@@ -837,7 +837,7 @@ angular.module('runnable.controllers', []).
                 values = {runName: journey.Run.name };
             Journey.create(journey).then(function (newJourney) {
                 if ($scope.publishFacebook) {
-                    var fb_link = 'http://localhost:9615/journey-' + newJourney.journey.id;
+                    var fb_link = 'http://www.myruntrip.com/journey-' + newJourney.journey.id;
                     $facebook.ui({
                         method: 'feed',
                         link: fb_link,
