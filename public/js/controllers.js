@@ -736,6 +736,7 @@ angular.module('runnable.controllers', []).
 			$scope.runList = res[0];
 			$scope.outward = true;
 			$scope.return = true;
+            $scope.publishFacebook = true;
 			$scope.parcoursModeList = [
 				{code: 'aller-retour', name: 'Aller-Retour'},
 				{code: 'aller', name: 'Aller'},
@@ -831,26 +832,21 @@ angular.module('runnable.controllers', []).
 		};
         $scope.submitJourney = function (journey) {
             var fb_titre = 'Mon voyage pour la course ' + journey.Run.name,
-                fb_desc = 'Je vous propose un ' + journey.journey_type + ' au départ de ' +
-                    journey.address_start + ' pour ';
-            if ($scope.outward && $scope.return) {
-                fb_desc += journey.amount * 2;
-            } else {
-                fb_desc += journey.amount;
-            }
-            fb_desc += ' € par passager.';
-            var template = 'JourneyCreated',
+                fb_desc = 'Je vous propose un ' + journey.journey_type + ' au départ de ' + journey.address_start,
+                template = 'JourneyCreated',
                 values = {runName: journey.Run.name };
             Journey.create(journey).then(function (newJourney) {
-                var fb_link = 'http://localhost:9615/journey-' + newJourney.journey.id;
-                $facebook.ui({
-                    method: 'feed',
-                    link: fb_link,
-                    caption: 'My Run Trip',
-                    picture: 'http://www.myruntrip.com/img/myruntrip_100.jpg',
-                    name: fb_titre,
-                    description: fb_desc
-                }, function(response){});
+                if ($scope.publishFacebook) {
+                    var fb_link = 'http://localhost:9615/journey-' + newJourney.journey.id;
+                    $facebook.ui({
+                        method: 'feed',
+                        link: fb_link,
+                        caption: 'My Run Trip',
+                        picture: 'http://www.myruntrip.com/img/myruntrip_100.jpg',
+                        name: fb_titre,
+                        description: fb_desc
+                    }, function(response){});
+                }
                 Inbox.addMessage(template, values, $rootScope.currentUser.id);
                 $location.path('/journey');
             });

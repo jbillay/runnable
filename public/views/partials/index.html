@@ -78,11 +78,12 @@
                     </a>
                     <div class="journey_title"><a href="/journey-{{journey.id}}">{{journey.Run.name | capitalize | limitTo:20}}</a></div>
                     <div class="journey_desc">
-                        <p><i class="glyphicon glyphicon-map-marker"></i> {{journey.address_start | capitalize | limitTo:21}}</p>
-                        <p><i class="glyphicon glyphicon-sort"></i> {{journey.journey_type | capitalize}}</p>
-                        <p><i class="glyphicon glyphicon-flag"></i> {{journey.date_start_outward | date:'dd / MM / yyyy'}}</p>
-                        <p><i class="glyphicon glyphicon-time"></i> {{journey.duration}}</p>
-                        <p><i class="glyphicon glyphicon-road"></i> {{journey.distance}}</p>
+                        <p class="journey_address"><i class="glyphicon glyphicon-map-marker"></i> {{journey.address_start | capitalize | limitTo:21}}</p>
+                        <p class="journey_type"><i class="glyphicon glyphicon-sort"></i> {{journey.journey_type | capitalize}}</p>
+                        <p class="journey_date" ng-if="journey.journey_type !== 'retour'"><i class="glyphicon glyphicon-flag"></i> {{journey.date_start_outward | date:'dd / MM / yyyy'}}</p>
+                        <p class="journey_date" ng-if="journey.journey_type == 'retour'"><i class="glyphicon glyphicon-flag"></i> {{journey.date_start_return | date:'dd / MM / yyyy'}}</p>
+                        <p class="journey_duration"><i class="glyphicon glyphicon-time"></i> {{journey.duration}}</p>
+                        <p class="journey_distance"><i class="glyphicon glyphicon-road"></i> {{journey.distance}}</p>
                     </div>
                 </div>
             </div>
