@@ -105,10 +105,10 @@
                     </a>
 					<div class="run_title"><a href="/run-{{run.id}}">{{run.name | capitalize | limitTo:25}}</a></div>
 					<div class="run_desc">
-						<p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize | limitTo:21}}</p>
-						<p><i class="glyphicon glyphicon-calendar"></i> {{run.date_start | date:'dd / MM / yyyy'}}</p>
-						<p><i class="glyphicon glyphicon-text-width"></i> {{run.distances | limitTo:28}}</p>
-						<p><i class="glyphicon glyphicon-road"></i> {{run.type | capitalize}}</p>
+						<p class="run_address"><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize | limitTo:21}}</p>
+						<p class="run_date"><i class="glyphicon glyphicon-calendar"></i> {{run.date_start | date:'dd / MM / yyyy'}}</p>
+						<p class="run_distance"><i class="glyphicon glyphicon-text-width"></i> {{run.distances | limitTo:28}}</p>
+						<p class="run_type"><i class="glyphicon glyphicon-road"></i> {{run.type | capitalize}}</p>
 					</div>
 				</div>				
 			</div>
