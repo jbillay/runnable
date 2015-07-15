@@ -13,12 +13,12 @@
 						<form name="loginForm" ng-submit="login(credentials)" novalidate ng-if='forLogin'>
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-								<input class="form-control" type="text" ng-model="credentials.email"
+								<input class="form-control credentials_email" type="text" ng-model="credentials.email"
 									   placeholder="Email">
 							</div>
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-								<input class="form-control" type="password" ng-model="credentials.password"
+								<input class="form-control credentials_password" type="password" ng-model="credentials.password"
 									   placeholder="Mot de passe">
 							</div>
 							<div class="modal-footer">

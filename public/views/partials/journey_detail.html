@@ -2,7 +2,9 @@
 <div class="container body">
     <div class="row spacehead">
         <div class="col-sm-12">
-            <div class="col-sm-9"><h2>Parcours pour la course <a href="/run-{{journey.Run.id}}">{{journey.Run.name}}</a></h2></div>
+            <div id="journey-header" class="col-sm-9">
+                <h2>Parcours pour la course <a href="/run-{{journey.Run.id}}">{{journey.Run.name}}</a></h2>
+            </div>
             <div class="col-sm-3 pull-right">
                 <div ng-if="nbFreeSpace()">
                     <button type="button" class="btn btn-primary" ng-if="!joined" ng-click="showJoinForm()">
