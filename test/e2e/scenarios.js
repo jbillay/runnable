@@ -1,7 +1,130 @@
 'use strict';
 
+require('jasmine-given');
+
 /* http://docs.angularjs.org/guide/dev_guide.e2e-testing */
 
+var IndexPage = require('./pages/index_page');
+
+describe('Runnable app', function() {
+    var page = new IndexPage();
+    describe('visiting the home page', function () {
+        Given(function() {
+            page.visitPage();
+        });
+        Then(function() {
+            page.getTitle().then(function(text) {
+                expect(text).toEqual('My Run Trip');
+            });
+            expect(page.inscriptionForm.isPresent()).toBe(true);
+            page.journeyList.then(function (items) {
+                expect(items.length).toBe(3);
+                items.forEach(function (item) {
+                    expect(item.element(by.css('.journey_map')).isPresent()).toBe(true);
+                });
+            });
+            var data_journey = [
+                {
+                    id: 4,
+                    'journey.Run.name': 'Maxi-Race ®',
+                    'journey.address_start': 'Saint-Germain-En-Laye',
+                    'journey.journey_type': 'Aller-Retour',
+                    'journey.date_start_outward': '12 / 05 / 2016',
+                    'journey.duration': '5 heures 16 minutes',
+                    'journey.distance': '576 km'
+                },
+                {
+                    id: 2,
+                    'journey.Run.name': 'Les Templiers',
+                    'journey.address_start': 'Nantes, France',
+                    'journey.journey_type': 'Aller',
+                    'journey.date_start_outward': '02 / 06 / 2016',
+                    'journey.duration': '6 heures 36 minutes',
+                    'journey.distance': '754 km'
+                },
+                {
+                    id: 3,
+                    'journey.Run.name': 'Paris Saint Germain',
+                    'journey.address_start': 'Paris, France',
+                    'journey.journey_type': 'Retour',
+                    'journey.date_start_return': '02 / 08 / 2016',
+                    'journey.duration': '5 heures 38 minutes',
+                    'journey.distance': '652 km'
+                }
+            ];
+            data_journey.forEach(function (item, index) {
+                var arr = Object.keys(item);
+                expect(element(by.repeater('journey in listJourney').row(index)).
+                    element(by.css('.journey_poster_home .journey_title a')).getAttribute('href')).
+                    toEqual('http://localhost:9615/journey-' + item['id']);
+                arr.forEach(function (line) {
+                    if (line !== 'id') {
+                        var value = element(by.repeater('journey in listJourney').row(index).column(line));
+                        value.getText().then(function (text) { expect(text).toEqual(item[line]);});
+                    }
+                });
+            });
+            expect(element(by.css('.itineraire .btn')).isPresent()).toBe(true);
+            expect(element(by.css('.itineraire .btn')).getAttribute('href')).toEqual('http://localhost:9615/journey');
+            page.runList.then(function (items) {
+                expect(items.length).toBe(4);
+                items.forEach(function (item) {
+                    expect(item.element(by.css('.run_img')).isPresent()).toBe(true);
+                });
+            });
+            var data_run = [
+                {
+                    id: 19,
+                    'run.name': 'Maxi-Race ®',
+                    'run.address_start': 'Saint-Germain-En-Laye',
+                    'run.date_start': 'Aller-Retour',
+                    'run.distances': '12 / 05 / 2016',
+                    'run.type': '5 heures 16 minutes'
+                },
+                {
+                    id: 2,
+                    'run.name': 'Maxi-Race ®',
+                    'run.address_start': 'Saint-Germain-En-Laye',
+                    'run.date_start': 'Aller-Retour',
+                    'run.distances': '12 / 05 / 2016',
+                    'run.type': '5 heures 16 minutes'
+                },
+                {
+                    id: 3,
+                    'run.name': 'Maxi-Race ®',
+                    'run.address_start': 'Saint-Germain-En-Laye',
+                    'run.date_start': 'Aller-Retour',
+                    'run.distances': '12 / 05 / 2016',
+                    'run.type': '5 heures 16 minutes'
+                },
+                {
+                    id: 16,
+                    'run.name': 'Maxi-Race ®',
+                    'run.address_start': 'Saint-Germain-En-Laye',
+                    'run.date_start': 'Aller-Retour',
+                    'run.distances': '12 / 05 / 2016',
+                    'run.type': '5 heures 16 minutes'
+                }
+            ];
+            data_run.forEach(function (item, index) {
+                var arr = Object.keys(item);
+                expect(element(by.repeater('run in listRun').row(index)).
+                    element(by.css('.run_title a')).getAttribute('href')).
+                    toEqual('http://localhost:9615/run-' + item['id']);
+                arr.forEach(function (line) {
+                    if (line !== 'id') {
+                        var value = element(by.repeater('run in listRun').row(index).column(line));
+                        value.getText().then(function (text) { expect(text).toEqual(item[line]);});
+                    }
+                });
+            });
+            expect(element(by.css('.course .btn')).isPresent()).toBe(true);
+            expect(element(by.css('.course .btn')).getAttribute('href')).toEqual('http://localhost:9615/run');
+        });
+    });
+});
+
+/*
 describe('Runnable App', function() {
     describe('Public journey', function() {
         beforeEach(function() {
@@ -109,7 +232,7 @@ describe('Runnable App', function() {
             expect(element(by.css('.course .btn')).getAttribute('href')).toEqual('http://localhost:9615/run');
         });
     });
-    /*
+
     describe('User journey', function() {
 
         beforeEach(function() {
@@ -140,5 +263,5 @@ describe('Runnable App', function() {
             });
         });
     });
-    */
 });
+*/
