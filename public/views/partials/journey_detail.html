@@ -7,12 +7,12 @@
             </div>
             <div class="col-sm-3 pull-right">
                 <div ng-if="nbFreeSpace()">
-                    <button type="button" class="btn btn-primary" ng-if="!joined" ng-click="showJoinForm()">
+                    <button type="button" id="joinBtn" class="btn btn-primary" ng-if="!joined" ng-click="showJoinForm()">
                         Participer à ce voyage
                     </button>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-danger" ng-if="joined" ng-click="askValidationJoinCancelFromJourney()">
+                    <button type="button" id="joinedBtn" class="btn btn-danger" ng-if="joined" ng-click="askValidationJoinCancelFromJourney()">
                         Je souhaite annuler ma participation
                     </button>
                 </div>
@@ -22,7 +22,7 @@
         <div class="col-sm-6">
 			<div class="panel panel-default">
 				<div class="panel-heading clearfix">
-					<span class="pull-left"><strong>Départ de {{journey.address_start}}</strong></span>
+					<span id="startFrom" class="pull-left"><strong>Départ de {{journey.address_start}}</strong></span>
 					<div class="pull-right">{{journey.journey_type | capitalize}}</div>
 				</div>
 				<div class="panel-body">

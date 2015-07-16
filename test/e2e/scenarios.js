@@ -138,6 +138,8 @@ describe('Public journey', function() {
             browser.getLocationAbsUrl().then(function(url) {
                 expect(url).toBe('/journey-4');
                 journeyPage.journeyHeader.getText().then(function (text) { expect(text).toEqual('Parcours pour la course MaXi-Race ®'); });
+                journeyPage.joinBtn.getText().then(function (text) { expect(text).toEqual('Participer à ce voyage'); });
+                journeyPage.startFrom.getText().then(function (text) { expect(text).toEqual('Départ de Saint-Germain-en-Laye, France'); });
             });
         });
     });
@@ -181,6 +183,7 @@ describe('User journey', function() {
         new Then(function() {
             browser.getLocationAbsUrl().then(function(url) {
                 expect(url).toBe('/');
+                browser.waitForAngular();
                 element.all(by.css('.navbar-right li')).then(function(items) {
                     expect(items.length).toBe(12);
                 });

@@ -3,6 +3,9 @@ var JourneyPage = (function () {
     function JourneyPage() {
         this.journeyList = element.all(by.repeater('journey in journeyList'));
         this.journeyHeader = element(by.id('journey-header'));
+        this.joinBtn = element(by.id('joinBtn'));
+        this.joinedBtn = element(by.id('joinedBtn'));
+        this.startFrom = element(by.id('startFrom'));
     }
 
     JourneyPage.prototype.visitPage = function (journeyId) {

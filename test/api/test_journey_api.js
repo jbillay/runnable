@@ -123,7 +123,7 @@ describe('Test of journey API', function () {
     after(function () {
         console.log('Test API journey over !');
     });
-/*
+
     describe('GET /api/admin/journeys', function () {
         var agent = superagent.agent();
 
@@ -230,7 +230,7 @@ describe('Test of journey API', function () {
                 });
         });
     });
-*/
+
     describe('POST /api/journey', function () {
         var agent = superagent.agent();
 
@@ -304,7 +304,7 @@ describe('Test of journey API', function () {
                 });
         });
     });
-/*
+
     describe('PUT /api/journey', function () {
         var agent = superagent.agent();
 
@@ -418,5 +418,4 @@ describe('Test of journey API', function () {
                 });
         });
     });
-    */
 });
