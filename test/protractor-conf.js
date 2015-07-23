@@ -7,19 +7,19 @@ exports.config = {
         'e2e/*.js'
     ],
 
+    /*
     multiCapabilities: [{
         'browserName': 'chrome'
     }, {
         'browserName': 'firefox'
     }],
+     */
 
-/*
     capabilities: {
         'browserName': 'chrome'
     },
 
     chromeOnly: true,
-*/
 
     baseUrl: 'http://localhost:9615/',
 
@@ -27,5 +27,7 @@ exports.config = {
 
     jasmineNodeOpts: {
         defaultTimeoutInterval: 30000
-    }
+    },
+
+    onPrepare: 'e2e/scripts/onPrepare.js'
 };
