@@ -3,6 +3,7 @@ var async = require('async');
 var models = require('../../../server/models');
 
 var loadData = function (fix) {
+    'use strict';
     var deferred = q.defer();
     models[fix.model].create(fix.data)
         .complete(function (err, result) {
@@ -15,6 +16,7 @@ var loadData = function (fix) {
 };
 
 module.exports = q.fcall(function() {
+    'use strict';
     console.log('Environment : ' + process.env.NODE_ENV);
     if (process.env.NODE_ENV === 'test') {
         console.log('Init new database for testing');
@@ -92,7 +94,6 @@ module.exports = q.fcall(function() {
                         });
                     }
                 ], function (err, result) {
-                    done();
                 });
             });
     }
