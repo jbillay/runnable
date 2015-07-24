@@ -1,0 +1,23 @@
+@import '../lib/bootstrap/less/bootstrap.less';
+
+@media (max-width: @screen-xs-max) {
+  @import 'main';
+
+  /* variables definition */
+  @inscription_font_size: 27px;
+
+  .text_img_with_shadow {
+    color: @text_inscription;
+    padding-top: 10%;
+    font-size: @inscription_font_size;
+    text-shadow: @text_shadow;
+  }
+
+  .text_img_auth_with_shadow {
+    color: @text_inscription;
+    padding-top: 18%;
+    font-size: @inscription_font_size;
+    text-shadow: @text_shadow;
+  }
+
+}

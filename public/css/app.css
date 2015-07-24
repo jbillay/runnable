@@ -23,149 +23,11 @@ a {
   color: #428bca;
 }
 
+/* start index page sections */
 section {
     padding-top:5px;
     padding-bottom:50px;
     min-height:calc(100% - 1px);
-}
-
-.table-no-border {
-    margin-bottom: 0;
-}
-
-.table-no-border>thead>tr>th, 
-.table-no-border>tbody>tr>th, 
-.table-no-border>tfoot>tr>th, 
-.table-no-border>thead>tr>td, 
-.table-no-border>tbody>tr>td, 
-.table-no-border>tfoot>tr>td {
-	border-top: none;
-	padding: 5px;
-}
-
-.fixed-panel {
-    min-height: 270px;
-    max-height: 270px;
-    overflow-y: scroll;
-}
-
-.green {
-	color: green;
-}
-
-.red {
-	color: red;
-}
-
-.status-cancelled {
-	color: red;
-}
-
-.status-pending {
-	color: orange;
-}
-
-.status-completed {
-	color: green;
-}
-
-.text_img_with_shadow {
-    color: #fff;
-    padding-top: 10%;
-    font-size: 50px;
-    text-shadow: 2px 2px 8px #494949;
-}
-
-.text_img_auth_with_shadow {
-    color: #fff;
-    padding-top: 18%;
-    font-size: 50px;
-    text-shadow: 2px 2px 8px #494949;
-}
-
-.text-with-shadow {
-    color: #fff;
-    padding-top: 2%;
-    font-size: 50px;
-    text-shadow: 2px 2px 8px #494949;
-}
-
-.text-without-shadow {
-    color: #428bca;
-    padding-top: 2%;
-    font-size: 50px;
-}
-
-.social_icon {
-    color: #fff;
-    text-shadow: 2px 2px 8px #494949;
-}
-
-.icon-bar {
-    background-color:#fff;
-}
-
-.spacehead {
-	padding-top: 70px;
-	padding-bottom: 25px;
-}
-
-.spacedown {
-	padding-bottom: 50px;
-}
-
-.picthome {
-	margin-top: 10px;
-}
-
-.navbar {
-    background-color: #fff;
-    border-bottom: thin solid #ccc;
-}
-
-.navbar a {
-    color: #428bca;
-    font: 16px "Palatino Linotype", "Book Antiqua", Palatino, serif;
-}
-
-a.list-group-item.active,[class*='-info'] {
-    background-color: #494437;
-    color:#fff;
-}
-
-.inscription-form {
-    margin-top: 15%;
-}
-
-.inscription-form-group {
-    margin-bottom: 5px;
-}
-
-.inscription-form-left {
-    padding-right: 5px;
-}
-
-.inscription-form-right {
-    padding-left: 5px;
-}
-
-.user_avatar {
-    width: 400px;
-    margin-left: 50px;
-    margin-bottom: 20px;
-}
-
-.img-user-public {
-    width: 140px;
-}
-
-.img-user-discussion {
-    width: 35px;
-    height: 35px;
-}
-
-.htmlEditor {
-    height: 500px !important;
 }
 
 section.imgback {
@@ -190,6 +52,147 @@ section.fonctionnement {
 section.apropos a {
     color:#f5f5f5;
 }
+/* stop index page sections */
+
+.table-no-border {
+    margin-bottom: 0;
+}
+
+.table-no-border>thead>tr>th, 
+.table-no-border>tbody>tr>th, 
+.table-no-border>tfoot>tr>th, 
+.table-no-border>thead>tr>td, 
+.table-no-border>tbody>tr>td, 
+.table-no-border>tfoot>tr>td {
+	border-top: none;
+	padding: 5px;
+}
+
+/* Message user Inbox */
+.fixed-panel {
+    min-height: 270px;
+    max-height: 270px;
+    overflow-y: scroll;
+}
+
+.green {
+	color: green;
+}
+
+.red {
+	color: red;
+}
+
+/* Index depend on user logged or not */
+.text_img_with_shadow {
+    color: #fff;
+    padding-top: 10%;
+    font-size: 50px;
+    text-shadow: 2px 2px 8px #494949;
+}
+
+.text_img_auth_with_shadow {
+    color: #fff;
+    padding-top: 18%;
+    font-size: 50px;
+    text-shadow: 2px 2px 8px #494949;
+}
+/* end of Index depend on user logged or not */
+
+/* Main texte of section */
+.text-with-shadow {
+    color: #fff;
+    padding-top: 2%;
+    font-size: 50px;
+    text-shadow: 2px 2px 8px #494949;
+}
+
+.text-without-shadow {
+    color: #428bca;
+    padding-top: 2%;
+    font-size: 50px;
+}
+/* end of Main texte of section */
+
+/* Social icon on Index page */
+.social_icon {
+    color: #fff;
+    text-shadow: 2px 2px 8px #494949;
+}
+
+/* Icon in Navbar */
+.icon-bar {
+    background-color:#fff;
+}
+
+/* All page to move down the begining of the page */
+.spacehead {
+	padding-top: 70px;
+	padding-bottom: 25px;
+}
+
+/* Space after in journey form ????? */
+.spacedown {
+	padding-bottom: 50px;
+}
+
+/* Picture in navbar for logged user */
+.picthome {
+	margin-top: 10px;
+}
+
+/* Navbar ??? already in bootstrap */
+.navbar {
+    background-color: #fff;
+    border-bottom: thin solid #ccc;
+}
+
+.navbar a {
+    color: #428bca;
+    font: 16px "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+a.list-group-item.active,[class*='-info'] {
+    background-color: #494437;
+    color:#fff;
+}
+/* end of Navbar ??? already in bootstrap */
+
+/* Inscription form ??? */
+.inscription-form {
+    margin-top: 15%;
+}
+
+.inscription-form-group {
+    margin-bottom: 5px;
+}
+
+.inscription-form-left {
+    padding-right: 5px;
+}
+
+.inscription-form-right {
+    padding-left: 5px;
+}
+/* Inscription form ??? */
+
+/* User profile picture */
+.user_avatar {
+    width: 400px;
+    margin-left: 50px;
+    margin-bottom: 20px;
+}
+
+/* User public profile picture */
+.img-user-public {
+    width: 140px;
+}
+
+/* Admin */
+.htmlEditor {
+    height: 500px !important;
+}
+/* End of Admin */
 
 /* Home comments and mail panel */
 .home_panel {
@@ -346,7 +349,9 @@ div.journey_price_journey {
 	font-weight: bold;
 	color: red;
 }
+/* stop journey */
 
+/* Discussion */
 .discussion_tab {
 	padding: 15px;
 }
@@ -372,6 +377,13 @@ div.journey_price_journey {
 .discussion_message_info {
 	color: #808080;
 }
+
+.img-user-discussion {
+    width: 35px;
+    height: 35px;
+}
+/* end of Discussion */
+
 
 /* File selector*/
 .btn-file {
@@ -410,12 +422,14 @@ input[readonly] {
 	background-color: #CCC;
 	margin-bottom: 20px;
 }
+/* end of Google maps */
 
 .profile {
 	margin-top: 20px;
 	margin-bottom: 35px;
 }
 
+/* Inivite */
 .invite_margin {
 	margin-bottom: 15px;
 }
@@ -432,7 +446,9 @@ input[readonly] {
 	width: 480px !important;
 	height: 150px !important;
 }
+/* end of Invite */
 
+/* ITRA palmares representation */
 table.palmares {
 	margin-top: 20px;
 	margin-bottom: 35px;
@@ -455,7 +471,9 @@ table.palmares h3 {
 	margin:10px 0 2px 0;
 	border-bottom:1px solid #444444;
 }
+/* end of ITRA palmares representation */
 
+/* Footer */
 footer {
     background-color:#ffffff;
     color:#ddd;
@@ -488,3 +506,4 @@ footer .nav>li>a:hover {
     background-color:transparent;
     color: black;
 }
+/* end of Footer*/

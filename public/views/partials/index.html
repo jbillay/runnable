@@ -62,16 +62,15 @@
                 </form>
             </div><!--/left-->
         </div><!--/row-->
-        <div class="row"><br></div>
     </div><!--/container-->
 </section>
 
 <section class="container-fluid itineraire imgback" id="itineraire">
-    <div class="row">
+    <div class="row-fluid">
         <div class="col-sm-10 col-sm-offset-1 text-center">
             <h1 class="text-with-shadow">Nos derniers itinéraires</h1>
             <br>
-            <div class="row journey_list">
+            <div class="row-fluid journey_list">
                 <div class="col-xs-3 journey_poster_home" ng-repeat="journey in listJourney">
                     <a href="/journey-{{journey.id}}">
                         <div id="map_canvas_{{journey.id}}" class="journey_map"></div>
@@ -93,11 +92,11 @@
 </section>
 
 <section class="container-fluid course imgback" id="course">
-    <div class="row">
+    <div class="row-fluid">
         <div class="col-sm-10 col-sm-offset-1 text-center">
             <h1 class="text-with-shadow">Nos dernières courses</h1>
             <br>
-			<div class="row run_list">
+			<div class="row-fluid run_list">
 				<div class="col-xs-3 run_poster_home" ng-repeat="run in listRun">
 					<a href="/run-{{run.id}}">
                         <img ng-if="run.type === 'trail'" src="/img/trail_default.jpg" class="run_img" alt="Image de la course">
@@ -117,9 +116,9 @@
     </div>
 </section>
 
-<section class="container-fluid fonctionnement imgback" id="fonctionnement">
+<section class="container-fluid fonctionnement" id="fonctionnement">
    <h2 class="text-center text-without-shadow">Partagez plus qu'une course</h2>
-     <div class="row">
+     <div class="row-fluid">
          <div class="col-sm-offset-2 col-sm-8">
              <div class="embed-responsive embed-responsive-16by9 spacehead">
                  <iframe width="560" height="315" src="https://www.youtube.com/embed/tlKLe3WLynA" frameborder="0" allowfullscreen></iframe>
@@ -130,7 +129,7 @@
 
 <section class="container imgback" id="apropos">
     <h1 class="text-center text-with-shadow">Venez en savoir plus sur nous !</h1>
-    <div class="row">
+    <div class="row-fluid">
         <!--fontawesome icons-->
         <div class="col-sm-1 col-sm-offset-4 col-xs-4 text-center">
             <a href="https://www.facebook.com/myruntrip" target="_blank"><i class="fa fa-facebook fa-4x social_icon"></i></a>
@@ -145,7 +144,7 @@
             <a href="https://plus.google.com/107229023406895571808" target="_blank"><i class="fa fa-google-plus fa-4x social_icon"></i></a>
         </div>
     </div><!--/row-->
-    <div class="row col-sm-12">
+    <div class="row-fluid col-sm-12">
         <div class="col-sm-5 col-sm-offset-1 panel panel-default home_panel">
             <div class="panel-body">
                 <div class="panel panel-default col-sm-9" ng-class-odd="'pull-left'" ng-class-even="'pull-right'"
