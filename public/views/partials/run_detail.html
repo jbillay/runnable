@@ -1,49 +1,58 @@
 <div ng-include="'partials/nav'"></div>
 
-<div class="container body" ng-controller="RunnableRunDetailController">
-    <div class="row spacehead">
-		<div class="panel panel-default">
-			<div class="panel-heading clearfix">
-				<h3 class="pull-left">{{run.name}}</h3>
-                <div class="pull-right">
-                    <a class="btn btn-sm btn-success" ng-click="createJourney()" role="button">Proposer un parcours</a>
-                </div>
-                <div class="pull-right" ng-if="!userJoined">
-                    <a class="btn btn-sm btn-primary" ng-click="participateRun()" role="button">Ajouter à mon agenda</a>
-                </div>
-                <div class="pull-right" ng-if="userJoined">
-                    <a class="btn btn-sm" role="button">Cette course est dans votre agenda</a>
-                </div>
-			</div>
-			<div class="panel-body">
-				<div class="col-sm-4">
-					<p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize | limitTo:21}}</p>
-					<p><i class="glyphicon glyphicon-calendar"></i> {{run.date_start | date:'dd / MM / yyyy'}}</p>
-					<p><i class="glyphicon glyphicon-time"></i> {{run.time_start}}</p>
+<div class="container-fluid body" ng-controller="RunnableRunDetailController">
+    <div class="row-fluid run_detail">
+		<div class="col-xs-12 col-sm-12 col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading clearfix">
+					<div class="col-xs-9 col-sm-6 col-md-6">
+						<h3>{{run.name}}</h3>
+					</div>
+					<div class="hidden-xs col-sm-6 col-md-6">
+                        <div class="pull-right btn-group btn-group-sm" role="group">
+							<button class="btn btn-sm btn-success" ng-click="createJourney()" role="button">Proposer un parcours</button>
+							<button class="btn btn-sm btn-primary" ng-click="participateRun()" role="button" ng-if="!userJoined">Ajouter à mon agenda</button>
+							<button class="btn btn-sm" role="button" ng-if="userJoined">Cette course est dans votre agenda</button>
+    					</div>
+				    </div>
+                    <div class="visible-xs-block col-xs-3 pull-right">
+                        <a href="#" ng-click="createJourney()"><i class="glyphicon glyphicon-road green"></i></a>
+                        <a href="#" ng-click="participateRun()" ng-if="!userJoined"><i class="glyphicon glyphicon-calendar"></i></a>
+                        <a href="#" ng-if="userJoined"><i class="glyphicon glyphicon-calendar green"></i></a>
+                    </div>
 				</div>
-				<div class="col-sm-4">
-					<p><i class="glyphicon glyphicon-road"></i> {{run.type}}</p>
-					<p><i class="glyphicon glyphicon-text-width"></i> {{run.distances}}</p>
-					<p><i class="fa-area-chart"></i> {{run.elevations}}</p>
-				</div>
-				<div class="col-sm-4">
-					<p>{{run.info}}</p>
+				<div class="panel-body">
+					<div class="col-xs-12 col-sm-6 col-md-4">
+						<p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize | limitTo:21}}</p>
+						<p><i class="glyphicon glyphicon-calendar"></i> {{run.date_start | date:'dd / MM / yyyy'}}</p>
+						<p><i class="glyphicon glyphicon-time"></i> {{run.time_start}}</p>
+					</div>
+					<div class="col-xs-12 col-sm-6 col-md-4">
+						<p><i class="glyphicon glyphicon-road"></i> {{run.type}}</p>
+						<p><i class="glyphicon glyphicon-text-width"></i> {{run.distances}}</p>
+						<p><i class="fa-area-chart"></i> {{run.elevations}}</p>
+					</div>
+					<div class="col-xs-12 col-sm-6 col-md-4">
+						<p>{{run.info}}</p>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-md-6">
-			<div class="row">
-				<div ng-if="journeyList.length === 0">
+	<div class="row-fluid">
+		<div class="col-xs-12 col-sm-12 col-md-6">
+			<div class="row-fluid run_journey_info">
+				<div class="no_journey" ng-if="journeyList.length === 0">
 					<p>Aucun parcours pour cette course actuellement.<br>N'hésitez pas à en proposer un en quelques secondes !</p>
 					<a class="btn btn-success" href="#" ng-click="createJourney()" role="button">Proposer un parcours</a>
 				</div>
 				<div ng-repeat="journey in journeyList">
 					<div class="panel panel-default">
 						<div class="panel-heading clearfix">
-							<h6 class="panel-title pull-left"><a href="/journey-{{journey.id}}">Départ de {{journey.address_start}}</a></h6>
-							<div class="pull-right">{{journey.journey_type | capitalize}}</div>
+                            <div class="panel-title">
+							    <div class="pull-left"><a href="/journey-{{journey.id}}">Départ de {{journey.address_start}}</a></div>
+							    <div class="pull-right">{{journey.journey_type | capitalize}}</div>
+                            </div>
 						</div>
 						<div class="panel-body">
 							<div class="clearfix" ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'aller'">
@@ -67,8 +76,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-6">
-			<div id="map_canvas_run" class="map_run"></div>
+		<div class="hidden-xs col-sm-12 col-md-6">
+			<div id="map_canvas_run" class="map"></div>
 		</div>
     </div>
 </div>

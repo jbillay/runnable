@@ -42,6 +42,20 @@ a {
   color: @text;
 }
 
+.table-no-border {
+  margin-bottom: 0;
+}
+
+.table-no-border>thead>tr>th,
+.table-no-border>tbody>tr>th,
+.table-no-border>tfoot>tr>th,
+.table-no-border>thead>tr>td,
+.table-no-border>tbody>tr>td,
+.table-no-border>tfoot>tr>td {
+  border-top: none;
+  padding: 5px;
+}
+
 // Customization of navbar
 .navbar {
   background: @bg_main;
@@ -182,5 +196,51 @@ section.imgback {
     .search_bar {
       padding-bottom: 30px;
     }
+  }
+}
+
+// Run detail
+.run_detail .panel-heading h3 {
+  margin-top: 0;
+  font-family: @font_familly;
+  font-weight: normal;
+  color: @text;
+}
+
+.run_journey_info {
+  .journey_space_positive {
+    font-size: 15px;
+    font-weight: bold;
+    color: @text;
+  }
+  .journey_space_zero {
+    font-size: 15px;
+    font-weight: bold;
+    color: @red;
+  }
+  .journey_head_price {
+    margin-top: 10px;
+  }
+  .journey_price {
+    font-size: 20px;
+    font-weight: bold;
+    color: @green;
+  }
+}
+
+.journey_detail {
+  .journey_price {
+    font-size: 36px;
+    font-weight: bold;
+    color: green;
+    margin-top: 5px;
+    .pull-right();
+  }
+  .journey_address_start {
+    padding: 0px;
+    .pull-left();
+  }
+  .journey_type {
+    .pull-right();
   }
 }
