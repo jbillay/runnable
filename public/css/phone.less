@@ -1,23 +1,60 @@
 @import '../lib/bootstrap/less/bootstrap.less';
 
+/* Extra small devices (phones, less than 768px) */
 @media (max-width: @screen-xs-max) {
   @import 'main';
 
   /* variables definition */
-  @inscription_font_size: 27px;
+  @index_font_size: 26px;
 
   .text_img_with_shadow {
-    color: @text_inscription;
-    padding-top: 10%;
-    font-size: @inscription_font_size;
+    color: @text_index;
+    padding-top: 27%;
+    font-size: @index_font_size;
     text-shadow: @text_shadow;
   }
 
   .text_img_auth_with_shadow {
-    color: @text_inscription;
-    padding-top: 18%;
-    font-size: @inscription_font_size;
+    color: @text_index;
+    padding-top: 60%;
+    font-size: @index_font_size;
     text-shadow: @text_shadow;
   }
 
+  .text-with-shadow {
+    color: @text_index;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    font-size: @index_font_size;
+    text-shadow: @text_shadow;
+  }
+
+  .text-without-shadow {
+    color: @text;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    font-size: @index_font_size;
+  }
+
+  .icon_list {
+    margin-bottom: 20px;
+  }
+
+  // block definition
+  .block_inside {
+    .main_block_inside;
+  }
+
+  // Index Journey description
+  .journey_map {
+    width: 100%;
+    height: 179px;
+  }
+
+  // Footer specificity
+  footer {
+    .logo {
+      .center-block();
+    }
+  }
 }

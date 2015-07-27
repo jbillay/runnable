@@ -2,13 +2,17 @@
 /* Declarations */
 @font_familly: "Palatino Linotype", "Book Antiqua", Palatino, serif;
 @text: #428bca;
-@text_inscription: #fff;
+@text_index: #fff;
 @text_itineraire: #686868;
 @text_run: #00B7FF;
 @text_apropos: #f5f5f5;
 @bg_main: #ffffff;
+@feedback_panel: #f5f5f5;
+@green: green;
+@red: red;
 @page_border: thin solid #ccc;
 @text_shadow: 2px 2px 8px #494949;
+@block_border: solid 1px black;
 @img_home: '/public/img/home.jpg';
 @footer_height: 100px;
 
@@ -43,7 +47,7 @@ a {
   background: @bg_main;
   border-bottom: @page_border;
   a {
-    color: @text;
+    color: @text !important;
     font-size: 16px;
   }
   #login {
@@ -119,8 +123,64 @@ section.imgback {
   }
 }
 
+// Feedback and mail panel - Home Page
+.home_panel {
+  background-color: @feedback_panel;
+  .discussion_message {
+    padding: 2px;
+  }
+}
+
 // Customize social icons
 .social_icon {
   color: @bg_main;
   text-shadow: @text_shadow;
+}
+
+// blocks mixin
+.main_block_inside {
+  padding: 0 !important;
+  background-color: @bg_main;
+  border: @block_border;
+  margin-bottom: 30px;
+}
+
+.block_desc {
+  text-align: left;
+  padding-left: 10px;
+  padding-bottom: 2px;
+}
+
+.block_title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 15px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+// Run image
+.run_img {
+  width: 100%;
+  height: 100%;
+}
+
+// Used several times
+.red {
+  color: @red;
+}
+
+.green {
+  color: @green;
+}
+
+// Head of pages
+.runnable_root {
+  .body {
+    padding-top: 70px;
+    padding-bottom: 50px;
+    .search_bar {
+      padding-bottom: 30px;
+    }
+  }
 }

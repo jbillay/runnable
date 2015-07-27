@@ -1,29 +1,31 @@
 <div ng-include="'partials/nav'"></div>
 
-<div class="container body">
-	<div class="row spacehead">
-		<div class="col-sm-12">
-			<div class="row">
-				<div class="col-sm-4">
-					<div class="input-group">
-						<input type="text" class="form-control homesearch" ng-model="run_target" placeholder="Saisissez votre course...">
-						<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
-					</div>
-				</div>
+<div class="container-fluid body">
+	<div class="row-fluid">
+		<div class="col-xs-12 col-sm-12 col-md-12">
+			<div class="row-fluid">
+                <div class="col-xs-12 search_bar">
+                    <div class="col-xs-12 col-sm-6 col-md-4 input-group">
+                        <input type="text" class="form-control homesearch" ng-model="run_target" placeholder="Saisissez votre course...">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+                    </div>
+                </div>
 			</div>
-			<div class="row journey_list">
-				<div class="col-sm-2 journey_poster" ng-repeat="journey in journeyList | runname:run_target">
-					<a href="/journey-{{journey.id}}">
-						<div id="map_canvas_{{journey.id}}" class="journey_map"></div>
-					</a>
-					<div class="journey_title"><a href="/journey-{{journey.id}}">{{journey.Run.name | capitalize | limitTo:25}}</a></div>
-					<div class="journey_desc">
-						<p><i class="glyphicon glyphicon-map-marker"></i> {{journey.address_start | capitalize | limitTo:21}}</p>
-						<p><i class="glyphicon glyphicon-sort"></i> {{journey.journey_type | capitalize}}</p>
-						<p><i class="glyphicon glyphicon-flag"></i> {{journey.startDate | date:'dd / MM / yyyy'}}</p>
-						<p><i class="glyphicon glyphicon-time"></i> {{journey.duration}}</p>
-						<p><i class="glyphicon glyphicon-road"></i> {{journey.distance}}</p>
-					</div>
+			<div class="row-fluid">
+				<div class="col-xs-12 col-sm-6 col-md-3" ng-repeat="journey in journeyList | runname:run_target">
+                    <div class="block_inside">
+                        <a href="/journey-{{journey.id}}">
+                            <div id="map_canvas_{{journey.id}}" class="journey_map"></div>
+                        </a>
+                        <div class="block_title"><a href="/journey-{{journey.id}}">{{journey.Run.name | capitalize | limitTo:25}}</a></div>
+                        <div class="block_desc">
+                            <p><i class="glyphicon glyphicon-map-marker"></i> {{journey.address_start | capitalize | limitTo:21}}</p>
+                            <p><i class="glyphicon glyphicon-sort"></i> {{journey.journey_type | capitalize}}</p>
+                            <p><i class="glyphicon glyphicon-flag"></i> {{journey.startDate | date:'dd / MM / yyyy'}}</p>
+                            <p><i class="glyphicon glyphicon-time"></i> {{journey.duration}}</p>
+                            <p><i class="glyphicon glyphicon-road"></i> {{journey.distance}}</p>
+                        </div>
+    				</div>
 				</div>
 			</div>
         </div>

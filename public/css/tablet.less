@@ -1,22 +1,62 @@
 @import '../lib/bootstrap/less/bootstrap.less';
 
+/* Small devices (tablets, 768px and 992px) */
 @media (min-width: @screen-sm-min) and (max-width: @screen-sm-max) {
   @import 'main';
 
   /* variables definition */
-  @inscription_font_size: 36px;
+  @index_font_size: 36px;
 
   .text_img_with_shadow {
-    color: @text_inscription;
-    padding-top: 10%;
-    font-size: @inscription_font_size;
+    color: @text_index;
+    padding-top: 30%;
+    font-size: @index_font_size;
     text-shadow: @text_shadow;
   }
 
   .text_img_auth_with_shadow {
-    color: @text_inscription;
-    padding-top: 18%;
-    font-size: @inscription_font_size;
+    color: @text_index;
+    padding-top: 45%;
+    font-size: @index_font_size;
     text-shadow: @text_shadow;
+  }
+
+  .text-with-shadow {
+    color: @text_index;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    font-size: @index_font_size;
+    text-shadow: @text_shadow;
+  }
+
+  .text-without-shadow {
+    color: @text;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    font-size: @index_font_size;
+  }
+
+  // Feedback and mail panel - Home Page
+  .home_panel {
+    margin-top: 40px;
+    height: 350px;
+  }
+
+  // block definition
+  .block_inside {
+    .main_block_inside;
+  }
+
+  // Index Journey description
+  .journey_map {
+    width: 100%;
+    height: 179px;
+  }
+
+  // Footer specificity
+  footer {
+    .logo {
+      .pull-right();
+    }
   }
 }

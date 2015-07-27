@@ -21,4 +21,5 @@ $(document).ready(function(){/* activate scrollspy menu */
         }
     });
 
+    $('.navbar .active').removeClass('active');
 });
