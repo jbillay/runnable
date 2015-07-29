@@ -6,6 +6,7 @@
 
   /* variables definition */
   @index_font_size: 26px;
+  @journey_font_size: 16px;
 
   .text_img_with_shadow {
     color: @text_index;
@@ -100,8 +101,9 @@
       padding: 0px;
     }
     h2 {
-      font-size: 18px;
-      color: black;
+      font-size: @journey_font_size;
+      margin: 5px;
+      color: @text;
     }
     .journey_detail_panel {
       padding: 2px;
@@ -110,11 +112,48 @@
       }
     }
     .journey_price {
-      font-size: 20px;
+      font-size: @journey_font_size;
       font-weight: bold;
       color: green;
       margin: 5px;
       .pull-left();
+    }
+    .journey_type_parent {
+      padding: 0px;
+    }
+    hr {
+      margin: 5px;
+    }
+  }
+
+  // user public profil
+  .public_profil {
+    .img-user-public {
+      width: 90px;
+    }
+    h2 {
+      font-size: 20px;
+    }
+    h3 {
+      font-size: 18px;
+    }
+    h5 {
+      font-size: 11px;
+    }
+  }
+
+  // User inbox
+  .inbox {
+    h4 {
+      font-size: 11px;
+    }
+  }
+
+  // User profil
+  .user_profil {
+    .avatar {
+      width: 250px;
+      margin-left: 0px;
     }
   }
 

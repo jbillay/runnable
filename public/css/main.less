@@ -15,7 +15,7 @@
 @block_border: solid 1px black;
 @img_home: '/public/img/home.jpg';
 @footer_height: 100px;
-
+@discussion_info: #808080;
 
 /* Main usage */
 html,body,.runnable_root {
@@ -40,20 +40,6 @@ h6, .h6 {
 
 a {
   color: @text;
-}
-
-.table-no-border {
-  margin-bottom: 0;
-}
-
-.table-no-border>thead>tr>th,
-.table-no-border>tbody>tr>th,
-.table-no-border>tfoot>tr>th,
-.table-no-border>thead>tr>td,
-.table-no-border>tbody>tr>td,
-.table-no-border>tfoot>tr>td {
-  border-top: none;
-  padding: 5px;
 }
 
 // Customization of navbar
@@ -240,7 +226,43 @@ section.imgback {
     padding: 0px;
     .pull-left();
   }
-  .journey_type {
-    .pull-right();
+  .hr {
+    padding: 0px;
+  }
+  .journey_info {
+    padding: 0px;
+    .journey_info_table {
+      padding: 8px;
+    }
+  }
+}
+
+.discussion_board {
+  max-height: 400px;
+  overflow-y:auto;
+  .discussion_message {
+    padding: 2px;
+    .discussion_message_text {
+      text-align: left;
+    }
+    .discussion_message_info {
+      color: @discussion_info;
+    }
+  }
+}
+
+// User profil
+.user_profil {
+  .avatar {
+    width: 400px;
+    margin-left: 50px;
+    margin-bottom: 20px;
+  }
+}
+
+// user public profil
+.public_profil {
+  .img-user-public {
+    width: 140px;
   }
 }

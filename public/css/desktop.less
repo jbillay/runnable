@@ -1,6 +1,6 @@
 @import '../lib/bootstrap/less/bootstrap.less';
 
-/* Medium devices (desktops, 992px and 1200px) */
+/* Medium devices @media (max-width: 1199px) and (min-width: 992px) */
 @media (min-width: @screen-md-min) and (max-width: @screen-md-max) {
   @import 'main';
 
@@ -57,6 +57,23 @@
   .map {
     min-height: 400px;
     margin-bottom: 20px;
+  }
+
+  // Journey detail specification
+  .journey_detail {
+    .journey_price {
+      font-size: 30px;
+    }
+    .journey_type {
+      .pull-right();
+    }
+  }
+
+  // user public profil
+  .public_profil {
+    .img-user-public {
+      width: 140px;
+    }
   }
 
   // Footer specificity

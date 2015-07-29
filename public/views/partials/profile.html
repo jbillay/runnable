@@ -1,17 +1,17 @@
 <div ng-include="'partials/nav'"></div>
 
-<div class="container body">
-    <div class="row spacehead">
-        <div class="col-sm-12">
+<div class="container-fluid body">
+    <div class="row-fluid user_profil">
+        <div class="col-xs-12 col-sm-12 col-md-12">
             <tabset>
                 <tab heading="Profil">
-                    <div class="row">
-                        <div class="col-sm-6">
+                    <div class="row-fluid">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
                             <div class="profile">
                                 <i ng-hide="imageSrc">Pas de photo choisie</i>
-                                <img ng-show="imageSrc" ng-src="{{imageSrc}}" class="img-rounded user_avatar"/><br/>
-                                <div class="row">
-                                    <div class="col-sm-6">
+                                <img ng-show="imageSrc" ng-src="{{imageSrc}}" class="img-rounded avatar"/><br/>
+                                <div class="row-fluid">
+                                    <div class="col-xs-12 col-sm-6 col-md-6">
                                         <div class="input-group">
                                             <span class="input-group-btn">
                                                 <span class="btn btn-primary btn-file">
@@ -22,12 +22,12 @@
                                             <input type="text" class="form-control" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-sm-3">
+                                    <div class="col-xs-6 col-sm-3 col-md-3">
                                         <button type="button" class="btn btn-success" ng-click="saveFile()">
                                             <i class="fa fa-floppy-o"></i> Enregistrer
                                         </button>
                                     </div>
-                                    <div class="col-sm-3">
+                                    <div class="col-xs-6 col-sm-3 col-md-3">
                                         <button type="button" class="btn btn-danger" ng-click="deleteFile()">
                                             <i class="fa fa-trash"></i> Supprimer
                                         </button>
