@@ -143,6 +143,11 @@ section.imgback {
   background-color: @bg_main;
   border: @block_border;
   margin-bottom: 30px;
+  .journey_map {
+    width: 100%;
+    height: 179px;
+  }
+
 }
 
 .block_desc {
@@ -185,6 +190,13 @@ section.imgback {
   }
 }
 
+// Run list page
+.run_list {
+  .noresult {
+    font-size: large;
+  }
+}
+
 // Run detail
 .run_detail .panel-heading h3 {
   margin-top: 0;
@@ -214,6 +226,11 @@ section.imgback {
   }
 }
 
+// My Journey
+.my_journey {
+}
+
+// Journey detail
 .journey_detail {
   .journey_price {
     font-size: 36px;
@@ -251,18 +268,95 @@ section.imgback {
   }
 }
 
-// User profil
-.user_profil {
+// User profile
+.user_profile {
+  .profile {
+    margin-top: 20px;
+    margin-bottom: 35px;
+  }
   .avatar {
     width: 400px;
     margin-left: 50px;
     margin-bottom: 20px;
   }
+  .btn-file {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    background: red;
+    cursor: inherit;
+    display: block;
+  }
+  input[readonly] {
+    background-color: white !important;
+    cursor: text !important;
+  }
+  .palmares {
+    margin-top: 20px;
+    margin-bottom: 35px;
+  }
+
+  .palmares .odd {
+    background-color:#eee;
+  }
+
+  .palmares h2 {
+    color:#97BE0D;
+    padding-left:0;
+    text-transform:none;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: arial,sans-serif;
+  }
+
+  .palmares h3 {
+    margin:10px 0 2px 0;
+    border-bottom:1px solid #444444;
+  }
 }
 
-// user public profil
+// User inbox
+.inbox {
+  .fixed-panel {
+    min-height: 270px;
+    max-height: 270px;
+    overflow-y: scroll;
+  }
+}
+
+// User invitation
+.invite {
+  .input-group {
+    margin-bottom: 15px;
+  }
+  .width {
+    width: 480px;
+  }
+  .height {
+    height: 150px;
+  }
+}
+
+// user public profile
 .public_profil {
   .img-user-public {
     width: 140px;
+  }
+}
+
+// Admin - no mobile device compliant
+.admin {
+  .htmlEditor {
+    height: 500px !important;
   }
 }

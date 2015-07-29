@@ -1,108 +1,100 @@
 <div ng-include="'partials/nav'"></div>
 <div class="container-fluid body">
-    <div class="row-fluid">
-        <div class="col-xs-12 col-sm-12 col-md-12">
-			<div class="row-fluid">
-				<div class="col-xs-12 col-sm-6 col-md-4">
-					<div class="input-group">
-						<input type="text" class="form-control homesearch" ng-model="run_name" placeholder="Saisissez le nom de votre course...">
-						<span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
-					</div>
-				</div>
-                <div class="col-xs-12 col-sm-6 col-md-8 search_bar">
-                    <button type="button" class="btn btn-default" ng-click="resetSearch()">
-                        <span class="glyphicon glyphicon-refresh"></span>
-                    </button>
-                    <button type="button" class="btn btn-default" ng-click="switchSearch()" ng-if="!advancedSearch">
-                        Recherche avancée
-                    </button>
-                    <button type="button" class="btn btn-default" ng-click="switchSearch()" ng-if="advancedSearch">
-                        Recherche simple
-                    </button>
-    			</div>
-			</div>
-            <div class="row-fluid" ng-if="advancedSearch">
-                <div class="col-xs-12 col-sm-12 col-md-12 search_bar">
-                    <form class="form-inline" ng-submit="launchSearch(searchForm)">
-                        <div class="input-group">
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-road"></span></span>
-                            <select class="form-control" ng-model='searchForm.run_adv_type' data-container="body"
-								data-toggle="tooltip" data-placement="bottom" title="Type de course">
-                                <option value="">Tous</option>
-                                <option value="trail">Trail</option>
-                                <option value="ultra">Ultra trail</option>
-                                <option value="10k">10 Km</option>
-                                <option value="20k">20 Km</option>
-                                <option value="semi">Semi marathon</option>
-                                <option value="marathon">Marathon</option>
-                                <option value="triathlon">Triathlon</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-							<span class="input-group-btn">
-								<button type="button" class="btn btn-default" ng-click="calendar.open($event, 'start')">
-                                    <i class="glyphicon glyphicon-calendar"></i>
-                                </button>
-							</span>
-                            <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
-                                   ng-model="searchForm.run_adv_start_date" name="run_adv_start_date"
-                                   is-open="calendar.opened.start" min-date="today"
-                                   datepicker-options="calendar.dateOptions" close-text="Fermer"
-								   data-toggle="tooltip" data-placement="bottom" 
-								   title="Course ayant lieu à partir de la date sélectionnée"/>
-                        </div>
-                        <div class="input-group">
-							<span class="input-group-btn">
-								<button type="button" class="btn btn-default" ng-click="calendar.open($event, 'end')">
-                                    <i class="glyphicon glyphicon-calendar"></i>
-                                </button>
-							</span>
-                            <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
-                                   ng-model="searchForm.run_adv_end_date" name="run_adv_end_date"
-                                   is-open="calendar.opened.end" min-date="searchForm.run_adv_start_date"
-                                   datepicker-options="calendar.dateOptions" close-text="Fermer"
-								   data-toggle="tooltip" data-placement="bottom" 
-								   title="Course ayant lieu avant de la date sélectionnée"/>
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-map-marker"></span></span>
-                            <input type="text" class="form-control run_advanced_search_city"
-									typeahead="address for address in getLocation($viewValue)"
-									ng-model="searchForm.run_adv_city" placeholder="Ville de départ"
-									data-toggle="tooltip" data-placement="bottom" title="Ville recherchée">
-                        </div>
-                        <div class="input-group">
-                            <input type="text" class="form-control run_advanced_search_distance"
-                                   ng-model="searchForm.run_adv_distance" placeholder="{{default_distance}} Km"
-								   data-toggle="tooltip" data-placement="bottom"  data-title="Sur un rayon de x km autour de la ville sélectionnée">
-                        </div>
-                        <button type="submit" class="btn btn-success">Rechercher</button>
-                    </form>
+    <div class="row-fluid run_list">
+        <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="input-group">
+                <input type="text" class="form-control homesearch" ng-model="run_name" placeholder="Saisissez le nom de votre course...">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-8 search_bar">
+            <button type="button" class="btn btn-default" ng-click="resetSearch()">
+                <span class="glyphicon glyphicon-refresh"></span>
+            </button>
+            <button type="button" class="btn btn-default" ng-click="switchSearch()" ng-if="!advancedSearch">
+                Recherche avancée
+            </button>
+            <button type="button" class="btn btn-default" ng-click="switchSearch()" ng-if="advancedSearch">
+                Recherche simple
+            </button>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 search_bar" ng-if="advancedSearch">
+            <form class="form-inline" ng-submit="launchSearch(searchForm)">
+                <div class="input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-road"></span></span>
+                    <select class="form-control" ng-model='searchForm.run_adv_type' data-container="body"
+                        data-toggle="tooltip" data-placement="bottom" title="Type de course">
+                        <option value="">Tous</option>
+                        <option value="trail">Trail</option>
+                        <option value="ultra">Ultra trail</option>
+                        <option value="10k">10 Km</option>
+                        <option value="20k">20 Km</option>
+                        <option value="semi">Semi marathon</option>
+                        <option value="marathon">Marathon</option>
+                        <option value="triathlon">Triathlon</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="calendar.open($event, 'start')">
+                            <i class="glyphicon glyphicon-calendar"></i>
+                        </button>
+                    </span>
+                    <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
+                           ng-model="searchForm.run_adv_start_date" name="run_adv_start_date"
+                           is-open="calendar.opened.start" min-date="today"
+                           datepicker-options="calendar.dateOptions" close-text="Fermer"
+                           data-toggle="tooltip" data-placement="bottom"
+                           title="Course ayant lieu à partir de la date sélectionnée"/>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="calendar.open($event, 'end')">
+                            <i class="glyphicon glyphicon-calendar"></i>
+                        </button>
+                    </span>
+                    <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
+                           ng-model="searchForm.run_adv_end_date" name="run_adv_end_date"
+                           is-open="calendar.opened.end" min-date="searchForm.run_adv_start_date"
+                           datepicker-options="calendar.dateOptions" close-text="Fermer"
+                           data-toggle="tooltip" data-placement="bottom"
+                           title="Course ayant lieu avant de la date sélectionnée"/>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-map-marker"></span></span>
+                    <input type="text" class="form-control run_advanced_search_city"
+                            typeahead="address for address in getLocation($viewValue)"
+                            ng-model="searchForm.run_adv_city" placeholder="Ville de départ"
+                            data-toggle="tooltip" data-placement="bottom" title="Ville recherchée">
+                </div>
+                <div class="input-group">
+                    <input type="text" class="form-control run_advanced_search_distance"
+                           ng-model="searchForm.run_adv_distance" placeholder="{{default_distance}} Km"
+                           data-toggle="tooltip" data-placement="bottom"  data-title="Sur un rayon de x km autour de la ville sélectionnée">
+                </div>
+                <button type="submit" class="btn btn-success">Rechercher</button>
+            </form>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-3" ng-repeat="run in listRun | filter:{name:run_name} as results">
+            <div class="block_inside">
+                <a href="/run-{{run.id}}">
+                    <img ng-if="run.type === 'trail'" src="/img/trail_default.jpg" class="run_img" alt="Image de la course">
+                    <img ng-if="run.type !== 'trail'" src="/img/run_default.jpg" class="run_img" alt="Image de la course">
+                </a>
+                <div class="block_title"><a href="/run-{{run.id}}">{{run.name | capitalize | limitTo:25}}</a></div>
+                <div class="block_desc">
+                    <p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize | limitTo:21}}</p>
+                    <p><i class="glyphicon glyphicon-calendar"></i> {{run.date_start | date:'dd/MM/yyyy'}}</p>
+                    <p><i class="glyphicon glyphicon-text-width"></i> {{run.distances | limitTo:21}}</p>
+                    <p><i class="glyphicon glyphicon-road"></i> {{run.type | capitalize}}</p>
                 </div>
             </div>
-			<div class="row-fluid">
-                <div class="col-xs-12 col-sm-6 col-md-3" ng-repeat="run in listRun | filter:{name:run_name} as results">
-                    <div class="block_inside">
-                        <a href="/run-{{run.id}}">
-                            <img ng-if="run.type === 'trail'" src="/img/trail_default.jpg" class="run_img" alt="Image de la course">
-                            <img ng-if="run.type !== 'trail'" src="/img/run_default.jpg" class="run_img" alt="Image de la course">
-                        </a>
-                        <div class="block_title"><a href="/run-{{run.id}}">{{run.name | capitalize | limitTo:25}}</a></div>
-                        <div class="block_desc">
-                            <p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize | limitTo:21}}</p>
-                            <p><i class="glyphicon glyphicon-calendar"></i> {{run.date_start | date:'dd/MM/yyyy'}}</p>
-                            <p><i class="glyphicon glyphicon-text-width"></i> {{run.distances | limitTo:21}}</p>
-                            <p><i class="glyphicon glyphicon-road"></i> {{run.type | capitalize}}</p>
-                        </div>
-    				</div>
-				</div>
-                <div class="col-sm-6 run_noresult" ng-if="!results.length">
-					Aucune course ne correspond à votre recherche.<br>
-                    <a href="#" ng-click="openRunProposal()">Vous souhaitez proposer l'ajout d'une course</a><br>
-					Vous la trouverez certainement chez notre partenaire
-					<a href="http://www.goforun.com/courses/affiches">GoFoRun</a>
-				</div>
-			</div>
+        </div>
+        <div class="col-xs-12 col-sm-10 col-md-6 noresult" ng-if="!results.length">
+            Aucune course ne correspond à votre recherche.<br>
+            <a href="#" ng-click="openRunProposal()">Vous souhaitez proposer l'ajout d'une course</a><br>
+            Vous la trouverez certainement chez notre partenaire
+            <a href="http://www.goforun.com/courses/affiches">GoFoRun</a>
         </div>
     </div>
     <div ng-include="'partials/modal_run_proposal'"></div>

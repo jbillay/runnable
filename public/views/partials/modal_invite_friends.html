@@ -7,20 +7,18 @@
 					<span class="sr-only">Close</span></button>
 				<h4 class="modal-title" id="myModalLabel">Invitez vos amis à rejoindre notre communauté</h4>
 			</div>
-			<div class="row">
+			<div class="row invite">
 				<div class="modal-body">
-					<div class="col-md-12">
-						<h4>Message d'invitation</h4>
-						<hr>
+					<div class="col-xs-12 col-sm-12 col-md-12">
 						<form name="inviteForm" ng-controller="RunnableSharedController" ng-submit="inviteFriends(invitForm)" novalidate>
-							<div class="input-group invite_margin">
+							<div class="input-group">
 								<label class="control-label" for="inviteEmails">Adresses e-mail (séparées par des virgules)</label>
-								<textarea class="form-control invite_email" ng-model="invitForm.inviteEmails" id="inviteEmails">
+								<textarea class="form-control width" ng-model="invitForm.inviteEmails" id="inviteEmails">
 								</textarea>
 							</div>
-							<div class="input-group invite_margin">
-								<label class="control-label invite_message_label" for="inviteMessage">Message</label>
-								<textarea class="form-control invite_message" ng-model="invitForm.inviteMessage" id="inviteMessage">
+							<div class="input-group">
+								<label class="control-label width" for="inviteMessage">Message</label>
+								<textarea class="form-control width height" ng-model="invitForm.inviteMessage" id="inviteMessage">
 								</textarea>
 							</div>
 							<div class="modal-footer">

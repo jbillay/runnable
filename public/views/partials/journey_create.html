@@ -1,86 +1,76 @@
 <div ng-include="'partials/nav'"></div>
 
-<div class="container body">
-    <div class="row spacehead">
-		<div class="row">
-			<div class="col-sm-6">
-				<h2>Créer un parcours</h2>
-				<hr>
-			</div>
+<div class="container-fluid body">
+    <div class="row-fluid journey_save">
+		<div class="col-xs-12 col-sm-12 col-md-12">
+			<h2>Créer un parcours</h2>
+			<hr>
 		</div>
-		<div class="col-sm-6 spacedown">
+		<div class="col-xs-12 col-sm-12 col-md-6">
 			<!--action="/api/journey" method="post"-->
 			<form role="form" name="createJourney" ng-submit="submitJourney(journey)">
-				<div class="row">
-					<div class="col-xs-12 col-sm-12 col-md-12">
-						<div class="form-group" ng-class="{ 'has-success' : createJourney.run_id_selector.$valid && createJourney.run_id_selector.$dirty,
-							'has-error' : createJourney.run_id_selector.$invalid && createJourney.run_id_selector.$dirty }">
-							<select ng-model="journey.Run" placeholder="Definir la course"
-									name="journey[run_id_selector]" id="run_id_selector" class="form-control"
-                                    tabindex="1" ng-change="selectDestination(journey.Run)"
-                                    ng-options="run as run.name for run in runList" required>
-									<option value="">-- Choisir une course --</option>
-                            </select>
-							<div class="help-block text-danger"
-								 ng-if="createJourney.run_id_selector.$dirty"
-								 ng-messages="createJourney.run_id_selector.$error">
-								<div ng-message="required">Définir la course est obligatoire.</div>
-							</div>
+				<div class="col-xs-12 col-sm-12 col-md-12">
+					<div class="form-group" ng-class="{ 'has-success' : createJourney.run_id_selector.$valid && createJourney.run_id_selector.$dirty,
+						'has-error' : createJourney.run_id_selector.$invalid && createJourney.run_id_selector.$dirty }">
+						<select ng-model="journey.Run" placeholder="Definir la course"
+								name="journey[run_id_selector]" id="run_id_selector" class="form-control"
+								tabindex="1" ng-change="selectDestination(journey.Run)"
+								ng-options="run as run.name for run in runList" required>
+								<option value="">-- Choisir une course --</option>
+						</select>
+						<div class="help-block text-danger"
+							 ng-if="createJourney.run_id_selector.$dirty"
+							 ng-messages="createJourney.run_id_selector.$error">
+							<div ng-message="required">Définir la course est obligatoire.</div>
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-xs-12 col-sm-12 col-md-12">
-						<div class="form-group" ng-class="{ 'has-success' : createJourney.address_start.$valid && createJourney.address_start.$dirty,
-							'has-error' : createJourney.address_start.$invalid && createJourney.address_start.$dirty }">
-							<input type="text" ng-model="journey.address_start" placeholder="Lieu de départ"
-								   typeahead="address for address in getLocation($viewValue)"
-								   typeahead-loading="loadingLocations" name="journey[address_start]" id="address_start"
-								   class="form-control"  tabindex="2" typeahead-on-select='selectSource($item)' required>
-							<div class="help-block text-danger"
-								 ng-if="createJourney.address_start.$dirty"
-								 ng-messages="createJourney.address_start.$error">
-								<div ng-message="required">Définir le lieu de départ est obligatoire.</div>
-							</div>
-							<i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+				<div class="col-xs-12 col-sm-12 col-md-12">
+					<div class="form-group" ng-class="{ 'has-success' : createJourney.address_start.$valid && createJourney.address_start.$dirty,
+						'has-error' : createJourney.address_start.$invalid && createJourney.address_start.$dirty }">
+						<input type="text" ng-model="journey.address_start" placeholder="Lieu de départ"
+							   typeahead="address for address in getLocation($viewValue)"
+							   typeahead-loading="loadingLocations" name="journey[address_start]" id="address_start"
+							   class="form-control"  tabindex="2" typeahead-on-select='selectSource($item)' required>
+						<div class="help-block text-danger"
+							 ng-if="createJourney.address_start.$dirty"
+							 ng-messages="createJourney.address_start.$error">
+							<div ng-message="required">Définir le lieu de départ est obligatoire.</div>
+						</div>
+						<i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+					</div>
+				</div>
+				<div class="col-xs-6 col-sm-6 col-md-6">
+					<div class="form-group">
+						<input type="text" name="journey[distance]" id="distance" class="form-control"
+							   ng-model="journey.distance" placeholder="Distance estimée" readonly>
+					</div>
+				</div>
+				<div class="col-xs-6 col-sm-6 col-md-6">
+					<div class="form-group">
+						<input type="text" name="journey[duration]" id="duration" class="form-control"
+							   ng-model="journey.duration" placeholder="Temps estimé" readonly>
+					</div>
+				</div>
+				<div class="col-xs-6 col-sm-6 col-md-6">
+					<div class="form-group" ng-class="{ 'has-success' : createJourney.journey_type_select.$valid && createJourney.journey_type_select.$dirty,
+						'has-error' : createJourney.journey_type_select.$invalid && createJourney.journey_type_select.$dirty }">
+						<select class="form-control" name="journey[journey_type_select]" id="journey_type_select"
+							placeholder="Type de parcours" tabindex="3" ng-model="journey.journey_type"
+							ng-options="parcoursMode.code as parcoursMode.name for parcoursMode in parcoursModeList"
+							ng-change="journeyTypeChange()" required>
+						</select>
+						<div class="help-block text-danger"
+							 ng-if="createJourney.journey_type_select.$dirty"
+							 ng-messages="createJourney.journey_type_select.$error">
+							<div ng-message="required">Définir le type de parcours est obligatoire.</div>
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-xs-6 col-sm-6 col-md-6">
-						<div class="form-group">
-							<input type="text" name="journey[distance]" id="distance" class="form-control"
-								   ng-model="journey.distance" placeholder="Distance estimée" readonly>
-						</div>
-					</div>
-					<div class="col-xs-6 col-sm-6 col-md-6">
-						<div class="form-group">
-							<input type="text" name="journey[duration]" id="duration" class="form-control"
-								   ng-model="journey.duration" placeholder="Temps estimé" readonly>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-6 col-sm-6 col-md-6">
-						<div class="form-group" ng-class="{ 'has-success' : createJourney.journey_type_select.$valid && createJourney.journey_type_select.$dirty,
-							'has-error' : createJourney.journey_type_select.$invalid && createJourney.journey_type_select.$dirty }">
-							<select class="form-control" name="journey[journey_type_select]" id="journey_type_select"
-								placeholder="Type de parcours" tabindex="3" ng-model="journey.journey_type" 
-								ng-options="parcoursMode.code as parcoursMode.name for parcoursMode in parcoursModeList" 
-								ng-change="journeyTypeChange()" required>
-							</select>
-							<div class="help-block text-danger"
-								 ng-if="createJourney.journey_type_select.$dirty"
-								 ng-messages="createJourney.journey_type_select.$error">
-								<div ng-message="required">Définir le type de parcours est obligatoire.</div>
-							</div>
-						</div>
-					</div>
-					<input type="hidden" name="journey[journey_type]" id="journey_type" value="{{journey.journey_type}}" >
-				</div>
-				<p ng-if=outward>Aller</p>
-				<div class="row outward" ng-if=outward>
-					<div class="col-xs-4 col-sm-4 col-md-4">
+				<input type="hidden" name="journey[journey_type]" id="journey_type" value="{{journey.journey_type}}" >
+				<div class="row-fluid" ng-if=outward>
+					<div class="col-xs-12 col-sm-12 col-md-12"><p>Aller</p></div>
+					<div class="col-xs-12 col-sm-4 col-md-4">
 						<div class="input-group">
 							<span class="input-group-btn">
 								<button type="button" class="btn btn-default" ng-click="calendar.open($event, 'outward')">
@@ -98,7 +88,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-xs-4 col-sm-4 col-md-4">
+					<div class="col-xs-12 col-sm-4 col-md-4">
 						<div class="form-group" ng-class="{ 'has-success' : createJourney.time_start_outward.$valid && createJourney.time_start_outward.$dirty,
 							'has-error' : createJourney.time_start_outward.$invalid && createJourney.time_start_outward.$dirty }">
                             <div class="input-group clockpicker" id="clockpicker_outward" data-autoclose="true">
@@ -111,7 +101,7 @@
                             </div>
 						</div>
 					</div>
-					<div class="col-xs-4 col-sm-4 col-md-4">
+					<div class="col-xs-12 col-sm-4 col-md-4">
 						<div class="form-group" ng-class="
 						{ 	'has-success' : createJourney.nb_space_outward.$valid && createJourney.nb_space_outward.$dirty,
 							'has-error' : createJourney.nb_space_outward.$invalid && createJourney.nb_space_outward.$dirty }">
@@ -121,9 +111,9 @@
 						</div>
 					</div>
 				</div>
-				<p ng-if=return>Retour</p>
-				<div class="row return" ng-if=return>
-					<div class="col-xs-4 col-sm-4 col-md-4">
+				<div class="row-fluid return" ng-if=return>
+					<div class="col-xs-12 col-sm-12 col-md-12"><p>Retour</p></div>
+					<div class="col-xs-12 col-sm-4 col-md-4">
 						<div class="input-group">
 							<span class="input-group-btn">
 								<button type="button" class="btn btn-default" ng-click="calendar.open($event, 'return')">
@@ -142,7 +132,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-xs-4 col-sm-4 col-md-4">
+					<div class="col-xs-12 col-sm-4 col-md-4">
 						<div class="form-group" ng-class="
 						{ 	'has-success' : createJourney.time_start_return.$valid && createJourney.time_start_return.$dirty,
 							'has-error' : createJourney.time_start_return.$invalid && createJourney.time_start_return.$dirty }">
@@ -156,7 +146,7 @@
                             </div>
 						</div>
 					</div>
-					<div class="col-xs-4 col-sm-4 col-md-4">
+					<div class="col-xs-12 col-sm-4 col-md-4">
 						<div class="form-group" ng-class="
 						{ 	'has-success' : createJourney.nb_space_return.$valid && createJourney.nb_space_return.$dirty,
 							'has-error' : createJourney.nb_space_return.$invalid && createJourney.nb_space_return.$dirty }">
@@ -166,8 +156,8 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-xs-6 col-sm-6 col-md-6">
+				<div class="row-fluid">
+					<div class="col-xs-12 col-sm-6 col-md-6">
 						<div class="form-group" ng-class="{ 'has-success' : createJourney.car_type.$valid && createJourney.car_type.$dirty,
 							'has-error' : createJourney.car_type.$invalid && createJourney.car_type.$dirty }">
 							<select class="form-control" name="journey[car_type]" id="car_type"
@@ -181,7 +171,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-xs-6 col-sm-6 col-md-6">
+					<div class="col-xs-12 col-sm-6 col-md-6">
 						<div class="form-group">
 							<div class="input-group" ng-class="{ 'has-success' : createJourney.amount.$valid && createJourney.amount.$dirty,
 							'has-error' : createJourney.amount.$invalid && createJourney.amount.$dirty }">
@@ -203,24 +193,20 @@
                         </div>
 					</div>
 				</div>
-				<div class="row">
-                    <div class="checkbox col-xs-8 col-md-8 pull-right">
-                        <label class="pull-right">
-                            <input type="checkbox" ng-model="publishFacebook">
-                            Je veux publier mon trajet sur ma page Facebook
-                        </label>
-                    </div>
-                </div>
-                <div class="row">
-					<div class="col-xs-3 col-md-3 pull-right">
-						<button type="submit" class="btn btn-primary btn-block" tabindex="12">
-							Publier
-						</button>
-					</div>
+				<div class="checkbox col-xs-12 col-sm-12 col-md-12 pull-right">
+					<label class="pull-right">
+						<input type="checkbox" ng-model="publishFacebook" tabindex="12">
+						Je veux publier mon trajet sur ma page Facebook
+					</label>
+				</div>
+				<div class="col-xs-12 col-sm-12 col-md-12 pull-right">
+					<button type="submit" class="btn btn-primary btn-block" tabindex="13">
+						Publier
+					</button>
 				</div>
 			</form>
         </div>
-		<div class="col-sm-5">
+		<div class="hidden-xs hidden-sm col-md-6">
 			<div id="map_canvas" class="map"></div>
         </div>
     </div>
