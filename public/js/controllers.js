@@ -879,10 +879,10 @@ angular.module('runnable.controllers', []).
                 });
                 // Define max date to show validation form
                 if (join.Journey.date_start_return > join.Journey.date_start_outward) {
-                    var dsr = join.Journey.date_start_return.split(/[- :]/);
+                    var dsr = join.Journey.date_start_return.split(/[- :T.]/);
                     join.Journey.date_max = new Date(dsr[0], dsr[1]-1, dsr[2], dsr[3], dsr[4], dsr[5]).getTime();
                 } else {
-                    var dso = join.Journey.date_start_outward.split(/[- :]/);
+                    var dso = join.Journey.date_start_outward.split(/[- :T.]/);
                     join.Journey.date_max = new Date(dso[0], dso[1]-1, dso[2], dso[3], dso[4], dso[5]).getTime();
                 }
 			});

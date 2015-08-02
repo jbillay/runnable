@@ -1,6 +1,6 @@
 <div class="modal fade bs-example-modal-lg" id="journeyValidationModal" tabindex="-1" role="dialog"
      aria-labelledby="journeyValidationLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal_journey_validation">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">
@@ -10,27 +10,27 @@
             </div>
             <div class="row">
                 <div class="modal-body">
-                    <div class="col-xs-12 col-sm-12 col-md-12 text-center">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
                         <form name="validationForm" ng-submit="sendValidation(validationForm)" novalidate>
-                            <div class="input-group journey_table">
-                                <label class="control-label pull-left" for="commentDriver">Commentaire sur le conducteur</label>
+                            <div class="input-group">
+                                <label class="control-label" for="commentDriver">Commentaire sur le conducteur</label>
                                 <textarea class="form-control" ng-model="validationForm.commentDriver" id="commentDriver">
                                 </textarea>
                             </div>
-                            <div class="input-group journey_table">
+                            <div class="input-group">
                                 <label class="control-label pull-left" for="rate_driver">Note du conducteur (1 à 5)</label>
                                 <input type="number" maxlength="5" minlength="0" class="form-control" ng-model="validationForm.rate_driver" id="rate_driver">
                             </div>
-                            <div class="input-group journey_table">
+                            <div class="input-group">
                                 <label class="control-label pull-left" for="commentService">Commentaire sur notre service</label>
                                 <textarea class="form-control" ng-model="validationForm.commentService" id="commentService">
                                 </textarea>
                             </div>
-                            <div class="input-group journey_table">
-                                <label class="control-label pull-left" for="rate_service">Note du service (1 à 5)</label>
+                            <div class="input-group">
+                                <label class="control-label" for="rate_service">Note du service (1 à 5)</label>
                                 <input type="number" maxlength="5" minlength="0" class="form-control" ng-model="validationForm.rate_service" id="rate_service">
                             </div>
-                            <button type="submit" class="btn btn-primary pull-left journey_table">Valider votre voyage</button>
+                            <button type="submit" class="btn btn-primary">Valider votre voyage</button>
                         </form>
                     </div>
                 </div>
