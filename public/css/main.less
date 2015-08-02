@@ -228,6 +228,53 @@ section.imgback {
 
 // My Journey
 .my_journey {
+  .panel-body {
+    .box_journey {
+      margin-bottom: 10px;
+    }
+    .info_journey {
+      margin-bottom: 10px;
+      div {
+        padding-left: 0px;
+        padding-right: 0px;
+      }
+      hr {
+        margin-top: 5px;
+        margin-bottom: 10px;
+      }
+      .info_driver {
+        margin-bottom: 5px;
+      }
+    }
+  }
+}
+
+// Modal Journey
+.modal_journey {
+  .head {
+    margin-top: 10px;
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  .panel-body {
+    div {
+      padding-left: 0px;
+      padding-right: 0px;
+    }
+  }
+  .panel-title {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  .price {
+    font-size: 20px;
+    font-weight: bold;
+    color: @green;
+    .pull-right();
+  }
+  .discussion_send {
+    margin-bottom: 10px;
+  }
 }
 
 // Journey detail
@@ -238,6 +285,11 @@ section.imgback {
     color: green;
     margin-top: 5px;
     .pull-right();
+  }
+  .journey_head {
+    h2, a {
+      color: black;
+    }
   }
   .journey_address_start {
     padding: 0px;
@@ -258,7 +310,7 @@ section.imgback {
   max-height: 400px;
   overflow-y:auto;
   .discussion_message {
-    padding: 2px;
+    padding: 2px !important;
     .discussion_message_text {
       text-align: left;
     }
@@ -268,6 +320,12 @@ section.imgback {
   }
 }
 
+.discussion_users {
+  .img-avatar-discussion {
+    height: 35px;
+    width: 35px;
+  }
+}
 // User profile
 .user_profile {
   .profile {
