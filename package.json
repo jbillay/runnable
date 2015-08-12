@@ -13,7 +13,7 @@
   "scripts": {
     "start": "grunt",
     "test": "grunt travis",
-    "postinstall": "./node_modules/bower/bin/bower install --config.interactive=false"
+    "postinstall": "node ./node_modules/bower/bin/bower install --config.interactive=false"
   },
   "dependencies": {
     "async": "~0.6.2",
