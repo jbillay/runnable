@@ -52,10 +52,10 @@
     "chai-as-promised": "5.*.*",
     "google-distance": "~1.0.1",
     "paypal-ipn": "~3.0.0",
-    "multer": "~0.1.8"
+    "multer": "~0.1.8",
+    "bower": "^1.4.1"
   },
   "devDependencies": {
-    "bower": "^1.4.1",
     "grunt-cli": "^0.1.13",
     "grunt-concurrent": "~1.0.0",
     "grunt-contrib-concat": "~0.5.1",
