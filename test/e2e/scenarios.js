@@ -12,6 +12,7 @@ describe('Public journey', function() {
     var indexPage = new IndexPage();
     var journeyPage = new JourneyPage();
     var runPage = new RunPage();
+
     describe('visiting the home page', function () {
         new Given(function() {
             indexPage.visitPage();
@@ -137,9 +138,60 @@ describe('Public journey', function() {
         new Then(function () {
             browser.getLocationAbsUrl().then(function(url) {
                 expect(url).toBe('/journey-4');
-                journeyPage.journeyHeader.getText().then(function (text) { expect(text).toEqual('Parcours pour la course MaXi-Race ®'); });
-                journeyPage.joinBtn.getText().then(function (text) { expect(text).toEqual('Participer à ce voyage'); });
-                journeyPage.startFrom.getText().then(function (text) { expect(text).toEqual('Départ de Saint-Germain-en-Laye, France'); });
+                journeyPage.journeyHeader.getText().then(
+                    function (text) {
+                        expect(text).toEqual('Parcours pour la course MaXi-Race ®');
+                    });
+                expect(journeyPage.journeyRunName.getAttribute('href')).toEqual('http://localhost:9615/run-16');
+                journeyPage.joinBtn.getText().then(
+                    function (text) {
+                        expect(text).toEqual('Participer à ce voyage');
+                    });
+                journeyPage.startFrom.getText().then(
+                    function (text) {
+                        expect(text).toEqual('Départ de Saint-Germain-en-Laye, France');
+                    });
+                expect(journeyPage.journeyUser.getAttribute('href')).toEqual('http://localhost:9615/user-1');
+                journeyPage.journeyUser.getText().then(
+                    function (text) {
+                        expect(text).toEqual('Jeremy Billay');
+                    });
+                journeyPage.journeyCarType.getText().then(
+                    function (text) {
+                        expect(text).toEqual('Monospace');
+                    });
+                journeyPage.journeyPrice.getText().then(
+                    function (text) {
+                        expect(text).toEqual('€ 39.00');
+                    });
+                journeyPage.journeyDistance.getText().then(
+                    function (text) {
+                        expect(text).toEqual('576 km');
+                    });
+                journeyPage.journeyDuration.getText().then(
+                    function (text) {
+                        expect(text).toEqual('5 heures 16 minutes');
+                    });
+                journeyPage.journeyPublicMessages.then(
+                    function (items) {
+                        expect(items.length).toBe(3);
+                    });
+                journeyPage.journeyOutwardDate.getText().then(
+                    function (text) {
+                        expect(text).toEqual('12/05/2016 06:00');
+                    });
+                journeyPage.journeyOutwardFreeSpace.getText().then(
+                    function (text) {
+                        expect(text).toEqual('4 place(s)');
+                    });
+                journeyPage.journeyReturnDate.getText().then(
+                    function (text) {
+                        expect(text).toEqual('13/05/2016 15:30');
+                    });
+                journeyPage.journeyReturnFreeSpace.getText().then(
+                    function (text) {
+                        expect(text).toEqual('4 place(s)');
+                    });
             });
         });
     });
@@ -156,6 +208,80 @@ describe('Public journey', function() {
                 expect(url).toBe('/run');
                 runPage.runList.then(function(items) {
                     expect(items.length).toBe(19);
+                });
+            });
+        });
+    });
+
+    describe('Check a run page - Ice Trail Tarentaise run', function () {
+        new Given(function() {
+            indexPage.visitPage();
+        });
+        new When(function () {
+            element(by.repeater('run in listRun').row(0).column('run.name')).click();
+        });
+        new Then(function () {
+            browser.getLocationAbsUrl().then(function(url) {
+                expect(url).toBe('/run-19');
+                runPage.runName.getText().then(
+                    function (text) { expect(text).toEqual('Ice Trail Tarentaise'); });
+                runPage.runActionButtons.then(function (items) {
+                    expect(items.length).toBe(2); });
+                runPage.runCreateJourneyButton.getText().then(function (text) {
+                    expect(text).toEqual('Proposer un parcours'); });
+                runPage.runAddAgendaButton.getText().then(function (text) {
+                    expect(text).toEqual('Ajouter à mon agenda'); });
+                runPage.runAddressStart.getText().then(function (text) {
+                    expect(text).toEqual('Val-D\'isère, France'); });
+                runPage.runDateStart.getText().then(function (text) {
+                    expect(text).toEqual('12 / 07 / 2016'); });
+                runPage.runTimeStart.getText().then(function (text) {
+                    expect(text).toEqual('06:15'); });
+                runPage.runType.getText().then(function (text) {
+                    expect(text).toEqual('Trail'); });
+                runPage.runDistances.getText().then(function (text) {
+                    expect(text).toEqual('65km - 32km - 18km'); });
+                runPage.runElevations.getText().then(function (text) {
+                    expect(text).toEqual('2651+'); });
+                expect(runPage.runNoJourney.isDisplayed()).toBeTruthy();
+                expect(runPage.runMap.isPresent()).toBeTruthy();
+            });
+        });
+    });
+});
+
+describe('User journey', function() {
+    var runPage = new RunPage();
+    describe('Check a Maxi-Race run page', function () {
+        new Given(function() {
+            runPage.visitPage(16);
+        });
+        new Then(function () {
+            browser.getLocationAbsUrl().then(function(url) {
+                expect(url).toBe('/run-16');
+                runPage.runName.getText().then(
+                    function (text) { expect(text).toEqual('MaXi-Race ®'); });
+                runPage.runActionButtons.then(function (items) {
+                    expect(items.length).toBe(2); });
+                runPage.runCreateJourneyButton.getText().then(function (text) {
+                    expect(text).toEqual('Proposer un parcours'); });
+                runPage.runAddAgendaButton.getText().then(function (text) {
+                    expect(text).toEqual('Ajouter à mon agenda'); });
+                runPage.runAddressStart.getText().then(function (text) {
+                    expect(text).toEqual('Annecy-Le-Vieux, France'); });
+                runPage.runDateStart.getText().then(function (text) {
+                    expect(text).toEqual('30 / 05 / 2016'); });
+                runPage.runTimeStart.getText().then(function (text) {
+                    expect(text).toEqual('06:15'); });
+                runPage.runType.getText().then(function (text) {
+                    expect(text).toEqual('Trail'); });
+                runPage.runDistances.getText().then(function (text) {
+                    expect(text).toEqual('87km - 86km - 43km - 15km - 7km'); });
+                runPage.runElevations.getText().then(function (text) {
+                    expect(text).toEqual('2895+'); });
+                expect(runPage.runMap.isPresent()).toBeTruthy();
+                runPage.runJourneyList.then(function (items) {
+                    expect(items.length).toBe(1);
                 });
             });
         });

@@ -6,7 +6,7 @@
 			<div class="panel panel-default">
 				<div class="panel-heading clearfix">
 					<div class="col-xs-9 col-sm-6 col-md-6">
-						<h3>{{run.name}}</h3>
+						<h3 id="run_name">{{run.name}}</h3>
 					</div>
 					<div class="hidden-xs col-sm-6 col-md-6">
                         <div class="pull-right btn-group btn-group-sm" role="group">
@@ -23,17 +23,17 @@
 				</div>
 				<div class="panel-body">
 					<div class="col-xs-12 col-sm-6 col-md-4">
-						<p><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize | limitTo:21}}</p>
-						<p><i class="glyphicon glyphicon-calendar"></i> {{run.date_start | date:'dd / MM / yyyy'}}</p>
-						<p><i class="glyphicon glyphicon-time"></i> {{run.time_start}}</p>
+						<p id="run_address_start"><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize}}</p>
+						<p id="run_date_start"><i class="glyphicon glyphicon-calendar"></i> {{run.date_start | date:'dd / MM / yyyy'}}</p>
+						<p id="run_time_start"><i class="glyphicon glyphicon-time"></i> {{run.time_start}}</p>
 					</div>
 					<div class="col-xs-12 col-sm-6 col-md-4">
-						<p><i class="glyphicon glyphicon-road"></i> {{run.type}}</p>
-						<p><i class="glyphicon glyphicon-text-width"></i> {{run.distances}}</p>
-						<p><i class="fa-area-chart"></i> {{run.elevations}}</p>
+						<p id="run_type"><i class="glyphicon glyphicon-road"></i> {{run.type | capitalize}}</p>
+						<p id="run_distances"><i class="glyphicon glyphicon-text-width"></i> {{run.distances}}</p>
+						<p id="run_elevations"><i class="fa-area-chart"></i> {{run.elevations}}</p>
 					</div>
 					<div class="col-xs-12 col-sm-6 col-md-4">
-						<p>{{run.info}}</p>
+						<p id="run_info">{{run.info}}</p>
 					</div>
 				</div>
 			</div>
@@ -42,7 +42,7 @@
 	<div class="row-fluid">
 		<div class="col-xs-12 col-sm-12 col-md-6">
 			<div class="row-fluid run_journey_info">
-				<div class="no_journey" ng-if="journeyList.length === 0">
+				<div class="no_journey" id="no_journey" ng-if="journeyList.length === 0">
 					<p>Aucun parcours pour cette course actuellement.<br>N'hésitez pas à en proposer un en quelques secondes !</p>
 					<a class="btn btn-success" href="#" ng-click="createJourney()" role="button">Proposer un parcours</a>
 				</div>
