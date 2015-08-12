@@ -13,7 +13,7 @@ var RunPage = (function () {
         this.runDistances = element(by.id('run_distances'));
         this.runElevations = element(by.id('run_elevations'));
         this.runNoJourney = element(by.id('no_journey'));
-        this.runJourneyList = element.all(by.repeater('journey in journeyList'))
+        this.runJourneyList = element.all(by.repeater('journey in journeyList'));
         this.runMap = element(by.id('map_canvas_run'));
     }
 
