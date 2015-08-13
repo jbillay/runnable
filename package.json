@@ -13,13 +13,14 @@
   "scripts": {
     "start": "grunt",
     "test": "grunt travis",
-    "postinstall": "bower install --config.interactive=false"
+    "postinstall": "./node_modules/bower/bin/bower install --config.interactive=false"
   },
   "dependencies": {
     "async": "~0.6.2",
     "bcrypt-nodejs": "0.0.3",
     "better-js-class": "~0.1.3",
     "bignumber.js": "~1.3.0",
+    "bower": "^1.4.1",
     "chai": "2.*.*",
     "chai-as-promised": "5.*.*",
     "cheerio": "~0.17.0",
