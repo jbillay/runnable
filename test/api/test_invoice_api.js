@@ -10,6 +10,7 @@ var request = require('supertest'),
     app = require('../../server.js'),
     async = require('async'),
     q = require('q'),
+    settings = require('../../conf/config'),
     superagent = require('superagent');
 
 var loadData = function (fix) {
@@ -31,7 +32,7 @@ function loginUser(agent) {
         }
 
         agent
-            .post('http://localhost:9615/login')
+            .post('http://localhost:' + settings.port + '/login')
             .send({ email: 'jbillay@gmail.com', password: 'noofs' })
             .end(onResponse);
     };
@@ -141,7 +142,7 @@ describe('Test of invoice API', function () {
 
         it('should return list of invoice by user', function(done) {
             agent
-                .get('http://localhost:9615/api/invoice')
+                .get('http://localhost:' + settings.port + '/api/invoice')
                 .end(function (err, res) {
                     assert.equal(res.body.length, 2);
                     return done();
@@ -156,7 +157,7 @@ describe('Test of invoice API', function () {
 
         it('should return list of invoice by driver', function(done) {
             agent
-                .get('http://localhost:9615/api/invoice/driver')
+                .get('http://localhost:' + settings.port + '/api/invoice/driver')
                 .end(function (err, res) {
                     assert.equal(res.body.length, 3);
                     return done();
@@ -222,7 +223,7 @@ describe('Test of invoice API', function () {
          ipn_track_id: 'b959e24b7e596' };
 
          agent
-         .post('http://localhost:9615/api/paypal/ipn')
+         .post('http://localhost:' + settings.port + '/api/paypal/ipn')
          .send(ipn)
          .end(function (err, res) {
          if (err) {
@@ -231,7 +232,7 @@ describe('Test of invoice API', function () {
          }
          console.log(res);
          agent
-         .get('http://localhost:9615/api/join/2')
+         .get('http://localhost:' + settings.port + '/api/join/2')
          .end(function (err, res) {
          if (err) {
          console.log(err);

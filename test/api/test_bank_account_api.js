@@ -9,6 +9,7 @@ var request = require('supertest'),
     app = require('../../server.js'),
     async = require('async'),
     q = require('q'),
+    settings = require('../../conf/config'),
     superagent = require('superagent');
 
 
@@ -30,7 +31,7 @@ function loginUser(agent) {
             return done();
         }
         agent
-            .post('http://localhost:9615/login')
+            .post('http://localhost:' + settings.port + '/login')
             .send({ email: 'jbillay@gmail.com', password: 'noofs' })
             .end(onResponse);
     };
@@ -80,7 +81,7 @@ describe('Test of bank_account API', function () {
 		
 		it('should return current user bank account', function (done) {
             agent
-                .get('http://localhost:9615/api/user/bankaccount')
+                .get('http://localhost:' + settings.port + '/api/user/bankaccount')
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
@@ -101,7 +102,7 @@ describe('Test of bank_account API', function () {
 
 		it('should return a selected user bank account', function (done) {
             agent
-                .get('http://localhost:9615/api/admin/user/bankaccount/2')
+                .get('http://localhost:' + settings.port + '/api/admin/user/bankaccount/2')
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
@@ -128,7 +129,7 @@ describe('Test of bank_account API', function () {
 				BIC: 'AGRIFRPP000'
 			};
             agent
-                .post('http://localhost:9615/api/user/bankaccount')
+                .post('http://localhost:' + settings.port + '/api/user/bankaccount')
 				.send(account)
                 .end(function (err, res) {
                     if (err) {

@@ -9,6 +9,7 @@ var request = require('supertest'),
     app = require('../../server.js'),
     async = require('async'),
     q = require('q'),
+    settings = require('../../conf/config'),
     superagent = require('superagent');
 
 var loadData = function (fix) {
@@ -30,7 +31,7 @@ function loginUser(agent) {
         }
 
         agent
-            .post('http://localhost:9615/login')
+            .post('http://localhost:' + settings.port + '/login')
             .send({ email: 'jbillay@gmail.com', password: 'noofs' })
             .end(onResponse);
     };
@@ -131,7 +132,7 @@ describe('Test of journey API', function () {
 
         it('should return list of 4 journeys', function (done) {
             agent
-                .get('http://localhost:9615/api/admin/journeys')
+                .get('http://localhost:' + settings.port + '/api/admin/journeys')
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
@@ -257,7 +258,7 @@ describe('Test of journey API', function () {
                 }
             };
             agent
-                .post('http://localhost:9615/api/journey')
+                .post('http://localhost:' + settings.port + '/api/journey')
                 .send({journey: journey})
                 .end(function (err, res) {
                     if (err) {
@@ -277,12 +278,12 @@ describe('Test of journey API', function () {
                     assert.equal(res.body.journey.UserId, 1);
 
                     agent
-                        .get('http://localhost:9615/api/admin/journeys')
+                        .get('http://localhost:' + settings.port + '/api/admin/journeys')
                         .end(function (err, res) {
                             if (err) return done(err);
                             assert.equal(res.body.length, 4);
                             agent
-                                .get('http://localhost:9615/api/journey/5')
+                                .get('http://localhost:' + settings.port + '/api/journey/5')
                                 .end(function (err, res) {
                                     if (err) return done(err);
                                     assert.equal(res.res.body.address_start, 'Paris');
@@ -331,12 +332,12 @@ describe('Test of journey API', function () {
                 }
             };
             agent
-                .put('http://localhost:9615/api/journey')
+                .put('http://localhost:' + settings.port + '/api/journey')
                 .send({journey: journey})
                 .end(function (err, res) {
                     if (err) return done(err);
                     agent
-                        .get('http://localhost:9615/api/journey/2')
+                        .get('http://localhost:' + settings.port + '/api/journey/2')
                         .end(function (err, res) {
                             if (err) {
                                 return done(err);
@@ -382,7 +383,7 @@ describe('Test of journey API', function () {
 
         it('Should define journey 2 as payed', function(done) {
             agent
-                .post('http://localhost:9615/api/admin/journey/payed')
+                .post('http://localhost:' + settings.port + '/api/admin/journey/payed')
                 .send({id: '2'})
                 .end(function (err, res) {
                     assert.equal(res.body.msg, 'journeyTogglePayed');
@@ -404,7 +405,7 @@ describe('Test of journey API', function () {
 
         it('Should cancel journey 3', function(done) {
             agent
-                .post('http://localhost:9615/api/journey/cancel')
+                .post('http://localhost:' + settings.port + '/api/journey/cancel')
                 .send({id: '3'})
                 .end(function (err, res) {
                     assert.equal(res.body.msg, 'journeyCanceled');

@@ -11,6 +11,7 @@ var supertest = require('supertest'),
     q = require('q'),
     sinon = require('sinon'),
     request = require('request'),
+    settings = require('../../conf/config'),
     superagent = require('superagent');
 
 var loadData = function (fix) {
@@ -52,7 +53,7 @@ function loginUser(agent) {
         }
 
         agent
-            .post('http://localhost:9615/login')
+            .post('http://localhost:' + settings.port + '/login')
             .send({ email: 'jbillay@gmail.com', password: 'noofs' })
             .end(onResponse);
 
@@ -351,7 +352,7 @@ describe('Test of user API', function () {
 
         it('Should get user information', function(done) {
             agent
-                .get('http://localhost:9615/api/user/me')
+                .get('http://localhost:' + settings.port + '/api/user/me')
                 .end(function(err, res) {
                     assert.equal(res.body.id, 1);
                     assert.equal(res.body.firstname, 'Jeremy');
@@ -372,7 +373,7 @@ describe('Test of user API', function () {
 
         it('Should get user journeys', function(done) {
             agent
-                .get('http://localhost:9615/api/user/journeys')
+                .get('http://localhost:' + settings.port + '/api/user/journeys')
                 .end(function (err, res) {
                     assert.equal(res.body.length, 3);
                     return done();
@@ -387,7 +388,7 @@ describe('Test of user API', function () {
 
         it('Should get user joins', function(done) {
             agent
-                .get('http://localhost:9615/api/user/joins')
+                .get('http://localhost:' + settings.port + '/api/user/joins')
                 .end(function (err, res) {
                     if (err) return done(err);
                     assert.equal(res.body.length, 2);
@@ -402,7 +403,7 @@ describe('Test of user API', function () {
         it('Should not update the user password as not logging', function(done) {
             var anon = superagent.agent();
             anon
-                .post('http://localhost:9615/api/user/password/update')
+                .post('http://localhost:' + settings.port + '/api/user/password/update')
                 .send({ passwords: {old: 'noofs', new: 'test', newConfirm: 'test'}})
                 .end(function (err, res) {
                     assert.equal(res.body.msg, 'notAuthenticated');
@@ -414,7 +415,7 @@ describe('Test of user API', function () {
 
         it('Should update the user password', function(done) {
             agent
-                .post('http://localhost:9615/api/user/password/update')
+                .post('http://localhost:' + settings.port + '/api/user/password/update')
                 .send({ passwords: {old: 'noofs', new: 'test', newConfirm: 'test'}})
                 .end(function (err, res) {
                     assert.equal(res.body.msg, 'passwordUpdated');
@@ -424,7 +425,7 @@ describe('Test of user API', function () {
 
         it('Should not update the user password due to wrong old password', function(done) {
             agent
-                .post('http://localhost:9615/api/user/password/update')
+                .post('http://localhost:' + settings.port + '/api/user/password/update')
                 .send({ passwords: {old: 'kjdhkqshdk', new: 'test', newConfirm: 'test'}})
                 .end(function (err, res) {
                     assert.equal(res.body.msg, 'passwordWrong');
@@ -434,7 +435,7 @@ describe('Test of user API', function () {
 
         it('Should not update the user password due to different new passwords', function(done) {
             agent
-                .post('http://localhost:9615/api/user/password/update')
+                .post('http://localhost:' + settings.port + '/api/user/password/update')
                 .send({ passwords: {old: 'noofs', new: 'test', newConfirm: 'test1'}})
                 .end(function (err, res) {
                     assert.equal(res.body.msg, 'passwordDifferent');
@@ -450,7 +451,7 @@ describe('Test of user API', function () {
 
         it('Should get list of users', function(done) {
             agent
-                .get('http://localhost:9615/api/admin/users')
+                .get('http://localhost:' + settings.port + '/api/admin/users')
                 .end(function (err, res) {
                     assert.equal(res.body.length, 3);
                     return done();
@@ -465,7 +466,7 @@ describe('Test of user API', function () {
 
         it('Should define user 2 as active', function(done) {
             agent
-                .post('http://localhost:9615/api/admin/user/active')
+                .post('http://localhost:' + settings.port + '/api/admin/user/active')
                 .send({id: '2'})
                 .end(function (err, res) {
                     assert.equal(res.body.msg, 'userToggleActive');
@@ -490,7 +491,7 @@ describe('Test of user API', function () {
 
         it('should return user run from web', function (done) {
             agent
-                .get('http://localhost:9615/api/user/runs')
+                .get('http://localhost:' + settings.port + '/api/user/runs')
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
@@ -510,7 +511,7 @@ describe('Test of user API', function () {
 
         it('should send email to friends of user 1', function (done) {
             agent
-                .post('http://localhost:9615/api/user/invite')
+                .post('http://localhost:' + settings.port + '/api/user/invite')
                 .send({emails: 'jbillay@gmail.com, richard.couret@free.fr', message: 'should send email to friends'})
                 .end(function (err, res) {
                     if (err) return done(err);
@@ -537,7 +538,7 @@ describe('Test of user API', function () {
                 .end(function (err, res) {
                     assert.equal(res.body.msg, 'passwordReset');
                     agent
-                        .post('http://localhost:9615/login')
+                        .post('http://localhost:' + settings.port + '/login')
                         .send({ email: 'jbillay@gmail.com', password: 'noofs' })
                         .end(function (err, res) {
                             assert.isNull(err);
@@ -579,7 +580,7 @@ describe('Test of user API', function () {
                 id: 2
             };
             agent
-                .post('http://localhost:9615/api/admin/user/remove')
+                .post('http://localhost:' + settings.port + '/api/admin/user/remove')
                 .send(user)
                 .end(function (err, res) {
                     if (err) return done(err);
@@ -603,13 +604,13 @@ describe('Test of user API', function () {
                 email : 'jbillay@gmail.com'
             };
             agent
-                .put('http://localhost:9615/api/user')
+                .put('http://localhost:' + settings.port + '/api/user')
                 .send(user)
                 .end(function (err, res) {
                     if (err) return done(err);
                     assert.equal(res.body.msg, 'accountUpdated');
                     agent
-                        .get('http://localhost:9615/api/user/me')
+                        .get('http://localhost:' + settings.port + '/api/user/me')
                         .end(function(err, res) {
                             assert.equal(res.body.id, 1);
                             assert.equal(res.body.firstname, 'Jeremy');
@@ -631,7 +632,7 @@ describe('Test of user API', function () {
 
         it('Should remove picture of users profil', function(done) {
             agent
-                .get('http://localhost:9615/api/user/remove/picture')
+                .get('http://localhost:' + settings.port + '/api/user/remove/picture')
                 .end(function (err, res) {
                     assert.equal(res.body.msg, 'userPictureRemoved');
                     return done();

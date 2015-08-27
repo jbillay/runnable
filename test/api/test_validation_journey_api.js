@@ -10,6 +10,7 @@ var request = require('supertest'),
     app = require('../../server.js'),
     async = require('async'),
     q = require('q'),
+    settings = require('../../conf/config'),
     superagent = require('superagent');
 
 var loadData = function (fix) {
@@ -30,7 +31,7 @@ function loginUser(agent) {
             return done();
         }
         agent
-            .post('http://localhost:9615/login')
+            .post('http://localhost:' + settings.port + '/login')
             .send({ email: 'jbillay@gmail.com', password: 'noofs' })
             .end(onResponse);
     };
@@ -147,7 +148,7 @@ describe('Test of Validation Journey API', function () {
                 rate_service: 5
 			};
 			agent
-                .post('http://localhost:9615/api/validation')
+                .post('http://localhost:' + settings.port + '/api/validation')
 				.send(validation)
                 .end(function (err, res) {
 					assert.equal(res.body.msg, 'journeyValidationDone');
@@ -164,7 +165,7 @@ describe('Test of Validation Journey API', function () {
                 rate_service: 5
 			};
 			agent
-                .post('http://localhost:9615/api/validation')
+                .post('http://localhost:' + settings.port + '/api/validation')
 				.send(validation)
                 .end(function (err, res) {
 					assert.equal(res.body.msg, 'journeyNotValidated');

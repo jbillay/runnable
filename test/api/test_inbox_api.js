@@ -12,6 +12,7 @@ var request = require('supertest'),
     app = require('../../server.js'),
     async = require('async'),
     q = require('q'),
+    settings = require('../../conf/config'),
     superagent = require('superagent');
 
 
@@ -33,7 +34,7 @@ function loginUser(agent) {
             return done();
         }
         agent
-            .post('http://localhost:9615/login')
+            .post('http://localhost:' + settings.port + '/login')
             .send({ email: 'jbillay@gmail.com', password: 'noofs' })
             .end(onResponse);
     };
@@ -94,7 +95,7 @@ describe('Test of Inbox API', function () {
 
         it('should return current user messages', function (done) {
             agent
-                .get('http://localhost:9615/api/inbox/msg')
+                .get('http://localhost:' + settings.port + '/api/inbox/msg')
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
@@ -112,7 +113,7 @@ describe('Test of Inbox API', function () {
 
         it('should return current user unread messages', function (done) {
             agent
-                .get('http://localhost:9615/api/inbox/unread/nb/msg')
+                .get('http://localhost:' + settings.port + '/api/inbox/unread/nb/msg')
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
@@ -138,7 +139,7 @@ describe('Test of Inbox API', function () {
                 userId: 2
             };
             agent
-                .post('http://localhost:9615/api/inbox/msg')
+                .post('http://localhost:' + settings.port + '/api/inbox/msg')
                 .send(message)
                 .end(function (err, res) {
                     if (err) {
@@ -162,14 +163,14 @@ describe('Test of Inbox API', function () {
                 messageId: 2
             };
             agent
-                .post('http://localhost:9615/api/inbox/msg/read')
+                .post('http://localhost:' + settings.port + '/api/inbox/msg/read')
                 .send(message)
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
                     }
                     agent
-                        .get('http://localhost:9615/api/inbox/unread/nb/msg')
+                        .get('http://localhost:' + settings.port + '/api/inbox/unread/nb/msg')
                         .end(function (err, res) {
                             if (err) {
                                 return done(err);
@@ -192,14 +193,14 @@ describe('Test of Inbox API', function () {
                 messageId: 3
             };
             agent
-                .post('http://localhost:9615/api/inbox/msg/unread')
+                .post('http://localhost:' + settings.port + '/api/inbox/msg/unread')
                 .send(message)
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
                     }
                     agent
-                        .get('http://localhost:9615/api/inbox/unread/nb/msg')
+                        .get('http://localhost:' + settings.port + '/api/inbox/unread/nb/msg')
                         .end(function (err, res) {
                             if (err) {
                                 return done(err);
@@ -221,13 +222,13 @@ describe('Test of Inbox API', function () {
                 messageId: 2
             };
             agent
-                .post('http://localhost:9615/api/inbox/msg/delete')
+                .post('http://localhost:' + settings.port + '/api/inbox/msg/delete')
                 .send(message)
                 .end(function (err, res) {
                     if (err) return done(err);
                     assert.equal(res.body.msg, 'messageDeleted');
                     agent
-                        .get('http://localhost:9615/api/inbox/msg')
+                        .get('http://localhost:' + settings.port + '/api/inbox/msg')
                         .end(function (err, res) {
                             if (err) {
                                 return done(err);

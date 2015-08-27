@@ -10,6 +10,7 @@ var request = require('supertest'),
     async = require('async'),
     q = require('q'),
     sinon = require('sinon'),
+    settings = require('../../conf/config'),
     superagent = require('superagent'),
     fakeDate;
 
@@ -33,7 +34,7 @@ function loginUser(agent) {
         }
 
         agent
-            .post('http://localhost:9615/login')
+            .post('http://localhost:' + settings.port + '/login')
             .send({ email: 'jbillay@gmail.com', password: 'noofs' })
             .end(onResponse);
     };
@@ -162,7 +163,7 @@ describe('Test of run API', function () {
 
         it('should return list of runs', function (done) {
             agent
-                .get('http://localhost:9615/api/admin/runs')
+                .get('http://localhost:' + settings.port + '/api/admin/runs')
                 .end(function (err, res) {
                     if (err) return done(err);
                     assert.equal(res.body.length, 4);
@@ -178,7 +179,7 @@ describe('Test of run API', function () {
 
         it('should active a run', function (done) {
             agent
-                .post('http://localhost:9615/api/admin/run/active')
+                .post('http://localhost:' + settings.port + '/api/admin/run/active')
                 .send({id: 6})
                 .end(function (err, res) {
                     if (err) return done(err);
@@ -195,7 +196,7 @@ describe('Test of run API', function () {
 
         it('should failed to activate the run -1', function (done) {
             agent
-                .post('http://localhost:9615/api/admin/run/active')
+                .post('http://localhost:' + settings.port + '/api/admin/run/active')
                 .send({id: -1})
                 .end(function (err, res) {
                     assert.isNotNull(res.body.msg);
@@ -222,18 +223,18 @@ describe('Test of run API', function () {
                 info: 'dkqsd lqldsj lqkjdsllq ksjdlq'
             };
             agent
-                .post('http://localhost:9615/api/run')
+                .post('http://localhost:' + settings.port + '/api/run')
                 .send({run: run})
                 .end(function (err, res) {
                     if (err) return done(err);
                     assert.equal(res.body.msg, 'runCreated');
                     agent
-                        .get('http://localhost:9615/api/admin/runs')
+                        .get('http://localhost:' + settings.port + '/api/admin/runs')
                         .end(function (err, res) {
                             if (err) return done(err);
                             assert.equal(res.body.length, 5);
                             agent
-                                .get('http://localhost:9615/api/run/7')
+                                .get('http://localhost:' + settings.port + '/api/run/7')
                                 .end(function (err, res) {
                                     if (err) return done(err);
                                     assert.equal(res.res.body.name, 'Marathon du Mont Blanc');
@@ -270,13 +271,13 @@ describe('Test of run API', function () {
                 is_active: 1
             };
             agent
-                .put('http://localhost:9615/api/run')
+                .put('http://localhost:' + settings.port + '/api/run')
                 .send({run: run})
                 .end(function (err, res) {
                     if (err) return done(err);
                     assert.equal(res.body.msg, 'runUpdated');
                     agent
-                        .get('http://localhost:9615/api/run/1')
+                        .get('http://localhost:' + settings.port + '/api/run/1')
                         .end(function (err, res) {
                             if (err) return done(err);
                             assert.equal(res.res.body.name, 'Maxicross');

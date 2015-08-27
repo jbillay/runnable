@@ -9,6 +9,7 @@ var request = require('supertest'),
     app = require('../../server.js'),
     async = require('async'),
     q = require('q'),
+    settings = require('../../conf/config'),
     superagent = require('superagent');
 
 var loadData = function (fix) {
@@ -29,7 +30,7 @@ function loginUser(agent) {
             return done();
         }
         agent
-            .post('http://localhost:9615/login')
+            .post('http://localhost:' + settings.port + '/login')
             .send({ email: 'jbillay@gmail.com', password: 'noofs' })
             .end(onResponse);
     };
@@ -110,7 +111,7 @@ describe('Test of Discussion API', function () {
 
         it('should return users for Journey 2', function (done) {
             agent
-                .get('http://localhost:9615/api/discussion/users/2')
+                .get('http://localhost:' + settings.port + '/api/discussion/users/2')
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
@@ -122,7 +123,7 @@ describe('Test of Discussion API', function () {
 
         it('should return users for Journey 3', function (done) {
             agent
-                .get('http://localhost:9615/api/discussion/users/1')
+                .get('http://localhost:' + settings.port + '/api/discussion/users/1')
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
@@ -137,7 +138,7 @@ describe('Test of Discussion API', function () {
 
         it('should return users for a not existing Journey', function (done) {
             agent
-                .get('http://localhost:9615/api/discussion/users/876')
+                .get('http://localhost:' + settings.port + '/api/discussion/users/876')
                 .end(function (err, res) {
                     if (err) return done(err);
                     assert.equal(res.body.type, 'error');
@@ -153,7 +154,7 @@ describe('Test of Discussion API', function () {
 
         it('should return private messages for Journey 3', function (done) {
             agent
-                .get('http://localhost:9615/api/discussion/private/messages/3')
+                .get('http://localhost:' + settings.port + '/api/discussion/private/messages/3')
                 .end(function (err, res) {
                     if (err) return done(err);
                     assert.equal(res.body.length, 1);
@@ -164,7 +165,7 @@ describe('Test of Discussion API', function () {
 
         it('should return public messages for Journey 3', function (done) {
             agent
-                .get('http://localhost:9615/api/discussion/public/messages/3')
+                .get('http://localhost:' + settings.port + '/api/discussion/public/messages/3')
                 .end(function (err, res) {
                     if (err) return done(err);
                     assert.equal(res.body.length, 2);
@@ -186,13 +187,13 @@ describe('Test of Discussion API', function () {
                 journeyId: 3
             };
             agent
-                .post('http://localhost:9615/api/discussion/private/message')
+                .post('http://localhost:' + settings.port + '/api/discussion/private/message')
                 .send(message)
                 .end(function (err, res) {
                     if (err) return done(err);
                     assert.equal(res.body.msg, 'ok');
                     agent
-                        .get('http://localhost:9615/api/discussion/private/messages/3')
+                        .get('http://localhost:' + settings.port + '/api/discussion/private/messages/3')
                         .end(function (err, res) {
                             if (err) return done(err);
                             assert.equal(res.body.length, 2);
@@ -208,7 +209,7 @@ describe('Test of Discussion API', function () {
                 journeyId: 3
             };
             agent
-                .post('http://localhost:9615/api/discussion/public/message')
+                .post('http://localhost:' + settings.port + '/api/discussion/public/message')
                 .send(message)
                 .end(function (err, res) {
                     if (err) {
@@ -216,7 +217,7 @@ describe('Test of Discussion API', function () {
                     }
                     assert.equal(res.body.msg, 'ok');
                     agent
-                        .get('http://localhost:9615/api/discussion/public/messages/3')
+                        .get('http://localhost:' + settings.port + '/api/discussion/public/messages/3')
                         .end(function (err, res) {
                             if (err) {
                                 return done(err);

@@ -9,6 +9,7 @@ var request = require('supertest'),
     app = require('../../server.js'),
     async = require('async'),
     q = require('q'),
+    settings = require('../../conf/config'),
     superagent = require('superagent');
 
 
@@ -30,7 +31,7 @@ function loginUser(agent) {
             return done();
         }
         agent
-            .post('http://localhost:9615/login')
+            .post('http://localhost:' + settings.port + '/login')
             .send({ email: 'jbillay@gmail.com', password: 'noofs' })
             .end(onResponse);
     };
@@ -81,7 +82,7 @@ describe('Test of option API', function () {
 
         it('should get all option values', function (done) {
             agent
-                .get('http://localhost:9615/api/admin/options')
+                .get('http://localhost:' + settings.port + '/api/admin/options')
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
@@ -101,7 +102,7 @@ describe('Test of option API', function () {
 
         it('should get emailConfig value', function (done) {
             agent
-                .get('http://localhost:9615/api/admin/option/mailConfig')
+                .get('http://localhost:' + settings.port + '/api/admin/option/mailConfig')
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
@@ -125,7 +126,7 @@ describe('Test of option API', function () {
                     {id: 3, name: 'Tracking Xpole', key: ['deliveryName', 'deliveryURL', 'trackingNumber'], html: 'TEST'}];
 			
             agent
-                .post('http://localhost:9615/api/admin/options')
+                .post('http://localhost:' + settings.port + '/api/admin/options')
                 .send(optionData)
                 .end(function (err, res) {
                     if (err) {
@@ -133,7 +134,7 @@ describe('Test of option API', function () {
                     }
                     // Waiting 300 ms in order to finalized the update of values - maybe better to use bulkCreate in save
 					setTimeout(function(){ agent
-						.get('http://localhost:9615/api/admin/options')
+						.get('http://localhost:' + settings.port + '/api/admin/options')
 						.end(function (err, res) {
 							if (err) {
 								return done(err);

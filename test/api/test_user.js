@@ -72,6 +72,16 @@ describe('Test of user object', function () {
                         });
                     },
                     function(callback) {
+                        var fixtures = require('./fixtures/participates.json');
+                        var promises = [];
+                        fixtures.forEach(function (fix) {
+                            promises.push(loadData(fix));
+                        });
+                        q.all(promises).then(function() {
+                            callback(null);
+                        });
+                    },
+                    function(callback) {
                         var fixtures = require('./fixtures/validationJourneys.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -130,6 +140,7 @@ describe('Test of user object', function () {
             assert.equal(userInfo.isActive, 0);
             assert.equal(userInfo.role, 'editor');
             assert.equal(userInfo.Journeys.length, 1);
+            assert.equal(userInfo.Participates.length, 1);
             user.getPublicInfo(3, function (err, userInfo) {
                 if (err) return done(err);
                 assert.equal(userInfo.firstname, 'Toto');

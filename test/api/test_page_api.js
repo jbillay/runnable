@@ -9,6 +9,7 @@ var request = require('supertest'),
     app = require('../../server.js'),
     async = require('async'),
     q = require('q'),
+    settings = require('../../conf/config'),
     superagent = require('superagent');
 
 
@@ -30,7 +31,7 @@ function loginUser(agent) {
             return done();
         }
         agent
-            .post('http://localhost:9615/login')
+            .post('http://localhost:' + settings.port + '/login')
             .send({ email: 'jbillay@gmail.com', password: 'noofs' })
             .end(onResponse);
     };
@@ -81,7 +82,7 @@ describe('Test of page API', function () {
 		
 		it('should return page with tag test', function (done) {
             agent
-                .get('http://localhost:9615/api/page/test')
+                .get('http://localhost:' + settings.port + '/api/page/test')
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
@@ -102,7 +103,7 @@ describe('Test of page API', function () {
 
         it('should return all pages', function (done) {
             agent
-                .get('http://localhost:9615/api/admin/pages')
+                .get('http://localhost:' + settings.port + '/api/admin/pages')
                 .end(function (err, res) {
                     if (err) {
                         return done(err);
@@ -125,7 +126,7 @@ describe('Test of page API', function () {
                 content: 'Test during unit test HTML CONTENT'
             };
             agent
-                .post('http://localhost:9615/api/admin/page')
+                .post('http://localhost:' + settings.port + '/api/admin/page')
 				.send(newPage)
                 .end(function (err, res) {
                     if (err) {
@@ -133,7 +134,7 @@ describe('Test of page API', function () {
                     }
                     assert.equal(res.body.msg, 'pageSaved');
 					agent
-						.get('http://localhost:9615/api/page/test-during-unit-test')
+						.get('http://localhost:' + settings.port + '/api/page/test-during-unit-test')
 						.end(function (err, res) {
 							if (err) {
 								return done(err);
@@ -155,7 +156,7 @@ describe('Test of page API', function () {
 		
 		it('should save an existing page', function (done) {
 			agent
-				.get('http://localhost:9615/api/page/toto')
+				.get('http://localhost:' + settings.port + '/api/page/toto')
 				.end(function (err, res) {
 					if (err) {
 						return done(err);
@@ -167,7 +168,7 @@ describe('Test of page API', function () {
 					var modifiedPage = res.body;
 						modifiedPage.content  = '<div>encore un test</div>';
 					agent
-						.post('http://localhost:9615/api/admin/page')
+						.post('http://localhost:' + settings.port + '/api/admin/page')
 						.send(modifiedPage)
 						.end(function (err, res) {
 							if (err) {

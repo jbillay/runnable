@@ -10,6 +10,7 @@ var request = require('supertest'),
     app = require('../../server.js'),
     async = require('async'),
     q = require('q'),
+    settings = require('../../conf/config'),
     superagent = require('superagent');
 
 var loadData = function (fix) {
@@ -30,7 +31,7 @@ function loginUser(agent) {
             return done();
         }
         agent
-            .post('http://localhost:9615/login')
+            .post('http://localhost:' + settings.port + '/login')
             .send({ email: 'jbillay@gmail.com', password: 'noofs' })
             .end(onResponse);
     };
@@ -140,7 +141,7 @@ describe('Test of participate API', function () {
 
         it('should return list of run for the current user', function(done) {
             agent
-                .get('http://localhost:9615/api/participate/user/list')
+                .get('http://localhost:' + settings.port + '/api/participate/user/list')
                 .end(function (err, res) {
                     assert.equal(res.body.length, 4);
                     return done();
@@ -155,7 +156,7 @@ describe('Test of participate API', function () {
 
         it('should return list of user for the run 5', function(done) {
             agent
-                .get('http://localhost:9615/api/participate/run/user/list/5')
+                .get('http://localhost:' + settings.port + '/api/participate/run/user/list/5')
                 .end(function (err, res) {
                     assert.equal(res.body.length, 2);
                     return done();
@@ -164,7 +165,7 @@ describe('Test of participate API', function () {
 		
 		it('should return list of user for a not existing run', function(done) {
             agent
-                .get('http://localhost:9615/api/participate/run/user/list/5646')
+                .get('http://localhost:' + settings.port + '/api/participate/run/user/list/5646')
                 .end(function (err, res) {
 					var emptyObject = [];
 					console.log(res.body);
@@ -184,12 +185,12 @@ describe('Test of participate API', function () {
 				runId: 2
 			};
 			agent
-                .post('http://localhost:9615/api/participate/add')
+                .post('http://localhost:' + settings.port + '/api/participate/add')
 				.send(run)
                 .end(function (err, res) {
 					assert.equal(res.body.msg, 'addParticipate');
 					agent
-						.get('http://localhost:9615/api/participate/user/list')
+						.get('http://localhost:' + settings.port + '/api/participate/user/list')
 						.end(function (err, res) {
 							assert.equal(res.body.length, 5);
 							return done();
@@ -202,7 +203,7 @@ describe('Test of participate API', function () {
 				runId: 4682
 			};
 			agent
-                .post('http://localhost:9615/api/participate/add')
+                .post('http://localhost:' + settings.port + '/api/participate/add')
 				.send(run)
                 .end(function (err, res) {
 					assert.equal(res.body.msg, 'notAbleParticipate');

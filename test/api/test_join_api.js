@@ -10,6 +10,7 @@ var request = require('supertest'),
     app = require('../../server.js'),
     async = require('async'),
     q = require('q'),
+    settings = require('../../conf/config'),
     superagent = require('superagent');
 
 var loadData = function (fix) {
@@ -31,7 +32,7 @@ function loginUser(agent) {
         }
 
         agent
-            .post('http://localhost:9615/login')
+            .post('http://localhost:' + settings.port + '/login')
             .send({ email: 'jbillay@gmail.com', password: 'noofs' })
             .end(onResponse);
     };
@@ -160,7 +161,7 @@ describe('Test of join API', function () {
 
         it('should return join 1 info', function(done) {
             agent
-                .get('http://localhost:9615/api/join/1')
+                .get('http://localhost:' + settings.port + '/api/join/1')
                 .end(function (err, res) {
                     assert.equal(res.body.nb_place_outward, 2);
                     assert.equal(res.body.nb_place_return, 2);
@@ -178,7 +179,7 @@ describe('Test of join API', function () {
 
         it('should return list of all joins', function(done) {
             agent
-                .get('http://localhost:9615/api/admin/joins')
+                .get('http://localhost:' + settings.port + '/api/admin/joins')
                 .end(function (err, res) {
                     assert.equal(res.body.length, 4);
                     return done();
@@ -204,12 +205,12 @@ describe('Test of join API', function () {
                     journey_id: 3
                 };
             agent
-                .post('http://localhost:9615/api/join')
+                .post('http://localhost:' + settings.port + '/api/join')
                 .send(join)
                 .end(function (err, res) {
                     assert.equal(res.body.msg, 'userJoined');
                     agent
-                        .get('http://localhost:9615/api/admin/joins')
+                        .get('http://localhost:' + settings.port + '/api/admin/joins')
                         .end(function (err, res) {
                             assert.equal(res.body.length, 5);
                             return done();
@@ -225,7 +226,7 @@ describe('Test of join API', function () {
 
         it('should cancel join 1', function(done) {
             agent
-                .get('http://localhost:9615/api/join/cancel/1')
+                .get('http://localhost:' + settings.port + '/api/join/cancel/1')
                 .end(function (err, res) {
                     assert.equal(res.body.msg, 'joinCancelled');
                     return done();
@@ -234,7 +235,7 @@ describe('Test of join API', function () {
 
         it('Try to cancel a join that not exist', function(done) {
             agent
-                .get('http://localhost:9615/api/join/cancel/42')
+                .get('http://localhost:' + settings.port + '/api/join/cancel/42')
                 .end(function (err, res) {
                     assert.equal(res.body.msg, 'joinNotCancelled');
                     return done();
