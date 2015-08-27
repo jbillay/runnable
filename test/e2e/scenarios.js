@@ -7,11 +7,13 @@ require('jasmine-given');
 var IndexPage = require('./pages/index_page');
 var JourneyPage = require('./pages/journey_page');
 var RunPage = require('./pages/run_page');
+var UserPublicProfilePage = require('./pages/userPublicProfile_page');
 
 describe('Public journey', function() {
     var indexPage = new IndexPage();
     var journeyPage = new JourneyPage();
     var runPage = new RunPage();
+    var userPublicProfilePage = new UserPublicProfilePage();
 
     describe('visiting the home page', function () {
         new Given(function() {
@@ -248,10 +250,43 @@ describe('Public journey', function() {
             });
         });
     });
+
+    describe('Go the user public profile page', function () {
+        var creation = new Date(2014, 11, 10, 17, 17, 25).getTime(),
+            today = new Date().getTime(),
+            diff = parseInt((today-creation)/(24*3600*1000)) + 1;
+        new Given(function() {
+            userPublicProfilePage.visitPage(1);
+        });
+        new Then(function () {
+            browser.getLocationAbsUrl().then(function(url) {
+                expect(url).toBe('/user-1');
+                expect(userPublicProfilePage.userPicture.getAttribute('src')).toMatch('avatar_1.jpg');
+                userPublicProfilePage.userName.getText().then(function (text) {
+                    expect(text).toEqual('Jeremy Billay'); });
+                userPublicProfilePage.userAddress.getText().then(function (text) {
+                    expect(text).toEqual('1 bis rue Saint Pierre 78100 Saint Germain en Laye'); });
+                userPublicProfilePage.userHistory.getText().then(function (text) {
+                    expect(text).toEqual('Inscrit(e) depuis ' + diff + ' jour(s)'); });
+                userPublicProfilePage.userOrg.getText().then(function (text) {
+                    expect(text).toEqual('3 voyage(s) organisé(s)'); });
+                userPublicProfilePage.userPart.getText().then(function (text) {
+                    expect(text).toEqual('2 participation(s) à un voyage'); });
+                userPublicProfilePage.userRate.getText().then(function (text) {
+                    expect(text).toEqual('3 / 5'); });
+                userPublicProfilePage.userComments.then(function (items) {
+                    expect(items.length).toBe(1); });
+                userPublicProfilePage.userRunsPart.then(function (items) {
+                    expect(items.length).toBe(5); });
+            });
+        });
+    });
 });
 
 describe('User journey', function() {
     var runPage = new RunPage();
+    var journeyPage = new JourneyPage();
+
     describe('Check a Maxi-Race run page', function () {
         new Given(function() {
             runPage.visitPage(16);
@@ -282,7 +317,48 @@ describe('User journey', function() {
                 expect(runPage.runMap.isPresent()).toBeTruthy();
                 runPage.runJourneyList.then(function (items) {
                     expect(items.length).toBe(1);
+                    expect(items[0].element(by.css('.journey_link')).getAttribute('href')).toEqual('http://localhost:9615/journey-4');
+                    items[0].element(by.css('.journey_type')).getText().then(
+                        function (text) { expect(text).toEqual('Aller-Retour'); });
+                    items[0].element(by.css('.journey_start_outward')).getText().then(
+                        function (text) { expect(text).toEqual('12/05/2016 06:00'); });
+                    items[0].element(by.css('.journey_space_outward')).getText().then(
+                        function (text) { expect(text).toEqual('4 place(s)'); });
+                    items[0].element(by.css('.journey_start_return')).getText().then(
+                        function (text) { expect(text).toEqual('13/05/2016 15:30'); });
+                    items[0].element(by.css('.journey_space_return')).getText().then(
+                        function (text) { expect(text).toEqual('4 place(s)'); });
+                    items[0].element(by.css('.journey_price')).getText().then(
+                        function (text) { expect(text).toEqual('€ 39.00'); });
                 });
+            });
+        });
+    });
+    describe('Check the first journey for Maxi-Race', function () {
+        new Given(function() {
+            runPage.visitPage(16);
+        });
+        new When(function () {
+            runPage.runJourneyList.then(function (items) {
+                items[0].element(by.css('.journey_link')).click();
+            });
+        });
+        new Then(function () {
+            browser.getLocationAbsUrl().then(function(url) {
+                expect(url).toBe('/journey-4');
+            });
+        });
+    });
+    describe('Check public profile page of first journey for Maxi-Race', function () {
+        new Given(function() {
+            journeyPage.visitPage(4);
+        });
+        new When(function () {
+            journeyPage.journeyUser.click();
+        });
+        new Then(function () {
+            browser.getLocationAbsUrl().then(function(url) {
+                expect(url).toBe('/user-1');
             });
         });
     });

@@ -1,3 +1,4 @@
+/*
 var q = require('q');
 var async = require('async');
 var models = require('../../../server/models');
@@ -95,11 +96,10 @@ module.exports = q.fcall(function() {
                     }
                 ], function (err, result) {
                     console.log('Data loading over !');
-                    /*
                     var fork = require('child_process').fork;
                     fork('./server.js');
-                    */
                 });
             });
     }
 });
+*/

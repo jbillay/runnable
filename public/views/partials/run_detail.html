@@ -50,20 +50,20 @@
 					<div class="panel panel-default">
 						<div class="panel-heading clearfix">
                             <div class="panel-title">
-							    <div class="pull-left"><a href="/journey-{{journey.id}}">Départ de {{journey.address_start}}</a></div>
-							    <div class="pull-right">{{journey.journey_type | capitalize}}</div>
+							    <div class="pull-left"><a class="journey_link" href="/journey-{{journey.id}}">Départ de {{journey.address_start}}</a></div>
+							    <div class="pull-right journey_type">{{journey.journey_type | capitalize}}</div>
                             </div>
 						</div>
 						<div class="panel-body">
 							<div class="clearfix" ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'aller'">
 								<strong>Aller </strong>
-								<span>{{journey.date_start_outward | date:'dd/MM/yyyy'}} {{journey.time_start_outward}}</span>
-								<span class="pull-right journey_space_positive">{{journey.nb_space_outward}} place(s)</span>
+								<span class="journey_start_outward">{{journey.date_start_outward | date:'dd/MM/yyyy'}} {{journey.time_start_outward}}</span>
+								<span class="pull-right journey_space_positive journey_space_outward">{{journey.nb_space_outward}} place(s)</span>
 							</div>
 							<div class="clearfix" ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'retour'">
 								<strong>Retour </strong>
-								<span>{{journey.date_start_return | date:'dd/MM/yyyy'}} {{journey.time_start_return}}</span>
-								<span class="pull-right journey_space_positive">{{journey.nb_space_return}} place(s)</span>
+								<span class="journey_start_return">{{journey.date_start_return | date:'dd/MM/yyyy'}} {{journey.time_start_return}}</span>
+								<span class="pull-right journey_space_positive journey_space_return">{{journey.nb_space_return}} place(s)</span>
 							</div>
 							<div class="clearfix journey_head_price">
 								<div class="pull-left" ng-if="journey.userDistance">

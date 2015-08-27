@@ -3,7 +3,7 @@
 <div class="container-fluid body">
     <div class="row-fluid public_profil">
         <div class="col-xs-12 col-sm-12 col-md-12">
-            <h2><img ng-if="userPublicInfo.picture" ng-src="{{userPublicInfo.picture}}" class="img-rounded img-user-public">
+            <h2 id="user_name"><img ng-if="userPublicInfo.picture" ng-src="{{userPublicInfo.picture}}" class="img-rounded img-user-public" id="user_avatar">
         	{{userPublicInfo.firstname | capitalize}} {{userPublicInfo.lastname | capitalize}}</h2>
         	<hr>
             <div class="col-xs-12 col-sm-12 col-md-7">
@@ -11,10 +11,10 @@
                 <div>
                     <table class="table table-no-border">
                         <tr>
-                            <td><h5><i class="fa fa-map-marker"></i> {{userPublicInfo.address}}</h5></td>
+                            <td><h5 id="user_address"><i class="fa fa-map-marker"></i> {{userPublicInfo.address}}</h5></td>
                         </tr>
                         <tr>
-                            <td><h5><i class="fa fa-clock-o"></i> Inscrit(e) depuis {{sinceCreation}} jour(s)</h5></td>
+                            <td><h5 id="user_history"><i class="fa fa-clock-o"></i> Inscrit(e) depuis {{sinceCreation}} jour(s)</h5></td>
                         </tr>
                     </table>
                 </div>
@@ -22,10 +22,10 @@
                 <div>
                     <table class="table table-no-border">
                         <tr>
-                            <td><h5><i class="fa fa-automobile"></i> {{userNbJourney}} voyage(s) organisé(s)</h5></td>
+                            <td><h5 id="journey_org"><i class="fa fa-automobile"></i> {{userNbJourney}} voyage(s) organisé(s)</h5></td>
                         </tr>
                         <tr>
-                            <td><h5><i class="fa fa-users"></i> {{userNbJoin}} participation(s) à un voyage</h5></td>
+                            <td><h5 id="journey_part"><i class="fa fa-users"></i> {{userNbJoin}} participation(s) à un voyage</h5></td>
                         </tr>
                     </table>
                 </div>
@@ -33,10 +33,10 @@
                 <div>
                     <table class="table table-no-border">
                         <tr>
-                            <td><h5><i class="fa fa-star"></i> {{driverRate}} / 5</h5></td>
+                            <td><h5 id="driver_rate"><i class="fa fa-star"></i> {{driverRate}} / 5</h5></td>
                         </tr>
                         <tr ng-repeat="comment in driverComments">
-                            <td><h5><i class="fa fa-comment-o"></i> {{comment}}</h5></td>
+                            <td><h5 class="driver_comment"><i class="fa fa-comment-o"></i> {{comment}}</h5></td>
                         </tr>
                     </table>
                 </div>

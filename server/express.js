@@ -83,6 +83,7 @@ module.exports = function (app, passport) {
                 } else if (req.path.match(/^\/api\/run\/.+/)) {
                     dest = dest + '/runs';
                 }
+                console.log(dest);
                 return dest;
             },
             rename: function (fieldname, filename, req) {
