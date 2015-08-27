@@ -9,6 +9,7 @@ var models = require('../../server/models/index');
 var Options = require('../../server/objects/option');
 var async = require('async');
 var q = require('q');
+var settings = require('../../conf/config');
 var request = require('request');
 
 var loadData = function (fix) {
@@ -26,7 +27,7 @@ var loadData = function (fix) {
 describe('Tests of option object', function () {
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
-		this.timeout(6000);
+		this.timeout(settings.timeout);
         models.sequelize.sync({force: true})
             .then(function () {
                 async.waterfall([

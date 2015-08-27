@@ -11,5 +11,6 @@ module.exports = {
         logging     : false
     },
     port        : process.env.NODE_PORT || 9615,
-    domain      : 'localhost:9615'
+    domain      : 'localhost:9615',
+    timeout     : 6000
 };

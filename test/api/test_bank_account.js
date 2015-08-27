@@ -8,6 +8,7 @@ var assert = require('chai').assert;
 var models = require('../../server/models/index');
 var BankAccount = require('../../server/objects/bank_account');
 var async = require('async');
+var settings = require('../../conf/config');
 var q = require('q');
 
 var loadData = function (fix) {
@@ -26,7 +27,7 @@ var loadData = function (fix) {
 describe('Test of bank_account object', function () {
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
-        this.timeout(6000);
+        this.timeout(settings.timeout);
         models.sequelize.sync({force: true})
             .then(function () {
                 async.waterfall([

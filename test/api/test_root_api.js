@@ -11,6 +11,7 @@ var request = require('supertest'),
     assert = require('chai').assert,
     app = require('../../server.js'),
     async = require('async'),
+    settings = require('../../conf/config'),
     q = require('q');
 
 var loadData = function (fix) {
@@ -28,6 +29,7 @@ var loadData = function (fix) {
 describe('Test of root API', function () {
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
+        this.timeout(settings.timeout);
         models.sequelize.sync({force: true})
             .then(function () {
                 async.waterfall([

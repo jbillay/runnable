@@ -8,6 +8,7 @@ var assert = require('chai').assert;
 var models = require('../../server/models/index');
 var Participate = require('../../server/objects/participate');
 var async = require('async');
+var settings = require('../../conf/config');
 var q = require('q');
 
 var loadData = function (fix) {
@@ -24,7 +25,7 @@ var loadData = function (fix) {
 
 describe('Test of participate object', function () {
     beforeEach(function (done) {
-        this.timeout(6000);
+        this.timeout(settings.timeout);
         models.sequelize.sync({force: true})
             .then(function () {
                 async.waterfall([

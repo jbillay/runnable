@@ -8,6 +8,7 @@ var models = require('../../server/models/index');
 var Journey = require('../../server/objects/journey');
 var Join = require('../../server/objects/join');
 var async = require('async');
+var settings = require('../../conf/config');
 var q = require('q');
 
 var loadData = function (fix) {
@@ -24,7 +25,7 @@ var loadData = function (fix) {
 
 describe('Test of journey object', function () {
     beforeEach(function (done) {
-        this.timeout(6000);
+        this.timeout(settings.timeout);
         models.sequelize.sync({force: true})
             .then(function () {
                 async.waterfall([

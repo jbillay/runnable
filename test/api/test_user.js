@@ -11,6 +11,7 @@ var async = require('async');
 var q = require('q');
 var request = require('request');
 var sinon = require('sinon');
+var settings = require('../../conf/config');
 var Itra = require('../../server/objects/itra.js');
 
 var loadData = function (fix) {
@@ -27,7 +28,7 @@ var loadData = function (fix) {
 
 describe('Test of user object', function () {
     beforeEach(function (done) {
-        this.timeout(6000);
+        this.timeout(settings.timeout);
         models.sequelize.sync({force: true})
             .then(function () {
                 async.waterfall([
