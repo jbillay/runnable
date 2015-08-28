@@ -10,6 +10,7 @@
 @feedback_panel: #f5f5f5;
 @green: green;
 @red: red;
+@warning: orange;
 @page_border: thin solid #ccc;
 @text_shadow: 2px 2px 8px #494949;
 @block_border: solid 1px black;
@@ -426,5 +427,20 @@ section.imgback {
 .admin {
   .htmlEditor {
     height: 500px !important;
+  }
+  .status-pending {
+     color: @warning;
+   }
+  .status-completed {
+    color: @green;
+  }
+  .status-cancelled {
+    color: @red;
+  }
+  .status-refused {
+    color: @red;
+  }
+  .status-done {
+    color: @green;
   }
 }

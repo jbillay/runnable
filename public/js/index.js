@@ -5,7 +5,11 @@ $(document).ready(function(){/* activate scrollspy menu */
         target: '#navbar-collapsible',
         offset: 50
     });
-	
+
+    $('.nav a').click(function () {
+        $('.navbar-collapse.in').collapse('hide');
+    });
+
 	/* smooth scrolling sections */
     $('a[href*=#]:not([href=#])').click(function() {
         if (location.pathname.replace(/^\//,'') === this.pathname.replace(/^\//,'') && location.hostname === this.hostname) {
