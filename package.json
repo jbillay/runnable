@@ -7,8 +7,8 @@
     "url": "https://github.com/jbillay/runnable.git"
   },
   "engines": {
-    "node": "0.12.x",
-    "npm": "2.11.x"
+    "node": "0.10.40",
+    "npm": "1.3.24"
   },
   "scripts": {
     "start": "grunt",
