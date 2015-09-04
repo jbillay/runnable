@@ -6,3 +6,5 @@ coverage/
 dist/
 public/uploads/
 server/public/uploads/
+node_modules/
+public/lib/
