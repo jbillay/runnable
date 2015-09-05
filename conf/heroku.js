@@ -17,7 +17,7 @@ module.exports = {
         password    : '198ddf5a',
         port        : 3306
     },
-    port        : process.env.NODE_PORT || 80,
-    domain      : 'localhost:80',
+    port        : process.env.PORT || 9615,
+    domain      : 'localhost:9615',
     timeout     : 6000
 };
