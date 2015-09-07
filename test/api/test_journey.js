@@ -8,6 +8,7 @@ var models = require('../../server/models/index');
 var Journey = require('../../server/objects/journey');
 var Join = require('../../server/objects/join');
 var async = require('async');
+var sinon = require('sinon');
 var settings = require('../../conf/config');
 var q = require('q');
 
@@ -16,20 +17,22 @@ var loadData = function (fix) {
     models[fix.model].create(fix.data)
         .complete(function (err, result) {
             if (err) {
-                console.log(err);
+                return deferred.reject('error ' + err);
             }
-            deferred.resolve(result);
+            return deferred.resolve(result);
         });
     return deferred.promise;
 };
 
 describe('Test of journey object', function () {
     beforeEach(function (done) {
+        var fakeTime = new Date(2015, 6, 6, 0, 0, 0, 0).getTime();
+        sinon.clock = sinon.useFakeTimers(fakeTime, 'Date');
         this.timeout(settings.timeout);
         models.sequelize.sync({force: true})
             .then(function () {
-                async.waterfall([
-                    function(callback) {
+                async.series([
+                    function fn1(callback) {
                         var fixtures = require('./fixtures/users.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -39,7 +42,7 @@ describe('Test of journey object', function () {
                             callback(null);
                         });
                     },
-                    function(callback) {
+                    function fn2(callback) {
                         var fixtures = require('./fixtures/runs.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -49,7 +52,7 @@ describe('Test of journey object', function () {
                             callback(null);
                         });
                     },
-                    function(callback) {
+                    function fn3(callback) {
                         var fixtures = require('./fixtures/options.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -59,7 +62,7 @@ describe('Test of journey object', function () {
                             callback(null);
                         });
                     },
-                    function(callback) {
+                    function fn4(callback) {
                         var fixtures = require('./fixtures/journeys.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -69,7 +72,7 @@ describe('Test of journey object', function () {
                             callback(null);
                         });
                     },
-                    function(callback) {
+                    function fn5(callback) {
                         var fixtures = require('./fixtures/joins.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -79,7 +82,7 @@ describe('Test of journey object', function () {
                             callback(null);
                         });
                     },
-                    function(callback) {
+                    function fn6(callback) {
                         var fixtures = require('./fixtures/invoices.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -89,7 +92,7 @@ describe('Test of journey object', function () {
                             callback(null);
                         });
                     },
-                    function(callback) {
+                    function fn7(callback) {
                         var fixtures = require('./fixtures/validationJourneys.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -104,6 +107,12 @@ describe('Test of journey object', function () {
                 });
             });
     });
+
+    afterEach(function() {
+        // runs after each test in this block
+        sinon.clock.restore();
+    });
+
     //After all the tests have run, output all the sequelize logging.
     after(function () {
         console.log('Test of user over !');

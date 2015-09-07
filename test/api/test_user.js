@@ -19,19 +19,21 @@ var loadData = function (fix) {
     models[fix.model].create(fix.data)
         .complete(function (err, result) {
             if (err) {
-                console.log(err);
+                return deferred.reject('error ' + err);
             }
-            deferred.resolve(result);
+            return deferred.resolve(result);
         });
     return deferred.promise;
 };
 
 describe('Test of user object', function () {
     beforeEach(function (done) {
+        var fakeTime = new Date(2015, 6, 6, 0, 0, 0, 0).getTime();
+        sinon.clock = sinon.useFakeTimers(fakeTime, 'Date');
         this.timeout(settings.timeout);
         models.sequelize.sync({force: true})
             .then(function () {
-                async.waterfall([
+                async.series([
                     function(callback) {
                         var fixtures = require('./fixtures/users.json');
                         var promises = [];
@@ -98,6 +100,11 @@ describe('Test of user object', function () {
             });
     });
 
+    afterEach(function() {
+        // runs after each test in this block
+        sinon.clock.restore();
+    });
+
     var html = '<tbody><tr class="odd"><td><a href="?id=340083&nom=COURET#tab">Andre COURET</a></td><td>Homme</td><td>France</td><td>??</td></tr><tr><td><a href="?id=78273&nom=COURET#tab">Jacques-Andre COURET</a></td><td>Homme</td><td>France</td><td>1965</td></tr><tr class="odd"><td><a href="?id=267249&nom=COURET#tab">Jaques Andre COURET</a></td><td>Homme</td><td>France</td><td>??</td></tr><tr><td><a href="?id=437314&nom=COURET#tab">Nicolas COURET</a></td><td>Homme</td><td>France</td><td>??</td></tr><tr class="odd"><td><a href="?id=84500&nom=COURET#tab">Richard COURET</a></td><td>Homme</td><td>France</td><td>1980</td></tr><tr><td><a href="?id=489223&nom=DUCOURET#tab">Fabien DUCOURET</a></td><td>Homme</td><td>France</td><td>1978</td></tr><tr class="odd"><td><a href="?id=475698&nom=PICOURET#tab">Apollo PICOURET</a></td><td>Homme</td><td>France</td><td>1985</td></tr>				</tbody>';
 
     before(function(done){
@@ -150,9 +157,13 @@ describe('Test of user object', function () {
                 assert.equal(userInfo.email, 'toto.titi@tata.fr');
                 assert.equal(userInfo.isActive, 1);
                 assert.equal(userInfo.role, 'user');
-                user.getPublicInfo(-10, function (err, user) {
-                    assert.isNotNull(err);
-                    done();
+                user.getPublicInfo(1, function (err, userInfo) {
+                    if (err) return done(err);
+                    assert.equal(userInfo.Participates.length, 3);
+                    user.getPublicInfo(-10, function (err, user) {
+                        assert.isNotNull(err);
+                        return done();
+                    });
                 });
             });
         });

@@ -13,16 +13,15 @@ var request = require('request');
 var sinon = require('sinon');
 var distance = require('google-distance');
 var settings = require('../../conf/config');
-var fakeDate;
 
 var loadData = function (fix) {
     var deferred = q.defer();
     models[fix.model].create(fix.data)
         .complete(function (err, result) {
             if (err) {
-                console.log(err);
+                return deferred.reject('error ' + err);
             }
-            deferred.resolve(result);
+            return deferred.resolve(result);
         });
     return deferred.promise;
 };
@@ -30,11 +29,13 @@ var loadData = function (fix) {
 describe('Tests of run objects', function () {
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
-		this.timeout(settings.timeout);
+        var fakeTime = new Date(2015, 6, 6, 0, 0, 0, 0).getTime();
+        sinon.clock = sinon.useFakeTimers(fakeTime, 'Date');
+        this.timeout(settings.timeout);
         models.sequelize.sync({force: true})
             .then(function () {
-                async.waterfall([
-                    function(callback) {
+                async.series([
+                    function fn1(callback) {
                         var fixtures = require('./fixtures/users.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -44,7 +45,7 @@ describe('Tests of run objects', function () {
                             callback(null);
                         });
                     },
-                    function(callback) {
+                    function fn2(callback) {
                         var fixtures = require('./fixtures/runs.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -58,6 +59,11 @@ describe('Tests of run objects', function () {
                     return done();
                 });
             });
+    });
+
+    afterEach(function() {
+        // runs after each test in this block
+        sinon.clock.restore();
     });
 
     //After all the tests have run, output all the sequelize logging.
@@ -106,6 +112,21 @@ describe('Tests of run objects', function () {
         });
     });
 
+    it('Should be able to remove past runs from the global list', function (done) {
+        var run = new Run(),
+            actualRun = [];
+        run.getList(1, function (err, runs) {
+            if (err) return done(err);
+            runs.forEach(function (currentRun) {
+                if (!run.isPast(currentRun)) {
+                    actualRun.push(currentRun);
+                }
+            });
+            assert.equal(actualRun.length, 4);
+            return done();
+        });
+    });
+
     it('Should be able to limited number of runs', function (done) {
         var run = new Run();
         run.getNextList(2, function (err, runs) {
@@ -114,7 +135,6 @@ describe('Tests of run objects', function () {
             return done();
         });
     });
-
     it('Should be able to search Maxicross race', function (done) {
         var run = new Run(),
             searchInfo = {

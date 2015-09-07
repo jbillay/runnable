@@ -2,6 +2,7 @@
 
 var models = require('../models');
 var Itra = require('../objects/itra');
+var Run = require('./run');
 
 function user() {
     'use strict';
@@ -254,6 +255,7 @@ user.prototype.getPublicDriverInfo = function (id, done) {
 
 user.prototype.getPublicInfo = function (id, done) {
     'use strict';
+    var run = new Run();
 	models.User.find({  where: {id: id},
                         include: [models.Join,
                             {
@@ -270,6 +272,11 @@ user.prototype.getPublicInfo = function (id, done) {
             if (user.Journeys) {
                 user.Journeys.forEach(function (journey, index, object) {
                     if (journey.is_canceled) {
+                        object.splice(index, 1);
+                    }
+                });
+                user.Participates.forEach(function (participate, index, object) {
+                    if (run.isPast(participate.Run)) {
                         object.splice(index, 1);
                     }
                 });

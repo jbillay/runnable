@@ -18,9 +18,9 @@ var loadData = function (fix) {
     models[fix.model].create(fix.data)
         .complete(function (err, result) {
             if (err) {
-                console.log(err);
+                return deferred.reject('error ' + err);
             }
-            deferred.resolve(result);
+            return deferred.resolve(result);
         });
     return deferred.promise;
 };

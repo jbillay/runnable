@@ -53,6 +53,17 @@ run.prototype.set = function (run, user) {
 		this.user_id = user.id; }
 };
 
+run.prototype.isPast = function (run) {
+    'use strict';
+    var today = new Date(),
+        runStart = new Date(run.date_start);
+    today.setHours(0,0,0,0);
+    if (today <= runStart) {
+        return false;
+    }
+    return true;
+};
+
 run.prototype.save = function (run, user, done) {
     'use strict';
 	var that = this;

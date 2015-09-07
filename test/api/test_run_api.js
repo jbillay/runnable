@@ -11,8 +11,7 @@ var request = require('supertest'),
     q = require('q'),
     sinon = require('sinon'),
     settings = require('../../conf/config'),
-    superagent = require('superagent'),
-    fakeDate;
+    superagent = require('superagent');
 
 
 var loadData = function (fix) {
@@ -20,9 +19,9 @@ var loadData = function (fix) {
     models[fix.model].create(fix.data)
         .complete(function (err, result) {
             if (err) {
-                console.log(err);
+                return deferred.reject('error ' + err);
             }
-            deferred.resolve(result);
+            return deferred.resolve(result);
         });
     return deferred.promise;
 };
@@ -44,11 +43,13 @@ describe('Test of run API', function () {
 
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
+        var fakeTime = new Date(2015, 6, 6, 0, 0, 0, 0).getTime();
+        sinon.clock = sinon.useFakeTimers(fakeTime, 'Date');
         this.timeout(settings.timeout);
         models.sequelize.sync({force: true})
             .then(function () {
-                async.waterfall([
-                    function(callback) {
+                async.series([
+                    function fn1(callback) {
                         var fixtures = require('./fixtures/users.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -58,7 +59,7 @@ describe('Test of run API', function () {
                             callback(null);
                         });
                     },
-                    function(callback) {
+                    function fn2(callback) {
                         var fixtures = require('./fixtures/runs.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -72,6 +73,11 @@ describe('Test of run API', function () {
                     return done();
                 });
             });
+    });
+
+    afterEach(function() {
+        // runs after each test in this block
+        sinon.clock.restore();
     });
 
     after(function () {
