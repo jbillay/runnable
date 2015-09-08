@@ -17,7 +17,7 @@ module.exports = function(config) {
             'public/lib/angular-messages/angular-messages.min.js',
             'public/lib/bootstrap/dist/js/bootstrap.min.js',
             'public/lib/angular-bootstrap/ui-bootstrap-tpls.min.js',
-            'public//lib/ng-facebook/ngFacebook.js',
+            'public/lib/ng-facebook/ngFacebook.js',
             'public/lib/moment/min/moment.min.js',
             'public/lib/fullcalendar/dist/fullcalendar.min.js',
             'public/lib/angular-ui-calendar/src/calendar.js',
