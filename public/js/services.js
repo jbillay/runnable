@@ -351,14 +351,21 @@ angular.module('runnable.services', ['ngResource']).
 		];
 		return {
 			getTimeBeforeStart: function (startDate, startHour) {
-				var dateTime = startDate.toString().substr(0, 10) + 'T' + startHour + ':00.000Z',
+				var dateTime = startDate + 'T' + startHour + ':00.000Z',
                     start = Date.parse(dateTime),
-					now = Date.now(),
-                    value = start - now;
+					dateNow = new Date(),
+                    dateUTCNow = new Date(dateNow.toISOString()),
+                    offset = dateNow.getTimezoneOffset() * 60000;
+                start += offset;
+                var value = start - dateUTCNow;
 				return value/1000;
 			},
 			getFees: function (startDate, startHour, amount) {
-				var timeBeforeStart = this.getTimeBeforeStart(startDate, startHour),
+                var year = startDate.substr(0, 4),
+                    month = startDate.substr(5, 2),
+                    day = startDate.substr(8, 2),
+                    localStartDate = year + '-' + month + '-' + day,
+                    timeBeforeStart = this.getTimeBeforeStart(localStartDate, startHour),
 					fees = 0;
 				angular.forEach(feesMap, function (feesStep) {
 					if (timeBeforeStart > feesStep.timeMin || feesStep.timeMin === null) {

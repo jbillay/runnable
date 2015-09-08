@@ -1338,29 +1338,29 @@ describe('service', function() {
         });
 
         it('check if time is correctly calculated', function () {
-            var newActualTime = new Date(2015, 9, 10, 10, 30, 0),
-                // Need to add 2 hours due to GMT +2 in france
-                startDate = new Date(2015, 9, 12, 2, 0, 0);
+            var newActualTime = new Date(2015, 9, 10, 8, 30, 0),
+                startDate = new Date(2015, 9, 12, 0, 0, 0);
 
-            jasmine.clock().mockDate(newActualTime);
-
-            expect(service.getTimeBeforeStart(startDate.toISOString(), '08:30')).toBe(172800);
+            jasmine.clock().mockDate(new Date(newActualTime.toISOString()));
+            var year = startDate.getFullYear();
+            var month = ('0' + (startDate.getMonth()+1)).slice(-2);
+            var day = ('0' + startDate.getDate()).slice(-2);
+            startDate = year + '-' + month + '-' + day;
+            expect(service.getTimeBeforeStart(startDate, '08:30')).toBe(172800);
         });
 
         it('check if fees is correctly calculated', function () {
             var newActualTime = new Date(2015, 9, 10, 10, 30, 0),
-                // Need to add 2 hours due to GMT +2 in france
-                startDateTwoDays = new Date(2015, 9, 12, 2, 0, 0),
-                startDateOneDays = new Date(2015, 9, 11, 2, 0, 0),
-                startDateSameDays = new Date(2015, 9, 10, 2, 0, 0),
-                startDateTenDays = new Date(2015, 9, 22, 2, 0, 0);
+                startDateTwoDays = '2015-09-12T00:00:00.000Z',
+                startDateOneDays = '2015-09-11T00:00:00.000Z',
+                startDateSameDays = '2015-09-10T00:00:00.000Z',
+                startDateTenDays = '2015-09-22T00:00:00.000Z';
 
             jasmine.clock().mockDate(newActualTime);
-
-            expect(service.getFees(startDateTwoDays.toISOString(), '10:30', 10)).toBe(2.2);
-            expect(service.getFees(startDateOneDays.toISOString(), '10:30', 10)).toBe(2.2);
-            expect(service.getFees(startDateSameDays.toISOString(), '10:30', 10)).toBe(2.2);
-            expect(service.getFees(startDateTenDays.toISOString(), '10:30', 10)).toBe(2.2);
+            expect(service.getFees(startDateTwoDays, '10:30', 10)).toBe(2.2);
+            expect(service.getFees(startDateOneDays, '10:30', 10)).toBe(2.2);
+            expect(service.getFees(startDateSameDays, '10:30', 10)).toBe(2.2);
+            expect(service.getFees(startDateTenDays, '10:30', 10)).toBe(2.2);
         });
     });
 });
