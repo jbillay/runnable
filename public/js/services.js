@@ -354,10 +354,9 @@ angular.module('runnable.services', ['ngResource']).
 				var dateTime = startDate + 'T' + startHour + ':00.000Z',
                     start = Date.parse(dateTime),
 					dateNow = new Date(),
-                    dateUTCNow = new Date(dateNow.toISOString()),
                     offset = dateNow.getTimezoneOffset() * 60000;
                 start += offset;
-                var value = start - dateUTCNow;
+                var value = start - dateNow.getTime();
 				return value/1000;
 			},
 			getFees: function (startDate, startHour, amount) {

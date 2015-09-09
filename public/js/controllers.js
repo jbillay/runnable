@@ -1003,7 +1003,6 @@ angular.module('runnable.controllers', []).
 			var now = new Date().getTime(),
                 ca = $scope.userPublicInfo.createdAt.split(/[- :T.]/),
 				creation = new Date(ca[0], ca[1]-1, ca[2], ca[3], ca[4], ca[5]).getTime();
-            console.log($scope.userPublicInfo.createdAt);
 			$scope.sinceCreation = parseInt((now-creation)/(24*3600*1000)) + 1;
 			$scope.userNbJoin = $scope.userPublicInfo.Joins.length;
 			$scope.userNbJourney = $scope.userPublicInfo.Journeys.length;

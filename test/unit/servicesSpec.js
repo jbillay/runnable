@@ -1338,15 +1338,10 @@ describe('service', function() {
         });
 
         it('check if time is correctly calculated', function () {
-            var newActualTime = new Date(2015, 9, 10, 8, 30, 0),
-                startDate = new Date(2015, 9, 12, 0, 0, 0);
+            var newActualTime = new Date(2015, 8, 10, 8, 30, 0);
 
-            jasmine.clock().mockDate(new Date(newActualTime.toISOString()));
-            var year = startDate.getFullYear();
-            var month = ('0' + (startDate.getMonth()+1)).slice(-2);
-            var day = ('0' + startDate.getDate()).slice(-2);
-            startDate = year + '-' + month + '-' + day;
-            expect(service.getTimeBeforeStart(startDate, '08:30')).toBe(172800);
+            jasmine.clock().mockDate(newActualTime);
+            expect(service.getTimeBeforeStart('2015-09-12', '08:30')).toBe(172800);
         });
 
         it('check if fees is correctly calculated', function () {
