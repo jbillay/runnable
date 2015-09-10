@@ -2,12 +2,14 @@
 
 var models = require('../models');
 var distance = require('google-distance');
+var slug = require('slug');
 var _ = require('lodash');
 
 function run() {
     'use strict';
 	this.id = null;
 	this.name = null;
+	this.slug = null;
 	this.type = null;
 	this.address_start = null;
     this.date_start= null;
@@ -29,7 +31,13 @@ run.prototype.set = function (run, user) {
 	if (run.id) {
 		this.id = run.id; }
 	if (run.name) {
-		this.name = run.name; }
+		this.name = run.name;
+        if (run.slug) {
+            this.slug = run.slug;
+        } else {
+            this.slug = slug(run.name, {lower: true});
+        }
+    }
 	if (run.type) {
 		this.type = run.type; }
 	if (run.address_start) {

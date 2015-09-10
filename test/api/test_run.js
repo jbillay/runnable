@@ -88,6 +88,7 @@ describe('Tests of run objects', function () {
         run.getById(1, function (err, run) {
             if (err) return done(err);
             assert.equal(run.name, 'Maxicross');
+            assert.equal(run.slug, 'maxicross');
             assert.equal(run.type, 'trail');
             assert.equal(run.address_start, 'Bouffémont, France');
             return done();
@@ -148,6 +149,7 @@ describe('Tests of run objects', function () {
             if (err) return done(err);
             assert.equal(runs.length, 1);
             assert.equal(runs[0].name, 'Maxicross');
+            assert.equal(runs[0].slug, 'maxicross');
             assert.equal(runs[0].type, 'trail');
             assert.equal(runs[0].address_start, 'Bouffémont, France');
             return done();
@@ -200,6 +202,7 @@ describe('Tests of run objects', function () {
             if (err) return done(err);
             assert.equal(runs.length, 1);
             assert.equal(runs[0].name, 'Les templiers');
+            assert.equal(runs[0].slug, 'les-templiers');
             assert.equal(runs[0].type, 'trail');
             assert.equal(runs[0].address_start, 'Millau, France');
             return done();
@@ -255,6 +258,7 @@ describe('Tests of run objects', function () {
         run.save(tmp, data_user, function (err, newRun) {
             if (err) return done(err);
             assert.equal(newRun.name, 'Marathon du Mont Blanc');
+            assert.equal(newRun.slug, 'marathon-du-mont-blanc');
             assert.equal(newRun.type, 'marathon');
             assert.equal(newRun.address_start, 'Chamonix, France');
             run.getActiveList(function (err, runs) {

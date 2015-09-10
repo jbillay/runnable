@@ -113,6 +113,7 @@ describe('Test of run API', function () {
                 .end(function (err, res) {
                     if (err) return done(err);
                     assert.equal(res.res.body.name, 'Maxicross');
+                    assert.equal(res.res.body.slug, 'maxicross');
                     assert.equal(res.res.body.type, 'trail');
                     assert.equal(res.res.body.address_start, 'Bouffémont, France');
                     assert.equal(res.res.body.time_start, '09:15');
@@ -244,6 +245,7 @@ describe('Test of run API', function () {
                                 .end(function (err, res) {
                                     if (err) return done(err);
                                     assert.equal(res.res.body.name, 'Marathon du Mont Blanc');
+                                    assert.equal(res.res.body.slug, 'marathon-du-mont-blanc');
                                     assert.equal(res.res.body.type, 'marathon');
                                     assert.equal(res.res.body.address_start, 'Chamonix, France');
                                     assert.equal(res.res.body.time_start, '06:20');
@@ -267,6 +269,7 @@ describe('Test of run API', function () {
             var run = {
                 id: 1,
                 name: 'Maxicross',
+                slug: 'maxicross',
                 type: 'trail',
                 address_start: 'Bouffémont, France',
                 date_start: '2015-02-02 00:00:00',
@@ -287,6 +290,7 @@ describe('Test of run API', function () {
                         .end(function (err, res) {
                             if (err) return done(err);
                             assert.equal(res.res.body.name, 'Maxicross');
+                            assert.equal(res.res.body.slug, 'maxicross');
                             assert.equal(res.res.body.type, 'trail');
                             assert.equal(res.res.body.address_start, 'Bouffémont, France');
                             assert.equal(res.res.body.time_start, '06:20');

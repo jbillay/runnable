@@ -4,6 +4,7 @@
     "data": {
       "id": 1,
       "name": "Maxicross",
+      "slug": "maxicross",
       "type": "trail",
       "address_start": "Bouffémont, France",
       "date_start": "2015-02-02 00:00:00",
@@ -21,6 +22,7 @@
     "data": {
       "id": 2,
       "name": "Les templiers",
+      "slug": "les-templiers",
       "type": "trail",
       "address_start": "Millau, France",
       "date_start": "2015-09-15 00:00:00",
@@ -38,6 +40,7 @@
     "data": {
       "id": 3,
       "name": "Paris Saint Germain",
+      "slug": "paris-saint-germain",
       "type": "20k",
       "address_start": "Paris, France",
       "date_start": "2015-05-12 00:00:00",
@@ -55,6 +58,7 @@
     "data": {
       "id": 4,
       "name": "Corrida de Saint Germain en Laye",
+      "slug": "corrida-de-saint-germain-en-laye",
       "type": "10k",
       "address_start": "Saint-Germain-en-Laye, France",
       "date_start": "2015-12-06 00:00:00",
@@ -72,6 +76,7 @@
     "data": {
       "id": 5,
       "name": "Marathon du médoc",
+      "slug": "marathon-du-medoc",
       "type": "marathon",
       "address_start": "Saint-Émilion, France",
       "date_start": "2015-09-09 00:00:00",
@@ -89,6 +94,7 @@
     "data": {
       "id": 6,
       "name": "Semi marathon de Paris",
+      "slug": "semi-marathon-de-paris",
       "type": "semi",
       "address_start": "Paris, France",
       "date_start": "2016-03-08 00:00:00",

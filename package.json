@@ -55,7 +55,8 @@
     "sql-query": "~0.1.16",
     "sqlite3": "~3.0.4",
     "supertest": "~0.15.0",
-    "underscore": "~1.6.0"
+    "underscore": "~1.6.0",
+    "slug": "~0.9.1"
   },
   "devDependencies": {
     "grunt-cli": "~0.1.13",
