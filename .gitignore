@@ -1,6 +1,8 @@
 conf/test.js
 conf/development.js
 conf/production.js
+database.sqlite
+dump.rdb
 .idea/
 coverage/
 dist/

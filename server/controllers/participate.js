@@ -62,10 +62,12 @@ exports.notify = function (req, res) {
     console.log('Notify users following the run : ' + req.Run.id);
     var participate = new Participate(),
         run = req.Run;
-    participate.notify(run, function (err, notif) {
-        err = null;
-        notif = null;
-    });
-    participate = null;
-    run = null;
+    if (!req.draft) {
+        participate.notify(run, function (err, notif) {
+            err = null;
+            notif = null;
+        });
+        participate = null;
+        run = null;
+    }
 };

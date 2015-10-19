@@ -24,6 +24,7 @@ describe('Runnable Controllers', function() {
             $httpBackend.whenGET('/api/user/me').respond(500);
             $httpBackend.whenGET('/api/inbox/unread/nb/msg').respond(500);
             $httpBackend.whenPOST('/api/user/password/reset').respond('passwordReset');
+            $httpBackend.whenPOST('/api/journey/confirm').respond({msg: 'draftJourneySaved', type: 'success'});
 
             ctrlMain = $controller('RunnableMainController',
                 {$scope: scope, $rootScope: rootScope});
@@ -108,10 +109,56 @@ describe('Runnable Controllers', function() {
             expect(rootScope.isAdmin).not.toBeTruthy();
         });
 
+        it ('Login a user after draft journey saved', function () {
+            var user = {
+                id: 2,
+                firstname: 'Richard',
+                lastname: 'Couret',
+                address: 'Bouffemont',
+                phone: '0689876547',
+                email: 'richard.couret@free.fr',
+                hashedPassword: 'qksdjlqjdlsjqls',
+                provider: 'local',
+                salt: 'skjdljqld',
+                itra: null,
+                isActive: 1,
+                role: 'editor',
+                picture: null,
+                Inboxes: [{
+                    id: 1,
+                    title: 'Nouveau message concernant le trajet pour la course Les templiers',
+                    message: 'test à la con',
+                    is_read: 1
+                }]
+            };
+            $httpBackend.whenPOST('/login').respond({msg: user, type: 'success'});
+            var credentials = {
+                username: 'richard.couret@free.fr',
+                password: 'richard'
+            };
+            rootScope.draftId = 'JNY876543';
+            expect(scope.credentials.username).toEqual('');
+            expect(scope.credentials.password).toEqual('');
+            scope.login(credentials);
+            $httpBackend.flush();
+            expect(rootScope.currentUser.email).toEqual(credentials.username);
+            expect(rootScope.userUnreadEmail).toBe(0);
+            expect(rootScope.isAdmin).not.toBeTruthy();
+        });
+
         it ('Reset a user account', function () {
             expect(scope.credentials.username).toEqual('');
             expect(scope.credentials.password).toEqual('');
             scope.reset('jbillay@gmail.com');
+        });
+
+        it ('Switch login to reset and back', function () {
+            scope.toggleLogin();
+            expect(scope.forLogin).not.toBeTruthy();
+            expect(scope.forReset).toBeTruthy();
+            scope.toggleLogin();
+            expect(scope.forLogin).toBeTruthy();
+            expect(scope.forReset).not.toBeTruthy();
         });
     });
 });

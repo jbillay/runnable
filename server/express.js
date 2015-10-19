@@ -38,20 +38,6 @@ module.exports = function (app, passport) {
     app.set('views', path.join(__dirname, '../public/views'));
     app.engine('html', require('ejs').renderFile);
 	app.set('view engine', 'html');
-	
-	/* TO USE IF YOU NEED TO REFRESH OPTIONS EACH PAGE UPDATE
-	app.use(function (req, res, next) {
-		var options = new Options();
-		options.load(function (err, options) {
-			if (err) {
-				console.log('Problem to get options : ' + err);
-			} else {
-				res.locals.options = options;
-			}
-			next();
-		});
-	});
-	 */
 
     //Enable jsonp
     app.enable('jsonp callback');
@@ -120,14 +106,14 @@ module.exports = function (app, passport) {
             //Log it
             console.error(err.stack);
             //Error page
-            res.status(500).render('500', {
+            res.status(500).render('500.html', {
                 error: err.stack
             });
         });
 
         //Assume 404 since no middleware responded
         app.use(function(req, res, next) {
-            res.status(404).render('404', {
+            res.status(404).render('404.html', {
                 url: req.originalUrl,
                 error: 'Not found'
             });

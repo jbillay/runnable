@@ -660,13 +660,23 @@ describe('service', function() {
         });
 
         it('should create a user', function () {
-            spyOn(rootScope, '$broadcast').and.callThrough();
-            $httpBackend.whenPOST('/api/user').respond('accountCreated');
+            $httpBackend.whenPOST('/api/user').respond({msg: {
+                id: 2,
+                firstname: 'Richard',
+                lastname: 'Couret',
+                address: 'Bouffemont',
+                phone: '0689876547',
+                email: 'richard.couret@free.fr',
+                itra: '?id=84500&nom=COURET#tab',
+                isActive: 1,
+                role: 'editor',
+                picture: null
+            }, type: 'success'});
 
             var user = {
-                    firstname : 'Test',
-                    lastname : 'Creation',
-                    address : 'Saint Germain en Laye',
+                    firstname: 'Richard',
+                    lastname: 'Couret',
+                    address: 'Bouffemont',
                     email : 'test.creation@user.fr',
                     password : 'test',
                     password_confirmation : 'test'
@@ -680,8 +690,41 @@ describe('service', function() {
             });
 
             $httpBackend.flush();
-            expect(message).toEqual('accountCreated');
-            expect(rootScope.$broadcast).toHaveBeenCalled();
+            expect(message.id).toEqual(2);
+            expect(message.firstname).toEqual('Richard');
+            expect(message.lastname).toEqual('Couret');
+            expect(message.address).toEqual('Bouffemont');
+            expect(message.phone).toEqual('0689876547');
+            expect(message.email).toEqual('richard.couret@free.fr');
+            expect(message.itra).toEqual('?id=84500&nom=COURET#tab');
+            expect(message.isActive).toBe(1);
+            expect(message.role).toEqual('editor');
+            expect(message.picture).toBe(null);
+        });
+
+        it('Creation of user failed', function () {
+            $httpBackend.whenPOST('/api/user').respond({msg: 'existingAccount', type: 'error'});
+
+            var user = {
+                    firstname: 'Richard',
+                    lastname: 'Couret',
+                    address: 'Bouffemont',
+                    email : 'test.creation@user.fr',
+                    password : 'test',
+                    password_confirmation : 'test'
+                },
+                message = null;
+
+            var promise = service.create(user);
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            expect(message).toEqual('error existingAccount');
         });
 
         it('should failed to create a user', function () {

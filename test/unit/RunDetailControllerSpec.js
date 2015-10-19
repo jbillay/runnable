@@ -132,14 +132,14 @@ describe('Runnable Controllers', function() {
         });
 
         it ('Test creation journey without user login', function () {
-            spyOn(scope, 'showLogin');
+            spyOn(location, 'path');
             expect(scope.page).toEqual('Run');
             expect(scope.runId).toBe(4);
             $httpBackend.flush();
             timeout.flush();
             service.destroy();
             scope.createJourney();
-            expect(scope.showLogin).toHaveBeenCalled();
+            expect(location.path).toHaveBeenCalledWith('/journey-create-4');
         });
 
         it ('Test run participation with user login', function () {

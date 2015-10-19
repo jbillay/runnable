@@ -5,6 +5,8 @@ var _ = require('lodash');
 var Join = require('./join');
 var Inbox = require('./inbox');
 var q = require('q');
+var redis = require('redis');
+var Rclient = redis.createClient();
 
 function journey() {
     'use strict';
@@ -61,6 +63,29 @@ journey.prototype.setJourney = function (journey) {
         this.amount = 0; }
 	if (journey.Run) {
 		this.Run = journey.Run; }
+};
+
+journey.prototype.draft = function (journey, done) {
+    'use strict';
+    var journeyString = JSON.stringify(journey),
+        journeyKey = 'JNY' + Math.floor(Math.random() * 100000);
+    Rclient.set(journeyKey, journeyString, redis.print);
+    done(null, journeyKey);
+};
+
+journey.prototype.saveDraft = function (journeyKey, userId, done) {
+    'use strict';
+    var self = this;
+    Rclient.get(journeyKey, function (err, reply) {
+        var draftJourney = JSON.parse(reply);
+        self.save(draftJourney, userId, function (err, journey) {
+            if (err) {
+                done(err, null);
+            } else {
+                done(null, journey);
+            }
+        });
+    });
 };
 
 journey.prototype.save = function (journey, userId, done) {

@@ -156,14 +156,19 @@ angular.module('runnable.services', ['ngResource']).
             }
 		};
 	}).
-    factory('User', function ($q, $http, $rootScope) {
+    factory('User', function ($q, $http, $rootScope, Session) {
 		return {
 			create: function (user) {
                 var deferred = $q.defer();
                 $http.post('/api/user', user).
 					success(function (result) {
-						$rootScope.$broadcast('USER_MSG', result);
-						deferred.resolve(result);
+                        if (result.type === 'error') {
+                            $rootScope.$broadcast('USER_MSG', result.msg);
+                            deferred.reject('error ' + result.msg);
+                        } else {
+                            Session.create(result.msg);
+                            deferred.resolve(result.msg);
+                        }
 					}).
 					error(function(data, status) {
                         deferred.reject('error ' + status + ' : ' + data);
@@ -1016,10 +1021,34 @@ angular.module('runnable.services', ['ngResource']).
                 $http.post('/api/journey', {journey: journey}).
                     success(function (result) {
                         $rootScope.$broadcast('USER_MSG', result);
-                        deferred.resolve(result);
+                        if (result.type === 'success') {
+                            if (result.msg === 'journeyCreated') {
+                                deferred.resolve(result.journey);
+                            } else {
+                                deferred.resolve(result.journeyKey);
+                            }
+                        } else  {
+                            deferred.reject('error : ' + result.msg);
+                        }
                     }).
                     error(function (data, status) {
 						deferred.reject('error ' + status + ' : ' + data);
+                    });
+                return deferred.promise;
+            },
+            confirm: function (key) {
+                var deferred = $q.defer();
+                $http.post('/api/journey/confirm', {key: key}).
+                    success(function (result) {
+                        $rootScope.$broadcast('USER_MSG', result);
+                        if (result.type === 'success') {
+                            deferred.resolve(result.msg);
+                        } else  {
+                            deferred.reject('error : ' + result.msg);
+                        }
+                    }).
+                    error(function (data, status) {
+                        deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             },

@@ -8,8 +8,8 @@
 'use strict';
 
 angular.module('runnable.controllers', []).
-	controller('RunnableMainController', function ($scope, $rootScope, $q, USER_ROLES, AUTH_EVENTS,
-												   AuthService, USER_MSG, User, Session, Inbox) {
+	controller('RunnableMainController', function ($scope, $rootScope, $q, $location, USER_ROLES, AUTH_EVENTS,
+												   AuthService, USER_MSG, User, Session, Inbox, Journey) {
 		$rootScope.currentUser = null;
 		$rootScope.userRoles = USER_ROLES;
 		$rootScope.isAuthenticated = false;
@@ -30,19 +30,42 @@ angular.module('runnable.controllers', []).
 		all.then(function (res) {
 			$scope.setCurrentUser(res[0], res[1]);
 		});
-		$scope.switchLoginToReset = function () {
-			$scope.forLogin = false;
-			$scope.forReset = true;
-		};
 		$scope.showLogin = function () {
-			$scope.forLogin = true;
-			$scope.forReset = false;
 			angular.element('#loginModal').modal('show');
 		};
 		$scope.inviteFriend = function () {
 			angular.element('#modalInviteFriends').modal('show');
 		};
-		$rootScope.$on('USER_MSG', function (event, msg) {
+        $scope.login = function (credentials) {
+            AuthService.login(credentials).then(function (user) {
+                var unread = 0;
+                angular.forEach(user.Inboxes, function (inbox) {
+                    if (inbox.is_read === 0) {
+                        unread = unread + 1;
+                    }
+                });
+                $scope.setCurrentUser(user, unread);
+                if ($rootScope.draftId) {
+                    Journey.confirm($rootScope.draftId).then(function (journey) {
+                        $location.path('/journey');
+                    });
+                }
+            });
+            angular.element('#loginModal').modal('hide');
+        };
+        $scope.createUser = function (user) {
+            $scope.userCreate = {};
+            User.create(user).then(function (newUser) {
+                var unread = 0;
+                $scope.setCurrentUser(newUser, unread);
+                if ($rootScope.draftId) {
+                    Journey.confirm($rootScope.draftId).then(function (journey) {
+                        $location.path('/journey');
+                    });
+                }
+            });
+        };
+        $rootScope.$on('USER_MSG', function (event, msg) {
 			var obj_msg = angular.fromJson(msg);
 			var text = USER_MSG[obj_msg.msg];
 			if (!text) {
@@ -67,6 +90,9 @@ angular.module('runnable.controllers', []).
 				});
 		});
 	}).
+	controller('RunnableConnectController', function ($scope, $rootScope) {
+        console.log($rootScope.draftId);
+	}).
 	controller('RunnableSharedController', function ($scope, Session, User) {
 		$scope.invitForm = {
 			inviteMessage: 'J’utilise My Run Trip pour organiser mes voyages jusqu\'aux différentes courses. ' +
@@ -90,26 +116,25 @@ angular.module('runnable.controllers', []).
 		});
 	}).
 	controller('RunnableLoginController', function ($scope, $rootScope, AUTH_EVENTS, AuthService) {
-		$scope.credentials = {
+        $scope.forLogin = true;
+        $scope.forReset = false;
+        $scope.credentials = {
 			username: '',
 			password: ''
-		};
-		$scope.login = function (credentials) {
-			AuthService.login(credentials).then(function (user) {
-				var unread = 0;
-				angular.forEach(user.Inboxes, function (inbox) {
-					if (inbox.is_read === 0) {
-						unread = unread + 1;
-					}
-				});
-				$scope.setCurrentUser(user, unread);
-			});
-			angular.element('#loginModal').modal('hide');
 		};
 		$scope.reset = function (email) {
 			AuthService.reset(email);
 			angular.element('#loginModal').modal('hide');
 		};
+        $scope.toggleLogin = function () {
+            if ($scope.forLogin === true) {
+                $scope.forLogin = false;
+                $scope.forReset = true;
+            } else {
+                $scope.forLogin = true;
+                $scope.forReset = false;
+            }
+        };
 	}).
 	controller('RunnableIndexController', function ($scope, $q, $timeout, Run, User, Journey, GoogleMapApi, Email,
                                                     ValidationJourney) {
@@ -135,10 +160,6 @@ angular.module('runnable.controllers', []).
 		});
 		$scope.getLocation = function(val) {
 			return GoogleMapApi.getLocation(val);
-		};
-		$scope.createUser = function (user) {
-            $scope.userCreate = {};
-			User.create(user);
 		};
         $scope.sendContact = function (contact) {
             var data = {};
@@ -373,11 +394,7 @@ angular.module('runnable.controllers', []).
 			}
 		});
 		$scope.createJourney = function () {
-			if (!Session.userEmail) {
-				$scope.showLogin();
-			} else {
-				$location.path('/journey-create-' + $scope.runId);
-			}
+            $location.path('/journey-create-' + $scope.runId);
 		};
         $scope.participateRun = function () {
             if (!Session.userEmail) {
@@ -728,8 +745,13 @@ angular.module('runnable.controllers', []).
 		};
 	}).
 	controller('RunnableJourneyCreateController', function ($scope, $q, $timeout, $routeParams, $rootScope, $location,
-                                                            Journey, Run, Inbox, GoogleMapApi, $facebook) {
+                                                            Journey, Run, Inbox, GoogleMapApi, Session, $facebook) {
         $scope.page = 'Journey';
+        if (!Session.userEmail) {
+            $scope.isConnected = false;
+        } else {
+            $scope.isConnected = true;
+        }
 		var runPromise = Run.getActiveList(),
             all = $q.all([runPromise]);
         all.then(function (res) {
@@ -836,19 +858,24 @@ angular.module('runnable.controllers', []).
                 template = 'JourneyCreated',
                 values = {runName: journey.Run.name };
             Journey.create(journey).then(function (newJourney) {
-                if ($scope.publishFacebook) {
-                    var fb_link = 'http://www.myruntrip.com/journey-' + newJourney.journey.id;
-                    $facebook.ui({
-                        method: 'feed',
-                        link: fb_link,
-                        caption: 'My Run Trip',
-                        picture: 'http://www.myruntrip.com/img/myruntrip_100.jpg',
-                        name: fb_titre,
-                        description: fb_desc
-                    }, function(response){});
+                if (!$rootScope.isAuthenticated) {
+                    $rootScope.draftId = newJourney;
+                    $location.path('/connect');
+                } else {
+                    if ($scope.publishFacebook) {
+                        var fb_link = 'http://www.myruntrip.com/journey-' + newJourney.id;
+                        $facebook.ui({
+                            method: 'feed',
+                            link: fb_link,
+                            caption: 'My Run Trip',
+                            picture: 'http://www.myruntrip.com/img/myruntrip_100.jpg',
+                            name: fb_titre,
+                            description: fb_desc
+                        }, function(response){});
+                    }
+                    Inbox.addMessage(template, values, $rootScope.currentUser.id);
+                    $location.path('/journey');
                 }
-                Inbox.addMessage(template, values, $rootScope.currentUser.id);
-                $location.path('/journey');
             });
         };
 	}).

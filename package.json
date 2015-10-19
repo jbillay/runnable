@@ -56,7 +56,9 @@
     "sqlite3": "~3.0.4",
     "supertest": "~0.15.0",
     "underscore": "~1.6.0",
-    "slug": "~0.9.1"
+    "slug": "~0.9.1",
+    "redis": "~2.1.0",
+    "connect-redis": "~3.0.0"
   },
   "devDependencies": {
     "grunt-cli": "~0.1.13",

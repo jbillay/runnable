@@ -77,7 +77,7 @@ exports.create = function(req, res) {
 		user.save(function (err, newUser) {
 			if (err) {
 				console.log('Account not created ' + err);
-				res.jsonp({msg: 'existingAccount', type: 'error'});
+				return res.jsonp({msg: 'existingAccount', type: 'error'});
 			} else {
 				console.log('Account created');
 				user.getItraCode(newUser, function (err, code) {
@@ -86,24 +86,24 @@ exports.create = function(req, res) {
 					} else {
                         console.log('ITRA code is : ' + code);
                     }
-                    user = null;
                 });
-				var url = settings.domain,
-					timekey = new Date(newUser.createdAt).getTime();
+				var url = settings.domain;
                 new Mail().then(function (mail) {
                     mail.setTo(user.email);
-                    mail.setSubject('Activation de votre compte MyRunTrip');
-                    mail.generateContent('ActivationAccount', {url: url, userId: newUser.id, timekey: timekey})
+                    mail.generateContent('NewAccount', {url: url})
                         .then(function (mail) {
                             mail.send();
-                            res.jsonp({msg: 'accountCreated', type: 'success'});
                     });
                 });
-			}
+                req.logIn(newUser, function(err) {
+                    if (err) { console.log(err); }
+                    return res.jsonp({msg: newUser, type: 'success'});
+                });
+            }
 		});
 	} else {
 		console.log('Two passwords are different');
-		res.jsonp({msg: 'wrongPassword', type: 'error'});
+		return res.jsonp({msg: 'wrongPassword', type: 'error'});
 	}
 };
 

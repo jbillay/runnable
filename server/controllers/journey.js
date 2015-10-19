@@ -6,15 +6,51 @@ exports.create = function (req, res, next) {
 	console.log('Create a journey for run : ' + req.body.journey.Run.id);
 	var journey = new Journey();
     req.Run = req.body.journey.Run;
-	journey.save(req.body.journey, req.user.id, function (err, journey) {
-		if (err) {
-            console.log('Journey not created ' + err);
-            res.jsonp({msg: 'journeyNotCreated', type: 'error'});
-		} else {
-            console.log('Journey created');
-            res.jsonp({msg: 'journeyCreated', type: 'success', journey: journey});
+    req.draft = 0;
+    if (!req.isAuthenticated()) {
+        req.draft = 1;
+        journey.draft(req.body.journey, function (err, journeyKey) {
+            if (err) {
+                console.log('Draft Journey not created ' + err);
+                return res.jsonp({msg: 'draftJourneyNotCreated', type: 'error'});
+            } else {
+                console.log('Draft Journey created with key : ', journeyKey);
+                res.jsonp({msg: 'draftJourneyCreated', type: 'success', journeyKey: journeyKey});
+            }
+            err = null;
+            journeyKey = null;
+        });
+        journey = null;
+    } else {
+        journey.save(req.body.journey, req.user.id, function (err, journey) {
+            if (err) {
+                console.log('Journey not created ' + err);
+                return res.jsonp({msg: 'journeyNotCreated', type: 'error'});
+            } else {
+                console.log('Journey created');
+                res.jsonp({msg: 'journeyCreated', type: 'success', journey: journey});
+                req.journey = journey;
+                next();
+            }
+            err = null;
+            journey = null;
+        });
+        journey = null;
+    }
+};
+
+exports.confirm = function (req, res, next) {
+    'use strict';
+    console.log('Confirm the journey with key : ' + req.body.key);
+    var journey = new Journey();
+    journey.saveDraft(req.body.key, req.user.id, function (err, newJourney) {
+        if (err) {
+            return res.jsonp({msg: 'draftJourneyNotSaved', type: 'error'});
+        } else {
+            req.Run = newJourney.Run;
+            res.jsonp({msg: 'draftJourneySaved', type: 'success'});
             next();
-		}
+        }
         err = null;
         journey = null;
     });

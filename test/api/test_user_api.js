@@ -225,7 +225,6 @@ describe('Test of user API', function () {
     });
 
     describe('POST /api/user', function () {
-        // TODO: mock Mail send function to check if hash and domain are well sent
         mockItraCode();
 
         it('should return code 200', function (done) {
@@ -258,8 +257,14 @@ describe('Test of user API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(res.body.msg, 'accountCreated');
-                    done();
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg.firstname, 'Test');
+                    assert.equal(res.body.msg.lastname, 'Creation');
+                    assert.equal(res.body.msg.address, 'Saint Germain en Laye');
+                    assert.equal(res.body.msg.email, 'test.creation@user.fr');
+                    assert.equal(res.body.msg.isActive, 1);
+                    assert.equal(res.body.msg.role, 'user');
+                    return done();
                 });
         });
 

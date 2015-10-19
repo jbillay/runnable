@@ -324,6 +324,48 @@ describe('Test of journey object', function () {
         });
     });
 
+    it('Draft a new journey and save it', function (done) {
+        var journey = new Journey(),
+            newJourney = {
+                address_start: 'Paris',
+                distance: '25 km',
+                duration: '20 minutes',
+                journey_type: 'aller-retour',
+                date_start_outward: '2016-12-12 00:00:00',
+                time_start_outward: '09:00',
+                nb_space_outward: 2,
+                date_start_return: '2016-12-13 00:00:00',
+                time_start_return: '09:00',
+                nb_space_return: 2,
+                car_type: 'citadine',
+                amount: 5,
+                UserId: 1,
+                Run: {
+                    id: 4
+                }
+            },
+            user = {
+                'id': 1
+            };
+        journey.draft(newJourney, function(err, journeyKey) {
+            if (err) return done(err);
+            // TODO: Mock journeyKey generated as redis id
+            // assert.equal(journeyKey, 'JNY425367');
+            journey.saveDraft(journeyKey, user.id, function (err, createdJourney) {
+                if (err) return done(err);
+                assert.equal(createdJourney.distance, '25 km');
+                assert.equal(createdJourney.journey_type, 'aller-retour');
+                assert.equal(createdJourney.car_type, 'citadine');
+                assert.equal(createdJourney.amount, 5);
+                journey.getList(1, function (err, journeyList) {
+                    if (err) return done(err);
+                    assert.equal(journeyList.length, 6);
+                    return done();
+                });
+            });
+        });
+    });
+
     it('Toggle payed status', function (done) {
         var journey = new Journey();
         journey.togglePayed(1, function (err, retJourney) {

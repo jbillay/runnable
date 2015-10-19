@@ -21,9 +21,9 @@ angular.module('runnable', [
 ]).
     config(function ($routeProvider, $locationProvider, USER_ROLES, $facebookProvider) {
         $routeProvider.
-            when('/login', {
-                templateUrl: 'partials/login',
-                controller: 'AppLogin'
+            when('/connect', {
+                templateUrl: 'partials/connect',
+                controller: 'RunnableConnectController'
             }).
             when('/admin', {
                 templateUrl: 'partials/admin',
@@ -56,17 +56,11 @@ angular.module('runnable', [
             }).
             when('/journey-create', {
                 templateUrl: 'partials/journey_create',
-                controller: 'RunnableJourneyCreateController',
-				data: {
-					authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user]
-				}
+                controller: 'RunnableJourneyCreateController'
             }).
             when('/journey-create-:runId', {
                 templateUrl: 'partials/journey_create',
-                controller: 'RunnableJourneyCreateController',
-				data: {
-					authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user]
-				}
+                controller: 'RunnableJourneyCreateController'
             }).
             when('/journey-update-:journeyId', {
                 templateUrl: 'partials/journey_update',

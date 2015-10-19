@@ -128,7 +128,6 @@ describe('Runnable Controllers', function() {
                 ],
                 status: 'OK'
             });
-            $httpBackend.whenPOST('/api/user').respond('accountCreated');
 
             ctrl = $controller('RunnableIndexController', {$scope: scope});
         }));
@@ -165,23 +164,6 @@ describe('Runnable Controllers', function() {
             expect(scope.nbRunItems).toBe(4);
             expect(scope.nbJourneyItems).toBe(4);
             scope.sendContact(contact);
-            $httpBackend.flush();
-            expect(rootScope.$broadcast).toHaveBeenCalled();
-        });
-
-        it ('Create user', function () {
-            var user = {
-                firstname : 'Test',
-                lastname : 'Creation',
-                address : 'Saint Germain en Laye',
-                email : 'test.creation@user.fr',
-                password : 'test',
-                password_confirmation : 'test'
-            };
-            expect(scope.page).toEqual('Index');
-            expect(scope.nbRunItems).toBe(4);
-            expect(scope.nbJourneyItems).toBe(4);
-            scope.createUser(user);
             $httpBackend.flush();
             expect(rootScope.$broadcast).toHaveBeenCalled();
         });

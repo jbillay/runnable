@@ -46,7 +46,7 @@ user.prototype.set = function (user) {
 	if (user.isActive) {
 		this.isActive = user.isActive; }
 	else {
-		this.isActive = false;
+		this.isActive = true;
 	}
 	if (user.role) {
 		this.role = user.role; }

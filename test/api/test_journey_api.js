@@ -11,7 +11,10 @@ var request = require('supertest'),
     q = require('q'),
     sinon = require('sinon'),
     settings = require('../../conf/config'),
-    superagent = require('superagent');
+    superagent = require('superagent'),
+    redis = require('redis'),
+    Rclient = redis.createClient();
+
 
 var loadData = function (fix) {
     var deferred = q.defer();
@@ -241,7 +244,7 @@ describe('Test of journey API', function () {
         });
     });
 
-    describe('POST /api/journey', function () {
+    describe('POST /api/journey with auth user', function () {
         var agent = superagent.agent();
 
         before(loginUser(agent));
@@ -311,6 +314,81 @@ describe('Test of journey API', function () {
                                     return done();
                                 });
                         });
+                });
+        });
+    });
+
+    describe('POST /api/journey with no auth user', function () {
+        var agent = superagent.agent();
+
+        it('should create a journey with a draft', function (done) {
+            var journey = {
+                id: 5,
+                address_start: 'Paris',
+                distance: '25 km',
+                duration: '20 minutes',
+                journey_type: 'aller-retour',
+                date_start_outward: '2016-12-12 00:00:00',
+                time_start_outward: '09:00',
+                nb_space_outward: 2,
+                date_start_return: '2016-12-13 00:00:00',
+                time_start_return: '09:00',
+                nb_space_return: 2,
+                car_type: 'citadine',
+                amount: 5,
+                UserId: 1,
+                Run: {
+                    id: 4
+                }
+            };
+            agent
+                .post('http://localhost:' + settings.port + '/api/journey')
+                .send({journey: journey})
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    // TODO: mock redis key generated
+                    // assert.equal(res.body.journeyKey, 'JNK82773');
+                    return done();
+                });
+        });
+    });
+
+    describe('POST /api/journey/confirm', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should confirm a draft journey', function (done) {
+            var journey = {
+                id: 5,
+                address_start: 'Paris',
+                distance: '25 km',
+                duration: '20 minutes',
+                journey_type: 'aller-retour',
+                date_start_outward: '2016-12-12 00:00:00',
+                time_start_outward: '09:00',
+                nb_space_outward: 2,
+                date_start_return: '2016-12-13 00:00:00',
+                time_start_return: '09:00',
+                nb_space_return: 2,
+                car_type: 'citadine',
+                amount: 5,
+                UserId: 1,
+                Run: {
+                    id: 4
+                }
+            };
+            var journeyString = JSON.stringify(journey),
+                journeyKey = 'JNY' + Math.floor(Math.random() * 100000);
+            Rclient.set(journeyKey, journeyString, redis.print);
+
+            agent
+                .post('http://localhost:' + settings.port + '/api/journey/confirm')
+                .send({key: journeyKey})
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.msg, 'draftJourneySaved');
+                    return done();
                 });
         });
     });

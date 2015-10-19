@@ -36,9 +36,10 @@
 								<button type="submit" class="btn btn-primary">Réinitialiser le mot de passe</button>
 							</div>
 						</form>
-						<div>
-							<a href="" ng-click="switchLoginToReset()">Vous avez perdu votre mot de passe ?</a>
-						</div>
+                        <div>
+                            <a href="#" ng-if='forLogin' ng-click="toggleLogin()">Vous avez perdu votre mot de passe ?</a>
+                            <a href="#" ng-if='forReset' ng-click="toggleLogin()">Essayer de se connecter ?</a>
+                        </div>
 					</div>
 				</div>
 			</div>

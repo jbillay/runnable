@@ -50,9 +50,10 @@ module.exports = function (app, passport, auth) {
     app.get('/api/run/:id', controllers.run.detail);
     app.get('/api/run/next/:nb', controllers.run.next);
 
-    app.post('/api/journey', auth.requiresLogin, controllers.journey.create, controllers.participate.notify);
+    app.post('/api/journey', controllers.journey.create, controllers.participate.notify);
     app.put('/api/journey', auth.requiresLogin, controllers.journey.update);
     app.post('/api/journey/cancel', auth.requiresLogin, controllers.journey.cancel);
+    app.post('/api/journey/confirm', auth.requiresLogin, controllers.journey.confirm, controllers.participate.notify);
     app.get('/api/journey/open', controllers.journey.openList);
 	app.get('/api/journey/:id', controllers.journey.detail);
     app.get('/api/journey/run/:id', controllers.journey.listForRun);

@@ -13,6 +13,7 @@ describe('Runnable Controllers', function() {
             $httpBackend = _$httpBackend_;
             rootScope = _$rootScope_;
             scope = _$rootScope_.$new();
+            spyOn(rootScope, '$broadcast').and.callThrough();
             AUTH_EVENTS = {
                 loginSuccess: 'auth-login-success',
                 loginFailed: 'auth-login-failed',
@@ -70,6 +71,7 @@ describe('Runnable Controllers', function() {
                 runUpdated:             'La course a été mise à jour',
                 runCreated:             'La course a bien été créée'
             };
+
             $httpBackend.whenGET('/api/user/me').respond({
                 id: 2,
                 firstname: 'Richard',
@@ -82,7 +84,23 @@ describe('Runnable Controllers', function() {
                 role: 'editor',
                 picture: null
             });
+
+            $httpBackend.whenPOST('/api/user').respond({msg : {
+                id: 2,
+                firstname: 'Richard',
+                lastname: 'Couret',
+                address: 'Bouffemont',
+                phone: '0689876547',
+                email: 'richard.couret@free.fr',
+                itra: '?id=84500&nom=COURET#tab',
+                isActive: 0,
+                role: 'editor',
+                picture: null
+            }, type: 'success'});
+
             $httpBackend.whenGET('/api/inbox/unread/nb/msg').respond(200, 2);
+
+            $httpBackend.whenPOST('/api/journey/confirm').respond({msg: 'draftJourneySaved', type: 'success'});
 
             ctrl = $controller('RunnableMainController',
                 {$scope: scope, $rootScope: rootScope, AUTH_EVENTS: AUTH_EVENTS,
@@ -115,17 +133,6 @@ describe('Runnable Controllers', function() {
             expect(rootScope.isAuthenticated).not.toBeTruthy();
             expect(rootScope.isAdmin).not.toBeTruthy();
             scope.showLogin();
-            expect(scope.forLogin).toBeTruthy();
-            expect(scope.forReset).not.toBeTruthy();
-        });
-
-        it ('Switch login to reset', function () {
-            expect(rootScope.currentUser).toEqual(null);
-            expect(rootScope.isAuthenticated).not.toBeTruthy();
-            expect(rootScope.isAdmin).not.toBeTruthy();
-            scope.switchLoginToReset();
-            expect(scope.forLogin).not.toBeTruthy();
-            expect(scope.forReset).toBeTruthy();
         });
 
         it ('Invite friend', function () {
@@ -135,5 +142,31 @@ describe('Runnable Controllers', function() {
             scope.inviteFriend();
         });
 
+        it ('Create user', function () {
+            var user = {
+                firstname : 'Test',
+                lastname : 'Creation',
+                address : 'Saint Germain en Laye',
+                email : 'test.creation@user.fr',
+                password : 'test',
+                password_confirmation : 'test'
+            };
+            scope.createUser(user);
+            $httpBackend.flush();
+        });
+
+        it ('Create user and confirm a journey', function () {
+            var user = {
+                firstname : 'Test',
+                lastname : 'Creation',
+                address : 'Saint Germain en Laye',
+                email : 'test.creation@user.fr',
+                password : 'test',
+                password_confirmation : 'test'
+            };
+            rootScope.draftId = 'JNY364573';
+            scope.createUser(user);
+            $httpBackend.flush();
+        });
     });
 });

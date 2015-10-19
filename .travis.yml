@@ -4,6 +4,8 @@ node_js:
  - "0.10"
 env:
  - NODE_ENV=travis
+services:
+ - redis-server
 before_install:
  - npm install -g grunt-cli
  - npm install -g bower

@@ -384,8 +384,6 @@ describe('Journey Service', function() {
 
         it('should create a journey', function () {
             spyOn(rootScope, '$broadcast').and.callThrough();
-            $httpBackend.whenPOST('/api/journey').respond('journeyCreated');
-
             var journey = {
                     address_start: 'Nice',
                     distance: '300 km',
@@ -406,6 +404,10 @@ describe('Journey Service', function() {
                 },
                 message = null;
 
+            $httpBackend.whenPOST('/api/journey').respond({ msg: 'journeyCreated',
+                                                            type: 'success',
+                                                            journey: journey});
+
             var promise = service.create(journey);
 
             promise.then(function(ret){
@@ -413,7 +415,82 @@ describe('Journey Service', function() {
             });
 
             $httpBackend.flush();
-            expect(message).toEqual('journeyCreated');
+            expect(message).toEqual(journey);
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should create a journey with user not auth', function () {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            var journey = {
+                    address_start: 'Nice',
+                    distance: '300 km',
+                    duration: '3 heures 10 minutes',
+                    journey_type: 'aller-retour',
+                    date_start_outward: '2015-06-25 00:00:00',
+                    time_start_outward: '09:00',
+                    nb_space_outward: 1,
+                    date_start_return: '2015-06-26 00:00:00',
+                    time_start_return: '11:00',
+                    nb_space_return: 1,
+                    car_type: 'citadine',
+                    amount: 26,
+                    is_canceled: true,
+                    updatedAt: '2015-02-02 05:02:11',
+                    RunId: 4,
+                    UserId: 2
+                },
+                message = null;
+
+            $httpBackend.whenPOST('/api/journey').respond({ msg: 'draftJourneyCreated',
+                                                            type: 'success',
+                                                            journeyKey: 'JNY564738'});
+
+            var promise = service.create(journey);
+
+            promise.then(function(ret){
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message).toEqual('JNY564738');
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should failed to create a journey at back-end side', function () {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            var journey = {
+                    address_start: 'Nice',
+                    distance: '300 km',
+                    duration: '3 heures 10 minutes',
+                    journey_type: 'aller-retour',
+                    date_start_outward: '2015-06-25 00:00:00',
+                    time_start_outward: '09:00',
+                    nb_space_outward: 1,
+                    date_start_return: '2015-06-26 00:00:00',
+                    time_start_return: '11:00',
+                    nb_space_return: 1,
+                    car_type: 'citadine',
+                    amount: 26,
+                    is_canceled: true,
+                    updatedAt: '2015-02-02 05:02:11',
+                    RunId: 4,
+                    UserId: 2
+                },
+                message = null;
+
+            $httpBackend.whenPOST('/api/journey').respond({ msg: 'journeyNotCreated',
+                                                            type: 'error'});
+
+            var promise = service.create(journey);
+
+            promise.then(function(ret){
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            expect(message).toContain('error');
             expect(rootScope.$broadcast).toHaveBeenCalled();
         });
 
@@ -447,6 +524,62 @@ describe('Journey Service', function() {
             }).catch(function(reason) {
                 message = reason;
             });
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
+
+        it('should confirm a journey', function () {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            var journeyKey = 'JNY567483',
+                message = null;
+
+            $httpBackend.whenPOST('/api/journey/confirm').respond({msg: 'draftJourneySaved', type: 'success'});
+
+            var promise = service.confirm(journeyKey);
+
+            promise.then(function(ret){
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message).toEqual('draftJourneySaved');
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should confirm a journey but failed in back-end side', function () {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            var journeyKey = 'JNY567483',
+                message = null;
+
+            $httpBackend.whenPOST('/api/journey/confirm').respond({msg: 'draftJourneyNotSaved', type: 'error'});
+
+            var promise = service.confirm(journeyKey);
+
+            promise.then(function(ret){
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            expect(message).toContain('error');
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should confirm a journey failed', function () {
+            var journeyKey = 'JNY567483',
+                message = null;
+
+            $httpBackend.whenPOST('/api/journey/confirm').respond(500);
+
+            var promise = service.confirm(journeyKey);
+
+            promise.then(function(ret){
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
             $httpBackend.flush();
             expect(message).toContain('error');
         });

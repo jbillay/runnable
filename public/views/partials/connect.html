@@ -1,0 +1,98 @@
+<div ng-include="'partials/nav'"></div>
+
+<div class="container-fluid body">
+    <div class="row-fluid login">
+        <div class="col-xs-12 col-sm-offset-2 col-md-offset-2 col-sm-4 col-md-4"
+             ng-controller="RunnableLoginController">
+            <h2>Se connecter</h2>
+            <form name="loginForm" ng-submit="login(credentials)" novalidate ng-if='forLogin'>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+                    <input class="form-control credentials_email" type="text" ng-model="credentials.email"
+                           placeholder="Email">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                    <input class="form-control credentials_password" type="password" ng-model="credentials.password"
+                           placeholder="Mot de passe">
+                </div>
+                <div class="modal-footer">
+                    <button id="connection" type="submit" class="btn btn-primary">Connection</button>
+                </div>
+            </form>
+            <form name="loginForm"
+                  ng-submit="reset(reset.email)" novalidate ng-if='forReset'>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+                    <input class="form-control" type="text" ng-model="reset.email"
+                           placeholder="Email">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Réinitialiser le mot de passe</button>
+                </div>
+            </form>
+            <div>
+                <a href="#" ng-if='forLogin' ng-click="toggleLogin()">Vous avez perdu votre mot de passe ?</a>
+                <a href="#" ng-if='forReset' ng-click="toggleLogin()">Essayer de se connecter ?</a>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-4 col-md-4">
+            <h2>Créer un compte</h2>
+            <form name="userCreateForm" id="userCreate" role="form" ng-model="userCreate" ng-submit="createUser(userCreate)">
+                <div class="row">
+                    <div class="col-xs-6 col-sm-6 col-md-6 inscription-form-left">
+                        <div class="form-group inscription-form-group">
+                            <input type="text" name="userCreate.firstname" id="userCreateFirstname" ng-model="userCreate.firstname"
+                                   class="form-control input-sm" placeholder="Prénom" tabindex="1">
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-6 col-md-6 inscription-form-right">
+                        <div class="form-group inscription-form-group">
+                            <input type="text" name="userCreate.lastname" id="userCreateLastname" ng-model="userCreate.lastname"
+                                   class="form-control input-sm" placeholder="Nom" tabindex="2">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="form-group inscription-form-group">
+                            <input type="text" name="user[address]" id="userCreateAddress" ng-model="userCreate.address"
+                                   typeahead="address for address in getLocation($viewValue)"
+                                   class="form-control input-sm" placeholder="Ville" tabindex="3">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="form-group inscription-form-group">
+                            <input type="email" name="user[email]" id="userCreateEmail" ng-model="userCreate.email"
+                                   class="form-control input-sm" placeholder="Email" tabindex="4">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6 col-sm-6 col-md-6 inscription-form-left">
+                        <div class="form-group inscription-form-group">
+                            <input type="password" name="user[password]" id="userCreatePassword" ng-model="userCreate.password"
+                                   class="form-control input-sm" placeholder="Mot de passe" tabindex="5">
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-6 col-md-6 inscription-form-right">
+                        <div class="form-group inscription-form-group">
+                            <input type="password" name="user[password_confirmation]" id="userCreatePassword_confirmation"
+                                   ng-model="userCreate.password_confirmation" class="form-control input-sm"
+                                   placeholder="Confirmation" tabindex="6">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-md-12 text-center">
+                        <input type="submit" value="Inscription" class="btn btn-primary btn-block btn-sm"
+                               tabindex="7">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div ng-include="'partials/footer'"></div>
