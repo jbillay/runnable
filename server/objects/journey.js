@@ -6,7 +6,11 @@ var Join = require('./join');
 var Inbox = require('./inbox');
 var q = require('q');
 var redis = require('redis');
-var Rclient = redis.createClient();
+if (process.env.REDIS_URL) {
+    var Rclient = redis.createClient(process.env.REDIS_URL);
+} else {
+    var Rclient = redis.createClient();
+}
 
 function journey() {
     'use strict';
