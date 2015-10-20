@@ -18,7 +18,7 @@ $(document).ready(function(){/* activate scrollspy menu */
             if (target.length) {
                 // div has been remove from the list
                 $('html,body').animate({
-                    scrollTop: target.offset().top - 50
+                    scrollTop: target.offset().top - 49
                 }, 1000);
                 return false;
             }
