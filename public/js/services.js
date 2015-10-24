@@ -397,6 +397,7 @@ angular.module('runnable.services', ['ngResource']).
 				}
 				$rootScope[object].directionsService = new google.maps.DirectionsService();
                 $rootScope[object].directionsRenderer = new google.maps.DirectionsRenderer();
+                $rootScope[object].marker = $rootScope[object].infoWindow = [];
 			},
 			resetDirection: function (object) {
 				if ($rootScope[object].directionsRenderer) {
@@ -420,7 +421,7 @@ angular.module('runnable.services', ['ngResource']).
 				$rootScope[object].geocoder.geocode( { 'address': address}, function(results, status) {
 					if (status === google.maps.GeocoderStatus.OK) {
 						$rootScope[object].map.setCenter(results[0].geometry.location);
-						if ($rootScope[object].marker) {
+						if ($rootScope[object].marker && $rootScope[object].marker.length) {
 							$rootScope[object].marker.setMap(null); }
 						$rootScope[object].marker = new google.maps.Marker({
 							map: $rootScope[object].map,
@@ -434,7 +435,6 @@ angular.module('runnable.services', ['ngResource']).
 				return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
 					params: {
 						address: val,
-						//components: 'country:FR',
 						sensor: false
 					}
 				}).then(function(response){
@@ -462,7 +462,29 @@ angular.module('runnable.services', ['ngResource']).
 						}
 					});
 				return deferred.promise;
-			}
+			},
+            addMaker: function (object, address, title, info) {
+                $rootScope[object].geocoder.geocode( { 'address': address}, function(results, status) {
+                    if (status === google.maps.GeocoderStatus.OK) {
+                        var infoWindowIdx = $rootScope[object].infoWindow.push(new google.maps.InfoWindow({
+                            content: info
+                        })) - 1;
+                        var markerIdx = $rootScope[object].marker.push(new google.maps.Marker({
+                                map: $rootScope[object].map,
+                                position: results[0].geometry.location,
+                                title: title
+                            })) - 1;
+                        $rootScope[object].marker[markerIdx].addListener('click', function() {
+                            $rootScope[object].infoWindow[infoWindowIdx].open($rootScope[object].map, $rootScope[object].marker[markerIdx]);
+                        });
+                    }
+                });
+            },
+            refresh: function (object) {
+                var center = $rootScope[object].map.getCenter();
+                google.maps.event.trigger($rootScope[object].map, 'resize');
+                $rootScope[object].map.setCenter(center);
+            }
 		};
     }).
     factory('Join', function ($q, $http, $rootScope) {

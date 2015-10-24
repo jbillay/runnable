@@ -23,10 +23,14 @@ describe('GoogleMapApi Service', function() {
                 this.setZoom = function (zoom) { return true; };
             },
             Marker: function (options) {
+                this.addListener = function  (event, done) { return event; };
             },
             DirectionsRenderer: function() {
                 this.setMap = function (location) { return location; };
                 this.setDirections = function (response) { return response; };
+            },
+            InfoWindow: function (object) {
+                this.open = function (map, marker) { return marker; };
             },
             DirectionsService: function () {
                 this.route = function (request, fn) {

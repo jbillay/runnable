@@ -1208,13 +1208,40 @@ angular.module('runnable.controllers', []).
 	}).
 	controller('RunnableJourneyController', function ($scope, $q, $timeout, Run, Journey, GoogleMapApi) {
         $scope.page = 'Journey';
-		var journeyPromise = Journey.getOpenList(),
+        $scope.displayModeIcon = 'fa-list';
+        $scope.displayMode = 'list';
+        var journeyPromise = Journey.getOpenList(),
             all = $q.all([journeyPromise]);
         all.then(function (res) {
 			$scope.journeyList = res[0];
 			$timeout( function() {
+                var journeysMap = 'map_canvas_journeys';
+                GoogleMapApi.initMap(journeysMap);
 				angular.forEach($scope.journeyList, function (journey) {
-					var value = 'map_canvas_' + journey.id;
+					var value = 'map_canvas_' + journey.id,
+                        title = 'Départ pour la course ' + journey.Run.name,
+                        info = '<div id="content"><div id="siteNotice"></div>'+
+                            '<a href="/journey-' + journey.id + '">' +
+                            '<h4 id="firstHeading" class="firstHeading">Départ pour la course ' +
+                            journey.Run.name + '</h4></a>' + '<div id="bodyContent">' +
+                            '<p><i class="fa fa-exchange"></i> ' + journey.journey_type +  '</p>';
+
+                    if (journey.date_start_outward) {
+                        var dateStart = new Date(journey.date_start_outward);
+                        info = info + '<p><i class="fa fa-calendar"></i> Aller : ' +
+                            dateStart.toLocaleDateString() + ' ' +
+                            journey.time_start_outward + '</p>';
+                    }
+                    if (journey.date_start_return) {
+                        var dateReturn = new Date(journey.date_start_return);
+                        info = info + '<p><i class="fa fa-calendar"></i> Retour : ' +
+                            dateReturn.toLocaleDateString() + ' ' +
+                            journey.time_start_return + '</p>';
+                    }
+                    info = info + '<p><i class="fa fa-arrows-h"></i> ' + journey.distance + '</p>' +
+                        '<p><i class="fa fa-history"></i> ' + journey.duration + '</p>' +
+                        '<p><i class="fa fa-car"></i> ' + journey.car_type + '</p>'+
+                        '<p><i class="fa fa-eur"></i> <strong>' + journey.amount + '</strong></p></div></div>';
 					if (journey.date_start_outward) {
 						journey.startDate = journey.date_start_outward;
 					} else {
@@ -1222,7 +1249,28 @@ angular.module('runnable.controllers', []).
 					}
 					GoogleMapApi.initMap(value);
 					GoogleMapApi.showDirection(value, journey.address_start, journey.Run.address_start);
+                    GoogleMapApi.addMaker(journeysMap, journey.address_start, title, info);
 				});
 			});
 		});
+        $scope.switchDisplayMode = function () {
+            if ($scope.displayModeIcon === 'fa-list') {
+                $scope.displayModeIcon = 'fa-globe';
+            } else {
+                $scope.displayModeIcon = 'fa-list';
+            }
+        };
+        $scope.switchDisplay = function () {
+            console.log('switch for one to another display');
+            if ($scope.displayMode === 'list') {
+                $scope.displayMode = 'map';
+                $scope.displayModeIcon = 'fa-list';
+                $timeout( function() {
+                    GoogleMapApi.refresh('map_canvas_journeys');
+                });
+            } else {
+                $scope.displayMode = 'list';
+                $scope.displayModeIcon = 'fa-globe';
+            }
+        };
 	});
