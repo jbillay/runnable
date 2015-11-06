@@ -15,7 +15,9 @@
 						<select ng-model="journey.Run" placeholder="Definir la course"
 								name="journey[run_id_selector]" id="run_id_selector" class="form-control"
 								tabindex="1" ng-change="selectDestination(journey.Run)"
-								ng-options="run as run.name for run in runList" required>
+								ng-options="run as run.name for run in runList" required data-container="body"
+                                data-toggle="tooltip" data-placement="top"
+                                title="ATTENTION ! La course doit exister sur notre site dans le cas contraire faites nous la demande et nous crérons la course pour vous !">
 								<option value="">-- Choisir une course --</option>
 						</select>
 						<div class="help-block text-danger"

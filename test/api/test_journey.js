@@ -101,6 +101,16 @@ describe('Test of journey object', function () {
                         q.all(promises).then(function() {
                             callback(null);
                         });
+                    },
+                    function fn8(callback) {
+                        var fixtures = require('./fixtures/partner.json');
+                        var promises = [];
+                        fixtures.forEach(function (fix) {
+                            promises.push(loadData(fix));
+                        });
+                        q.all(promises).then(function() {
+                            callback(null);
+                        });
                     }
                 ], function (err, result) {
                     done();
@@ -280,87 +290,132 @@ describe('Test of journey object', function () {
         });
     });
 
-    it('Create a new journey', function (done) {
-        var journey = new Journey(),
-            newJourney = {
-                address_start: 'Paris',
-                distance: '25 km',
-                duration: '20 minutes',
-                journey_type: 'aller-retour',
-                date_start_outward: '2016-12-12 00:00:00',
-                time_start_outward: '09:00',
-                nb_space_outward: 2,
-                date_start_return: '2016-12-13 00:00:00',
-                time_start_return: '09:00',
-                nb_space_return: 2,
-                car_type: 'citadine',
-                amount: 5,
-                UserId: 1,
-                Run: {
-                    id: 4
-                }
-            },
-            user = {
-                'id': 1
-            };
-        journey.setJourney(newJourney);
-        var tmp = journey.get();
-        assert.equal(tmp.distance, '25 km');
-        assert.equal(tmp.journey_type, 'aller-retour');
-        assert.equal(tmp.car_type, 'citadine');
-        assert.equal(tmp.amount, 5);
-        journey.save(tmp, user, function(err, newJourney) {
-            if (err) return done(err);
-            assert.equal(newJourney.id, 6);
-            assert.equal(newJourney.distance, '25 km');
-            assert.equal(newJourney.journey_type, 'aller-retour');
-            assert.equal(newJourney.car_type, 'citadine');
-            assert.equal(newJourney.amount, 5);
-            journey.getList(1, function (err, journeyList) {
+    describe('Creation of Journey', function () {
+        it('Create a new journey', function (done) {
+            var journey = new Journey(),
+                newJourney = {
+                    address_start: 'Paris',
+                    distance: '25 km',
+                    duration: '20 minutes',
+                    journey_type: 'aller-retour',
+                    date_start_outward: '2016-12-12 00:00:00',
+                    time_start_outward: '09:00',
+                    nb_space_outward: 2,
+                    date_start_return: '2016-12-13 00:00:00',
+                    time_start_return: '09:00',
+                    nb_space_return: 2,
+                    car_type: 'citadine',
+                    amount: 5,
+                    UserId: 1,
+                    Run: {
+                        id: 4
+                    }
+                },
+                user = {
+                    'id': 1
+                };
+            journey.setJourney(newJourney);
+            var tmp = journey.get();
+            assert.equal(tmp.distance, '25 km');
+            assert.equal(tmp.journey_type, 'aller-retour');
+            assert.equal(tmp.car_type, 'citadine');
+            assert.equal(tmp.amount, 5);
+            journey.save(tmp, user, function(err, newJourney) {
                 if (err) return done(err);
-                assert.equal(journeyList.length, 6);
-                return done();
-            });
-        });
-    });
-
-    it('Draft a new journey and save it', function (done) {
-        var journey = new Journey(),
-            newJourney = {
-                address_start: 'Paris',
-                distance: '25 km',
-                duration: '20 minutes',
-                journey_type: 'aller-retour',
-                date_start_outward: '2016-12-12 00:00:00',
-                time_start_outward: '09:00',
-                nb_space_outward: 2,
-                date_start_return: '2016-12-13 00:00:00',
-                time_start_return: '09:00',
-                nb_space_return: 2,
-                car_type: 'citadine',
-                amount: 5,
-                UserId: 1,
-                Run: {
-                    id: 4
-                }
-            },
-            user = {
-                'id': 1
-            };
-        journey.draft(newJourney, function(err, journeyKey) {
-            if (err) return done(err);
-            // TODO: Mock journeyKey generated as redis id
-            // assert.equal(journeyKey, 'JNY425367');
-            journey.saveDraft(journeyKey, user.id, function (err, createdJourney) {
-                if (err) return done(err);
-                assert.equal(createdJourney.distance, '25 km');
-                assert.equal(createdJourney.journey_type, 'aller-retour');
-                assert.equal(createdJourney.car_type, 'citadine');
-                assert.equal(createdJourney.amount, 5);
+                assert.equal(newJourney.id, 6);
+                assert.equal(newJourney.distance, '25 km');
+                assert.equal(newJourney.journey_type, 'aller-retour');
+                assert.equal(newJourney.car_type, 'citadine');
+                assert.equal(newJourney.amount, 5);
+                assert.isUndefined(newJourney.PartnerId);
                 journey.getList(1, function (err, journeyList) {
                     if (err) return done(err);
                     assert.equal(journeyList.length, 6);
                     return done();
+                });
+            });
+        });
+
+        it('Create a new journey for a partner', function (done) {
+            var journey = new Journey(),
+                newJourney = {
+                    address_start: 'Paris',
+                    distance: '25 km',
+                    duration: '20 minutes',
+                    journey_type: 'aller-retour',
+                    date_start_outward: '2016-12-12 00:00:00',
+                    time_start_outward: '09:00',
+                    nb_space_outward: 2,
+                    date_start_return: '2016-12-13 00:00:00',
+                    time_start_return: '09:00',
+                    nb_space_return: 2,
+                    car_type: 'citadine',
+                    amount: 5,
+                    token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwNDgsImV4cCI6MTIwNTA5NjA2NjF9.-vmI9gHnCFX30N2oVhQLiADX-Uz2XHzrHjWjJpvSERo',
+                    UserId: 1,
+                    Run: {
+                        id: 4
+                    }
+                },
+                user = {
+                    'id': 1
+                };
+            journey.save(newJourney, user, function(err, createdJourney) {
+                if (err) return done(err);
+                assert.equal(createdJourney.id, 6);
+                assert.equal(createdJourney.distance, '25 km');
+                assert.equal(createdJourney.journey_type, 'aller-retour');
+                assert.equal(createdJourney.car_type, 'citadine');
+                assert.equal(createdJourney.amount, 5);
+                assert.equal(createdJourney.PartnerId, 1);
+                journey.getList(1, function (err, journeyList) {
+                    if (err) return done(err);
+                    assert.equal(journeyList.length, 6);
+                    return done();
+                });
+            });
+        });
+
+        it('Draft a new journey and save it', function (done) {
+            var journey = new Journey(),
+                newJourney = {
+                    address_start: 'Paris',
+                    distance: '25 km',
+                    duration: '20 minutes',
+                    journey_type: 'aller-retour',
+                    date_start_outward: '2016-12-12 00:00:00',
+                    time_start_outward: '09:00',
+                    nb_space_outward: 2,
+                    date_start_return: '2016-12-13 00:00:00',
+                    time_start_return: '09:00',
+                    nb_space_return: 2,
+                    car_type: 'citadine',
+                    amount: 5,
+                    token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwNjcsImV4cCI6MTIwNTA5NDE5NzR9.fikQ6L2eYUBujEeV-OYMFfX_pER5eC2Z_nQJ0YVyb9w',
+                    UserId: 1,
+                    Run: {
+                        id: 4
+                    }
+                },
+                user = {
+                    'id': 1
+                };
+            journey.draft(newJourney, function(err, journeyKey) {
+                if (err) return done(err);
+                // TODO: Mock journeyKey generated as redis id
+                // assert.equal(journeyKey, 'JNY425367');
+                journey.saveDraft(journeyKey, user.id, function (err, createdJourney) {
+                    if (err) return done(err);
+                    assert.equal(createdJourney.distance, '25 km');
+                    assert.equal(createdJourney.journey_type, 'aller-retour');
+                    assert.equal(createdJourney.car_type, 'citadine');
+                    assert.equal(createdJourney.amount, 5);
+                    assert.equal(createdJourney.PartnerId, 2);
+                    journey.getList(1, function (err, journeyList) {
+                        if (err) return done(err);
+                        assert.equal(journeyList.length, 6);
+                        return done();
+                    });
                 });
             });
         });
@@ -401,59 +456,87 @@ describe('Test of journey object', function () {
         });
     });
 
-    it('Update an existing journey', function (done) {
-        var journey = new Journey(),
-            updateJourney = {
-                id: 2,
-                address_start: 'Paris, France',
-                distance: '654 km',
-                duration: '5 heures 14 minute',
-                journey_type: 'aller-retour',
-                date_start_outward: '2015-05-02 00:00:00',
-                time_start_outward: '09:00',
-                nb_space_outward: 1,
-                date_start_return: '2015-06-02 00:00:00',
-                time_start_return: '03:00',
-                nb_space_return: 5,
-                car_type: 'break',
-                amount: 56,
-                updatedAt: '2014-12-22 13:41:38',
-                UserId: 2,
-                Run: {
-                    id: 3
-                }
-            };
-        journey.setJourney(updateJourney);
-        var tmp = journey.get();
-        assert.equal(tmp.distance, '654 km');
-        assert.equal(tmp.journey_type, 'aller-retour');
-        assert.equal(tmp.car_type, 'break');
-        assert.equal(tmp.amount, 56);
-        journey.getById(2, function (err, selectJourney) {
-            if (err) return done(err);
-            assert.equal(selectJourney.distance, '754 km');
-            assert.equal(selectJourney.journey_type, 'aller');
-            assert.equal(selectJourney.car_type, 'citadine');
-            assert.equal(selectJourney.amount, 32);
-            assert.equal(selectJourney.RunId, 2);
-            assert.equal(selectJourney.UserId, 1);
-            journey.save(tmp, 2, function(err, updatedJourney) {
+    describe('Update Journey', function () {
+        it('Update an existing journey', function (done) {
+            var journey = new Journey(),
+                updateJourney = {
+                    id: 2,
+                    address_start: 'Paris, France',
+                    distance: '654 km',
+                    duration: '5 heures 14 minute',
+                    journey_type: 'aller-retour',
+                    date_start_outward: '2015-05-02 00:00:00',
+                    time_start_outward: '09:00',
+                    nb_space_outward: 1,
+                    date_start_return: '2015-06-02 00:00:00',
+                    time_start_return: '03:00',
+                    nb_space_return: 5,
+                    car_type: 'break',
+                    amount: 56,
+                    updatedAt: '2014-12-22 13:41:38',
+                    UserId: 2,
+                    Run: {
+                        id: 3
+                    }
+                };
+            journey.setJourney(updateJourney);
+            var tmp = journey.get();
+            assert.equal(tmp.distance, '654 km');
+            assert.equal(tmp.journey_type, 'aller-retour');
+            assert.equal(tmp.car_type, 'break');
+            assert.equal(tmp.amount, 56);
+            journey.getById(2, function (err, selectJourney) {
                 if (err) return done(err);
-                assert.equal(updatedJourney.id, 2);
-                assert.equal(updatedJourney.distance, '654 km');
-                assert.equal(updatedJourney.journey_type, 'aller-retour');
-                assert.equal(updatedJourney.car_type, 'break');
-                assert.equal(updatedJourney.amount, 56);
-                assert.equal(updatedJourney.RunId, 3);
-                assert.equal(updatedJourney.UserId, 2);
-                journey.getById(2, function (err, selectedJourney) {
+                assert.equal(selectJourney.distance, '754 km');
+                assert.equal(selectJourney.journey_type, 'aller');
+                assert.equal(selectJourney.car_type, 'citadine');
+                assert.equal(selectJourney.amount, 32);
+                assert.equal(selectJourney.RunId, 2);
+                assert.equal(selectJourney.UserId, 1);
+                journey.save(tmp, 2, function(err, updatedJourney) {
                     if (err) return done(err);
-                    assert.equal(selectedJourney.distance, '654 km');
-                    assert.equal(selectedJourney.journey_type, 'aller-retour');
-                    assert.equal(selectedJourney.car_type, 'break');
-                    assert.equal(selectedJourney.amount, 56);
-                    assert.equal(selectedJourney.RunId, 3);
-                    assert.equal(selectedJourney.UserId, 2);
+                    assert.equal(updatedJourney.id, 2);
+                    assert.equal(updatedJourney.distance, '654 km');
+                    assert.equal(updatedJourney.journey_type, 'aller-retour');
+                    assert.equal(updatedJourney.car_type, 'break');
+                    assert.equal(updatedJourney.amount, 56);
+                    assert.equal(updatedJourney.RunId, 3);
+                    assert.equal(updatedJourney.UserId, 2);
+                    journey.getById(2, function (err, selectedJourney) {
+                        if (err) return done(err);
+                        assert.equal(selectedJourney.distance, '654 km');
+                        assert.equal(selectedJourney.journey_type, 'aller-retour');
+                        assert.equal(selectedJourney.car_type, 'break');
+                        assert.equal(selectedJourney.amount, 56);
+                        assert.equal(selectedJourney.RunId, 3);
+                        assert.equal(selectedJourney.UserId, 2);
+                        return done();
+                    });
+                });
+            });
+        });
+
+        it('Add a partner to a journey', function (done) {
+            var journey = new Journey();
+
+            journey.getById(2, function (err, selectJourney) {
+                if (err) return done(err);
+                assert.equal(selectJourney.distance, '754 km');
+                assert.equal(selectJourney.journey_type, 'aller');
+                assert.equal(selectJourney.car_type, 'citadine');
+                assert.equal(selectJourney.amount, 32);
+                assert.equal(selectJourney.RunId, 2);
+                assert.equal(selectJourney.UserId, 1);
+                selectJourney.token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwNjcsImV4cCI6MTIwNTA5NDE5NzR9.fikQ6L2eYUBujEeV-OYMFfX_pER5eC2Z_nQJ0YVyb9w';
+                journey.save(selectJourney, selectJourney.UserId, function (err, updatedJourney) {
+                    if (err) return done(err);
+                    assert.equal(updatedJourney.distance, '754 km');
+                    assert.equal(updatedJourney.journey_type, 'aller');
+                    assert.equal(updatedJourney.car_type, 'citadine');
+                    assert.equal(updatedJourney.amount, 32);
+                    assert.equal(updatedJourney.RunId, 2);
+                    assert.equal(updatedJourney.UserId, 1);
+                    assert.equal(updatedJourney.PartnerId, 2);
                     return done();
                 });
             });

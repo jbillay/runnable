@@ -18,12 +18,13 @@ module.exports = function(sequelize, DataTypes) {
 		salt: 			{ type: DataTypes.STRING, allowNull: false },
 		itra:			DataTypes.STRING,
 		isActive:		{ type: DataTypes.BOOLEAN, defaultValue: false },
-		role:			{ type: DataTypes.ENUM, values: ['user', 'editor', 'admin'] },
-		picture:		DataTypes.STRING,
+		role:			{ type: DataTypes.ENUM, values: ['user', 'editor', 'partner', 'admin'] },
+		picture:		DataTypes.STRING
 	}, {
 		classMethods: {
 			associate: function(models) {
                 /*jshint -W030 */
+                User.belongsTo(models.Partner, {constraints: false}),
 				User.hasMany(models.Run),
 				User.hasMany(models.Journey),
 				User.hasMany(models.Join),

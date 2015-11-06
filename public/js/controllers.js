@@ -779,7 +779,8 @@ angular.module('runnable.controllers', []).
 				GoogleMapApi.initMap('map_canvas');
                 $('#clockpicker_outward').clockpicker();
                 $('#clockpicker_return').clockpicker();
-			});
+                $('[data-toggle="tooltip"]').tooltip();
+            });
             if ($routeParams.runId) {
                 $scope.journey.Run = $scope.runList[_.findIndex($scope.runList, 'id', parseInt($routeParams.runId))];
                 $scope.selectDestination($scope.journey.Run);

@@ -4,8 +4,10 @@ var models = require('../models');
 var _ = require('lodash');
 var Join = require('./join');
 var Inbox = require('./inbox');
+var Partner = require('./partner');
 var q = require('q');
 var redis = require('redis');
+
 if (process.env.REDIS_URL) {
     var Rclient = redis.createClient(process.env.REDIS_URL);
 } else {
@@ -94,39 +96,57 @@ journey.prototype.saveDraft = function (journeyKey, userId, done) {
 
 journey.prototype.save = function (journey, userId, done) {
     'use strict';
-    var that = this;
+    var that = this,
+        partner = new Partner();
     models.User.find({where: {id: userId}})
         .then(function (user) {
             that.setJourney(journey);
             models.Run.find({where: {id: journey.Run.id}})
                 .then(function (run) {
-                    models.Journey.findOrCreate({where: {id: journey.id}, defaults: that})
-                        .spread(function (journey, created) {
-                            if (created) {
-                                var newJourney = _.assign(journey, that);
-                                newJourney.setRun(run)
-                                    .then(function () {
-                                        newJourney.setUser(user)
-                                            .then(function(newJourney) {
-                                                done(null, newJourney);
-                                            });
-                                        });
-                            } else {
-                                var updateJourney = _.assign(journey, that);
-                                updateJourney.save()
-                                    .then(function (updatedJourney) {
-                                        updatedJourney.setRun(run)
+                    partner.getByToken(journey.token)
+                        .then(function (selectedPartner) {
+                            models.Journey.findOrCreate({where: {id: journey.id}, defaults: that})
+                                .spread(function (journey, created) {
+                                    if (created) {
+                                        var newJourney = _.assign(journey, that);
+                                        newJourney.setRun(run)
                                             .then(function () {
-                                                updatedJourney.setUser(user)
-                                                    .then(function(updatedJourney) {
-                                                        done(null, updatedJourney);
+                                                newJourney.setUser(user)
+                                                    .then(function(newJourney) {
+                                                        if (selectedPartner) {
+                                                            newJourney.setPartner(selectedPartner)
+                                                                .then(function (newJourney) {
+                                                                    done(null, newJourney);
+                                                                });
+                                                        } else {
+                                                            done(null, newJourney);
+                                                        }
                                                     });
                                             });
-                                    });
-                            }
-                        })
-                        .catch(function (err) {
-                            done(err, null);
+                                    } else {
+                                        var updateJourney = _.assign(journey, that);
+                                        updateJourney.save()
+                                            .then(function (updatedJourney) {
+                                                updatedJourney.setRun(run)
+                                                    .then(function () {
+                                                        updatedJourney.setUser(user)
+                                                            .then(function(updatedJourney) {
+                                                                if (selectedPartner) {
+                                                                    updatedJourney.setPartner(selectedPartner)
+                                                                        .then(function (updatedJourney) {
+                                                                            done(null, updatedJourney);
+                                                                        });
+                                                                } else {
+                                                                    done(null, updatedJourney);
+                                                                }
+                                                            });
+                                                    });
+                                            });
+                                    }
+                                })
+                                .catch(function (err) {
+                                    done(err, null);
+                                });
                         });
                 });
         });

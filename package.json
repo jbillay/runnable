@@ -58,7 +58,8 @@
     "underscore": "~1.6.0",
     "slug": "~0.9.1",
     "redis": "~2.1.0",
-    "connect-redis": "~3.0.0"
+    "connect-redis": "~3.0.0",
+    "jsonwebtoken": "~5.4.0"
   },
   "devDependencies": {
     "grunt-cli": "~0.1.13",

@@ -26,6 +26,7 @@ module.exports = function(sequelize, DataTypes) {
                 /*jshint -W030 */
 				Journey.belongsTo(models.Run),
 				Journey.belongsTo(models.User),
+                Journey.belongsTo(models.Partner, {constraints: false}),
 				Journey.hasMany(models.Join);
                 /*jshint +W030 */
 			}

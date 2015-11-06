@@ -120,6 +120,16 @@ describe('Test of journey API', function () {
                             q.all(promises).then(function () {
                                 callback(null);
                             });
+                        },
+                        function (callback) {
+                            var fixtures = require('./fixtures/partner.json');
+                            var promises = [];
+                            fixtures.forEach(function (fix) {
+                                promises.push(loadData(fix));
+                            });
+                            q.all(promises).then(function () {
+                                callback(null);
+                            });
                         }
                     ], function (err, result) {
                         done();
@@ -351,6 +361,39 @@ describe('Test of journey API', function () {
                     return done();
                 });
         });
+
+        it('should create a journey with a draft for a partner', function (done) {
+            var journey = {
+                id: 5,
+                address_start: 'Paris',
+                distance: '25 km',
+                duration: '20 minutes',
+                journey_type: 'aller-retour',
+                date_start_outward: '2016-12-12 00:00:00',
+                time_start_outward: '09:00',
+                nb_space_outward: 2,
+                date_start_return: '2016-12-13 00:00:00',
+                time_start_return: '09:00',
+                nb_space_return: 2,
+                car_type: 'citadine',
+                amount: 5,
+                token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwODgsImV4cCI6MTIwNTA5MjA1MTh9.w17cboqKDtjpsJzeu21C5OEwiei1_Ay2d_BO58mpFcs',
+                UserId: 1,
+                Run: {
+                    id: 4
+                }
+            };
+            agent
+                .post('http://localhost:' + settings.port + '/api/journey')
+                .send({journey: journey})
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    // TODO: mock redis key generated
+                    // assert.equal(res.body.journeyKey, 'JNK82773');
+                    assert.equal(res.body.msg, 'draftJourneyCreated');
+                    return done();
+                });
+        });
     });
 
     describe('POST /api/journey/confirm', function () {
@@ -373,6 +416,41 @@ describe('Test of journey API', function () {
                 nb_space_return: 2,
                 car_type: 'citadine',
                 amount: 5,
+                UserId: 1,
+                Run: {
+                    id: 4
+                }
+            };
+            var journeyString = JSON.stringify(journey),
+                journeyKey = 'JNY' + Math.floor(Math.random() * 100000);
+            Rclient.set(journeyKey, journeyString, redis.print);
+
+            agent
+                .post('http://localhost:' + settings.port + '/api/journey/confirm')
+                .send({key: journeyKey})
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.msg, 'draftJourneySaved');
+                    return done();
+                });
+        });
+
+        it('should confirm a draft journey to a partner', function (done) {
+            var journey = {
+                id: 5,
+                address_start: 'Paris',
+                distance: '25 km',
+                duration: '20 minutes',
+                journey_type: 'aller-retour',
+                date_start_outward: '2016-12-12 00:00:00',
+                time_start_outward: '09:00',
+                nb_space_outward: 2,
+                date_start_return: '2016-12-13 00:00:00',
+                time_start_return: '09:00',
+                nb_space_return: 2,
+                car_type: 'citadine',
+                amount: 5,
+                token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwODgsImV4cCI6MTIwNTA5MjA1MTh9.w17cboqKDtjpsJzeu21C5OEwiei1_Ay2d_BO58mpFcs',
                 UserId: 1,
                 Run: {
                     id: 4
