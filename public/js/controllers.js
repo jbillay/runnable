@@ -780,6 +780,7 @@ angular.module('runnable.controllers', []).
                 $('#clockpicker_outward').clockpicker();
                 $('#clockpicker_return').clockpicker();
                 $('[data-toggle="tooltip"]').tooltip();
+                $(document).scrollTop(0);
             });
             if ($routeParams.runId) {
                 $scope.journey.Run = $scope.runList[_.findIndex($scope.runList, 'id', parseInt($routeParams.runId))];
@@ -914,6 +915,7 @@ angular.module('runnable.controllers', []).
                     join.Journey.date_max = new Date(dso[0], dso[1]-1, dso[2], dso[3], dso[4], dso[5]).getTime();
                 }
 			});
+            $(document).scrollTop(0);
 		});
         $scope.showJourneyValidationModal = function (join) {
             $scope.vadidationJoin = join;
