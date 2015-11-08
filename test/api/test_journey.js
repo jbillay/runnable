@@ -236,9 +236,11 @@ describe('Test of journey object', function () {
         journey.getNextList(3, function (err, journeyList) {
             if (err) return done(err);
             assert.equal(journeyList.length, 2);
+            assert.equal(journeyList[0].Run.name, 'Marathon du médoc');
             journey.getNextList(2, function (err, journeyList) {
                 if (err) return done(err);
                 assert.equal(journeyList.length, 2);
+                assert.equal(journeyList[1].Run.name, 'Corrida de Saint Germain en Laye');
                 journey.getNextList('dmkme', function (err, journeyList) {
                     assert.isNotNull(err);
                     return done();
@@ -252,6 +254,7 @@ describe('Test of journey object', function () {
         journey.getListForRun(4, function (err, journeyList) {
             if (err) return done(err);
             assert.equal(journeyList.length, 1);
+            assert.equal(journeyList[0].Run.name, 'Corrida de Saint Germain en Laye');
             journey.getListForRun(2, function (err, journeyList) {
                 if (err) return done(err);
                 assert.equal(journeyList.length, 0);
@@ -268,6 +271,7 @@ describe('Test of journey object', function () {
         journey.getList(0, function (err, journeyList) {
             if (err) return done(err);
             assert.equal(journeyList.length, 4);
+            assert.equal(journeyList[1].Run.name, 'Les templiers');
             return done();
         });
     });
@@ -277,6 +281,7 @@ describe('Test of journey object', function () {
         journey.getList(1, function (err, journeyList) {
             if (err) return done(err);
             assert.equal(journeyList.length, 5);
+            assert.equal(journeyList[1].Run.name, 'Les templiers');
             return done();
         });
     });
@@ -286,6 +291,7 @@ describe('Test of journey object', function () {
         journey.getOpenList(function (err, journeyList) {
             if (err) return done(err);
             assert.equal(journeyList.length, 2);
+            assert.equal(journeyList[1].Run.name, 'Corrida de Saint Germain en Laye');
             return done();
         });
     });
@@ -446,6 +452,7 @@ describe('Test of journey object', function () {
                 journey.getByUser(1, function (err, journeyList) {
                     if (err) return done(err);
                     assert.equal(journeyList.length, 2);
+                    assert.equal(journeyList[0].Run.name, 'Les templiers');
                     join.getByJourney(1, function (err, joinList) {
                         if (err) return done(err);
                         assert.equal(joinList.length, 0);
