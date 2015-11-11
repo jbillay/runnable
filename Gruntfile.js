@@ -6,7 +6,8 @@ module.exports = function(grunt) {
         serverJS: ['Gruntfile.js', 'server.js', 'config/*.js', 'server/**/*.js', 'test/**/*.js'],
         clientViews: ['public/views/**/*.html'],
         clientJS: ['public/js/*.js'],
-        clientCSS: ['public/css/*.css']
+        clientCSS: ['public/css/*.css'],
+        clientLESS: ['public/less/*.less']
     };
 
     // Project Configuration
@@ -28,30 +29,19 @@ module.exports = function(grunt) {
                 src: watchFiles.clientCSS
             }
         },
-        concat: {
-            js: {
-                src: [watchFiles.clientJS],
-                dest: 'dist/pubic/js/<%= pkg.name %>-<%= pkg.version %>.js'
-            },
-            css: {
-                src: [watchFiles.clientCSS],
-                dest: 'dist/pubic/css/<%= pkg.name %>-<%= pkg.version %>.css'
-            }
-        },
-        uglify: {
-            production: {
+        less: {
+            compile: {
                 options: {
-                    mangle: false
+                    compress: true,
+                    yuicompress: true,
+                    optimization: 2
                 },
                 files: {
-                    'dist/pubic/js/<%= pkg.name %>-<%= pkg.version %>.min.js': 'dist/pubic/js/<%= pkg.name %>-<%= pkg.version %>.js'
-                }
-            }
-        },
-        cssmin: {
-            combine: {
-                files: {
-                    'dist/pubic/css/<%= pkg.name %>-<%= pkg.version %>.min.css': 'dist/pubic/css/<%= pkg.name %>-<%= pkg.version %>.css'
+                    'public/css/main.css': 'public/less/main.less',
+                    'public/css/desktop.css': 'public/less/desktop.less',
+                    'public/css/large.css': 'public/less/large.less',
+                    'public/css/phone.css': 'public/less/phone.less',
+                    'public/css/tablet.css': 'public/less/tablet.less'
                 }
             }
         },
@@ -85,7 +75,7 @@ module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt);
 
     // Lint task(s).
-    grunt.registerTask('lint', ['jshint', 'csslint']);
+    grunt.registerTask('lint', ['less:compile', 'jshint', 'csslint']);
 
     // Node Test task.
     grunt.registerTask('node-unit-test', ['env:test', 'mocha_istanbul:coverage']);
@@ -101,7 +91,4 @@ module.exports = function(grunt) {
 
     // Test task.
     grunt.registerTask('travis', ['lint', 'test-travis']);
-
-    // Test task.
-    grunt.registerTask('package', ['concat:js', 'concat:css', 'uglify', 'cssmin']);
 };
