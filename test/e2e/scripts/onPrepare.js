@@ -1,4 +1,3 @@
-/*
 var q = require('q');
 var async = require('async');
 var models = require('../../../server/models');
@@ -102,4 +101,3 @@ module.exports = q.fcall(function() {
             });
     }
 });
-*/

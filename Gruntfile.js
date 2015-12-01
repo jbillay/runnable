@@ -53,6 +53,25 @@ module.exports = function(grunt) {
                 NODE_ENV: 'travis'
             }
         },
+        protractor_webdriver: {
+            alive: {
+                options: {
+                    path: '/usr/local/bin/',
+                    keepAlive: true
+                }
+            }
+        },
+        protractor: {
+            options: {
+                configFile: "test/protractor-conf.js", // Default config file
+                keepAlive: false, // If false, the grunt process stops when the test fails.
+                noColor: false, // If true, protractor will not use colors in its output.
+                args: {
+                    // Arguments passed to the command
+                }
+            },
+            all: {}
+        },
         mocha_istanbul: {
             coverage: {
                 src: 'test/api', // a folder works nicely
@@ -82,6 +101,9 @@ module.exports = function(grunt) {
 
     // Angular Test task.
     grunt.registerTask('angular-unit-test', ['env:test', 'karma:unit']);
+
+    // e2e Test task.
+    grunt.registerTask('e2e', ['env:test', 'protractor_webdriver', 'protractor']);
 
     // Test task(s).
     grunt.registerTask('test', ['lint', 'node-unit-test', 'angular-unit-test']);

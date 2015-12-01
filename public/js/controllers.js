@@ -736,7 +736,7 @@ angular.module('runnable.controllers', []).
 					createdAt: Date.now()
 				});
 			Discussion.addPublicMessage(text, $scope.journeyId);
-            var values = {runName: $scope.selectedJourney.Run.name,
+            var values = {runName: $scope.journey.Run.name,
                     userFirstname: Session.userFirstname,
                     userLastname: Session.userLastname,
                     text: text},
