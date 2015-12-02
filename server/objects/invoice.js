@@ -170,8 +170,6 @@ invoice.prototype.updateStatus = function (id, status, done) {
 
 invoice.prototype.updatePaymentStatus = function (invoiceRef, amount, status, transactionId, done) {
     'use strict';
-    var inbox = new Inbox();
-
     console.log('Update invoice ' + invoiceRef + ' to status ' + status);
     models.Invoice.find({ where: {ref: invoiceRef}, include: [{
                             model: models.Journey,
@@ -184,11 +182,7 @@ invoice.prototype.updatePaymentStatus = function (invoiceRef, amount, status, tr
                 invoice.transaction = transactionId;
                 invoice.save()
                     .then(function (newInvoice) {
-                        var template = 'JoinValidated',
-                            values = {runName: newInvoice.Journey.Run.name};
-                        inbox.add(template, values, newInvoice.UserId, function (err, message) {
-                            done(null, newInvoice);
-                        });
+                        done(null, newInvoice);
                     })
                     .catch(function (err) {
                         done(new Error(err), null);

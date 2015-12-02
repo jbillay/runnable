@@ -549,4 +549,23 @@ describe('Test of journey object', function () {
             });
         });
     });
+
+    it('Notify user and driver for a join in journey', function (done) {
+        var journey = new Journey(),
+            invoiceRef = 'MRT20150217H36EG';
+        models.Invoice.find({ where: {ref: invoiceRef}, include: [{
+                model: models.Journey,
+                as: 'Journey',
+                include: [models.Run]
+            }]})
+            .then(function (invoice) {
+                journey.notifyJoin(invoice, function (err, msg) {
+                    assert.equal(msg, 'done');
+                    return done();
+                });
+            })
+            .catch(function (err) {
+                return done(err);
+            });
+    });
 });

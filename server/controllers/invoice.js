@@ -81,25 +81,30 @@ exports.getByDriver = function (req, res) {
  ipn_track_id: 'b959e24b7e596' }
 
  */
-exports.confirm = function (req, res) {
+exports.confirm = function (req, res, next) {
     'use strict';
     res.send(200);
     ipn.verify(req.body, {'allow_sandbox': true}, function callback(err, msg) {
         if (err) {
-            console.log('IPN Error : ' + err);
+            console.log(new Error('IPN Error : ' + err));
         } else {
             var amount = parseFloat(req.body.mc_gross),
                 status = req.body.payment_status.toLowerCase(),
                 invoice = new Invoice();
                 invoice.updatePaymentStatus(req.body.invoice, amount, status, req.body.txn_id,
-                    function (err, res) {
+                    function (err, invoice) {
                         if (err) {
-                            console.log('IPN Error: ' + err);
+                            console.log(new Error('IPN Error: ' + err));
                         } else {
                             console.log('IPN VERIFIED');
+                            if (status === 'completed') {
+                                req.invoice = invoice;
+                                next();
+                            } else {
+                                next('route');
+                            }
                         }
                         err = null;
-                        res = null;
                     });
         }
     });

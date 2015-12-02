@@ -402,4 +402,17 @@ journey.prototype.cancel = function (id, done) {
         });
 };
 
+journey.prototype.notifyJoin = function (invoice, done) {
+    'use strict';
+    var inbox = new Inbox(),
+        templateUser = 'UserJoinValidated',
+        templateDriver = 'DriverJoinValidated',
+        values = {
+            runName: invoice.Journey.Run.name,
+            journeyId: invoice.Journey.id };
+    inbox.add(templateUser, values, invoice.UserId);
+    inbox.add(templateDriver, values, invoice.Journey.UserId);
+    done(null, 'done');
+};
+
 module.exports = journey;

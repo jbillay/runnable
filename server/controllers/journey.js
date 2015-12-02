@@ -227,3 +227,16 @@ exports.cancel = function (req, res) {
     id = null;
     journey = null;
 };
+
+exports.notifyJoin = function (req, res) {
+    'use strict';
+    var journey = new Journey();
+
+    journey.notifyJoin(req.invoice, function (err, res) {
+        if (err) {
+            console.log(new Error('User and Driver not notified'));
+        } else  {
+            console.log('User and Driver notified');
+        }
+    });
+};

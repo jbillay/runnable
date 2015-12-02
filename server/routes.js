@@ -107,7 +107,7 @@ module.exports = function (app, passport, auth) {
 	app.post('/api/user/bankaccount', auth.requiresLogin, controllers.bank_account.save);
 	app.get('/api/user/bankaccount', auth.requiresLogin, controllers.bank_account.get);
 
-    app.post('/api/paypal/ipn', controllers.invoice.confirm);
+    app.post('/api/paypal/ipn', controllers.invoice.confirm, controllers.journey.notifyJoin);
 	
     app.get('/partials/:name', controllers.root.partials);
 
