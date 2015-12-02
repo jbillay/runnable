@@ -69,7 +69,7 @@ describe('Runnable Controllers', function() {
                 UserId: 1
             }]);
             $httpBackend.whenPOST('/api/send/mail').respond('message envoyé');
-            $httpBackend.whenGET('http://maps.googleapis.com/maps/api/geocode/json?address=Paris&sensor=false').respond({
+            $httpBackend.whenGET('https://maps.googleapis.com/maps/api/geocode/json?address=Paris&sensor=false').respond({
                 results: [
                     {
                         address_components: [

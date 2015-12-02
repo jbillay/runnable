@@ -133,7 +133,7 @@ describe('GoogleMapApi Service', function() {
         });
 
         it('should get geo location', function() {
-            $httpBackend.whenGET('http://maps.googleapis.com/maps/api/geocode/json?address=Paris&sensor=false').respond({
+            $httpBackend.whenGET('https://maps.googleapis.com/maps/api/geocode/json?address=Paris&sensor=false').respond({
                 results: [
                 {
                     address_components: [

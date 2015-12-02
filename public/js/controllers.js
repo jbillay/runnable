@@ -592,9 +592,11 @@ angular.module('runnable.controllers', []).
             if ($scope.version === 'DEV') {
                 $scope.url_paypal = $sce.trustAsResourceUrl('https://www.sandbox.paypal.com/cgi-bin/webscr');
                 $scope.key_paypal = '622WFSZHPNBH4';
+                $scope.url_website = 'https://myruntrip-staging.herokuapp.com';
             } else {
                 $scope.url_paypal = $sce.trustAsResourceUrl('https://www.paypal.com/cgi-bin/webscr');
                 $scope.key_paypal = 'ST4SRXB6PJAGC';
+                $scope.url_website = 'http://www.myruntrip.com';
             }
 			$scope.joined = 0;
 			$scope.reserved_outward = 0;
