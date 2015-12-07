@@ -17,7 +17,7 @@ module.exports = function (app, passport, auth) {
 			} else {
 				req.logIn(user, function(err) {
 					if (err) { return next(err); }
-					res.jsonp({msg: user, type: 'success'});
+					res.jsonp({msg: user, type: 'success', token: user.token});
 				});
 			}
 		})(req, res, next);

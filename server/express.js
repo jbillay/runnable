@@ -7,6 +7,7 @@ var express  = require('express');
 var flash = require('connect-flash');
 var multer = require('multer');
 var Options = require('./objects/option');
+var jwt = require('jsonwebtoken');
 
 module.exports = function (app, passport) {
 	'use strict';
@@ -95,7 +96,27 @@ module.exports = function (app, passport) {
                 next();
             }
         }));
-		
+
+        app.use(function(req, res, next) {
+            var token = req.body.token || req.query.token || req.headers['x-access-token'];
+            if (token) {
+                // verifies secret and checks exp
+                jwt.verify(token, 'secretTokenKey4MyRunTrip$', function (err, decoded) {
+                    if (err) {
+                        return res.json({success: false, message: 'Failed to authenticate token.'});
+                    } else {
+                        // if everything is good, save to request for use in other routes
+                        req.logIn(decoded, function(err) {
+                            if (err) { return next(err); }
+                            next();
+                        });
+                    }
+                });
+            } else {
+                next();
+            }
+        });
+
         //routes should be at the last
         app.use(app.router);
 

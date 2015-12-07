@@ -48,7 +48,7 @@ exports.confirm = function (req, res, next) {
             return res.jsonp({msg: 'draftJourneyNotSaved', type: 'error'});
         } else {
             req.Run = newJourney.Run;
-            res.jsonp({msg: 'draftJourneySaved', type: 'success'});
+            res.jsonp({msg: 'draftJourneySaved', type: 'success', id: newJourney.id});
             next();
         }
         err = null;
