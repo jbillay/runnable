@@ -3,6 +3,7 @@
  */
 
 var controllers = require('./controllers').init();
+var cors = require('cors');
 
 module.exports = function (app, passport, auth) {
     'use strict';
@@ -10,7 +11,7 @@ module.exports = function (app, passport, auth) {
     // serve index and view partials
     app.get('/', controllers.root.default);
     app.get('/logout', controllers.root.logout);
-	app.post('/login', function(req, res, next) {
+	app.post('/login', cors(), function(req, res, next) {
 		passport.authenticate('local', function(err, user, info) {
 			if (!user) {
 				res.jsonp({msg: err, type: 'error'});
@@ -47,13 +48,13 @@ module.exports = function (app, passport, auth) {
     app.put('/api/run', auth.requiresLogin, controllers.run.update);
     app.post('/api/run/search', controllers.run.search);
     app.get('/api/run/list', controllers.run.activeList);
-    app.get('/api/run/:id', controllers.run.detail);
+    app.get('/api/run/:id', cors(), controllers.run.detail);
     app.get('/api/run/next/:nb', controllers.run.next);
 
-    app.post('/api/journey', controllers.journey.create, controllers.participate.notify);
+    app.post('/api/journey', cors(), controllers.journey.create, controllers.participate.notify);
     app.put('/api/journey', auth.requiresLogin, controllers.journey.update);
     app.post('/api/journey/cancel', auth.requiresLogin, controllers.journey.cancel);
-    app.post('/api/journey/confirm', auth.requiresLogin, controllers.journey.confirm, controllers.participate.notify);
+    app.post('/api/journey/confirm', cors(), auth.requiresLogin, controllers.journey.confirm, controllers.participate.notify);
     app.get('/api/journey/open', controllers.journey.openList);
 	app.get('/api/journey/:id', controllers.journey.detail);
     app.get('/api/journey/run/:id', controllers.journey.listForRun);

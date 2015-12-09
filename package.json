@@ -59,7 +59,8 @@
     "slug": "~0.9.1",
     "redis": "~2.1.0",
     "connect-redis": "~3.0.0",
-    "jsonwebtoken": "~5.4.0"
+    "jsonwebtoken": "~5.4.0",
+    "cors": "~2.7.1"
   },
   "devDependencies": {
     "grunt-cli": "~0.1.13",
