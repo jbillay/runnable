@@ -7,6 +7,7 @@ var Mail = require('../objects/mail');
 var Journey = require('../objects/journey');
 var Join = require('../objects/join');
 var _ = require('lodash');
+var jwt = require('jsonwebtoken');
 
 exports.remove = function(req, res) {
     'use strict';
@@ -95,9 +96,13 @@ exports.create = function(req, res) {
                             mail.send();
                     });
                 });
+                var token = jwt.sign(newUser, 'secretTokenKey4MyRunTrip$', {
+                    expiresIn: 86400 // expires in 24 hours
+                });
+                newUser.token = token;
                 req.logIn(newUser, function(err) {
                     if (err) { console.log(err); }
-                    return res.jsonp({msg: newUser, type: 'success'});
+                    return res.jsonp({msg: newUser, type: 'success', token: newUser.token});
                 });
             }
 		});

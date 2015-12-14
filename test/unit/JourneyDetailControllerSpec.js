@@ -488,9 +488,7 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
             timeout.flush();
             var fees = scope.calculateFees(0, 1, scope.journey);
-            // WARNING: Normal value should be fixed:1 and variable:12
-            //expect(fees).toEqual(4.84);
-            expect(fees).toEqual(0);
+            expect(fees).toEqual(4.84);
         });
     });
 

@@ -1395,15 +1395,10 @@ describe('service', function() {
                 startDateTenDays = '2015-09-22T00:00:00.000Z';
 
             jasmine.clock().mockDate(newActualTime);
-            // WARNING: Normal value should be fixed:1 and variable:12
-            //expect(service.getFees(startDateTwoDays, '10:30', 10)).toBe(2.2);
-            //expect(service.getFees(startDateOneDays, '10:30', 10)).toBe(2.2);
-            //expect(service.getFees(startDateSameDays, '10:30', 10)).toBe(2.2);
-            //expect(service.getFees(startDateTenDays, '10:30', 10)).toBe(2.2);
-            expect(service.getFees(startDateTwoDays, '10:30', 10)).toBe(0);
-            expect(service.getFees(startDateOneDays, '10:30', 10)).toBe(0);
-            expect(service.getFees(startDateSameDays, '10:30', 10)).toBe(0);
-            expect(service.getFees(startDateTenDays, '10:30', 10)).toBe(0);
+            expect(service.getFees(startDateTwoDays, '10:30', 10)).toBe(2.2);
+            expect(service.getFees(startDateOneDays, '10:30', 10)).toBe(2.2);
+            expect(service.getFees(startDateSameDays, '10:30', 10)).toBe(2.2);
+            expect(service.getFees(startDateTenDays, '10:30', 10)).toBe(2.2);
         });
     });
 });
