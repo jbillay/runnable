@@ -57,7 +57,7 @@ module.exports = function (app, passport, auth) {
     app.post('/api/journey/confirm', cors(), auth.requiresLogin, controllers.journey.confirm, controllers.participate.notify);
     app.get('/api/journey/open', controllers.journey.openList);
 	app.get('/api/journey/:id', controllers.journey.detail);
-    app.get('/api/journey/run/:id', controllers.journey.listForRun);
+    app.get('/api/journey/run/:id', cors(), controllers.journey.listForRun);
     app.get('/api/journey/next/:nb', controllers.journey.next);
     app.get('/api/journey/book/:id', controllers.journey.bookSpace);
 
