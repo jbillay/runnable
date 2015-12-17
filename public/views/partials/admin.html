@@ -166,6 +166,22 @@
 					</table>
 				</table>
 			</tab>
+            <tab heading="Partenaires">
+                <div class="newPartner">
+                </div>
+                <table class="col-sm-12">
+                    <table class="table">
+                        <tr>
+                            <th>Nom</th>
+                        </tr>
+                        <tbody ng-repeat="partner in partnerList">
+                        <tr>
+                            <td>{{partner.name}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </table>
+            </tab>
 			<tab heading="Email">
 				<h2>Templates email</h2>
 				<select class="form-control" ng-model="template"  ng-form="subForm"

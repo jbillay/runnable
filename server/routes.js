@@ -100,6 +100,9 @@ module.exports = function (app, passport, auth) {
 	app.get('/api/admin/user/bankaccount/:id', auth.requireAdmin, controllers.bank_account.getByUser);
     app.post('/api/admin/journey/payed', auth.requireAdmin, controllers.journey.togglePayed);
 
+    app.get('/api/admin/partners', auth.requireAdmin, controllers.partner.getList);
+    app.get('/api/admin/partner/:token', auth.requireAdmin, controllers.partner.getByToken);
+
     app.get('/api/page/:tag', controllers.page.getByTag);
 
     app.get('/api/invoice', auth.requiresLogin, controllers.invoice.getByUser);
