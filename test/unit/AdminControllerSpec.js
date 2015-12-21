@@ -204,6 +204,7 @@ describe('Runnable Controllers', function() {
             $httpBackend.whenPOST('/api/user/password/reset').respond({msg: 'passwordReset', type: 'success'});
             $httpBackend.whenPOST('/api/admin/page').respond({msg: 'pageSaved', type: 'success'});
             $httpBackend.whenPOST('/api/admin/run/active').respond({msg: 'done', type: 'success'});
+            $httpBackend.whenPOST('/api/admin/partner/info').respond({msg: 'Partner info sent', type: 'success'});
             $httpBackend.whenPOST('/api/admin/partner').respond({msg: {
                 UserId: 1,
                 createdAt: '2015-12-21T08:37:49.000Z',
@@ -552,6 +553,12 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
             expect(scope.partnersList.length).toEqual(3);
             expect(scope.partnerCreation).toBeFalsy();
+        });
+
+        it('Send info to partner', function () {
+            $httpBackend.flush();
+            scope.sendInfoPartner(1);
+            $httpBackend.flush();
         });
     });
 });

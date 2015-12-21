@@ -126,5 +126,18 @@ describe('Partner Services', function() {
             $httpBackend.flush();
             expect(message).toContain('error');
         });
+
+        it('should send information to partner', function() {
+            $httpBackend.whenPOST('/api/admin/partner/info')
+                .respond({msg: 'Partner info sent', type: 'success'});
+            var promise = service.sendInfo(1),
+                msg = null;
+
+            promise.then(function(ret){
+                msg = ret;
+            });
+            $httpBackend.flush();
+            expect(msg).toEqual('Partner info sent');
+        });
     });
 });

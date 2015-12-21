@@ -796,6 +796,22 @@ angular.module('runnable.services', ['ngResource']).
 						deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
+			},
+			sendInfo: function (partnerId) {
+				var deferred = $q.defer();
+                $http.post('/api/admin/partner/info', {partner: {id: partnerId}}).
+                    success(function (result) {
+                        if(result.type === 'error') {
+                            deferred.reject('error : ' + result.msg);
+                        } else {
+                            $rootScope.$broadcast('USER_MSG', {msg: 'partnerInfoSent', type: result.type});
+                            deferred.resolve(result.msg);
+                        }
+                    }).
+                    error(function(data, status) {
+						deferred.reject('error ' + status + ' : ' + data);
+                    });
+                return deferred.promise;
 			}
         };
     }).

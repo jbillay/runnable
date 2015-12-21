@@ -49,6 +49,16 @@ describe('Test of partner object', function () {
                         });
                     },
                     function (callback) {
+                        var fixtures = require('./fixtures/options.json');
+                        var promises = [];
+                        fixtures.forEach(function (fix) {
+                            promises.push(loadData(fix));
+                        });
+                        q.all(promises).then(function () {
+                            callback(null);
+                        });
+                    },
+                    function (callback) {
                         var fixtures = require('./fixtures/journeys.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -171,5 +181,41 @@ describe('Test of partner object', function () {
                 return done();
             });
         });
+    });
+
+    describe('Send info to partner', function () {
+        var partner = new Partner();
+
+        it('Send info to partner 1', function (done) {
+            partner.sendInfo(1)
+                .then(function (msg) {
+                    assert.equal(msg, 'Partner info sent');
+                    return done();
+                })
+                .catch(function (err) {
+                    return done(err);
+                });
+        });
+    });
+
+    it('Notify partner of a journey creation', function (done) {
+        var partner = new Partner(),
+            run = {
+                id: 5,
+                name: 'Test'
+            },
+            journey = {
+                journeyId: 3,
+                journeyStart: 'Luzarches',
+                PartnerId: 1
+            };
+        partner.notifyJourneyCreation(run, journey)
+            .then(function (msg) {
+                assert.equal(msg, 'Partner notification sent');
+                return done();
+            })
+            .catch(function (err) {
+                return done(err);
+            });
     });
 });

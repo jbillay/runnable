@@ -410,9 +410,19 @@ journey.prototype.notifyJoin = function (invoice, done) {
         values = {
             runName: invoice.Journey.Run.name,
             journeyId: invoice.Journey.id };
-    inbox.add(templateUser, values, invoice.UserId);
-    inbox.add(templateDriver, values, invoice.Journey.UserId);
-    done(null, 'done');
+    inbox.add(templateUser, values, invoice.UserId, function (err, msg) {
+        if (err) {
+            done(err, null);
+        } else {
+            inbox.add(templateDriver, values, invoice.Journey.UserId, function (err, msg) {
+                if (err) {
+                    done(err, null);
+                } else {
+                    done(null, 'done');
+                }
+            });
+        }
+    });
 };
 
 module.exports = journey;

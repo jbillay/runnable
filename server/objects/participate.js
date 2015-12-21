@@ -86,10 +86,13 @@ participate.prototype.userRunList = function (runId, done) {
         });
 };
 
-participate.prototype.notify = function (run, done) {
+participate.prototype.notify = function (run, journey, done) {
     'use strict';
     var template = 'NotifyNewJourney',
-        values = {'runName': run.name};
+        values = {
+            runName: run.name,
+            journeyId: journey.id,
+            journeyStart: journey.address_start};
     new Mail().then(function (mail) {
         mail.generateContent(template, values)
             .then(function (mail) {

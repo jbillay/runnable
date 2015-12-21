@@ -67,5 +67,6 @@ angular.module('runnable.constant', []).
         runUpdated:             'La course a été mise à jour',
         journeyUpdated:         'Votre parcours a été mis à jour',
         runCreated:             'La course a bien été créée',
-        partnerCreated:         'Le partenaire a bien été créé'
+        partnerCreated:         'Le partenaire a bien été créé',
+        partnerInfoSent:        'Les informations ont bien été envoyées au partenaire'
 	});

@@ -6,7 +6,8 @@
       "name": "TCC",
       "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwNDgsImV4cCI6MTIwNTA5NjA2NjF9.-vmI9gHnCFX30N2oVhQLiADX-Uz2XHzrHjWjJpvSERo",
       "expiry": "2016-03-09",
-      "fee": 6.8
+      "fee": 6.8,
+      "UserId": 1
     }
   },
   {
@@ -16,7 +17,8 @@
       "name": "I-Run",
       "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwNjcsImV4cCI6MTIwNTA5NDE5NzR9.fikQ6L2eYUBujEeV-OYMFfX_pER5eC2Z_nQJ0YVyb9w",
       "expiry": "2017-07-09",
-      "fee": 8.2
+      "fee": 8.2,
+      "UserId": 2
     }
   },
   {
@@ -26,7 +28,8 @@
       "name": "Salomon",
       "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwODgsImV4cCI6MTIwNTA5MjA1MTh9.w17cboqKDtjpsJzeu21C5OEwiei1_Ay2d_BO58mpFcs",
       "expiry": "2015-07-09",
-      "fee": 3.1
+      "fee": 3.1,
+      "UserId": 1
     }
   }
 ]

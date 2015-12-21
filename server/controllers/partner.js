@@ -4,7 +4,7 @@
 
 var Partner = require('../objects/partner');
 
-exports.create = function (req, res) {
+exports.create = function (req, res, next) {
     'use strict';
     console.log('Create new partner');
     var partner = new Partner(),
@@ -14,7 +14,9 @@ exports.create = function (req, res) {
             console.log(new Error('Not able to create new partner : ' + err));
             return res.jsonp({msg: err, type: 'error'});
         }
-        return res.jsonp({msg: partner, type: 'success'});
+        req.partner = partner;
+        res.jsonp({msg: partner, type: 'success'});
+        next();
     });
 };
 
@@ -45,5 +47,34 @@ exports.getByToken = function (req, res) {
         .catch(function (err) {
             console.log(new Error('Not able to get partners by token : ' + err));
             return res.jsonp({msg: err, type: 'error'});
+        });
+};
+
+exports.sendInfo = function (req, res) {
+    'use strict';
+    var partner = new Partner(),
+        partnerId = req.body.partner.id || req.partner.id;
+    console.log('Send info on partnership to partner : ' + partnerId);
+    partner.sendInfo(partnerId)
+        .then(function (msg) {
+            return res.jsonp({msg: msg, type: 'success'});
+        })
+        .catch(function (err) {
+            console.log(new Error('Not able to send info to partners : ' + err));
+            return res.jsonp({msg: err, type: 'error'});
+        });
+};
+
+exports.notifyJourneyCreation = function (req, res) {
+    'use strict';
+    var partner = new Partner(),
+        run = req.Run,
+        journey = req.Journey;
+    partner.notifyJourneyCreation(run, journey)
+        .then(function (msg) {
+            console.log({msg: msg, type: 'success'});
+        })
+        .catch(function (err) {
+            console.log(new Error('Not able to notify journey creation: ' + err));
         });
 };

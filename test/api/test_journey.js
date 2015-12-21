@@ -560,6 +560,7 @@ describe('Test of journey object', function () {
             }]})
             .then(function (invoice) {
                 journey.notifyJoin(invoice, function (err, msg) {
+                    if (err) return done(err);
                     assert.equal(msg, 'done');
                     return done();
                 });

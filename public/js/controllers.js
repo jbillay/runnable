@@ -388,6 +388,10 @@ angular.module('runnable.controllers', []).
                 $scope.switchPartner();
             });
         };
+
+        $scope.sendInfoPartner = function (partnerId) {
+            Partner.sendInfo(partnerId);
+        };
 	}).
     controller('RunnableRunDetailController', function ($scope, $q, $timeout, $routeParams, $location,
 														Run, Journey, GoogleMapApi, Session, Participate) {

@@ -29,7 +29,7 @@ exports.create = function (req, res, next) {
             } else {
                 console.log('Journey created');
                 res.jsonp({msg: 'journeyCreated', type: 'success', journey: journey});
-                req.journey = journey;
+                req.Journey = journey;
                 next();
             }
             err = null;
@@ -48,6 +48,7 @@ exports.confirm = function (req, res, next) {
             return res.jsonp({msg: 'draftJourneyNotSaved', type: 'error'});
         } else {
             req.Run = newJourney.Run;
+            req.Journey = newJourney;
             res.jsonp({msg: 'draftJourneySaved', type: 'success', id: newJourney.id});
             next();
         }

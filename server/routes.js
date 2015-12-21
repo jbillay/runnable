@@ -51,10 +51,17 @@ module.exports = function (app, passport, auth) {
     app.get('/api/run/:id', cors(), controllers.run.detail);
     app.get('/api/run/next/:nb', controllers.run.next);
 
-    app.post('/api/journey', cors(), controllers.journey.create, controllers.participate.notify);
+    app.post('/api/journey', cors(),
+        controllers.journey.create,
+        controllers.participate.notify,
+        controllers.partner.notifyJourneyCreation);
     app.put('/api/journey', auth.requiresLogin, controllers.journey.update);
     app.post('/api/journey/cancel', auth.requiresLogin, controllers.journey.cancel);
-    app.post('/api/journey/confirm', cors(), auth.requiresLogin, controllers.journey.confirm, controllers.participate.notify);
+    app.post('/api/journey/confirm', cors(),
+        auth.requiresLogin,
+        controllers.journey.confirm,
+        controllers.participate.notify,
+        controllers.partner.notifyJourneyCreation);
     app.get('/api/journey/open', controllers.journey.openList);
 	app.get('/api/journey/:id', controllers.journey.detail);
     app.get('/api/journey/run/:id', cors(), controllers.journey.listForRun);
@@ -100,7 +107,8 @@ module.exports = function (app, passport, auth) {
 	app.get('/api/admin/user/bankaccount/:id', auth.requireAdmin, controllers.bank_account.getByUser);
     app.post('/api/admin/journey/payed', auth.requireAdmin, controllers.journey.togglePayed);
 
-    app.post('/api/admin/partner', auth.requireAdmin, controllers.partner.create);
+    app.post('/api/admin/partner', auth.requireAdmin, controllers.partner.create, controllers.partner.sendInfo);
+    app.post('/api/admin/partner/info', auth.requireAdmin, controllers.partner.sendInfo);
     app.get('/api/admin/partners', auth.requireAdmin, controllers.partner.getList);
     app.get('/api/admin/partner/:token', auth.requireAdmin, controllers.partner.getByToken);
 

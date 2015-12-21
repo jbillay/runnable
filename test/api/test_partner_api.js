@@ -67,6 +67,16 @@ describe('Test of partner API', function () {
                         });
                     },
                     function (callback) {
+                        var fixtures = require('./fixtures/options.json');
+                        var promises = [];
+                        fixtures.forEach(function (fix) {
+                            promises.push(loadData(fix));
+                        });
+                        q.all(promises).then(function () {
+                            callback(null);
+                        });
+                    },
+                    function (callback) {
                         var fixtures = require('./fixtures/journeys.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {
@@ -173,5 +183,27 @@ describe('Test of partner API', function () {
         });
     });
 
+    describe('POST /api/admin/partner/info', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should send information to partner 1', function (done) {
+            var partner = {
+                id: 1
+            };
+            agent
+                .post('http://localhost:' + settings.port + '/api/admin/partner/info')
+                .send({partner: partner})
+                .end(function (err, res) {
+                    if (err) {
+                        done(err);
+                    }
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg, 'Partner info sent');
+                    return done();
+                });
+        });
+    });
 });
 

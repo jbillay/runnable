@@ -112,12 +112,12 @@ describe('Test of participate object', function () {
     it('Get list user participate a run', function (done) {
         var participate = new Participate();
         participate.userRunList(5, function (err, users) {
-            if (err) console.log(err);
+            if (err) return done(err);
             assert.isNull(err);
             assert.equal(users.length, 2);
             participate.userRunList(-1, function (err, users) {
                 assert.isNotNull(err);
-                done();
+                return done();
             });
         });
     });
@@ -125,17 +125,17 @@ describe('Test of participate object', function () {
     it('Get list of participate a user', function (done) {
         var participate = new Participate();
         participate.userList(1, function (err, runs) {
-            if (err) console.log(err);
+            if (err) return done(err);
             assert.isNull(err);
             assert.equal(runs.length, 4);
             participate.userList(-1, function (err, runs) {
                 assert.isNotNull(err);
-                done();
+                return done();
             });
         });
     });
 
-    it('Add message for a discussion', function (done) {
+    it('Add participate to a user', function (done) {
         var participate = new Participate(),
             runId = 4,
             user = {
@@ -161,13 +161,18 @@ describe('Test of participate object', function () {
         });
     });
 
-    it('Get list of participate a user', function (done) {
+    it('Get list of participate for a user', function (done) {
         var participate = new Participate(),
             run = {
                 id: 5,
                 name: 'Test'
+            },
+            journey = {
+                journeyId: 3,
+                journeyStart: 'Luzarches',
+                PartnerId: 1
             };
-        participate.notify(run, function (err, notif) {
+        participate.notify(run, journey, function (err, notif) {
             if (err) return done(err);
             assert.isNull(err);
             assert.equal(notif.length, 2);

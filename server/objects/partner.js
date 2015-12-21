@@ -5,6 +5,7 @@
 'use strict';
 
 var models = require('../models');
+var Inbox = require('./inbox');
 var jwt = require('jsonwebtoken');
 var q = require('q');
 
@@ -107,6 +108,61 @@ partner.prototype.getList = function (old, done) {
         .catch(function (err) {
             done(err, null);
         });
+};
+
+partner.prototype.sendInfo = function (partnerId) {
+    var deferred = q.defer();
+
+    models.Partner.find({where: {id: partnerId}, include: [{
+            model: models.User,
+            as: 'User'}]})
+        .then(function (partner) {
+            var inbox = new Inbox(),
+                template = 'PartnerInfo',
+                values = {
+                    name: partner.name,
+                    expiry: partner.expiry,
+                    fee: partner.fee,
+                    token: partner.token };
+            inbox.add(template, values, partner.User.id, function (err, msg) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    deferred.resolve('Partner info sent');
+                }
+            });
+        })
+        .catch(function (err) {
+            deferred.reject(err);
+        });
+    return deferred.promise;
+};
+
+partner.prototype.notifyJourneyCreation = function (run, journey) {
+    var deferred = q.defer();
+
+    models.Partner.find({where: {id: journey.PartnerId}, include: [{
+            model: models.User,
+            as: 'User'}]})
+        .then(function (partner) {
+            var inbox = new Inbox(),
+                template = 'PartnerJourneyNotification',
+                values = {
+                    runName: run.name,
+                    journeyId: journey.id,
+                    journeyStart: journey.address_start};
+            inbox.add(template, values, partner.User.id, function (err, msg) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    deferred.resolve('Partner notification sent');
+                }
+            });
+        })
+        .catch(function (err) {
+            deferred.reject(err);
+        });
+    return deferred.promise;
 };
 
 module.exports = partner;

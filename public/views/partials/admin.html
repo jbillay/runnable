@@ -224,6 +224,7 @@
                             <th>Création</th>
                             <th>Token</th>
                             <th>Contact</th>
+                            <th>Actions</th>
                         </tr>
                         <tbody ng-repeat="partner in partnersList">
                         <tr>
@@ -233,6 +234,9 @@
                             <td>{{partner.createdAt | date:'dd/MM/yyyy'}}</td>
                             <td>{{partner.token}}</td>
                             <td>{{partner.User.email}}</td>
+                            <td>
+                                <span class="glyphicon glyphicon-envelope" ng-click=sendInfoPartner(partner.id)></span>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

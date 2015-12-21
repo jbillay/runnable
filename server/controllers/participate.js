@@ -57,15 +57,17 @@ exports.userRunList = function (req, res) {
     runId = null;
 };
 
-exports.notify = function (req, res) {
+exports.notify = function (req, res, next) {
     'use strict';
     console.log('Notify users following the run : ' + req.Run.id);
     var participate = new Participate(),
-        run = req.Run;
+        run = req.Run,
+        journey = req.Journey;
     if (!req.draft) {
-        participate.notify(run, function (err, notif) {
+        participate.notify(run, journey, function (err, notif) {
             err = null;
             notif = null;
+            next();
         });
         participate = null;
         run = null;
