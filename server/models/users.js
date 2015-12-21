@@ -24,7 +24,7 @@ module.exports = function(sequelize, DataTypes) {
 		classMethods: {
 			associate: function(models) {
                 /*jshint -W030 */
-                User.belongsTo(models.Partner, {constraints: false}),
+                User.hasMany(models.Partner),
 				User.hasMany(models.Run),
 				User.hasMany(models.Journey),
 				User.hasMany(models.Join),

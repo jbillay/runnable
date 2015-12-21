@@ -14,7 +14,7 @@ module.exports = function(sequelize, DataTypes) {
         classMethods: {
             associate: function(models) {
                 /*jshint -W030 */
-                Partner.hasMany(models.User);
+                Partner.belongsTo(models.User);
                 /*jshint +W030 */
             }
         }

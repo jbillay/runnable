@@ -91,7 +91,6 @@ angular.module('runnable.controllers', []).
 		});
 	}).
 	controller('RunnableConnectController', function ($scope, $rootScope) {
-        console.log($rootScope.draftId);
 	}).
 	controller('RunnableSharedController', function ($scope, Session, User) {
 		$scope.invitForm = {
@@ -215,10 +214,7 @@ angular.module('runnable.controllers', []).
                 .then(function(result) {
                     $scope.file = file;
                     $scope.imageSrc = result;
-                })
-				.catch(function (err) {
-					console.log(err);
-			}	);
+                });
         };
         $scope.saveFile = function () {
             if ($scope.file) {
@@ -230,7 +226,7 @@ angular.module('runnable.controllers', []).
             fileReader.deletePicture($scope.file);
         };
     }).
-	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run,
+	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run, Partner,
                                                     Journey, Join, EmailOptions, BankAccount, Page, Inbox, Technical) {
 		$scope.page = 'Admin';
 		var userListPromise = User.getList(),
@@ -240,8 +236,9 @@ angular.module('runnable.controllers', []).
 			EmailOptionsPromise = EmailOptions.get(),
 			pageListPromise = Page.getList(),
             versionPromise = Technical.version(),
+			partnerListPromise = Partner.getList(),
 			all = $q.all([userListPromise, runListPromise, journeyListPromise, joinListPromise,
-                            EmailOptionsPromise, pageListPromise, versionPromise]);
+                            EmailOptionsPromise, pageListPromise, versionPromise, partnerListPromise]);
 		all.then(function (res) {
 			$scope.userList = res[0];
 			$scope.runList = res[1];
@@ -250,7 +247,12 @@ angular.module('runnable.controllers', []).
 			$scope.emailOption = res[4];
 			$scope.pageList = res[5];
             $scope.version = res[6];
+            $scope.partnersList = res[7];
             $scope.nbUser = $scope.userList.length;
+            $scope.userNameList = _.map($scope.userList, function (user) {
+                var name = user.firstname + ' ' + user.lastname;
+                return {id: user.id, email: user.email, name: name};
+            });
             if (!$rootScope.isAdmin) {
                 $location.path('/');
             }
@@ -258,7 +260,21 @@ angular.module('runnable.controllers', []).
 		$scope.createPageForm = {
 			'newPageName'     : ''};
 		$scope.originForm = angular.copy($scope.createPageForm);
-		$scope.userToggleActive = function(user) {
+        $scope.today = new Date();
+        $scope.calendar = {
+            opened: {},
+            dateFormat: 'dd/MM/yyyy',
+            dateOptions: {
+                formatYear: 'yy',
+                startingDay: 1
+            },
+            open: function($event, which) {
+                $event.preventDefault();
+                $event.stopPropagation();
+                $scope.calendar.opened[which] = true;
+            }
+        };
+        $scope.userToggleActive = function(user) {
 			User.userToggleActive(user.id);
 			if (user.isActive) {
 				user.isActive = false;
@@ -353,6 +369,24 @@ angular.module('runnable.controllers', []).
         };
         $scope.closeAdminJourney = function () {
             angular.element('#adminJourneyAction').modal('hide');
+        };
+        // Partner scope
+        $scope.partnerCreation = false;
+        $scope.switchPartner = function () {
+            $scope.partnerCreation = $scope.partnerCreation ? false : true;
+        };
+
+        $scope.createPartner = function (partner) {
+            var cleanPartner = {
+                name: partner.name,
+                expiry: partner.expiry,
+                fee: partner.fee,
+                user: partner.user.id
+            };
+            Partner.create(cleanPartner).then(function (newPartner) {
+                $scope.partnersList.push(newPartner);
+                $scope.switchPartner();
+            });
         };
 	}).
     controller('RunnableRunDetailController', function ($scope, $q, $timeout, $routeParams, $location,
@@ -1266,7 +1300,6 @@ angular.module('runnable.controllers', []).
             }
         };
         $scope.switchDisplay = function () {
-            console.log('switch for one to another display');
             if ($scope.displayMode === 'list') {
                 $scope.displayMode = 'map';
                 $scope.displayModeIcon = 'fa-list';

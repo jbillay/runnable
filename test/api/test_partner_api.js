@@ -106,6 +106,33 @@ describe('Test of partner API', function () {
         console.log('Test of API partner over !');
     });
 
+    describe('POST /api/admin/partner', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should create a new partner', function (done) {
+            var partner = {
+                name: 'My Run Trip',
+                expiry: '2019-10-12',
+                fee: 10,
+                userId: 1
+            };
+            agent
+                .post('http://localhost:' + settings.port + '/api/admin/partner')
+                .send({partner: partner})
+                .end(function (err, res) {
+                    if (err) {
+                        done(err);
+                    }
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg.name, 'My Run Trip');
+                    assert.isNotNull(res.body.msg.token);
+                    return done();
+                });
+        });
+    });
+
     describe('GET /api/admin/partners', function () {
         var agent = superagent.agent();
 

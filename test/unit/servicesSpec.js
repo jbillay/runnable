@@ -542,8 +542,8 @@ describe('service', function() {
 
         it('should fail to save new page', function() {
             $httpBackend.whenPOST('/api/admin/page').respond(500);
-            var account = { id: 1, owner: 'Jeremy Billay', agency_name: 'Crédit Agricole', IBAN: 'FR7618206000576025840255308', BIC: 'AGRIFRPP882', UserId: 1},
-                promise = service.save(account),
+            var newPage = { id: 3, title: 'Page pour test', tag: 'mrt', content: 'MRT the Best', is_active: true},
+                promise = service.save(newPage),
                 message = null;
 
             promise.then(function(ret) {

@@ -96,6 +96,7 @@ describe('Test of partner object', function () {
                 token: 'ABCD14526JUEIRO',
                 expiry: '2016-01-28',
                 fee: 8.2,
+                UserId : 1,
                 createdAt: '2015-01-28 11:29:13',
                 updatedAt: '2015-01-28 11:29:13'
             };
@@ -105,13 +106,24 @@ describe('Test of partner object', function () {
         assert.equal(tmp.name, 'St-Yorre');
         assert.equal(tmp.token, 'ABCD14526JUEIRO');
         assert.equal(tmp.fee, 8.2);
-        partner.create(partnership.name, partnership.fee, partnership.expiry, function (err, partner) {
-            if (err) return done(err);
-            assert.equal(partner.name, 'St-Yorre');
-            assert.equal(partner.fee, 8.2);
-            assert.isNotNull(partner.token);
-            return done();
-        });
+        partner.create(partnership.name, partnership.fee, partnership.expiry, partnership.UserId,
+            function (err, newPartner) {
+                if (err) return done(err);
+                assert.equal(newPartner.name, 'St-Yorre');
+                assert.equal(newPartner.fee, 8.2);
+                assert.equal(newPartner.UserId, 1);
+                assert.isNotNull(newPartner.token);
+                partner.getByToken(newPartner.token)
+                    .then(function (selectedPartner) {
+                        assert.equal(selectedPartner.name, 'St-Yorre');
+                        assert.equal(selectedPartner.fee, 8.2);
+                        assert.equal(selectedPartner.User.email, 'jbillay@gmail.com');
+                        return done();
+                    })
+                    .catch(function (err) {
+                        return done(err);
+                    });
+            });
     });
 
     describe('Get partnership', function () {

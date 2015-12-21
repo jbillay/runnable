@@ -749,6 +749,56 @@ angular.module('runnable.services', ['ngResource']).
 			}
         };
     }).
+	factory('Partner', function ($q, $http, $rootScope) {
+        return {
+            getByToken: function (token) {
+                var deferred = $q.defer();
+                $http.get('/api/admin/partner/' + token).
+                    success(function (result) {
+                        if(result.type === 'error') {
+                            deferred.reject('error : ' + result.msg);
+                        } else {
+                            deferred.resolve(result.msg);
+                        }
+                    }).
+                    error(function(data, status) {
+						deferred.reject('error ' + status + ' : ' + data);
+                    });
+                return deferred.promise;
+            },
+            getList: function () {
+                var deferred = $q.defer();
+                $http.get('/api/admin/partners').
+                    success(function (result) {
+                        if(result.type === 'error') {
+                            deferred.reject('error : ' + result.msg);
+                        } else {
+                            deferred.resolve(result.msg);
+                        }
+                    }).
+                    error(function(data, status) {
+						deferred.reject('error ' + status + ' : ' + data);
+                    });
+                return deferred.promise;
+            },
+			create: function (newPartner) {
+				var deferred = $q.defer();
+                $http.post('/api/admin/partner', {partner: newPartner}).
+                    success(function (result) {
+                        if(result.type === 'error') {
+                            deferred.reject('error : ' + result.msg);
+                        } else {
+                            $rootScope.$broadcast('USER_MSG', {msg: 'partnerCreated', type: result.type});
+                            deferred.resolve(result.msg);
+                        }
+                    }).
+                    error(function(data, status) {
+						deferred.reject('error ' + status + ' : ' + data);
+                    });
+                return deferred.promise;
+			}
+        };
+    }).
 	factory('Inbox', function ($q, $http) {
 		return {
 			addMessage: function (template, values, userId) {

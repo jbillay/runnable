@@ -46,7 +46,7 @@ partner.prototype.set = function (partner) {
     }
 };
 
-partner.prototype.create = function (name, fee, expiry, done) {
+partner.prototype.create = function (name, fee, expiry, userId, done) {
     var expirySplit = expiry.split('-'),
         expiryDate =  new Date(expirySplit[0], expirySplit[1], expirySplit[2]).getTime() - Date.now(),
         token = jwt.sign({ name: name }, 'P@rtner$hip@MyRunTrip2014$', { expiresIn: expiryDate}),
@@ -54,21 +54,24 @@ partner.prototype.create = function (name, fee, expiry, done) {
             name:   name,
             token:  token,
             expiry: expiry,
-            fee:    fee
+            fee:    fee,
+            UserId:   userId
         };
-    models.Partner.create(partnership)
-        .then(function (newPartnership) {
-            done(null, newPartnership);
-        })
-        .catch(function (err) {
-            done(err, null);
-        });
+        models.Partner.create(partnership)
+            .then(function (newPartnership) {
+                done(null, newPartnership);
+            })
+            .catch(function (err) {
+                done(err, null);
+            });
 };
 
 partner.prototype.getByToken = function (token) {
     var deferred = q.defer();
 
-    models.Partner.find({where: {token: token}})
+    models.Partner.find({where: {token: token}, include: [{
+            model: models.User,
+            as: 'User'}]})
         .then(function (partnership) {
             deferred.resolve(partnership);
         })
@@ -92,7 +95,9 @@ partner.prototype.filterInactive = function (partners) {
 
 partner.prototype.getList = function (old, done) {
     var self = this;
-    models.Partner.findAll()
+    models.Partner.findAll({include: [{
+            model: models.User,
+            as: 'User'}]})
         .then(function (partnership) {
             if (!old) {
                 partnership = self.filterInactive(partnership);

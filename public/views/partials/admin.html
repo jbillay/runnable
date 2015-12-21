@@ -167,16 +167,72 @@
 				</table>
 			</tab>
             <tab heading="Partenaires">
-                <div class="newPartner">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="btn btn-primary" ng-click="switchPartner()">Nouveau</div>
+                    </div>
+                </div>
+                <div class="newPartner" ng-if="partnerCreation">
+                    <div class="col-xs-6 col-md-4 col-sm-4">
+                        <div class="form-group">
+                            <label class="sr-only" for="partnerName">Nom du partenariat</label>
+                            <input type="text" class="form-control" id="partnerName"
+                                   ng-model="newPartner.name" placeholder="Nom" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" ng-model="newPartner.user" placeholder="Contact partenaire"
+                                   typeahead="user as user.name for user in userNameList | filter:{name:$viewValue}"
+                                   id="user" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only" for="PartnerFee">Frais (en %)</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">%</div>
+                                <input type="text" class="form-control" id="PartnerFee"
+                                       ng-model="newPartner.fee" placeholder="Frais (%)" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="calendar.open($event, 'expiry')">
+                                        <i class="glyphicon glyphicon-calendar"></i>
+                                    </button>
+                                </span>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
+                                           ng-model="newPartner.expiry" is-open="calendar.opened.expiry"
+                                           min-date="today" datepicker-options="calendar.dateOptions" close-text="Fermer"
+                                           data-toggle="tooltip" data-placement="bottom"
+                                           title="Date d'expiration" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <button type="submit" class="btn btn-success btn-block" ng-click="createPartner(newPartner)">Créer</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <table class="col-sm-12">
                     <table class="table">
                         <tr>
                             <th>Nom</th>
+                            <th>Expiration</th>
+                            <th>Frais (%)</th>
+                            <th>Création</th>
+                            <th>Token</th>
+                            <th>Contact</th>
                         </tr>
-                        <tbody ng-repeat="partner in partnerList">
+                        <tbody ng-repeat="partner in partnersList">
                         <tr>
                             <td>{{partner.name}}</td>
+                            <td>{{partner.expiry | date:'dd/MM/yyyy'}}</td>
+                            <td>{{partner.fee}}</td>
+                            <td>{{partner.createdAt | date:'dd/MM/yyyy'}}</td>
+                            <td>{{partner.token}}</td>
+                            <td>{{partner.User.email}}</td>
                         </tr>
                         </tbody>
                     </table>

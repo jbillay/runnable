@@ -186,6 +186,10 @@ describe('Runnable Controllers', function() {
                         status: 'completed'
                     }
                 }]);
+            $httpBackend.whenGET('/api/admin/partners').respond({msg: [
+                { id: 1, name: 'TCC', token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwNDgsImV4cCI6MTIwNTA5NjA2NjF9.-vmI9gHnCFX30N2oVhQLiADX-Uz2XHzrHjWjJpvSERo',expiry: '2016-03-09', fee: 6.8 },
+                { id: 2, name: 'I-Run', token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwNjcsImV4cCI6MTIwNTA5NDE5NzR9.fikQ6L2eYUBujEeV-OYMFfX_pER5eC2Z_nQJ0YVyb9w', expiry: '2017-07-09', fee: 8.2 }
+            ], type: 'success'});
             $httpBackend.whenGET('/api/admin/options').respond([
                 { id: 1, name: 'emailTemplate', value: 'emailTemplateTest'},
                 { id: 2, name: 'mailConfig', value: 'mailConfigTest'}
@@ -200,6 +204,16 @@ describe('Runnable Controllers', function() {
             $httpBackend.whenPOST('/api/user/password/reset').respond({msg: 'passwordReset', type: 'success'});
             $httpBackend.whenPOST('/api/admin/page').respond({msg: 'pageSaved', type: 'success'});
             $httpBackend.whenPOST('/api/admin/run/active').respond({msg: 'done', type: 'success'});
+            $httpBackend.whenPOST('/api/admin/partner').respond({msg: {
+                UserId: 1,
+                createdAt: '2015-12-21T08:37:49.000Z',
+                expiry: '2015-12-25T23:00:00.000Z',
+                fee: '6.9',
+                id: 7,
+                name: 'qsdqsdqsd',
+                token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoicXNkcXNkcXNkIiwiaWF0IjoxNDUwNjg3MDY5fQ.BqKz4yQxEyhS_vhh0aVNH_jrTYFcH1EVmx-YojFXUHM',
+                updatedAt: '2015-12-21T08:37:49.000Z'
+            }, type: 'success'});
             $httpBackend.whenGET('/api/admin/user/bankaccount/1').respond(
                 { id: 1, owner: 'Jeremy Billay', agency_name: 'Crédit Agricole', IBAN: 'FR7618206000576025840255308', BIC: 'AGRIFRPP882', UserId: 1 });
 
@@ -509,6 +523,35 @@ describe('Runnable Controllers', function() {
             expect(scope.selectedJourneyUserRIB).toEqual({ id: 1, owner: 'Jeremy Billay', agency_name: 'Crédit Agricole', IBAN: 'FR7618206000576025840255308', BIC: 'AGRIFRPP882', UserId: 1 });
             expect(scope.selectedJourneyJoins.length).toBe(2);
             expect(scope.amountToPay).toBe(30);
+        });
+
+        it('Show partner form', function () {
+            expect(scope.partnerCreation).toBeFalsy();
+            $httpBackend.flush();
+            scope.switchPartner();
+            expect(scope.partnerCreation).toBeTruthy();
+            scope.switchPartner();
+            expect(scope.partnerCreation).toBeFalsy();
+        });
+
+        it('Create new partner', function () {
+            var newPartner = {
+                name: 'TOTO',
+                fee: 7.8,
+                expiry: '2017-09-15 00:00:00',
+                user: {
+                    name: 'test',
+                    id: 1
+                }
+            };
+            expect(scope.partnerCreation).toBeFalsy();
+            $httpBackend.flush();
+            scope.switchPartner();
+            expect(scope.partnerCreation).toBeTruthy();
+            scope.createPartner(newPartner);
+            $httpBackend.flush();
+            expect(scope.partnersList.length).toEqual(3);
+            expect(scope.partnerCreation).toBeFalsy();
         });
     });
 });

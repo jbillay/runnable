@@ -66,5 +66,6 @@ angular.module('runnable.constant', []).
         passwordNotReset:       'En raison d\'un problème technique votre mot de passe n\'a pas pu être modifié',
         runUpdated:             'La course a été mise à jour',
         journeyUpdated:         'Votre parcours a été mis à jour',
-        runCreated:             'La course a bien été créée'
+        runCreated:             'La course a bien été créée',
+        partnerCreated:         'Le partenaire a bien été créé'
 	});

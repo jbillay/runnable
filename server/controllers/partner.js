@@ -4,6 +4,20 @@
 
 var Partner = require('../objects/partner');
 
+exports.create = function (req, res) {
+    'use strict';
+    console.log('Create new partner');
+    var partner = new Partner(),
+        newPartner = req.body.partner;
+    partner.create(newPartner.name, newPartner.fee, newPartner.expiry, newPartner.user, function (err, partner) {
+        if (err) {
+            console.log(new Error('Not able to create new partner : ' + err));
+            return res.jsonp({msg: err, type: 'error'});
+        }
+        return res.jsonp({msg: partner, type: 'success'});
+    });
+};
+
 exports.getList = function (req, res) {
     'use strict';
     console.log('Get partner list');
