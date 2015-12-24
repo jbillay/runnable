@@ -190,10 +190,10 @@ describe('Runnable Controllers', function() {
                 { id: 1, name: 'TCC', token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwNDgsImV4cCI6MTIwNTA5NjA2NjF9.-vmI9gHnCFX30N2oVhQLiADX-Uz2XHzrHjWjJpvSERo',expiry: '2016-03-09', fee: 6.8 },
                 { id: 2, name: 'I-Run', token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwNjcsImV4cCI6MTIwNTA5NDE5NzR9.fikQ6L2eYUBujEeV-OYMFfX_pER5eC2Z_nQJ0YVyb9w', expiry: '2017-07-09', fee: 8.2 }
             ], type: 'success'});
-            $httpBackend.whenGET('/api/admin/options').respond([
-                { id: 1, name: 'emailTemplate', value: 'emailTemplateTest'},
-                { id: 2, name: 'mailConfig', value: 'mailConfigTest'}
-            ]);
+            $httpBackend.whenGET('/api/admin/options').respond({
+                emailTemplate: [{id:1, name:'test', key:'test', title:'tbd', html:'tdb'}],
+                mailConfig: {host:'ovh', user:'root', password:'root'}
+            });
             $httpBackend.whenGET('/api/admin/pages').respond([
                 { id: 1, owner: 'Jeremy Billay', agency_name: 'Crédit Agricole', IBAN: 'FR7618206000576025840255308', BIC: 'AGRIFRPP882', UserId: 1 },
                 { id: 2, title: 'Page pour toto', tag: 'toto', content: 'ENCORE UN TEST', is_active: false }
@@ -275,10 +275,11 @@ describe('Runnable Controllers', function() {
         });
 
         it ('Save email options', function () {
-            var emailOption = [
-                    { id: 1, name: 'emailTemplate', value: 'emailTemplateTest'},
-                    { id: 2, name: 'mailConfig', value: 'mailConfigTest'}
-                ];
+            $httpBackend.flush();
+            var emailOption = {
+                emailTemplate: [{id:1, name:'new', key:'new', title:'new', html:'new'}],
+                mailConfig: {host:'gandi', user:'myruntrip', password:'myruntrip'}
+            };
             scope.submitEmailOptions(emailOption);
             $httpBackend.flush();
         });
@@ -559,6 +560,33 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
             scope.sendInfoPartner(1);
             $httpBackend.flush();
+        });
+
+
+        it('Show email template form', function () {
+            expect(scope.createTemplateEmail).toBeFalsy();
+            $httpBackend.flush();
+            scope.switchEmailTemplate();
+            expect(scope.createTemplateEmail).toBeTruthy();
+            scope.switchEmailTemplate();
+            expect(scope.createTemplateEmail).toBeFalsy();
+        });
+
+        it('Create new email template', function () {
+            $httpBackend.flush();
+            var newTemplate = {
+                id: scope.emailOption.emailTemplate.length + 1,
+                name: 'unitTestAngular',
+                key: ['test', 'unit', 'angular'],
+                title: 'TBD',
+                html: 'TBD'
+            };
+            expect(scope.createTemplateEmail).toBeFalsy();
+            scope.switchEmailTemplate();
+            expect(scope.createTemplateEmail).toBeTruthy();
+            scope.addTemplateEmail(newTemplate);
+            expect(scope.emailOption.emailTemplate.length).toEqual(2);
+            expect(scope.createTemplateEmail).toBeFalsy();
         });
     });
 });

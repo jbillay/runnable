@@ -282,9 +282,28 @@ angular.module('runnable.controllers', []).
 				user.isActive = true;
 			}
 		};
+
+        // Email options
+        $scope.createTemplateEmail = false;
+        $scope.switchEmailTemplate = function () {
+            $scope.createTemplateEmail = $scope.createTemplateEmail ? false : true;
+        };
+        $scope.addTemplateEmail = function (templateInfo) {
+            var newTemplate = {
+                id: $scope.emailOption.emailTemplate.length,
+                name: templateInfo.name,
+                key: [templateInfo.keys],
+                title: 'TBD',
+                html: 'TBD'
+            };
+            $scope.emailOption.emailTemplate.push(newTemplate);
+            $scope.switchEmailTemplate();
+        };
 		$scope.submitEmailOptions = function (mailConfig) {
 			EmailOptions.save(mailConfig);
 		};
+
+        // Page options
 		$scope.editPage = function (page) {
 			$scope.editedPage = page;
 			angular.element('#adminEditPageModal').modal('show');
