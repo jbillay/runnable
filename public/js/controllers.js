@@ -795,12 +795,6 @@ angular.module('runnable.controllers', []).
 					createdAt: Date.now()
 				});
 			Discussion.addPublicMessage(text, $scope.journeyId);
-            var values = {runName: $scope.journey.Run.name,
-                    userFirstname: Session.userFirstname,
-                    userLastname: Session.userLastname,
-                    text: text},
-                template = 'JourneyPublicMessage';
-            Inbox.addMessage(template, values, $scope.journey.User.id);
 		};
 	}).
 	controller('RunnableJourneyCreateController', function ($scope, $q, $timeout, $routeParams, $rootScope, $location,

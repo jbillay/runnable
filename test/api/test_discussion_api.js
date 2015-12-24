@@ -65,6 +65,16 @@ describe('Test of Discussion API', function () {
                         });
                     },
                     function (callback) {
+                        var fixtures = require('./fixtures/options.json');
+                        var promises = [];
+                        fixtures.forEach(function (fix) {
+                            promises.push(loadData(fix));
+                        });
+                        q.all(promises).then(function () {
+                            callback(null);
+                        });
+                    },
+                    function (callback) {
                         var fixtures = require('./fixtures/journeys.json');
                         var promises = [];
                         fixtures.forEach(function (fix) {

@@ -5,6 +5,7 @@
 'use strict';
 
 var models = require('../models');
+var Inbox = require('./inbox');
 
 function discussion() {
     this.id = null;
@@ -76,7 +77,7 @@ discussion.prototype.addMessage = function (message, journeyId, isPublic, user, 
 	that.message = message;
     that.is_public = isPublic;
 	console.log('try to add message to journey run : ' + journeyId);
-	models.Journey.find({where: {id: journeyId}})
+	models.Journey.find({where: {id: journeyId}, include: [models.Run]})
         .then(function (journey) {
             if (!journey) {
                 done(new Error('No Journey found'), null);
@@ -85,12 +86,27 @@ discussion.prototype.addMessage = function (message, journeyId, isPublic, user, 
                     .then(function (newDiscussion) {
                         newDiscussion.setJourney(journey)
                             .then(function (newDiscussion) {
+                                var inbox = new Inbox(),
+                                    template = 'JourneyPublicMessage';
                                 if (user) {
                                     models.User.find({where: {id: user.id}})
                                         .then(function(user) {
                                             newDiscussion.setUser(user)
                                                 .then(function (newDiscussion) {
-                                                    done(null, newDiscussion);
+                                                    var values = {
+                                                            runName: journey.Run.name,
+                                                            journeyId: journey.id,
+                                                            text: message,
+                                                            userFirstname: user.firstname,
+                                                            userLastname: user.lastname
+                                                        };
+                                                    inbox.add(template, values, journey.UserId, function (err, message) {
+                                                        if (err) {
+                                                            done(err, null);
+                                                        } else {
+                                                            done(null, newDiscussion);
+                                                        }
+                                                    });
                                                 })
                                                 .catch(function (err) {
                                                     done(err, null);
@@ -99,7 +115,20 @@ discussion.prototype.addMessage = function (message, journeyId, isPublic, user, 
                                 } else {
                                     newDiscussion.setUser(null)
                                         .then(function (newDiscussion) {
-                                            done(null, newDiscussion);
+                                            var values = {
+                                                    runName: journey.Run.name,
+                                                    journeyId: journey.id,
+                                                    text: message,
+                                                    userFirstname: 'Un utilisateur',
+                                                    userLastname: 'vous'
+                                                };
+                                            inbox.add(template, values, journey.UserId, function (err, message) {
+                                                if (err) {
+                                                    done(err, null);
+                                                } else {
+                                                    done(null, newDiscussion);
+                                                }
+                                            });
                                         })
                                         .catch(function (err) {
                                             done(err, null);

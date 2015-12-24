@@ -104,8 +104,8 @@ mail.prototype.generateContent = function (templateName, keys) {
         option = new Options();
 
     if (templateName === null) {
-        console.log(new Error('Template name ' + templateName + ' is not correct'));
-        deferred.reject(new Error('Template name ' + templateName + ' is not correct'));
+        console.log(new Error('No template defined'));
+        deferred.reject(new Error('No template defined'));
     }
 
     option.get('emailTemplate')
@@ -134,8 +134,8 @@ mail.prototype.generateContent = function (templateName, keys) {
                 }
             });
             if (find === 0) {
-                console.log(new Error('Not able to get template'));
-                deferred.reject(new Error('Not able to get template'));
+                console.log(new Error('Not able to get template : ' + templateName));
+                deferred.reject(new Error('Not able to get template : '+ templateName));
             } else {
                 deferred.resolve(that);
             }
@@ -163,7 +163,7 @@ mail.prototype.send = function () {
             if (error) {
                 console.log(new Error('Impossible to send mail : ' + error));
             } else {
-                console.log('Message sent: ' + response.message);
+                console.log('Message sent: ' + response.messageId);
             }
         });
     }
