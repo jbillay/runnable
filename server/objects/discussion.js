@@ -97,8 +97,7 @@ discussion.prototype.addMessage = function (message, journeyId, isPublic, user, 
                                                             runName: journey.Run.name,
                                                             journeyId: journey.id,
                                                             text: message,
-                                                            userFirstname: user.firstname,
-                                                            userLastname: user.lastname
+                                                            username: user.firstname + ' ' + user.lastname
                                                         };
                                                     inbox.add(template, values, journey.UserId, function (err, message) {
                                                         if (err) {
@@ -119,8 +118,7 @@ discussion.prototype.addMessage = function (message, journeyId, isPublic, user, 
                                                     runName: journey.Run.name,
                                                     journeyId: journey.id,
                                                     text: message,
-                                                    userFirstname: 'Un utilisateur',
-                                                    userLastname: 'vous'
+                                                    username: 'Un utilisateur'
                                                 };
                                             inbox.add(template, values, journey.UserId, function (err, message) {
                                                 if (err) {
