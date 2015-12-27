@@ -533,7 +533,8 @@ describe('Journey Service', function() {
             var journeyKey = 'JNY567483',
                 message = null;
 
-            $httpBackend.whenPOST('/api/journey/confirm').respond({msg: 'draftJourneySaved', type: 'success'});
+            $httpBackend.whenPOST('/api/journey/confirm').respond({msg: 'draftJourneySaved', type: 'success',
+                journey: { id: 1, Run: { name: 'Maxicross' }}});
 
             var promise = service.confirm(journeyKey);
 
@@ -542,7 +543,7 @@ describe('Journey Service', function() {
             });
 
             $httpBackend.flush();
-            expect(message).toEqual('draftJourneySaved');
+            expect(message.Run.name).toEqual('Maxicross');
             expect(rootScope.$broadcast).toHaveBeenCalled();
         });
 
@@ -551,7 +552,8 @@ describe('Journey Service', function() {
             var journeyKey = 'JNY567483',
                 message = null;
 
-            $httpBackend.whenPOST('/api/journey/confirm').respond({msg: 'draftJourneyNotSaved', type: 'error'});
+            $httpBackend.whenPOST('/api/journey/confirm').respond({msg: 'draftJourneyNotSaved', type: 'error',
+                journey: { id: 1, Run: { name: 'Maxicross' }}});
 
             var promise = service.confirm(journeyKey);
 

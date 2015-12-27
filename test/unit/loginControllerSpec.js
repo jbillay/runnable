@@ -24,7 +24,8 @@ describe('Runnable Controllers', function() {
             $httpBackend.whenGET('/api/user/me').respond(500);
             $httpBackend.whenGET('/api/inbox/unread/nb/msg').respond(500);
             $httpBackend.whenPOST('/api/user/password/reset').respond('passwordReset');
-            $httpBackend.whenPOST('/api/journey/confirm').respond({msg: 'draftJourneySaved', type: 'success'});
+            $httpBackend.whenPOST('/api/journey/confirm').respond({msg: 'draftJourneySaved', type: 'success',
+                journey: { id: 1, Run: { name: 'Maxicross' }}});
 
             ctrlMain = $controller('RunnableMainController',
                 {$scope: scope, $rootScope: rootScope});
@@ -132,6 +133,14 @@ describe('Runnable Controllers', function() {
                 }]
             };
             $httpBackend.whenPOST('/login').respond({msg: user, type: 'success'});
+            $httpBackend.whenPOST('/api/inbox/msg').respond({
+                id: 1,
+                title: 'Nouveau message concernant le trajet pour la course Les templiers',
+                message: 'test à la con',
+                is_read: 1,
+                UserId: 2,
+                createdAt: '2015-01-28 09:57:02'
+            });
             var credentials = {
                 username: 'richard.couret@free.fr',
                 password: 'richard'

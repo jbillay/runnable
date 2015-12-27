@@ -1130,7 +1130,7 @@ angular.module('runnable.services', ['ngResource']).
                     success(function (result) {
                         $rootScope.$broadcast('USER_MSG', result);
                         if (result.type === 'success') {
-                            deferred.resolve(result.msg);
+                            deferred.resolve(result.journey);
                         } else  {
                             deferred.reject('error : ' + result.msg);
                         }

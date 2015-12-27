@@ -100,7 +100,8 @@ describe('Runnable Controllers', function() {
 
             $httpBackend.whenGET('/api/inbox/unread/nb/msg').respond(200, 2);
 
-            $httpBackend.whenPOST('/api/journey/confirm').respond({msg: 'draftJourneySaved', type: 'success'});
+            $httpBackend.whenPOST('/api/journey/confirm').respond({msg: 'draftJourneySaved', type: 'success',
+                journey: { id: 1, Run: { name: 'Maxicross' }}});
 
             ctrl = $controller('RunnableMainController',
                 {$scope: scope, $rootScope: rootScope, AUTH_EVENTS: AUTH_EVENTS,
@@ -164,6 +165,14 @@ describe('Runnable Controllers', function() {
                 password : 'test',
                 password_confirmation : 'test'
             };
+            $httpBackend.whenPOST('/api/inbox/msg').respond({
+                id: 1,
+                title: 'Nouveau message concernant le trajet pour la course Les templiers',
+                message: 'test à la con',
+                is_read: 1,
+                UserId: 2,
+                createdAt: '2015-01-28 09:57:02'
+            });
             rootScope.draftId = 'JNY364573';
             scope.createUser(user);
             $httpBackend.flush();
