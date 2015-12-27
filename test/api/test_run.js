@@ -7,58 +7,19 @@
 var assert = require('chai').assert;
 var models = require('../../server/models/index');
 var Run = require('../../server/objects/run');
-var async = require('async');
-var q = require('q');
 var request = require('request');
 var sinon = require('sinon');
 var distance = require('google-distance');
 var settings = require('../../conf/config');
 
-var loadData = function (fix) {
-    var deferred = q.defer();
-    models[fix.model].create(fix.data)
-        .complete(function (err, result) {
-            if (err) {
-                return deferred.reject('error ' + err);
-            }
-            return deferred.resolve(result);
-        });
-    return deferred.promise;
-};
-
 describe('Tests of run objects', function () {
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
+        process.env.NODE_ENV = 'test';
         var fakeTime = new Date(2015, 6, 6, 0, 0, 0, 0).getTime();
         sinon.clock = sinon.useFakeTimers(fakeTime, 'Date');
         this.timeout(settings.timeout);
-        models.sequelize.sync({force: true})
-            .then(function () {
-                async.series([
-                    function fn1(callback) {
-                        var fixtures = require('./fixtures/users.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function() {
-                            callback(null);
-                        });
-                    },
-                    function fn2(callback) {
-                        var fixtures = require('./fixtures/runs.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function() {
-                            callback(null);
-                        });
-                    }
-                ], function (err, result) {
-                    return done();
-                });
-            });
+        models.loadFixture(done);
     });
 
     afterEach(function() {
@@ -196,7 +157,7 @@ describe('Tests of run objects', function () {
                 run_adv_start_date: '',
                 run_adv_end_date: '',
                 run_adv_city: '',
-                run_name: 'templ'
+                run_name: 'TemPl'
             };
         run.search(searchInfo, function (err, runs) {
             if (err) return done(err);

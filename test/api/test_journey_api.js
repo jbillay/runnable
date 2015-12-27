@@ -7,26 +7,11 @@ var request = require('supertest'),
     models = require('../../server/models/index'),
     assert = require('chai').assert,
     app = require('../../server.js'),
-    async = require('async'),
-    q = require('q'),
     sinon = require('sinon'),
     settings = require('../../conf/config'),
     superagent = require('superagent'),
     redis = require('redis'),
     Rclient = redis.createClient();
-
-
-var loadData = function (fix) {
-    var deferred = q.defer();
-    models[fix.model].create(fix.data)
-        .complete(function (err, result) {
-            if (err) {
-                return deferred.reject('error ' + err);
-            }
-            return deferred.resolve(result);
-        });
-    return deferred.promise;
-};
 
 function loginUser(agent) {
     return function(done) {
@@ -45,96 +30,11 @@ describe('Test of journey API', function () {
 
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
+        process.env.NODE_ENV = 'test';
         var fakeTime = new Date(2015, 6, 6, 0, 0, 0, 0).getTime();
         sinon.clock = sinon.useFakeTimers(fakeTime, 'Date');
         this.timeout(settings.timeout);
-        models.sequelize.sync({force: true})
-            .then(function () {
-                async.series([
-                        function (callback) {
-                            var fixtures = require('./fixtures/users.json');
-                            var promises = [];
-                            fixtures.forEach(function (fix) {
-                                promises.push(loadData(fix));
-                            });
-                            q.all(promises).then(function () {
-                                callback(null);
-                            });
-                        },
-                        function (callback) {
-                            var fixtures = require('./fixtures/runs.json');
-                            var promises = [];
-                            fixtures.forEach(function (fix) {
-                                promises.push(loadData(fix));
-                            });
-                            q.all(promises).then(function () {
-                                callback(null);
-                            });
-                        },
-                        function (callback) {
-                            var fixtures = require('./fixtures/journeys.json');
-                            var promises = [];
-                            fixtures.forEach(function (fix) {
-                                promises.push(loadData(fix));
-                            });
-                            q.all(promises).then(function () {
-                                callback(null);
-                            });
-                        },
-                        function (callback) {
-                            var fixtures = require('./fixtures/joins.json');
-                            var promises = [];
-                            fixtures.forEach(function (fix) {
-                                promises.push(loadData(fix));
-                            });
-                            q.all(promises).then(function () {
-                                callback(null);
-                            });
-                        },
-                        function (callback) {
-                            var fixtures = require('./fixtures/invoices.json');
-                            var promises = [];
-                            fixtures.forEach(function (fix) {
-                                promises.push(loadData(fix));
-                            });
-                            q.all(promises).then(function () {
-                                callback(null);
-                            });
-                        },
-                        function (callback) {
-                            var fixtures = require('./fixtures/discussions.json');
-                            var promises = [];
-                            fixtures.forEach(function (fix) {
-                                promises.push(loadData(fix));
-                            });
-                            q.all(promises).then(function () {
-                                callback(null);
-                            });
-                        },
-                        function (callback) {
-                            var fixtures = require('./fixtures/participates.json');
-                            var promises = [];
-                            fixtures.forEach(function (fix) {
-                                promises.push(loadData(fix));
-                            });
-                            q.all(promises).then(function () {
-                                callback(null);
-                            });
-                        },
-                        function (callback) {
-                            var fixtures = require('./fixtures/partner.json');
-                            var promises = [];
-                            fixtures.forEach(function (fix) {
-                                promises.push(loadData(fix));
-                            });
-                            q.all(promises).then(function () {
-                                callback(null);
-                            });
-                        }
-                    ], function (err, result) {
-                        done();
-                    });
-            });
+        models.loadFixture(done);
     });
 
     afterEach(function() {

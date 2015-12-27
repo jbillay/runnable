@@ -6,45 +6,16 @@
 var assert = require('chai').assert;
 var models = require('../../server/models/index');
 var Mail = require('../../server/objects/mail');
-var async = require('async');
 var sinon = require('sinon');
-var q = require('q');
 var settings = require('../../conf/config');
 var request = require('request');
-
-var loadData = function (fix) {
-    var deferred = q.defer();
-    models[fix.model].create(fix.data)
-        .complete(function (err, result) {
-            if (err) {
-                console.log(err);
-            }
-            deferred.resolve(result);
-        });
-    return deferred.promise;
-};
 
 describe('Tests of mail object', function () {
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
+        process.env.NODE_ENV = 'test';
         this.timeout(settings.timeout);
-        models.sequelize.sync({force: true})
-            .then(function () {
-                async.waterfall([
-                    function(callback) {
-                        var fixtures = require('./fixtures/options.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function() {
-                            callback(null);
-                        });
-                    }
-                ], function (err, result) {
-                    done();
-                });
-            });
+        models.loadFixture(done);
     });
     //After all the tests have run, output all the sequelize logging.
     after(function (done) {

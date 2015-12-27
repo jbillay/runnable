@@ -11,16 +11,10 @@ exports.add = function (req, res) {
         user = req.user;
     participate.add(runId, user, function (err, participate) {
         if (err) {
-            res.jsonp({msg: 'notAbleParticipate', type: 'error'});
-        } else {
-			res.json({msg: 'addParticipate', type: 'success'});
-		}
-        err = null;
-        participate = null;
+            return res.jsonp({msg: 'notAbleParticipate', type: 'error'});
+        }
+        return res.jsonp({msg: 'addParticipate', type: 'success'});
     });
-    participate = null;
-    runId = null;
-    user = null;
 };
 
 exports.userList = function (req, res) {

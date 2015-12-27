@@ -10,53 +10,14 @@ var request = require('supertest'),
     models = require('../../server/models/index'),
     assert = require('chai').assert,
     app = require('../../server.js'),
-    async = require('async'),
-    settings = require('../../conf/config'),
-    q = require('q');
-
-var loadData = function (fix) {
-    var deferred = q.defer();
-    models[fix.model].create(fix.data)
-        .complete(function (err, result) {
-            if (err) {
-                console.log(err);
-            }
-            deferred.resolve(result);
-        });
-    return deferred.promise;
-};
+    settings = require('../../conf/config');
 
 describe('Test of root API', function () {
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
+        process.env.NODE_ENV = 'test';
         this.timeout(settings.timeout);
-        models.sequelize.sync({force: true})
-            .then(function () {
-                async.waterfall([
-                    function(callback) {
-                        var fixtures = require('./fixtures/users.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function() {
-                            callback(null);
-                        });
-                    },
-                    function(callback) {
-                        var fixtures = require('./fixtures/options.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function() {
-                            callback(null);
-                        });
-                    }
-                ], function (err, result) {
-                    done();
-                });
-            });
+        models.loadFixture(done);
     });
 
     after(function () {

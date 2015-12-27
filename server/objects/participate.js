@@ -58,7 +58,13 @@ participate.prototype.add = function (runId, user, done) {
                                         });
                                 });
                         });
+                })
+                .catch(function (err) {
+                    done(err, null);
                 });
+        })
+        .catch(function (err) {
+            done(err, null);
         });
 };
 

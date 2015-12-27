@@ -7,115 +7,16 @@ var assert = require('chai').assert;
 var models = require('../../server/models/index');
 var Journey = require('../../server/objects/journey');
 var Join = require('../../server/objects/join');
-var async = require('async');
 var sinon = require('sinon');
 var settings = require('../../conf/config');
-var q = require('q');
-
-var loadData = function (fix) {
-    var deferred = q.defer();
-    models[fix.model].create(fix.data)
-        .complete(function (err, result) {
-            if (err) {
-                return deferred.reject('error ' + err);
-            }
-            return deferred.resolve(result);
-        });
-    return deferred.promise;
-};
 
 describe('Test of journey object', function () {
     beforeEach(function (done) {
+        process.env.NODE_ENV = 'test';
         var fakeTime = new Date(2015, 6, 6, 0, 0, 0, 0).getTime();
         sinon.clock = sinon.useFakeTimers(fakeTime, 'Date');
         this.timeout(settings.timeout);
-        models.sequelize.sync({force: true})
-            .then(function () {
-                async.series([
-                    function fn1(callback) {
-                        var fixtures = require('./fixtures/users.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function() {
-                            callback(null);
-                        });
-                    },
-                    function fn2(callback) {
-                        var fixtures = require('./fixtures/runs.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function() {
-                            callback(null);
-                        });
-                    },
-                    function fn3(callback) {
-                        var fixtures = require('./fixtures/options.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function() {
-                            callback(null);
-                        });
-                    },
-                    function fn4(callback) {
-                        var fixtures = require('./fixtures/journeys.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function() {
-                            callback(null);
-                        });
-                    },
-                    function fn5(callback) {
-                        var fixtures = require('./fixtures/joins.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function() {
-                            callback(null);
-                        });
-                    },
-                    function fn6(callback) {
-                        var fixtures = require('./fixtures/invoices.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function() {
-                            callback(null);
-                        });
-                    },
-                    function fn7(callback) {
-                        var fixtures = require('./fixtures/validationJourneys.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function() {
-                            callback(null);
-                        });
-                    },
-                    function fn8(callback) {
-                        var fixtures = require('./fixtures/partner.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function() {
-                            callback(null);
-                        });
-                    }
-                ], function (err, result) {
-                    done();
-                });
-            });
+        models.loadFixture(done);
     });
 
     afterEach(function() {
@@ -326,7 +227,7 @@ describe('Test of journey object', function () {
             assert.equal(tmp.journey_type, 'aller-retour');
             assert.equal(tmp.car_type, 'citadine');
             assert.equal(tmp.amount, 5);
-            journey.save(tmp, user, function(err, newJourney) {
+            journey.save(tmp, user.id, function(err, newJourney) {
                 if (err) return done(err);
                 assert.equal(newJourney.id, 6);
                 assert.equal(newJourney.distance, '25 km');
@@ -366,7 +267,7 @@ describe('Test of journey object', function () {
                 user = {
                     'id': 1
                 };
-            journey.save(newJourney, user, function(err, createdJourney) {
+            journey.save(newJourney, user.id, function(err, createdJourney) {
                 if (err) return done(err);
                 assert.equal(createdJourney.id, 6);
                 assert.equal(createdJourney.distance, '25 km');

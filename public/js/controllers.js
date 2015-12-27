@@ -47,6 +47,9 @@ angular.module('runnable.controllers', []).
                 $scope.setCurrentUser(user, unread);
                 if ($rootScope.draftId) {
                     Journey.confirm($rootScope.draftId).then(function (journey) {
+                        var template = 'JourneyCreated',
+                            values = { runName: journey.Run.name };
+                        Inbox.addMessage(template, values, $rootScope.currentUser.id);
                         $location.path('/journey');
                     });
                 }
@@ -60,6 +63,9 @@ angular.module('runnable.controllers', []).
                 $scope.setCurrentUser(newUser, unread);
                 if ($rootScope.draftId) {
                     Journey.confirm($rootScope.draftId).then(function (journey) {
+                        var template = 'JourneyCreated',
+                            values = { runName: journey.Run.name };
+                        Inbox.addMessage(template, values, $rootScope.currentUser.id);
                         $location.path('/journey');
                     });
                 }

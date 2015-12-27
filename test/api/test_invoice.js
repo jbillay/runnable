@@ -9,102 +9,13 @@
 var assert = require('chai').assert;
 var models = require('../../server/models/index');
 var Invoice = require('../../server/objects/invoice');
-var async = require('async');
 var settings = require('../../conf/config');
-var q = require('q');
-
-var loadData = function (fix) {
-    var deferred = q.defer();
-    models[fix.model].create(fix.data)
-        .complete(function (err, result) {
-            if (err) {
-                console.log(err);
-            }
-            deferred.resolve(result);
-        });
-    return deferred.promise;
-};
 
 describe('Test of Invoice object', function () {
     beforeEach(function (done) {
+        process.env.NODE_ENV = 'test';
         this.timeout(settings.timeout);
-        models.sequelize.sync({force: true})
-            .then(function () {
-                async.waterfall([
-                    function (callback) {
-                        var fixtures = require('./fixtures/users.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function () {
-                            callback(null);
-                        });
-                    },
-                    function(callback) {
-                        var fixtures = require('./fixtures/options.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function() {
-                            callback(null);
-                        });
-                    },
-                    function (callback) {
-                        var fixtures = require('./fixtures/runs.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function () {
-                            callback(null);
-                        });
-                    },
-                    function (callback) {
-                        var fixtures = require('./fixtures/journeys.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function () {
-                            callback(null);
-                        });
-                    },
-                    function (callback) {
-                        var fixtures = require('./fixtures/joins.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function () {
-                            callback(null);
-                        });
-                    },
-                    function (callback) {
-                        var fixtures = require('./fixtures/invoices.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function () {
-                            callback(null);
-                        });
-                    },
-                    function (callback) {
-                        var fixtures = require('./fixtures/validationJourneys.json');
-                        var promises = [];
-                        fixtures.forEach(function (fix) {
-                            promises.push(loadData(fix));
-                        });
-                        q.all(promises).then(function () {
-                            callback(null);
-                        });
-                    }
-                ], function (err, result) {
-                    return done();
-                });
-            });
+        models.loadFixture(done);
     });
     //After all the tests have run, output all the sequelize logging.
     after(function () {

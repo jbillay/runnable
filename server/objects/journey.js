@@ -98,17 +98,17 @@ journey.prototype.save = function (journey, userId, done) {
     'use strict';
     var that = this,
         partner = new Partner();
-    models.User.find({where: {id: userId}})
+    models.User.findOne({where: {id: userId}})
         .then(function (user) {
             that.setJourney(journey);
-            models.Run.find({where: {id: journey.Run.id}})
+            models.Run.findOne({where: {id: journey.Run.id}})
                 .then(function (run) {
                     partner.getByToken(journey.token)
                         .then(function (selectedPartner) {
                             models.Journey.findOrCreate({where: {id: journey.id}, defaults: that})
-                                .spread(function (journey, created) {
+                                .spread(function (selectedJourney, created) {
                                     if (created) {
-                                        var newJourney = _.assign(journey, that);
+                                        var newJourney = _.assign(selectedJourney, that);
                                         newJourney.setRun(run)
                                             .then(function () {
                                                 newJourney.setUser(user)
@@ -124,7 +124,7 @@ journey.prototype.save = function (journey, userId, done) {
                                                     });
                                             });
                                     } else {
-                                        var updateJourney = _.assign(journey, that);
+                                        var updateJourney = _.assign(selectedJourney, that);
                                         updateJourney.save()
                                             .then(function (updatedJourney) {
                                                 updatedJourney.setRun(run)
@@ -147,6 +147,9 @@ journey.prototype.save = function (journey, userId, done) {
                                 .catch(function (err) {
                                     done(err, null);
                                 });
+                        })
+                        .catch(function (err) {
+                            done(err, null);
                         });
                 });
         });

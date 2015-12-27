@@ -107,10 +107,10 @@ run.prototype.getActiveList = function (done) {
     models.Run.findAll({where: {is_active: true, date_start: {$gte: day}},
                         order: 'date_start ASC'})
 		.then(function (runs) {
-			done(null, runs);
+			return done(null, runs);
 		})
 		.catch(function (err) {
-			done(err, null);
+			return done(err, null);
 		});
 };
 
@@ -119,7 +119,9 @@ run.prototype.search = function (searchInfo, done) {
 	distance.apiKey = 'AIzaSyDwRGJAEBNCeZK1176FXLvVAKyt5XQXXsM';
     var searchParams = [{is_active: true}];
     if (searchInfo.run_name && searchInfo.run_name.length !== 0) {
-        searchParams.push('lower(name) LIKE lower("%' + searchInfo.run_name + '%")');
+        searchParams.push(models.Sequelize.where(
+            models.Sequelize.fn('lower', models.Sequelize.col('name')),
+            {$like: '%' + searchInfo.run_name.toLowerCase() + '%'}));
     }
     if (searchInfo.run_adv_type && searchInfo.run_adv_type.length !== 0) {
         searchParams.push({type: searchInfo.run_adv_type});
