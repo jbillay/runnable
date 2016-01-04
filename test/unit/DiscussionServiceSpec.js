@@ -88,6 +88,7 @@ describe('Discussion Service', function() {
                 id: 1,
                 message: 'test à la con',
                 is_public: false,
+                email: null,
                 UserId: 2,
                 JourneyId: 2,
                 createdAt: '2015-01-28 09:57:02'
@@ -95,6 +96,7 @@ describe('Discussion Service', function() {
                 id: 2,
                 message: 'je sais que ça va marcher',
                 is_public: false,
+                email: null,
                 UserId: 1,
                 JourneyId: 2,
                 createdAt: '2015-01-28 11:29:13'
@@ -134,13 +136,15 @@ describe('Discussion Service', function() {
                 message: 'test à la con',
                 is_public: true,
                 UserId: 2,
+                email: null,
                 JourneyId: 2,
                 createdAt: '2015-01-28 09:57:02'
             },{
                 id: 5,
                 message: 'je sais que ça va marcher',
                 is_public: true,
-                UserId: 1,
+                email: 'ruestpierrestgermain@gmail.com',
+                UserId: null,
                 JourneyId: 2,
                 createdAt: '2015-01-28 11:29:13'
             }]);
@@ -155,7 +159,8 @@ describe('Discussion Service', function() {
             expect(msgList.length).toEqual(2);
             expect(msgList[1].id).toEqual(5);
             expect(msgList[1].message).toEqual('je sais que ça va marcher');
-            expect(msgList[1].UserId).toBe(1);
+            expect(msgList[1].email).toEqual('ruestpierrestgermain@gmail.com');
+            expect(msgList[1].UserId).toBeNull();
             expect(msgList[1].JourneyId).toBe(2);
         });
 
@@ -214,9 +219,10 @@ describe('Discussion Service', function() {
 
             var JourneyId = 1,
                 msg = 'Test',
+                email = 'jbillay@gmail.com',
                 message = null;
 
-            var promise = service.addPublicMessage(msg, JourneyId);
+            var promise = service.addPublicMessage(msg, JourneyId, email);
 
             promise.then(function(ret){
                 message = ret;
@@ -231,6 +237,7 @@ describe('Discussion Service', function() {
 
             var JourneyId = 1,
                 msg = 'Test',
+                email = 'jbillay@gmail.com',
                 message = null;
 
             var promise = service.addPublicMessage(msg, JourneyId);

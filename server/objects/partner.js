@@ -124,13 +124,13 @@ partner.prototype.sendInfo = function (partnerId) {
                     expiry: partner.expiry,
                     fee: partner.fee,
                     token: partner.token };
-            inbox.add(template, values, partner.User.id, function (err, msg) {
-                if (err) {
-                    deferred.reject(err);
-                } else {
+            inbox.add(template, values, partner.User.id)
+                .then(function (msg) {
                     deferred.resolve('Partner info sent');
-                }
-            });
+                })
+                .catch(function (err) {
+                    deferred.reject(new Error('Partner send info err : ' + err));
+                });
         })
         .catch(function (err) {
             deferred.reject(err);
@@ -151,13 +151,13 @@ partner.prototype.notifyJourneyCreation = function (run, journey) {
                     runName: run.name,
                     journeyId: journey.id,
                     journeyStart: journey.address_start};
-            inbox.add(template, values, partner.User.id, function (err, msg) {
-                if (err) {
-                    deferred.reject(err);
-                } else {
+            inbox.add(template, values, partner.User.id)
+                .then(function (msg) {
                     deferred.resolve('Partner notification sent');
-                }
-            });
+                })
+                .catch(function (err) {
+                    deferred.reject(new Error('Partner send info err : ' + err));
+                });
         })
         .catch(function (err) {
             deferred.reject(err);

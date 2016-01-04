@@ -678,6 +678,7 @@ angular.module('runnable.controllers', []).
 				var obj = 'map_canvas';
 				GoogleMapApi.initMap(obj);
 				GoogleMapApi.showDirection(obj, $scope.journey.address_start, $scope.journey.Run.address_start);
+                $('[data-toggle="tooltip"]').tooltip();
                 $(document).scrollTop(0);
 			});
 			$scope.nbFreeSpaceOutward = function () {
@@ -800,7 +801,7 @@ angular.module('runnable.controllers', []).
 				{	message: text,
 					createdAt: Date.now()
 				});
-			Discussion.addPublicMessage(text, $scope.journeyId);
+			Discussion.addPublicMessage(text, $scope.journeyId, null);
 		};
 	}).
 	controller('RunnableJourneyCreateController', function ($scope, $q, $timeout, $routeParams, $rootScope, $location,
@@ -1058,6 +1059,7 @@ angular.module('runnable.controllers', []).
 							lastname: Session.userLastname}
 				});
 			Discussion.addPrivateMessage(text, $scope.selectedJourney.id);
+/*
 			angular.forEach($scope.discussionUsers, function (user) {
 				if (user.id !== Session.userId) {
                     var values = {runName: $scope.selectedJourney.Run.name,
@@ -1068,6 +1070,7 @@ angular.module('runnable.controllers', []).
                     Inbox.addMessage(template, values, user.id);
 				}
 			});
+*/
 		};
 	}).
 	controller('RunnableUserPublicProfileController', function ($scope, $q, $routeParams, User) {

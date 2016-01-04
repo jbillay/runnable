@@ -934,9 +934,9 @@ angular.module('runnable.services', ['ngResource']).
 					});
 				return deferred.promise;
 			},
-			addPublicMessage: function(message, journeyId) {
+			addPublicMessage: function(message, journeyId, email) {
 				var deferred = $q.defer();
-				$http.post('/api/discussion/public/message', {message: message, journeyId: journeyId}).
+				$http.post('/api/discussion/public/message', {message: message, journeyId: journeyId, email: email}).
 					success(function (result) {
 						deferred.resolve(result);
 					}).

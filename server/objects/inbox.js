@@ -5,7 +5,8 @@
 'use strict';
 
 var models = require('../models');
-var Mail = require('../objects/mail');
+var Mail = require('./mail');
+var q = require('q');
 
 function inbox() {
     this.userId = null;
@@ -14,6 +15,7 @@ function inbox() {
 	this.is_read = null;
     this.createdAt = null;
     this.updatedAt = null;
+    this.mail = new Mail();
 }
 
 inbox.prototype.get = function () {
@@ -41,38 +43,55 @@ inbox.prototype.set = function (inbox) {
     }
 };
 
-inbox.prototype.add = function (template, values, userId, done) {
-    var that = this;
+// For testing purpose (Mock mail functions)
+inbox.prototype.setMail = function (mail) {
+    this.mail = mail;
+};
+
+inbox.prototype.add = function (template, values, userId) {
+    var deferred = q.defer(),
+        that = this;
 
     console.log('add a message for user : ' + userId);
-	new Mail().then(function (mail) {
-		mail.generateContent(template, values)
-			.then(function (mail) {
+    that.mail.init().then(function () {
+        that.mail.generateContent(template, values)
+			.then(function () {
                 models.User.find({where: {id: userId}})
                     .then(function(user) {
-						var message = mail.getContentHtml(),
-							title = mail.getSubject();
-						mail.setTo(user.email);
-						mail.send();
-                        that.title = title;
-                        that.message = message;
-                        that.is_read = false;
-						models.Inbox.create(that)
+						var message = that.mail.getContentHtml(),
+							title = that.mail.getSubject(),
+                            currentMessage = {
+                                userId: user.id,
+                                title: title,
+                                message: message,
+                                is_read: false,
+                                createdAt: null,
+                                updatedAt: null
+                            };
+                        that.mail.setTo(user.email);
+						models.Inbox.create(currentMessage)
 							.then(function (newMessage) {
 								newMessage.setUser(user)
 									.then(function (newMessage) {
-										done(null, newMessage);
+                                        that.mail.send()
+                                            .then(function (res) {
+                                                deferred.resolve(newMessage);
+                                            })
+                                            .catch(function (err) {
+                                                deferred.reject(new Error('Email has not been sent to user : ' + err));
+                                            });
 									})
 									.catch(function (err) {
-										done(err, null);
+                                        deferred.reject(new Error('Inbox : not able to set User : ' + err));
 									});
 							});
 					});
             })
 			.catch(function (err) {
-				done(new Error('Unable to send mail : ' + err), null);
+                deferred.reject(new Error('Unable to generate mail : ' + err));
             });
     });
+    return deferred.promise;
 };
 
 inbox.prototype.getList = function (user, done) {

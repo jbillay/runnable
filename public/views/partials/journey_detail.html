@@ -83,13 +83,22 @@
                             </div>
                         </div>
                     </div>
-                    <form name="discussionForm" ng-submit='sendMessage()'>
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Entrer votre message" ng-model="newMessageEntry">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="submit">Envoyer</button>
-                            </span>
+                    <form name="discussionForm" class="form form-inline" role="form" ng-submit='sendMessage()'>
+                        <div class="form-group form-inline-no-padding"
+                            ng-class="{'col-xs-12 col-sm-10 col-lg-10': isAuthenticated, 'col-xs-12 col-sm-7 col-lg-7': !isAuthenticated}">
+                            <label class="sr-only" for="newMessageEntry">Email address</label>
+                            <input type="text" class="form-control form-control-inline" id="newMessageEntry" maxlength="50"
+                                   placeholder="Entrer votre message" ng-model="newMessageEntry">
                         </div>
+                        <div class="form-group form-inline-no-padding"
+                             ng-class="{'display: none !important': isAuthenticated, 'col-xs-12 col-sm-3 col-lg-3': !isAuthenticated}">
+                            <label class="sr-only" for="userEmailEntry">Email address</label>
+                            <input type="text" class="form-control form-control-inline" id="userEmailEntry"
+                                   placeholder="Votre email" ng-model="userEmailEntry" ng-if="!isAuthenticated"
+                                   data-toggle="tooltip" data-placement="top"
+                                   title="Renseignez votre email pour être notifié des réponses ou authentifiez-vous.">
+                        </div>
+                        <button class="btn btn-default col-xs-6 col-sm-2 col-lg-2" type="submit">Envoyer</button>
                     </form>
                 </div>
             </div>

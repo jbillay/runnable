@@ -3,7 +3,6 @@
  */
 
 var models = require('../models');
-var Inbox = require('./inbox');
 
 function invoice() {
     'use strict';

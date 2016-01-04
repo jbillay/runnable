@@ -7,7 +7,8 @@
 module.exports = function(sequelize, DataTypes) {
     var Discussion = sequelize.define('Discussion', {
         message:    DataTypes.TEXT,
-        is_public:  DataTypes.BOOLEAN
+        is_public:  DataTypes.BOOLEAN,
+        email:      DataTypes.STRING
     }, {
         classMethods: {
             associate: function(models) {

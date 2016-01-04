@@ -10,16 +10,14 @@ exports.getUsers = function (req, res) {
     var discussion = new Discussion(),
         journeyId = req.params.id;
     console.log('Get discussion users for journey : ' + journeyId);
-    discussion.getUsers(journeyId, function(err, users) {
-        if (err) {
-            console.log('Not able to get discussion users for journey : ' + err);
-            res.jsonp({msg: err, type: 'error'});
-        } else {
+    discussion.getUsers(journeyId)
+        .then(function(users) {
             res.jsonp(users);
-        }
-        err = null;
-        users = null;
-    });
+        })
+        .catch(function(err) {
+            console.log(new Error('Not able to get discussion users for journey : ' + err));
+            res.jsonp({msg: err, type: 'error'});
+        });
     discussion = null;
     journeyId = null;
 };
@@ -62,18 +60,25 @@ exports.getPrivateMessages = function (req, res) {
     journeyId = null;
 };
 
-exports.addPrivateMessage = function (req, res) {
+exports.addPrivateMessage = function (req, res, next) {
 	var discussion = new Discussion(),
         journeyId = req.body.journeyId,
 		message = req.body.message,
         is_public = false,
 		user = req.user;
-	discussion.addMessage(message, journeyId, is_public, user, function(err, messages) {
+	discussion.addMessage(message, journeyId, is_public, user, null, function(err, messages) {
         if (err) {
             console.log('Not able to add discussion messsage for journey : ' + err);
             res.jsonp({msg: err, type: 'error'});
         } else {
+            req.notifMessage = {
+                journeyId: journeyId,
+                message: message,
+                is_public: is_public,
+                user: user
+            };
             res.jsonp({msg: 'ok', type: 'success'});
+            next();
         }
         err = null;
         messages = null;
@@ -82,22 +87,42 @@ exports.addPrivateMessage = function (req, res) {
     journeyId = null;
 };
 
-exports.addPublicMessage = function (req, res) {
+exports.addPublicMessage = function (req, res, next) {
 	var discussion = new Discussion(),
         journeyId = req.body.journeyId,
 		message = req.body.message,
+		email = req.body.email,
         is_public = true,
 		user = req.user;
-	discussion.addMessage(message, journeyId, is_public, user, function(err, messages) {
+	discussion.addMessage(message, journeyId, is_public, user, email, function(err, messages) {
         if (err) {
             console.log('Not able to add discussion messsage for journey : ' + err);
             res.jsonp({msg: err, type: 'error'});
         } else {
+            req.notifMessage = {
+                journeyId: journeyId,
+                message: message,
+                is_public: is_public,
+                user: user
+            };
             res.jsonp({msg: 'ok', type: 'success'});
+            next();
         }
         err = null;
         messages = null;
     });
     discussion = null;
     journeyId = null;
+};
+
+exports.notificationMessage = function (req, res) {
+    var discussion = new Discussion(),
+        dataNotificationMessage = req.notifMessage;
+    discussion.notificationMessage(dataNotificationMessage.journeyId, dataNotificationMessage.message,
+        dataNotificationMessage.is_public, dataNotificationMessage.user, function (err, message) {
+            if (err) {
+                return res.jsonp({msg: err, type:'error'});
+            }
+            return res.jsonp({msg: message, type:'success'});
+    });
 };

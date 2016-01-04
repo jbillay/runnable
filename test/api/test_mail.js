@@ -25,7 +25,8 @@ describe('Tests of mail object', function () {
 
     describe('Test of inbox object', function () {
         it('Test to send an mail with service', function (done) {
-            new Mail().then(function (mail) {
+            var mail = new Mail();
+            mail.init().then(function () {
                 sinon.stub(mail, 'send', function() {
                     assert.equal(this.user, 'jbillay@gmail.com');
                     assert.equal(this.password, 'test');
@@ -36,6 +37,7 @@ describe('Tests of mail object', function () {
                 mail.setContentHtml('<h2>Bonjour</h2>h2>');
                 mail.setText('Bonjour');
                 mail.addAttachment('./fixtures/joins.json');
+                // not in promise as function stub to check content
                 mail.send();
                 return done();
             })
@@ -45,7 +47,8 @@ describe('Tests of mail object', function () {
         });
 
         it('Test to send an mail with a template', function (done) {
-            new Mail().then(function (mail) {
+            var mail = new Mail();
+            mail.init().then(function () {
                 mail.setTo('jbillay@gmail.com');
                 mail.generateContent('ActivationAccount', {url: 'url', timekey: 'timekey', userId: 'toto'})
                     .then(function (mail) {
@@ -57,6 +60,7 @@ describe('Tests of mail object', function () {
                         });
                         assert.equal(mail.getContentHtml(), 'TEST Out of stock toto timekey HTML');
                         assert.equal(mail.getSubject(), 'Email pour user toto');
+                        // not in promise as function stub to check content
                         mail.send();
                         return done();
                     })
@@ -70,7 +74,8 @@ describe('Tests of mail object', function () {
         });
 
         it('Test to send an mail with empty template', function (done) {
-            new Mail().then(function (mail) {
+            var mail = new Mail();
+            mail.init().then(function () {
                 mail.setTo('jbillay@gmail.com');
                 mail.generateContent(null, {url: 'url', timekey: 'timekey', userId: 'toto'})
                     .catch(function (err) {
@@ -81,7 +86,8 @@ describe('Tests of mail object', function () {
         });
 
         it('Test to send an mail with wrong template', function (done) {
-            new Mail().then(function (mail) {
+            var mail = new Mail();
+            mail.init().then(function () {
                 mail.setTo('jbillay@gmail.com');
                 mail.generateContent('iruotu', {url: 'url', timekey: 'timekey', userId: 'toto'})
                     .catch(function (err) {
@@ -89,6 +95,36 @@ describe('Tests of mail object', function () {
                         return done();
                     });
             });
+        });
+
+        it('Send an email to check promise of send function', function (done) {
+            var mail = new Mail();
+            mail.init().then(function () {
+                mail.setTo('jbillay@gmail.com');
+                mail.generateContent('ActivationAccount', {url: 'url', timekey: 'timekey', userId: 'toto'})
+                    .then(function () {
+                        mail.send()
+                            .then(function (res) {
+                                assert.include(res, 'sent');
+                                return done();
+                            })
+                            .catch(function (err) {
+                                return done(err);
+                            });
+                    });
+            });
+        });
+
+        it('Check email sent with one call', function (done) {
+            var mail = new Mail();
+            mail.sendEmail('ActivationAccount', {url: 'url', timekey: 'timekey', userId: 'toto'}, 'jbillay@gmail.com')
+                .then(function (res) {
+                    assert.include(res, 'sent');
+                    return done();
+                })
+                .catch(function (err) {
+                    return done(err);
+                });
         });
     });
 });

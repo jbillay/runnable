@@ -62,10 +62,7 @@ describe('Test of bank_account object', function () {
 		assert.equal(tmp.BIC, 'AGRIFRPP882');
 		assert.equal(tmp.user_id, 1);
         bank.save(function (err, bankAccount) {
-            if (err) {
-				console.log(err);
-				return done(err);
-			}
+            if (err) return done(err);
 			assert.isNull(err);
 			assert.equal(bankAccount.owner, 'Jeremy Billay');
 			assert.equal(bankAccount.agency_name, 'CIC');
@@ -102,10 +99,7 @@ describe('Test of bank_account object', function () {
 		assert.equal(tmp.BIC, 'AGRIFRPP000');
 		assert.equal(tmp.user_id, 2);
         bank.save(function (err, bankAccount) {
-            if (err) {
-				console.log(err);
-				return done(err);
-			}
+            if (err) return done(err);
 			assert.isNull(err);
 			assert.equal(bankAccount.owner, 'Richard Couret');
 			assert.equal(bankAccount.agency_name, 'Crédit Agricole');
@@ -142,10 +136,7 @@ describe('Test of bank_account object', function () {
 		assert.equal(tmp.BIC, 'AGRIFRPP000');
 		assert.equal(tmp.user_id, 2);
         bank.save(function (err, bankAccount) {
-            if (err) {
-				console.log(err);
-				return done(err);
-			}
+            if (err) return done(err);
 			assert.isNull(err);
 			assert.equal(bankAccount.owner, 'Richard Couret');
 			assert.equal(bankAccount.agency_name, 'CIC');

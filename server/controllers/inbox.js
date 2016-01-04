@@ -11,15 +11,13 @@ exports.add = function (req, res) {
 		userId = req.body.userId,
 		inbox = new Inbox();
 
-		inbox.add(template, values, userId, function (err, message){
-			if (err) {
-				res.jsonp({msg: 'notAbleAddMessage', type: 'error'});
-			} else {
-				res.jsonp(message);
-			}
-			err = null;
-			message = null;
-		});
+    inbox.add(template, values, userId)
+        .then(function (message) {
+            res.jsonp(message);
+        })
+        .catch(function (err){
+            res.jsonp({msg: 'notAbleAddMessage', type: 'error'});
+        });
 	template = null;
 	values = null;
 	userId = null;

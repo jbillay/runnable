@@ -3,7 +3,8 @@
  */
 
 var models = require('../models');
-var Mail = require('../objects/mail');
+var Inbox = require('./inbox');
+var q = require('q');
 
 function participate() {
     'use strict';
@@ -94,31 +95,25 @@ participate.prototype.userRunList = function (runId, done) {
 
 participate.prototype.notify = function (run, journey, done) {
     'use strict';
-    var template = 'NotifyNewJourney',
+    var inbox = new Inbox(),
+        template = 'NotifyNewJourney',
         values = {
             runName: run.name,
             journeyId: journey.id,
             journeyStart: journey.address_start};
-    new Mail().then(function (mail) {
-        mail.generateContent(template, values)
-            .then(function (mail) {
-                models.Participate.findAll({where: {runId: run.id}, include: [models.User]})
-                    .then(function (participations) {
-                        participations.forEach(function (participation) {
-                            mail.setTo(participation.User.email);
-                            mail.send();
-                            console.log('Journey notification sent to ' + participation.User.email);
-                        });
-                        done(null, participations);
-                    })
-                    .catch(function (err) {
-                        done(err, null);
-                    });
+        models.Participate.findAll({where: {runId: run.id}, include: [models.User]})
+            .then(function (participations) {
+                var promises = [];
+                participations.forEach(function (participation) {
+                    promises.push(inbox.add(template, values, participation.User.id));
+                });
+                q.all(promises).then(function () {
+                    done(null, participations);
+                });
             })
             .catch(function (err) {
                 done(err, null);
             });
-        });
 };
 
 module.exports = participate;

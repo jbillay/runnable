@@ -373,7 +373,7 @@ journey.prototype.cancelJoinsOfJourney = function (id, runame) {
         } else {
             journeyJoins.forEach(function (journeyJoin) {
                 promises.push(join.cancelById(journeyJoin.id));
-                inbox.add(template, values, journeyJoin.UserId);
+                promises.push(inbox.add(template, values, journeyJoin.UserId));
             });
             q.all(promises).then(function () {
                 deferred.resolve(journeyJoins);
@@ -413,19 +413,15 @@ journey.prototype.notifyJoin = function (invoice, done) {
         values = {
             runName: invoice.Journey.Run.name,
             journeyId: invoice.Journey.id };
-    inbox.add(templateUser, values, invoice.UserId, function (err, msg) {
-        if (err) {
-            done(err, null);
-        } else {
-            inbox.add(templateDriver, values, invoice.Journey.UserId, function (err, msg) {
-                if (err) {
-                    done(err, null);
-                } else {
-                    done(null, 'done');
-                }
-            });
-        }
-    });
+    q.all([
+        inbox.add(templateUser, values, invoice.UserId),
+        inbox.add(templateDriver, values, invoice.Journey.UserId)])
+        .then(function (res) {
+            done(null, 'done');
+        })
+        .catch(function (err) {
+            done(new Error('Journey notification : ' + err), null);
+        });
 };
 
 module.exports = journey;

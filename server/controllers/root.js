@@ -63,10 +63,11 @@ exports.sendMail = function (req, res) {
     var html,
         text,
         emails = [],
-        confirmation = req.body.confirm;
+        confirmation = req.body.confirm,
+        mail = new Mail();
     emails = req.body.emails.split(',');
     emails = _.compact(emails);
-    new Mail().then(function (mail) {
+    mail.init().then(function () {
         emails.forEach(function(email) {
             email = email.trim();
             mail.setTo(email);
@@ -75,7 +76,7 @@ exports.sendMail = function (req, res) {
             text = req.body.message;
             mail.setContentHtml(html);
             mail.setText(text);
-            mail.send();
+            mail.send().done();
             console.log('Mail sent to : ' + email);
         });
         res.jsonp({msg: confirmation, type: 'success'});

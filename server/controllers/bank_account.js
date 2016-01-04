@@ -6,7 +6,7 @@ var BankAccount = require('../objects/bank_account');
 
 exports.save = function (req, res) {
     'use strict';
-	console.log('Save the bank account : ' + req.body);
+	console.log('Save the bank account');
 	var bankAccount = new BankAccount();
 	bankAccount.set(req.body, req.user);
 	bankAccount.save(function (err, newBankAccount) {

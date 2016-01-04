@@ -22,6 +22,9 @@ function mail() {
     this.html = '<b>Test Email</b>';
     this.attachements = [];
     this.mailOptions = null;
+}
+
+mail.prototype.init = function () {
     var deferred = q.defer();
     var that = this;
     var option = new Options();
@@ -68,7 +71,7 @@ function mail() {
             deferred.reject(new Error(err));
         });
     return deferred.promise;
-}
+};
 
 mail.prototype.setTo = function (mail) {
     this.to = mail;
@@ -148,6 +151,7 @@ mail.prototype.generateContent = function (templateName, keys) {
 };
 
 mail.prototype.send = function () {
+    var deferred = q.defer();
     this.mailOptions = {
         from: this.from,
         to: this.to,
@@ -162,11 +166,43 @@ mail.prototype.send = function () {
         this.smtpTransport.sendMail(this.mailOptions, function (error, response) {
             if (error) {
                 console.log(new Error('Impossible to send mail : ' + error));
+                deferred.reject(new Error('Impossible to send mail : ' + error));
             } else {
                 console.log('Message sent: ' + response.messageId);
+                deferred.resolve('Message sent: ' + response.messageId);
             }
         });
+    } else {
+        deferred.resolve('Message not sent as configured');
     }
+    return deferred.promise;
+};
+
+mail.prototype.sendEmail = function (template, values, email) {
+    var that = this,
+        deferred = q.defer();
+
+    that.init()
+        .then(function () {
+            that.generateContent(template, values)
+                .then(function () {
+                    that.setTo(email);
+                    that.send()
+                        .then(function (res) {
+                            deferred.resolve(res);
+                        })
+                        .catch(function (err) {
+                            deferred.reject(new Error('Impossible to send mail : ' + err));
+                        });
+                })
+                .catch(function (err) {
+                    deferred.reject(new Error('Not able to get generate content : ' + err));
+                });
+        })
+        .catch(function (err) {
+            deferred.reject(new Error('Not able to init mail function : ' + err));
+        });
+    return deferred.promise;
 };
 
 module.exports = mail;

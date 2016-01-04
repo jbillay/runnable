@@ -66,16 +66,6 @@ describe('Test of Discussion API', function () {
                     return done();
                 });
         });
-
-        it('should return users for a not existing Journey', function (done) {
-            agent
-                .get('http://localhost:' + settings.port + '/api/discussion/users/876')
-                .end(function (err, res) {
-                    if (err) return done(err);
-                    assert.equal(res.body.type, 'error');
-                    return done();
-                });
-        });
     });
 
     describe('GET /api/discussion/messages/:id', function () {

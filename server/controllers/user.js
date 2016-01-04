@@ -30,10 +30,11 @@ exports.remove = function(req, res) {
 
 exports.invite = function(req, res) {
 	'use strict';
-	var emails;
+	var emails,
+        mail = new Mail();
 	emails = req.body.emails.split(',');
 	emails = _.compact(emails);
-    new Mail().then(function (mail) {
+    mail.init().then(function () {
         emails.forEach(function(email) {
             var html,
                 text;
@@ -44,7 +45,7 @@ exports.invite = function(req, res) {
             text = req.body.message;
             mail.setContentHtml(html);
             mail.setText(text);
-            mail.send();
+            mail.send().done();
             console.log('Invite sent to : ' + email);
         });
         res.jsonp({msg: 'Invitation(s) envoyée(s)'});
@@ -71,6 +72,7 @@ exports.update = function(req, res) {
 
 exports.create = function(req, res) {
     'use strict';
+    var mail = new Mail();
 	console.log('Add user : ' + req.body.email);
 	if (req.body.password === req.body.password_confirmation) {
 		var user = new User();
@@ -89,13 +91,7 @@ exports.create = function(req, res) {
                     }
                 });
 				var url = settings.domain;
-                new Mail().then(function (mail) {
-                    mail.setTo(user.email);
-                    mail.generateContent('NewAccount', {url: url})
-                        .then(function (mail) {
-                            mail.send();
-                    });
-                });
+                mail.sendEmail('NewAccount', {url: url}, user.email).done();
                 var token = jwt.sign(newUser, 'secretTokenKey4MyRunTrip$', {
                     expiresIn: 86400 // expires in 24 hours
                 });
@@ -181,24 +177,21 @@ exports.resetPassword = function (req, res) {
 	'use strict';
 	var email = req.body.email,
 		password = createPassword(8, 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890#{[@]}&"(-_)=+/-*'),
-        user = new User();
+        user = new User(),
+        mail = new Mail();
 
 	user.updatePassword(email, password, function (err, newUser) {
 		if (err) {
 			console.log('Not able to reset password : ' + err);
 			res.jsonp({msg: 'passwordNotReset', type: 'error'});
 		} else {
-            new Mail().then(function (mail) {
-                mail.setTo(newUser.email);
-                mail.setSubject('Génération d\'un nouveau mot de passe pour votre compte MyRunTrip');
-                mail.generateContent('ResetPassword', {password: password})
-                    .then(function (mail) {
-                        mail.send();
-                        res.jsonp({msg: 'passwordReset', type: 'success'});
-                        email = null;
-                        password = null;
-                    });
-            });
+            mail.sendEmail('ResetPassword', {password: password}, newUser.email)
+                .then(function (msg) {
+                    res.jsonp({msg: 'passwordReset', type: 'success'});
+                })
+                .catch(function (err) {
+                    res.jsonp({msg: err, type: 'error'});
+                });
 		}
 	});
 	user = null;
