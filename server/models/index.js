@@ -4,14 +4,14 @@
 
 'use strict';
 
-var fs        = require('fs');
-var path      = require('path');
-var Sequelize = require('sequelize');
-var settings  = require('../../conf/config');
-var sequelize = new Sequelize(settings.database.database, settings.database.user, settings.database.password, settings.database);
-var db        = {};
-var q = require('q');
-var async = require('async');
+var fs          = require('fs');
+var path        = require('path');
+var Sequelize   = require('sequelize');
+var settings    = require('../../conf/config');
+var sequelize   = new Sequelize(settings.database.database, settings.database.user, settings.database.password, settings.database);
+var db          = {};
+var q           = require('q');
+var async       = require('async');
 
 console.log('Init Database');
 

@@ -62,18 +62,19 @@ discussion.prototype.getUsers = function (journeyId) {
                     joins.forEach(function (join) {
                         userList.push(join.UserId);
                     });
-                    models.User.findAll({where: {id: userList}}).then(function (users) {
-                        deferred.resolve(users);
-                    }).catch(function (err) {
-                        deferred.reject(new Error(err));
-                    });
+                    models.User.findAll({where: {id: userList}})
+                        .then(function (users) {
+                            deferred.resolve(users);
+                        }).catch(function (err) {
+                            deferred.reject(new Error(err));
+                        });
                 });
             } else {
                 deferred.resolve(null);
             }
         })
         .catch(function (err) {
-            return deferred.reject(new Error(err));
+            deferred.reject(new Error(err));
         });
     return deferred.promise;
 };
@@ -95,14 +96,15 @@ discussion.prototype.getPublicUsers = function (journeyId) {
                         list.emails.push(discussion.email);
                     }
                 });
-                models.User.findAll({where: {id: list.users}}).then(function (users) {
-                    list.users = users;
-                    deferred.resolve(list);
-                }).catch(function (err) {
-                    deferred.reject(new Error(err));
-                });
+                models.User.findAll({where: {id: list.users}})
+                    .then(function (users) {
+                        list.users = users;
+                        deferred.resolve(list);
+                    }).catch(function (err) {
+                        deferred.reject(new Error(err));
+                    });
             } else {
-                deferred.resolve(null, null);
+                deferred.resolve(null);
             }
         })
         .catch(function (err) {
@@ -125,10 +127,11 @@ discussion.prototype.getMessages = function (journeyId, isPublic, done) {
 
 discussion.prototype.addMessage = function (message, journeyId, isPublic, user, email, done) {
 	var that = this;
-	that.message = message;
-    that.is_public = isPublic;
+
+    that.message = message;
     that.email = email;
-	console.log('try to add message to journey run : ' + journeyId);
+    that.is_public = isPublic;
+	console.log('try to add message to journey : ' + journeyId);
 	models.Journey.find({where: {id: journeyId}, include: [models.Run]})
         .then(function (journey) {
             if (!journey) {
@@ -156,7 +159,7 @@ discussion.prototype.addMessage = function (message, journeyId, isPublic, user, 
                                                             done(null, newDiscussion);
                                                         })
                                                         .catch(function (err) {
-                                                            done(err, null);
+                                                            done(new Error(err), null);
                                                         });
                                                 })
                                                 .catch(function (err) {
@@ -164,30 +167,27 @@ discussion.prototype.addMessage = function (message, journeyId, isPublic, user, 
                                                 });
                                     });
                                 } else {
-                                    newDiscussion.setUser(null)
-                                        .then(function (newDiscussion) {
-                                            var values = {
-                                                    runName: journey.Run.name,
-                                                    journeyId: journey.id,
-                                                    text: message,
-                                                    username: 'Un utilisateur'
-                                                };
-                                            inbox.add(template, values, journey.UserId)
-                                                .then(function (message) {
-                                                    done(null, newDiscussion);
-                                                })
-                                                .catch(function (err) {
-                                                    done(err, null);
-                                                });
+                                    var values = {
+                                            runName: journey.Run.name,
+                                            journeyId: journey.id,
+                                            text: message,
+                                            username: 'Un utilisateur'
+                                        };
+                                    inbox.add(template, values, journey.UserId)
+                                        .then(function (message) {
+                                            done(null, newDiscussion);
                                         })
                                         .catch(function (err) {
-                                            done(err, null);
+                                            done(new Error(err), null);
                                         });
                                 }
                             });
                     });
             }
-		});
+		})
+        .catch(function (err) {
+            done(new Error(err), null);
+        });
 };
 
 discussion.prototype.notificationMessage = function (journeyId, message, is_public, user, done) {
@@ -222,7 +222,7 @@ discussion.prototype.notificationMessage = function (journeyId, message, is_publ
                             });
                     })
                     .catch(function (err) {
-                        done(err, null);
+                        done(new Error(err), null);
                     });
             } else {
                 that.getPublicUsers(journeyId)
@@ -259,10 +259,13 @@ discussion.prototype.notificationMessage = function (journeyId, message, is_publ
                             });
                     })
                 .catch(function (err) {
-                    done(err, null);
+                    done(new Error(err), null);
                 });
             }
-    });
+        })
+        .catch(function (err) {
+            done(new Error(err), null);
+        });
 };
 
 module.exports = discussion;

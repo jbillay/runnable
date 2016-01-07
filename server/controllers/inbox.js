@@ -13,15 +13,11 @@ exports.add = function (req, res) {
 
     inbox.add(template, values, userId)
         .then(function (message) {
-            res.jsonp(message);
+            return res.jsonp(message);
         })
         .catch(function (err){
-            res.jsonp({msg: 'notAbleAddMessage', type: 'error'});
+            return res.jsonp({msg: 'notAbleAddMessage', type: 'error'});
         });
-	template = null;
-	values = null;
-	userId = null;
-	inbox = null;
 };
 
 exports.getList = function (req, res) {

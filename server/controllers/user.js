@@ -138,9 +138,9 @@ exports.showJourneys = function (req, res) {
 	journey.getByUser(id, function (err, journeyList) {
 		if (err) {
 			console.log('Not able to get user journey : ' + err);
-			res.jsonp({msg: 'Not able to get user journey', type: 'error'});
+			return res.jsonp({msg: 'Not able to get user journey', type: 'error'});
 		} else {
-			res.jsonp(journeyList);
+			return res.jsonp(journeyList);
 		}
 		err = null;
 	});
@@ -321,6 +321,7 @@ exports.uploadPicture = function (req, res) {
     var userId= req.user.id,
         path = req.files.file.path,
         user = new User();
+    console.log(req.files);
     user.addPicture(userId, path, function (err) {
         if (err) {
             console.log('[ERROR] Not able to save profil picture : ' + err);

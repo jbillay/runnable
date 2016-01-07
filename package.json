@@ -51,7 +51,7 @@
     "redis": "~2.1.0",
     "request": "~2.40.0",
     "require-all": "0.0.8",
-    "sequelize": "~3.15.*",
+    "sequelize": "~3.17.*",
     "should": "~4.3.0",
     "sinon": "~1.10.3",
     "slug": "~0.9.1",

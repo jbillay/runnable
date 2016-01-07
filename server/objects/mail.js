@@ -161,7 +161,6 @@ mail.prototype.send = function () {
         html: this.html,
         attachments: this.attachements
     };
-
     if (this.toSend) {
         this.smtpTransport.sendMail(this.mailOptions, function (error, response) {
             if (error) {

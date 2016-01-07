@@ -12,14 +12,12 @@ exports.getUsers = function (req, res) {
     console.log('Get discussion users for journey : ' + journeyId);
     discussion.getUsers(journeyId)
         .then(function(users) {
-            res.jsonp(users);
+            return res.jsonp(users);
         })
         .catch(function(err) {
             console.log(new Error('Not able to get discussion users for journey : ' + err));
-            res.jsonp({msg: err, type: 'error'});
+            return res.jsonp({msg: err, type: 'error'});
         });
-    discussion = null;
-    journeyId = null;
 };
 
 exports.getPublicMessages = function (req, res) {
@@ -30,15 +28,11 @@ exports.getPublicMessages = function (req, res) {
     discussion.getMessages(journeyId, is_public, function(err, messages) {
         if (err) {
             console.log('Not able to get discussion messsages for journey : ' + err);
-            res.jsonp({msg: err, type: 'error'});
+            return res.jsonp({msg: err, type: 'error'});
         } else {
-            res.jsonp(messages);
+            return res.jsonp(messages);
         }
-        err = null;
-        messages = null;
     });
-    discussion = null;
-    journeyId = null;
 };
 
 exports.getPrivateMessages = function (req, res) {
@@ -49,15 +43,11 @@ exports.getPrivateMessages = function (req, res) {
     discussion.getMessages(journeyId, is_public, function(err, messages) {
         if (err) {
             console.log('Not able to get discussion messsages for journey : ' + err);
-            res.jsonp({msg: err, type: 'error'});
+            return res.jsonp({msg: err, type: 'error'});
         } else {
-            res.jsonp(messages);
+            return res.jsonp(messages);
         }
-        err = null;
-        messages = null;
     });
-    discussion = null;
-    journeyId = null;
 };
 
 exports.addPrivateMessage = function (req, res, next) {
@@ -69,7 +59,7 @@ exports.addPrivateMessage = function (req, res, next) {
 	discussion.addMessage(message, journeyId, is_public, user, null, function(err, messages) {
         if (err) {
             console.log('Not able to add discussion messsage for journey : ' + err);
-            res.jsonp({msg: err, type: 'error'});
+            return res.jsonp({msg: err, type: 'error'});
         } else {
             req.notifMessage = {
                 journeyId: journeyId,
@@ -77,14 +67,11 @@ exports.addPrivateMessage = function (req, res, next) {
                 is_public: is_public,
                 user: user
             };
-            res.jsonp({msg: 'ok', type: 'success'});
             next();
+            //return res.jsonp({msg: 'ok', type: 'success'});
+            return null;
         }
-        err = null;
-        messages = null;
     });
-    discussion = null;
-    journeyId = null;
 };
 
 exports.addPublicMessage = function (req, res, next) {
@@ -97,7 +84,7 @@ exports.addPublicMessage = function (req, res, next) {
 	discussion.addMessage(message, journeyId, is_public, user, email, function(err, messages) {
         if (err) {
             console.log('Not able to add discussion messsage for journey : ' + err);
-            res.jsonp({msg: err, type: 'error'});
+            return res.jsonp({msg: err, type: 'error'});
         } else {
             req.notifMessage = {
                 journeyId: journeyId,
@@ -105,14 +92,10 @@ exports.addPublicMessage = function (req, res, next) {
                 is_public: is_public,
                 user: user
             };
-            res.jsonp({msg: 'ok', type: 'success'});
             next();
+            return null;
         }
-        err = null;
-        messages = null;
     });
-    discussion = null;
-    journeyId = null;
 };
 
 exports.notificationMessage = function (req, res) {
@@ -122,7 +105,8 @@ exports.notificationMessage = function (req, res) {
         dataNotificationMessage.is_public, dataNotificationMessage.user, function (err, message) {
             if (err) {
                 return res.jsonp({msg: err, type:'error'});
+            } else {
+                return res.jsonp({msg: message, type:'success'});
             }
-            return res.jsonp({msg: message, type:'success'});
     });
 };

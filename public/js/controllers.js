@@ -664,6 +664,7 @@ angular.module('runnable.controllers', []).
 			$scope.joined = 0;
 			$scope.reserved_outward = 0;
 			$scope.reserved_return = 0;
+
 			angular.forEach($scope.joinList, function (join) {
 				$scope.reserved_outward += join.nb_place_outward;
 				$scope.reserved_return += join.nb_place_return;
@@ -794,14 +795,16 @@ angular.module('runnable.controllers', []).
 			}
 			return fees;
 		};
-		$scope.sendMessage = function () {
-			var text = String($scope.newMessageEntry).replace(/<[^>]+>/gm, '');
-			$scope.newMessageEntry = '';
+		$scope.sendMessage = function (discussion) {
+			var text = String(discussion.newMessageEntry).replace(/<[^>]+>/gm, ''),
+                email = discussion.userEmailEntry || null;
+            discussion.newMessageEntry = '';
+            discussion.userEmailEntry = '';
 			$scope.publicMessages.unshift(
 				{	message: text,
 					createdAt: Date.now()
 				});
-			Discussion.addPublicMessage(text, $scope.journeyId, null);
+			Discussion.addPublicMessage(text, $scope.journeyId, email);
 		};
 	}).
 	controller('RunnableJourneyCreateController', function ($scope, $q, $timeout, $routeParams, $rootScope, $location,
@@ -919,26 +922,7 @@ angular.module('runnable.controllers', []).
                 fb_desc = 'Je vous propose un ' + journey.journey_type + ' au départ de ' + journey.address_start,
                 template = 'JourneyCreated',
                 values = {runName: journey.Run.name };
-            Journey.create(journey).then(function (newJourney) {
-                if (!$rootScope.isAuthenticated) {
-                    $rootScope.draftId = newJourney;
-                    $location.path('/connect');
-                } else {
-                    if ($scope.publishFacebook) {
-                        var fb_link = 'http://www.myruntrip.com/journey-' + newJourney.id;
-                        $facebook.ui({
-                            method: 'feed',
-                            link: fb_link,
-                            caption: 'My Run Trip',
-                            picture: 'http://www.myruntrip.com/img/myruntrip_100.jpg',
-                            name: fb_titre,
-                            description: fb_desc
-                        }, function(response){});
-                    }
-                    Inbox.addMessage(template, values, $rootScope.currentUser.id);
-                    $location.path('/journey');
-                }
-            });
+            Inbox.addMessage(template, values, $rootScope.currentUser.id);
         };
 	}).
 	controller('RunnableMyJourneyController', function ($scope, $q, $timeout, $rootScope, User, Discussion, Join,

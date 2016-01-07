@@ -112,7 +112,7 @@ describe('Test of Discussion API', function () {
                 .send(message)
                 .end(function (err, res) {
                     if (err) return done(err);
-                    assert.equal(res.body.msg, 'ok');
+                    assert.equal(res.body.msg, 'Notifications sent to users');
                     agent
                         .get('http://localhost:' + settings.port + '/api/discussion/private/messages/3')
                         .end(function (err, res) {
@@ -127,22 +127,19 @@ describe('Test of Discussion API', function () {
             var message = {
                 message: 'TEST MESSAGE PUBLIC',
                 is_public: true,
-                journeyId: 3
+                journeyId: 3,
+                email: null
             };
             agent
                 .post('http://localhost:' + settings.port + '/api/discussion/public/message')
                 .send(message)
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
-                    assert.equal(res.body.msg, 'ok');
+                    if (err) return done(err);
+                    assert.equal(res.body.msg, 'Notifications sent to users');
                     agent
                         .get('http://localhost:' + settings.port + '/api/discussion/public/messages/3')
                         .end(function (err, res) {
-                            if (err) {
-                                return done(err);
-                            }
+                            if (err) return done(err);
                             assert.equal(res.body.length, 3);
                             return done();
                         });

@@ -3,6 +3,8 @@
  */
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
 var assert = require('chai').assert;
 var models = require('../../server/models/index');
 var Discussion = require('../../server/objects/discussion');
@@ -137,7 +139,7 @@ describe('Test of discussion object', function () {
             assert.equal(newMessage.is_public, true);
             assert.equal(newMessage.JourneyId, 2);
             assert.isNull(newMessage.email);
-            assert.isNull(newMessage.UserId);
+            assert.isUndefined(newMessage.UserId);
             return done();
         });
     });

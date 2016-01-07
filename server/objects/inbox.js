@@ -53,44 +53,54 @@ inbox.prototype.add = function (template, values, userId) {
         that = this;
 
     console.log('add a message for user : ' + userId);
-    that.mail.init().then(function () {
-        that.mail.generateContent(template, values)
-			.then(function () {
-                models.User.find({where: {id: userId}})
-                    .then(function(user) {
-						var message = that.mail.getContentHtml(),
-							title = that.mail.getSubject(),
-                            currentMessage = {
-                                userId: user.id,
-                                title: title,
-                                message: message,
-                                is_read: false,
-                                createdAt: null,
-                                updatedAt: null
-                            };
-                        that.mail.setTo(user.email);
-						models.Inbox.create(currentMessage)
-							.then(function (newMessage) {
-								newMessage.setUser(user)
-									.then(function (newMessage) {
-                                        that.mail.send()
-                                            .then(function (res) {
-                                                deferred.resolve(newMessage);
-                                            })
-                                            .catch(function (err) {
-                                                deferred.reject(new Error('Email has not been sent to user : ' + err));
-                                            });
-									})
-									.catch(function (err) {
-                                        deferred.reject(new Error('Inbox : not able to set User : ' + err));
-									});
-							});
-					});
-            })
-			.catch(function (err) {
-                deferred.reject(new Error('Unable to generate mail : ' + err));
-            });
-    });
+    that.mail.init()
+        .then(function () {
+            that.mail.generateContent(template, values)
+                .then(function () {
+                    models.User.find({where: {id: userId}})
+                        .then(function(user) {
+                            var message = that.mail.getContentHtml(),
+                                title = that.mail.getSubject(),
+                                currentMessage = {
+                                    userId: user.id,
+                                    title: title,
+                                    message: message,
+                                    is_read: false,
+                                    createdAt: null,
+                                    updatedAt: null
+                                };
+                            that.mail.setTo(user.email);
+                            models.Inbox.create(currentMessage)
+                                .then(function (newMessage) {
+                                    newMessage.setUser(user)
+                                        .then(function (newMessage) {
+                                            that.mail.send()
+                                                .then(function (res) {
+                                                    deferred.resolve(newMessage);
+                                                })
+                                                .catch(function (err) {
+                                                    deferred.reject(new Error('Email has not been sent to user : ' + err));
+                                                });
+                                        })
+                                        .catch(function (err) {
+                                            deferred.reject(new Error('Inbox : not able to set User : ' + err));
+                                        });
+                                })
+                                .catch(function (err) {
+                                    deferred.reject(new Error('Inbox : not able to create inbox : ' + err));
+                                });
+                        })
+                        .catch(function (err) {
+                            deferred.reject(new Error('Unable to find user : ' + err));
+                        });
+                })
+                .catch(function (err) {
+                    deferred.reject(new Error('Unable to generate mail : ' + err));
+                });
+        })
+        .catch(function (err) {
+            deferred.reject(new Error('Unable to init mail : ' + err));
+        });
     return deferred.promise;
 };
 
