@@ -319,12 +319,18 @@ exports.publicDriverInfo = function (req, res) {
 exports.uploadPicture = function (req, res) {
     'use strict';
     console.log('[INFO] UPLOAD PICTURE USER CONTROLLER !');
-    console.log('[INFO] Voici les données récupérées du client : ');
+    console.log('[INFO] Voici les données récupérées du client files : ');
     console.log(req.files);
     console.log('[END]');
+    console.log('[INFO] Voici les données récupérées du client file : ');
+    console.log(req.file);
+    console.log('[END]');
+    console.log(settings.path);
     var userId= req.user.id,
         path = req.files.file.path,
         user = new User();
+    // Remove root path from path
+    path = path.replace(settings.path, '');
     user.addPicture(userId, path, function (err) {
         if (err) {
             console.log('[ERROR] Not able to save profil picture : ' + err);
