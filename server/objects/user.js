@@ -309,6 +309,7 @@ user.prototype.delete = function (id, done) {
 
 user.prototype.addPicture = function (id, path, done) {
     'use strict';
+    console.log('Try to add picture to user : ' + path);
     models.User.find({ where: {id: id}})
         .then(function (user) {
             if (!user) {
