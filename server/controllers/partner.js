@@ -67,6 +67,7 @@ exports.sendInfo = function (req, res) {
 
 exports.notifyJourneyCreation = function (req, res) {
     'use strict';
+    console.log('Notify partner for run : ' + req.Run.id);
     var partner = new Partner(),
         run = req.Run,
         journey = req.Journey;

@@ -3,6 +3,8 @@
  */
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
 var request = require('supertest'),
     models = require('../../server/models/index'),
     assert = require('chai').assert,
@@ -183,9 +185,7 @@ describe('Test of journey API', function () {
                 .post('http://localhost:' + settings.port + '/api/journey')
                 .send({journey: journey})
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
+                    if (err) return done(err);
                     assert.equal(res.body.journey.address_start, 'Paris');
                     assert.equal(res.body.journey.distance, '25 km');
                     assert.equal(res.body.journey.duration, '20 minutes');
@@ -404,9 +404,7 @@ describe('Test of journey API', function () {
                     agent
                         .get('http://localhost:' + settings.port + '/api/journey/2')
                         .end(function (err, res) {
-                            if (err) {
-                                return done(err);
-                            }
+                            if (err) return done(err);
                             assert.equal(res.res.body.address_start, 'Paris');
                             assert.equal(res.res.body.distance, '25 km');
                             assert.equal(res.res.body.duration, '20 minutes');
@@ -481,6 +479,64 @@ describe('Test of journey API', function () {
                             assert.equal(res.res.body.is_canceled, true);
                             return done();
                         });
+                });
+        });
+    });
+
+    describe('POST /api/journey with auth user for a partner', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should create a journey with a partner', function (done) {
+            // Check if email has been sent to owner user:1 and partner user:2
+            var journey = {
+                id: 5,
+                address_start: 'Paris',
+                distance: '25 km',
+                duration: '20 minutes',
+                journey_type: 'aller-retour',
+                date_start_outward: '2016-12-12 00:00:00',
+                time_start_outward: '09:00',
+                nb_space_outward: 2,
+                date_start_return: '2016-12-13 00:00:00',
+                time_start_return: '09:00',
+                nb_space_return: 2,
+                car_type: 'citadine',
+                amount: 5,
+                token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwNDgsImV4cCI6MTIwNTA5NjA2NjF9.-vmI9gHnCFX30N2oVhQLiADX-Uz2XHzrHjWjJpvSERo',
+                UserId: 1,
+                Run: {
+                    id: 4
+                }
+            };
+            agent
+                .post('http://localhost:' + settings.port + '/api/journey')
+                .send({journey: journey})
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.journey.address_start, 'Paris');
+                    assert.equal(res.body.journey.distance, '25 km');
+                    assert.equal(res.body.journey.duration, '20 minutes');
+                    assert.equal(res.body.journey.journey_type, 'aller-retour');
+                    assert.equal(res.body.journey.time_start_outward, '09:00');
+                    assert.equal(res.body.journey.nb_space_outward, 2);
+                    assert.equal(res.body.journey.time_start_return, '09:00');
+                    assert.equal(res.body.journey.nb_space_return, 2);
+                    assert.equal(res.body.journey.car_type, 'citadine');
+                    assert.equal(res.body.journey.amount, 5);
+                    assert.equal(res.body.journey.RunId, 4);
+                    assert.equal(res.body.journey.UserId, 1);
+                    assert.equal(res.body.journey.PartnerId, 1);
+                    return done();
+                    //agent
+                    //    .get('http://localhost:' + settings.port + '/api/inbox/msg')
+                    //    .end(function (err, res) {
+                    //        if (err) return done(err);
+                    //        console.log(res.body);
+                    //        assert.equal(res.body.length, 4);
+                    //        return done();
+                    //    });
                 });
         });
     });

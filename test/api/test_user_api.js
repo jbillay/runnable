@@ -3,6 +3,8 @@
  */
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
 var supertest = require('supertest'),
     models = require('../../server/models/index'),
     assert = require('chai').assert,
@@ -50,7 +52,6 @@ describe('Test of user API', function () {
 
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
-        process.env.NODE_ENV = 'test';
         var fakeTime = new Date(2015, 6, 6, 0, 0, 0, 0).getTime();
         sinon.clock = sinon.useFakeTimers(fakeTime, 'Date');
         this.timeout(settings.timeout);
@@ -259,6 +260,7 @@ describe('Test of user API', function () {
             agent
                 .get('http://localhost:' + settings.port + '/api/user/me')
                 .end(function(err, res) {
+                    if (err) return done(err);
                     assert.equal(res.body.id, 1);
                     assert.equal(res.body.firstname, 'Jeremy');
                     assert.equal(res.body.lastname, 'Billay');
@@ -280,6 +282,7 @@ describe('Test of user API', function () {
             agent
                 .get('http://localhost:' + settings.port + '/api/user/journeys')
                 .end(function (err, res) {
+                    if (err) return done(err);
                     assert.equal(res.body.length, 3);
                     return done();
                 });
@@ -311,6 +314,7 @@ describe('Test of user API', function () {
                 .post('http://localhost:' + settings.port + '/api/user/password/update')
                 .send({ passwords: {old: 'noofs', new: 'test', newConfirm: 'test'}})
                 .end(function (err, res) {
+                    if (err) return done(err);
                     assert.equal(res.body.msg, 'notAuthenticated');
                     done();
                 });
@@ -323,6 +327,7 @@ describe('Test of user API', function () {
                 .post('http://localhost:' + settings.port + '/api/user/password/update')
                 .send({ passwords: {old: 'noofs', new: 'test', newConfirm: 'test'}})
                 .end(function (err, res) {
+                    if (err) return done(err);
                     assert.equal(res.body.msg, 'passwordUpdated');
                     done();
                 });
@@ -333,6 +338,7 @@ describe('Test of user API', function () {
                 .post('http://localhost:' + settings.port + '/api/user/password/update')
                 .send({ passwords: {old: 'kjdhkqshdk', new: 'test', newConfirm: 'test'}})
                 .end(function (err, res) {
+                    if (err) return done(err);
                     assert.equal(res.body.msg, 'passwordWrong');
                     done();
                 });
@@ -343,6 +349,7 @@ describe('Test of user API', function () {
                 .post('http://localhost:' + settings.port + '/api/user/password/update')
                 .send({ passwords: {old: 'noofs', new: 'test', newConfirm: 'test1'}})
                 .end(function (err, res) {
+                    if (err) return done(err);
                     assert.equal(res.body.msg, 'passwordDifferent');
                     done();
                 });
@@ -358,6 +365,7 @@ describe('Test of user API', function () {
             agent
                 .get('http://localhost:' + settings.port + '/api/admin/users')
                 .end(function (err, res) {
+                    if (err) return done(err);
                     assert.equal(res.body.length, 3);
                     return done();
                 });
@@ -374,16 +382,15 @@ describe('Test of user API', function () {
                 .post('http://localhost:' + settings.port + '/api/admin/user/active')
                 .send({id: '2'})
                 .end(function (err, res) {
+                    if (err) return done(err);
                     assert.equal(res.body.msg, 'userToggleActive');
                     supertest(app)
                         .get('/api/user/public/info/2')
                         .end(function (err, res) {
-                            if (err) {
-                                return done(err);
-                            }
+                            if (err) return done(err);
                             assert.equal(res.body.isActive, 1);
+                            return done();
                         });
-                    return done();
                 });
         });
     });
@@ -398,9 +405,7 @@ describe('Test of user API', function () {
             agent
                 .get('http://localhost:' + settings.port + '/api/user/runs')
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
+                    if (err) return done(err);
                     assert.isNotNull(res.body);
                     return done();
                 });
@@ -441,11 +446,13 @@ describe('Test of user API', function () {
                 .post('/api/user/password/reset')
                 .send({ email: 'jbillay@gmail.com'})
                 .end(function (err, res) {
+                    if (err) return done(err);
                     assert.equal(res.body.msg, 'passwordReset');
                     agent
                         .post('http://localhost:' + settings.port + '/login')
                         .send({ email: 'jbillay@gmail.com', password: 'noofs' })
                         .end(function (err, res) {
+                            if (err) return done(err);
                             assert.isNull(err);
                             assert.equal(res.body.msg, 'accountWrongPassword');
                             return done();
@@ -459,14 +466,13 @@ describe('Test of user API', function () {
             supertest(app)
                 .get('/api/user/public/info/2')
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
+                    if (err) return done(err);
                     assert.notOk(res.body.isActive);
                     var hash = new Date(res.body.createdAt).getTime().toString();
                     supertest(app)
                         .get('/api/user/active/2/' + hash)
                         .end(function (err, res) {
+                            if (err) return done(err);
                             assert.isNull(err);
                             assert.equal(res.header.location, '/');
                             done();
@@ -517,6 +523,7 @@ describe('Test of user API', function () {
                     agent
                         .get('http://localhost:' + settings.port + '/api/user/me')
                         .end(function(err, res) {
+                            if (err) return done(err);
                             assert.equal(res.body.id, 1);
                             assert.equal(res.body.firstname, 'Jeremy');
                             assert.equal(res.body.lastname, 'Billay');
@@ -539,6 +546,7 @@ describe('Test of user API', function () {
             agent
                 .get('http://localhost:' + settings.port + '/api/user/remove/picture')
                 .end(function (err, res) {
+                    if (err) return done(err);
                     assert.equal(res.body.msg, 'userPictureRemoved');
                     return done();
                 });

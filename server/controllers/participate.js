@@ -59,11 +59,10 @@ exports.notify = function (req, res, next) {
         journey = req.Journey;
     if (!req.draft) {
         participate.notify(run, journey, function (err, notif) {
-            err = null;
-            notif = null;
+            if (err) {
+                console.log(new Error('Notify : ' + err));
+            }
             next();
         });
-        participate = null;
-        run = null;
     }
 };

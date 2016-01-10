@@ -116,10 +116,10 @@ journey.prototype.save = function (journey, userId, done) {
                                                         if (selectedPartner) {
                                                             newJourney.setPartner(selectedPartner)
                                                                 .then(function (newJourney) {
-                                                                    done(null, newJourney);
+                                                                    done(null, newJourney, run);
                                                                 });
                                                         } else {
-                                                            done(null, newJourney);
+                                                            done(null, newJourney, run);
                                                         }
                                                     });
                                             });
@@ -134,10 +134,10 @@ journey.prototype.save = function (journey, userId, done) {
                                                                 if (selectedPartner) {
                                                                     updatedJourney.setPartner(selectedPartner)
                                                                         .then(function (updatedJourney) {
-                                                                            done(null, updatedJourney);
+                                                                            done(null, updatedJourney, run);
                                                                         });
                                                                 } else {
-                                                                    done(null, updatedJourney);
+                                                                    done(null, updatedJourney, run);
                                                                 }
                                                             });
                                                     });
@@ -145,11 +145,11 @@ journey.prototype.save = function (journey, userId, done) {
                                     }
                                 })
                                 .catch(function (err) {
-                                    done(err, null);
+                                    done(err, null, null);
                                 });
                         })
                         .catch(function (err) {
-                            done(err, null);
+                            done(err, null, null);
                         });
                 });
         });

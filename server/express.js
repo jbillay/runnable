@@ -63,7 +63,7 @@ module.exports = function (app, passport) {
         app.use(passport.session());
 
         // Directory to save uploaded files
-        app.use(multer({ dest: path.join(__dirname, '../public/uploads/'),
+        app.use(multer({ dest: path.join(__dirname, '../public/uploads'),
             changeDest: function (dest, req) {
                 if (req.path.match(/^\/api\/user\/.+/)) {
                     dest = dest + '/users';
