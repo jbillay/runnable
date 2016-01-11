@@ -185,9 +185,18 @@ run.prototype.search = function (searchInfo, done) {
 
 run.prototype.getNextList = function (nb, done) {
     'use strict';
-    var day = new Date();
+    var day = new Date(),
+        limit = 0;
+    if (typeof nb === 'string') {
+        limit = parseInt(nb);
+    } else {
+        limit = nb;
+    }
+    if (isNaN(limit)){
+        done(new Error('Wrong format of limit number'), null);
+    }
     day.setHours(0,0,0,0);
-	models.Run.findAll({limit: nb, where: {is_active: true, date_start: {$gte: day}}, order: 'updatedAt DESC'})
+	models.Run.findAll({limit: limit, where: {is_active: true, date_start: {$gte: day}}, order: 'updatedAt DESC'})
 		.then(function (runs) {
 			done(null, runs);
 		})

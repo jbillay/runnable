@@ -3,6 +3,8 @@
  */
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
 var request = require('supertest'),
     models = require('../../server/models/index'),
     assert = require('chai').assert,
@@ -28,7 +30,6 @@ describe('Test of run API', function () {
 
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
-        process.env.NODE_ENV = 'test';
         var fakeTime = new Date(2015, 6, 6, 0, 0, 0, 0).getTime();
         sinon.clock = sinon.useFakeTimers(fakeTime, 'Date');
         this.timeout(settings.timeout);
@@ -116,7 +117,6 @@ describe('Test of run API', function () {
                 .get('/api/run/next/a')
                 .end(function (err, res) {
                     if (err) return done(err);
-                    console.log(res.body);
                     assert.equal(res.body.type, 'error');
                     return done();
                 });
