@@ -67,5 +67,30 @@ describe('Runnable Controllers', function() {
             timeout.flush();
             expect(scope.journeyList.length).toBe(2);
         });
+
+        it('Switch Display', function () {
+            expect(scope.page).toEqual('Journey');
+            $httpBackend.flush();
+            timeout.flush();
+            expect(scope.displayModeIcon).toEqual('fa-list');
+            expect(scope.displayMode).toEqual('list');
+            scope.switchDisplay();
+            expect(scope.displayModeIcon).toEqual('fa-list');
+            expect(scope.displayMode).toEqual('map');
+            scope.switchDisplay();
+            expect(scope.displayModeIcon).toEqual('fa-globe');
+            expect(scope.displayMode).toEqual('list');
+        });
+
+        it('Switch Display Mode', function () {
+            expect(scope.page).toEqual('Journey');
+            $httpBackend.flush();
+            timeout.flush();
+            expect(scope.displayModeIcon).toEqual('fa-list');
+            scope.switchDisplayMode();
+            expect(scope.displayModeIcon).toEqual('fa-globe');
+            scope.switchDisplayMode();
+            expect(scope.displayModeIcon).toEqual('fa-list');
+        });
     });
 });

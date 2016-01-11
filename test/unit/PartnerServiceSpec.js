@@ -50,6 +50,19 @@ describe('Partner Services', function() {
             expect(partner.fee).toEqual(8.2);
         });
 
+        it('should get partner by token with error', function() {
+            $httpBackend.whenGET('/api/admin/partner/' + partnerToken)
+                .respond({msg: 'error : toto', type: 'error'});
+            var promise = service.getByToken(partnerToken),
+                result = null;
+
+            promise.catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toContain('error');
+        });
+
         it('should fail to get partner by token', function() {
             $httpBackend.whenGET('/api/admin/partner/' + partnerToken).respond(500);
             var promise = service.getByToken(partnerToken),
@@ -82,6 +95,20 @@ describe('Partner Services', function() {
 
         });
 
+        it('should get partners list with error', function() {
+            $httpBackend.whenGET('/api/admin/partners').respond({msg: 'error : toto', type: 'error'});
+            var promise = service.getList(),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toContain('error');
+        });
+
         it('should fail to get partners list', function() {
             $httpBackend.whenGET('/api/admin/partners').respond(500);
             var promise = service.getList(),
@@ -112,7 +139,22 @@ describe('Partner Services', function() {
 
         });
 
-        it('should fail to save new page', function() {
+        it('should save new partner with error', function() {
+            $httpBackend.whenPOST('/api/admin/partner').respond({msg: 'error : toto', type: 'error'});
+            var newPartner = { name: 'TOTO', expiry: '2016-03-09', fee: 5.3 },
+                promise = service.create(newPartner),
+                message = null;
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
+
+        it('should fail to save new partner', function() {
             $httpBackend.whenPOST('/api/admin/partner').respond(500);
             var newPartner = { name: 'TOTO', expiry: '2016-03-09', fee: 5.3 },
                 promise = service.create(newPartner),
@@ -138,6 +180,32 @@ describe('Partner Services', function() {
             });
             $httpBackend.flush();
             expect(msg).toEqual('Partner info sent');
+        });
+
+        it('should send information to partner with error', function() {
+            $httpBackend.whenPOST('/api/admin/partner/info').respond({msg: 'error : toto', type: 'error'});
+            var promise = service.sendInfo(1),
+                msg = null;
+
+            promise.catch(function(ret){
+                msg = ret;
+            });
+            $httpBackend.flush();
+            expect(msg).toContain('error');
+        });
+
+        it('should fail to send information to partner', function() {
+            $httpBackend.whenPOST('/api/admin/partner/info').respond(500);
+            var promise = service.sendInfo(1),
+                message = null;
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+            $httpBackend.flush();
+            expect(message).toContain('error');
         });
     });
 });

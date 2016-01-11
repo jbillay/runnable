@@ -294,6 +294,7 @@ describe('Runnable Controllers', function() {
                 JourneyId: 2,
                 createdAt: '2015-01-28 11:29:13'
             }]);
+            $httpBackend.whenPOST('/api/discussion/public/message').respond('ok');
             var formElem = angular.element('<form ng-form-commit name="form"><input type="text" name="number"></form>');
             $compile(formElem)(scope);
 
@@ -363,6 +364,21 @@ describe('Runnable Controllers', function() {
             expect(scope.joined).toBe(0);
             expect(scope.reserved_outward).toBe(0);
             expect(scope.reserved_return).toBe(1);
+            $httpBackend.flush();
+        });
+
+        it ('Send message to public discussion', function () {
+            var discussion = {
+                newMessageEntry: 'test',
+                userEmailEntry: 'toto@titi.com'
+            };
+            expect(scope.page).toEqual('Journey');
+            expect(scope.journeyId).toBe(4);
+            $httpBackend.flush();
+            timeout.flush();
+            expect(scope.publicMessages.length).toBe(2);
+            scope.sendMessage(discussion);
+            expect(scope.publicMessages.length).toBe(3);
             $httpBackend.flush();
         });
     });

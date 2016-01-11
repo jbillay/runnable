@@ -284,6 +284,15 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
         });
 
+        it ('Try to open calendar', function () {
+            $httpBackend.flush();
+            var e = jasmine.createSpyObj('e', [ 'preventDefault', 'stopPropagation' ]);
+            scope.calendar.open(e);
+            expect(scope.calendar.opened).toBeTruthy();
+            expect(e.preventDefault).toHaveBeenCalled();
+            expect(e.stopPropagation).toHaveBeenCalled();
+        });
+
         it ('Cancel Journey', function () {
             var journey = {
                     id: 1,
