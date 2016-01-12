@@ -422,6 +422,7 @@ angular.module('runnable.controllers', []).
 														Run, Journey, GoogleMapApi, Session, Participate) {
         $scope.page = 'Run';
 		$scope.runId = $routeParams.runId;
+        $scope.userJoined = false;
 		var runPromise = Run.getDetail($scope.runId),
 			journeyPromise = Journey.getListForRun($scope.runId),
             participatePromise = Participate.userRunList($scope.runId),
@@ -430,9 +431,8 @@ angular.module('runnable.controllers', []).
         allPrivate.then(function (res) {
             $scope.participateList = res[0];
             $scope.nbJoiner = $scope.participateList.length;
-            $scope.userJoined = false;
             angular.forEach($scope.participateList, function (participate) {
-                if (participate.UserId === Session.id) {
+                if (participate.UserId === Session.userId) {
                     $scope.userJoined = true;
                 }
             });

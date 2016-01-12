@@ -99,6 +99,7 @@ describe('Runnable Controllers', function() {
             service.id = 1;
             expect(scope.page).toEqual('Run');
             expect(scope.runId).toBe(4);
+            scope.userJoined = false;
             $httpBackend.flush();
             timeout.flush();
             expect(scope.userJoined).toBeTruthy();
