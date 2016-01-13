@@ -47,9 +47,6 @@ angular.module('runnable.controllers', []).
                 $scope.setCurrentUser(user, unread);
                 if ($rootScope.draftId) {
                     Journey.confirm($rootScope.draftId).then(function (journey) {
-                        var template = 'JourneyCreated',
-                            values = { runName: journey.Run.name };
-                        Inbox.addMessage(template, values, $rootScope.currentUser.id);
                         $location.path('/journey');
                     });
                 }
@@ -63,9 +60,6 @@ angular.module('runnable.controllers', []).
                 $scope.setCurrentUser(newUser, unread);
                 if ($rootScope.draftId) {
                     Journey.confirm($rootScope.draftId).then(function (journey) {
-                        var template = 'JourneyCreated',
-                            values = { runName: journey.Run.name };
-                        Inbox.addMessage(template, values, $rootScope.currentUser.id);
                         $location.path('/journey');
                     });
                 }
@@ -315,11 +309,8 @@ angular.module('runnable.controllers', []).
 			angular.element('#adminEditPageModal').modal('show');
 		};
 		$scope.journeyCancel = function (journey) {
-			var driverTemplate = 'DriverJourneyCancel',
-				values = {runName: journey.Run.name };
 			journey.is_canceled = true;
 			Journey.cancel(journey.id);
-			Inbox.addMessage(driverTemplate, values, $rootScope.currentUser.id);
 		};
 		$scope.exportUsers = function () {
 			var blob = new Blob([document.getElementById('usertab').innerHTML], {
@@ -919,10 +910,26 @@ angular.module('runnable.controllers', []).
 		};
         $scope.submitJourney = function (journey) {
             var fb_titre = 'Mon voyage pour la course ' + journey.Run.name,
-                fb_desc = 'Je vous propose un ' + journey.journey_type + ' au départ de ' + journey.address_start,
-                template = 'JourneyCreated',
-                values = {runName: journey.Run.name };
-            Inbox.addMessage(template, values, $rootScope.currentUser.id);
+                fb_desc = 'Je vous propose un ' + journey.journey_type + ' au départ de ' + journey.address_start;
+            Journey.create(journey).then(function (newJourney) {
+                if (!$rootScope.isAuthenticated) {
+                    $rootScope.draftId = newJourney;
+                    $location.path('/connect');
+                } else {
+                    if ($scope.publishFacebook) {
+                        var fb_link = 'http://www.myruntrip.com/journey-' + newJourney.id;
+                        $facebook.ui({
+                            method: 'feed',
+                            link: fb_link,
+                            caption: 'My Run Trip',
+                            picture: 'http://www.myruntrip.com/img/myruntrip_100.jpg',
+                            name: fb_titre,
+                            description: fb_desc
+                        }, function(response){});
+                    }
+                    $location.path('/journey');
+                }
+            });
         };
 	}).
 	controller('RunnableMyJourneyController', function ($scope, $q, $timeout, $rootScope, User, Discussion, Join,
@@ -995,11 +1002,8 @@ angular.module('runnable.controllers', []).
 		};
         $scope.confirmValidationJourneyCancel = function () {
             angular.element('#validationModal').modal('hide');
-            var driverTemplate = 'DriverJourneyCancel',
-                values = {runName: $scope.cancelJourney.Run.name };
             $scope.userJourney.splice($scope.indexToBeRemoved, 1);
             Journey.cancel($scope.cancelJourney.id);
-            Inbox.addMessage(driverTemplate, values, $rootScope.currentUser.id);
         };
         $scope.askValidationJourneyCancelFromMyJourney = function (journey, index) {
             angular.element('#validationModal').modal('show');
@@ -1239,8 +1243,6 @@ angular.module('runnable.controllers', []).
             }
         };
         $scope.submitJourney = function (journey) {
-            var template = 'JourneyUpdated',
-                values = {runName: journey.Run.name };
             if (journey.journey_type === 'aller') {
                 journey.date_start_return = null;
                 journey.time_start_return = null;
@@ -1250,9 +1252,9 @@ angular.module('runnable.controllers', []).
                 journey.time_start_outward = null;
                 journey.nb_space_outward = null;
             }
-            Journey.update(journey);
-            Inbox.addMessage(template, values, $rootScope.currentUser.id);
-            $location.path('/journey');
+            Journey.update(journey).then(function (msg) {
+                $location.path('/journey');
+            });
         };
 	}).
 	controller('RunnableJourneyController', function ($scope, $q, $timeout, Run, Journey, GoogleMapApi) {

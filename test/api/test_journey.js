@@ -3,10 +3,13 @@
  */
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
 var assert = require('chai').assert;
 var models = require('../../server/models/index');
 var Journey = require('../../server/objects/journey');
 var Join = require('../../server/objects/join');
+var Inbox = require('../../server/objects/inbox');
 var sinon = require('sinon');
 var settings = require('../../conf/config');
 
@@ -200,6 +203,7 @@ describe('Test of journey object', function () {
     describe('Creation of Journey', function () {
         it('Create a new journey', function (done) {
             var journey = new Journey(),
+                inbox = new Inbox(),
                 newJourney = {
                     address_start: 'Paris',
                     distance: '25 km',
@@ -238,13 +242,20 @@ describe('Test of journey object', function () {
                 journey.getList(1, function (err, journeyList) {
                     if (err) return done(err);
                     assert.equal(journeyList.length, 6);
-                    return done();
+                    inbox.getList(user, function (err, messages) {
+                        if (err) return done(err);
+                        assert.equal(messages.length, 3);
+                        assert.equal(messages[0].message, 'Created Corrida de Saint Germain en Laye');
+                        assert.include(messages[0].title, 'Corrida de Saint Germain en Laye');
+                        return done();
+                    });
                 });
             });
         });
 
         it('Create a new journey for a partner', function (done) {
             var journey = new Journey(),
+                inbox = new Inbox(),
                 newJourney = {
                     address_start: 'Paris',
                     distance: '25 km',
@@ -278,7 +289,13 @@ describe('Test of journey object', function () {
                 journey.getList(1, function (err, journeyList) {
                     if (err) return done(err);
                     assert.equal(journeyList.length, 6);
-                    return done();
+                    inbox.getList(user, function (err, messages) {
+                        if (err) return done(err);
+                        assert.equal(messages.length, 3);
+                        assert.equal(messages[0].message, 'Created Corrida de Saint Germain en Laye');
+                        assert.include(messages[0].title, 'Corrida de Saint Germain en Laye');
+                        return done();
+                    });
                 });
             });
         });
@@ -343,7 +360,8 @@ describe('Test of journey object', function () {
 
     it('Cancel a journey', function (done) {
         var journey = new Journey(),
-            join = new Join();
+            join = new Join(),
+            inbox = new Inbox();
         journey.getById(1, function (err, journeyInfo) {
             if (err) return done(err);
             assert.equal(journeyInfo.is_canceled, false);
@@ -357,7 +375,16 @@ describe('Test of journey object', function () {
                     join.getByJourney(1, function (err, joinList) {
                         if (err) return done(err);
                         assert.equal(joinList.length, 0);
-                        return done();
+                        var user = { id: journeyUpdated.UserId };
+                        inbox.getList(user, function (err, messages) {
+                            if (err) return done(err);
+                            assert.equal(messages.length, 4);
+                            assert.equal(messages[0].message, 'USER CANCEL Marathon du médoc');
+                            assert.include(messages[0].title, 'Marathon du médoc');
+                            assert.equal(messages[1].message, 'Cancelled Marathon du médoc');
+                            assert.include(messages[1].title, 'Marathon du médoc');
+                            return done();
+                        });
                     });
                 });
             });
@@ -367,6 +394,7 @@ describe('Test of journey object', function () {
     describe('Update Journey', function () {
         it('Update an existing journey', function (done) {
             var journey = new Journey(),
+                inbox = new Inbox(),
                 updateJourney = {
                     id: 2,
                     address_start: 'Paris, France',
@@ -386,7 +414,8 @@ describe('Test of journey object', function () {
                     Run: {
                         id: 3
                     }
-                };
+                },
+                user = { id: 2 };
             journey.setJourney(updateJourney);
             var tmp = journey.get();
             assert.equal(tmp.distance, '654 km');
@@ -418,14 +447,21 @@ describe('Test of journey object', function () {
                         assert.equal(selectedJourney.amount, 56);
                         assert.equal(selectedJourney.RunId, 3);
                         assert.equal(selectedJourney.UserId, 2);
-                        return done();
+                        inbox.getList(user, function (err, messages) {
+                            if (err) return done(err);
+                            assert.equal(messages[0].message, 'Updated Paris Saint Germain');
+                            assert.include(messages[0].title, 'Paris Saint Germain');
+                            return done();
+                        });
                     });
                 });
             });
         });
 
         it('Add a partner to a journey', function (done) {
-            var journey = new Journey();
+            var journey = new Journey(),
+                inbox = new Inbox(),
+                user = { id: 1 };
 
             journey.getById(2, function (err, selectJourney) {
                 if (err) return done(err);
@@ -445,7 +481,12 @@ describe('Test of journey object', function () {
                     assert.equal(updatedJourney.RunId, 2);
                     assert.equal(updatedJourney.UserId, 1);
                     assert.equal(updatedJourney.PartnerId, 2);
-                    return done();
+                    inbox.getList(user, function (err, messages) {
+                        if (err) return done(err);
+                        assert.equal(messages[0].message, 'Updated Les templiers');
+                        assert.include(messages[0].title, 'Les templiers');
+                        return done();
+                    });
                 });
             });
         });

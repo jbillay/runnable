@@ -97,7 +97,8 @@ journey.prototype.saveDraft = function (journeyKey, userId, done) {
 journey.prototype.save = function (journey, userId, done) {
     'use strict';
     var that = this,
-        partner = new Partner();
+        partner = new Partner(),
+        inbox = new Inbox();
     models.User.findOne({where: {id: userId}})
         .then(function (user) {
             that.setJourney(journey);
@@ -113,14 +114,25 @@ journey.prototype.save = function (journey, userId, done) {
                                             .then(function () {
                                                 newJourney.setUser(user)
                                                     .then(function(newJourney) {
-                                                        if (selectedPartner) {
-                                                            newJourney.setPartner(selectedPartner)
-                                                                .then(function (newJourney) {
+                                                        var template = 'JourneyCreated',
+                                                            values = {
+                                                                runName: run.name,
+                                                                journeyId: newJourney.id
+                                                            };
+                                                        inbox.add(template, values, user.id)
+                                                            .then(function (msg) {
+                                                                if (selectedPartner) {
+                                                                    newJourney.setPartner(selectedPartner)
+                                                                        .then(function (newJourney) {
+                                                                            done(null, newJourney, run);
+                                                                        });
+                                                                } else {
                                                                     done(null, newJourney, run);
-                                                                });
-                                                        } else {
-                                                            done(null, newJourney, run);
-                                                        }
+                                                                }
+                                                            })
+                                                            .catch(function (err) {
+                                                                done(new Error(err), null, null);
+                                                            });
                                                     });
                                             });
                                     } else {
@@ -131,14 +143,25 @@ journey.prototype.save = function (journey, userId, done) {
                                                     .then(function () {
                                                         updatedJourney.setUser(user)
                                                             .then(function(updatedJourney) {
-                                                                if (selectedPartner) {
-                                                                    updatedJourney.setPartner(selectedPartner)
-                                                                        .then(function (updatedJourney) {
+                                                                var template = 'JourneyUpdated',
+                                                                    values = {
+                                                                        runName: run.name,
+                                                                        journeyId: updatedJourney.id
+                                                                    };
+                                                                inbox.add(template, values, user.id)
+                                                                    .then(function (msg) {
+                                                                        if (selectedPartner) {
+                                                                            updatedJourney.setPartner(selectedPartner)
+                                                                                .then(function (updatedJourney) {
+                                                                                    done(null, updatedJourney, run);
+                                                                                });
+                                                                        } else {
                                                                             done(null, updatedJourney, run);
-                                                                        });
-                                                                } else {
-                                                                    done(null, updatedJourney, run);
-                                                                }
+                                                                        }
+                                                                    })
+                                                                    .catch(function (err) {
+                                                                        done(new Error(err), null, null);
+                                                                    });
                                                             });
                                                     });
                                             });
@@ -385,7 +408,8 @@ journey.prototype.cancelJoinsOfJourney = function (id, runame) {
 
 journey.prototype.cancel = function (id, done) {
     'use strict';
-    var that = this;
+    var that = this,
+        inbox = new Inbox();
     models.Journey.find({where: {id: id}, include: [models.Run]})
         .then(function (journey) {
             journey.is_canceled = true;
@@ -393,7 +417,18 @@ journey.prototype.cancel = function (id, done) {
                 .then(function (newJourney) {
                     that.cancelJoinsOfJourney(newJourney.id, newJourney.Run.name)
                         .then(function (joins) {
-                            done(null, newJourney);
+                            var template = 'DriverJourneyCancel',
+                                values = {
+                                    runName: newJourney.Run.name,
+                                    journeyId: newJourney.id
+                                };
+                            inbox.add(template, values, newJourney.UserId)
+                                .then(function (msg) {
+                                    done(null, newJourney);
+                                })
+                                .catch(function (err) {
+                                    done(new Error(err), null);
+                                });
                         })
                         .catch(function (err) {
                             done(err, null);
