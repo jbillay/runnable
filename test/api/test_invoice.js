@@ -6,9 +6,12 @@
  */
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
 var assert = require('chai').assert;
 var models = require('../../server/models/index');
 var Invoice = require('../../server/objects/invoice');
+var Inbox = require('../../server/objects/inbox');
 var settings = require('../../conf/config');
 
 describe('Test of Invoice object', function () {
@@ -74,6 +77,7 @@ describe('Test of Invoice object', function () {
 
     it('Create a new Invoice', function (done) {
         var invoice = new Invoice(),
+            inbox = new Inbox(),
             newInvoice = {
                 id: 6,
                 status: 'pending',
@@ -101,16 +105,10 @@ describe('Test of Invoice object', function () {
         assert.equal(tmp.transaction, '83V29469P1887825P');
         assert.equal(tmp.driver_payed, true);
         invoice.save(tmp, user, function (err, createdInvoice) {
-            if (err) {
-                console.log(err);
-                return done(err);
-            }
+            if (err) return done(err);
             assert.isNull(err);
             invoice.getById(6, function (err, invoiceInfo) {
-                if (err) {
-                    console.log(err);
-                    return done(err);
-                }
+                if (err) return done(err);
                 assert.isNull(err);
                 assert.equal(invoiceInfo.id, 6);
                 assert.equal(invoiceInfo.status, 'pending');
@@ -119,7 +117,13 @@ describe('Test of Invoice object', function () {
                 assert.equal(invoiceInfo.ref, 'MRT2015021728IKD');
                 assert.equal(invoiceInfo.transaction, '83V29469P1887825P');
                 assert.equal(invoiceInfo.driver_payed, true);
-                return done();
+                inbox.getList(user, function (err, messages) {
+                    if (err) return done(err);
+                    assert.equal(messages.length, 3);
+                    assert.equal(messages[0].message, 'User join a journey for Corrida de Saint Germain en Laye');
+                    assert.include(messages[0].title, 'Corrida de Saint Germain en Laye');
+                    return done();
+                });
             });
         });
     });

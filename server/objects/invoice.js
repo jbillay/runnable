@@ -3,6 +3,7 @@
  */
 
 var models = require('../models');
+var Inbox = require('./inbox');
 
 function invoice() {
     'use strict';
@@ -64,13 +65,14 @@ invoice.prototype.setJoin = function (join) {
 
 invoice.prototype.save = function (invoice, user, done) {
     'use strict';
-    var that = this;
+    var that = this,
+        inbox = new Inbox();
 
     this.set(invoice);
     console.log('try to create an invoice for join : ' + that.join_id);
     models.User.find({where: {id: user.id}})
         .then(function (user) {
-            models.Journey.find({where: {id: that.journey_id}})
+            models.Journey.find({where: {id: that.journey_id}, include: [models.Run]})
                 .then(function (journey) {
                     models.Join.find({where: {id: that.join_id}})
                         .then(function (join) {
@@ -82,10 +84,18 @@ invoice.prototype.save = function (invoice, user, done) {
                                                 .then(function () {
                                                     newInvoice.setUser(user)
                                                         .then(function(newInvoice) {
-                                                            done(null, newInvoice);
+                                                            var template = 'JourneySubmit',
+                                                                values = { runName: journey.Run.name };
+                                                            inbox.add(template, values, user.id)
+                                                                .then(function (msg) {
+                                                                    done(null, newInvoice);
+                                                                })
+                                                                .catch(function (err) {
+                                                                    done(new Error(err), null);
+                                                                });
                                                         })
                                                         .catch(function(err) {
-                                                            done(err, null);
+                                                            done(new Error(err), null);
                                                         });
                                                 });
                                         });

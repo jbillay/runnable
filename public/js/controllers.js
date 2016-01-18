@@ -723,8 +723,6 @@ angular.module('runnable.controllers', []).
 		};
 
 		$scope.joinJourney = function (placeOutward, placeReturn, form) {
-			var template = 'JourneySubmit',
-                values = {runName: $scope.journey.Run.name };
             placeOutward = placeOutward  || 0;
             placeReturn = placeReturn  || 0;
 			var amount = (placeOutward + placeReturn) * $scope.journey.amount +
@@ -735,7 +733,6 @@ angular.module('runnable.controllers', []).
 			fees = fees.toFixed(2);
 			$scope.reserved_outward = $scope.reserved_outward + placeOutward;
 			$scope.reserved_return = $scope.reserved_return + placeReturn;
-            Inbox.addMessage(template, values, $rootScope.currentUser.id);
 			Join.add($scope.journeyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref).
                 then(function (join) {
         			form.commit();
@@ -753,11 +750,7 @@ angular.module('runnable.controllers', []).
         };
 		$scope.confirmValidation = function () {
             angular.element('#validationModal').modal('hide');
-			var userTemplate = 'UserJoinJourneyCancel',
-				driverTemplate = 'DriverJoinJourneyCancel',
-                userValues = {runName: $scope.journey.Run.name },
-                driverValues = {runName: $scope.journey.Run.name},
-				placeOutwardReturn = 0,
+			var placeOutwardReturn = 0,
 				placeReturnReturn = 0;
 			$scope.joined = 0;
 			if ($scope.userJoin.nb_place_outward) {
@@ -769,8 +762,6 @@ angular.module('runnable.controllers', []).
 			$scope.reserved_outward = $scope.reserved_outward - placeOutwardReturn;
 			$scope.reserved_return = $scope.reserved_return - placeReturnReturn;
 			Join.cancel($scope.userJoin.id);
-            Inbox.addMessage(driverTemplate, driverValues, $scope.journey.UserId);
-            Inbox.addMessage(userTemplate, userValues, $rootScope.currentUser.id);
 		};
 		$scope.calculateFees = function (outwardPlace, returnPlace, journey) {
 			var fees = 0;
@@ -1016,13 +1007,8 @@ angular.module('runnable.controllers', []).
         };
         $scope.confirmValidationJoinCancel = function () {
             angular.element('#validationModal').modal('hide');
-            var userTemplate = 'UserJoinJourneyCancel',
-                driverTemplate = 'DriverJoinJourneyCancel',
-                values = {runName: $scope.cancelJoin.Journey.Run.name };
             $scope.userJoin.splice($scope.indexToBeRemoved, 1);
             Join.cancel($scope.cancelJoin.id);
-            Inbox.addMessage(driverTemplate, values, $scope.cancelJoin.Journey.UserId);
-            Inbox.addMessage(userTemplate, values, $rootScope.currentUser.id);
         };
         $scope.askValidationJoinCancelFromMyJourney = function (join, index) {
             angular.element('#validationModal').modal('show');

@@ -4,6 +4,8 @@
 
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
 var request = require('supertest'),
     models = require('../../server/models/index'),
     assert = require('chai').assert,
@@ -101,7 +103,7 @@ describe('Test of join API', function () {
                     nb_place_return: 1,
                     amount: 50.96,
                     fees: 3.74,
-                ref: 'MRT201502215K753',
+                    ref: 'MRT201502215K753',
                     status: 'pending',
                     journey_id: 3
                 };
@@ -116,7 +118,15 @@ describe('Test of join API', function () {
                         .end(function (err, res) {
                             if (err) return done(err);
                             assert.equal(res.body.length, 6);
-                            return done();
+                            agent
+                                .get('http://localhost:' + settings.port + '/api/inbox/msg')
+                                .end(function (err, res) {
+                                    if (err) return done(err);
+                                    assert.equal(res.body.length, 3);
+                                    assert.equal(res.body[0].message, 'User join a journey for Corrida de Saint Germain en Laye');
+                                    assert.include(res.body[0].title, 'Corrida de Saint Germain en Laye');
+                                    return done();
+                                });
                         });
                 });
         });
