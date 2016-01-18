@@ -84,9 +84,10 @@ exports.list = function (req, res) {
 exports.cancel = function (req, res) {
     'use strict';
 	console.log('Cancel join ' + req.params.id);
-	var id = req.params.id;
-	var join = new Join();
-	join.cancelById(id)
+	var id = req.params.id,
+        user = req.user,
+        join = new Join();
+	join.cancelById(id, user, true)
 		.then(function (invoice) {
 			console.log('Join cancelled');
 			res.jsonp({msg: 'joinCancelled', type: 'success'});

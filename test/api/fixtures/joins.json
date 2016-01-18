@@ -15,7 +15,7 @@
       "id": 2,
       "nb_place_outward": 1,
       "nb_place_return": null,
-      "UserId": 1,
+      "UserId": 2,
       "JourneyId": 2
     }
   },
@@ -25,7 +25,7 @@
       "id": 3,
       "nb_place_outward": 1,
       "nb_place_return": null,
-      "UserId": 2,
+      "UserId": 3,
       "JourneyId": 2
     }
   },
@@ -37,6 +37,16 @@
       "nb_place_return": 1,
       "UserId": 1,
       "JourneyId": 3
+    }
+  },
+  {
+    "model": "Join",
+    "data": {
+      "id": 5,
+      "nb_place_outward": 1,
+      "nb_place_return": null,
+      "UserId": 2,
+      "JourneyId": 5
     }
   }
 ]

@@ -44,10 +44,8 @@ describe('Test of Discussion API', function () {
             agent
                 .get('http://localhost:' + settings.port + '/api/discussion/users/2')
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
-                    assert.equal(res.body.length, 2);
+                    if (err) return done(err);
+                    assert.equal(res.body.length, 3);
                     return done();
                 });
         });

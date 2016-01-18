@@ -362,28 +362,41 @@ describe('Test of journey object', function () {
         var journey = new Journey(),
             join = new Join(),
             inbox = new Inbox();
-        journey.getById(1, function (err, journeyInfo) {
+        journey.getByUser(1, function (err, journeyList) {
             if (err) return done(err);
-            assert.equal(journeyInfo.is_canceled, false);
-            journey.cancel(1, function (err, journeyUpdated) {
+            assert.equal(journeyList.length, 3);
+            journey.getById(2, function (err, journeyInfo) {
                 if (err) return done(err);
-                assert.equal(journeyUpdated.is_canceled, true);
-                journey.getByUser(1, function (err, journeyList) {
+                assert.equal(journeyInfo.is_canceled, false);
+                join.getByJourney(2, function (err, joinList) {
                     if (err) return done(err);
-                    assert.equal(journeyList.length, 2);
-                    assert.equal(journeyList[0].Run.name, 'Les templiers');
-                    join.getByJourney(1, function (err, joinList) {
+                    assert.equal(joinList.length, 2);
+                    journey.cancel(2, function (err, journeyUpdated) {
                         if (err) return done(err);
-                        assert.equal(joinList.length, 0);
-                        var user = { id: journeyUpdated.UserId };
-                        inbox.getList(user, function (err, messages) {
+                        assert.equal(journeyUpdated.is_canceled, true);
+                        journey.getByUser(1, function (err, journeyList) {
                             if (err) return done(err);
-                            assert.equal(messages.length, 4);
-                            assert.equal(messages[0].message, 'USER CANCEL Marathon du médoc');
-                            assert.include(messages[0].title, 'Marathon du médoc');
-                            assert.equal(messages[1].message, 'Cancelled Marathon du médoc');
-                            assert.include(messages[1].title, 'Marathon du médoc');
-                            return done();
+                            assert.equal(journeyList.length, 2);
+                            assert.equal(journeyList[0].Run.name, 'Marathon du médoc');
+                            join.getByJourney(2, function (err, joinList) {
+                                if (err) return done(err);
+                                assert.equal(joinList.length, 0);
+                                var user2 = { id: 2 };
+                                inbox.getList(user2, function (err, messages) {
+                                    if (err) return done(err);
+                                    assert.equal(messages.length, 3);
+                                    assert.equal(messages[0].message, 'USER CANCEL Les templiers');
+                                    assert.include(messages[0].title, 'Les templiers');
+                                    var user = { id: journeyUpdated.UserId };
+                                    inbox.getList(user, function (err, messages) {
+                                        if (err) return done(err);
+                                        assert.equal(messages.length, 3);
+                                        assert.equal(messages[0].message, 'Driver cancel journey Les templiers');
+                                        assert.include(messages[0].title, 'Les templiers');
+                                        return done();
+                                    });
+                                });
+                            });
                         });
                     });
                 });
@@ -494,6 +507,7 @@ describe('Test of journey object', function () {
 
     it('Notify user and driver for a join in journey', function (done) {
         var journey = new Journey(),
+            inbox = new Inbox(),
             invoiceRef = 'MRT20150217H36EG';
         models.Invoice.find({ where: {ref: invoiceRef}, include: [{
                 model: models.Journey,
@@ -503,8 +517,24 @@ describe('Test of journey object', function () {
             .then(function (invoice) {
                 journey.notifyJoin(invoice, function (err, msg) {
                     if (err) return done(err);
+                    var user = {id:  invoice.UserId};
                     assert.equal(msg, 'done');
-                    return done();
+                    inbox.getList(user, function (err, messages) {
+                        if (err) return done(err);
+                        console.log(messages[0]);
+                        assert.equal(messages.length, 3);
+                        assert.equal(messages[0].message, 'User join validated Corrida de Saint Germain en Laye');
+                        assert.include(messages[0].title, 'Corrida de Saint Germain en Laye');
+                        var driver = {id: invoice.Journey.UserId};
+                        inbox.getList(driver, function (err, messages) {
+                            if (err) return done(err);
+                            console.log(messages[0]);
+                            assert.equal(messages.length, 3);
+                            assert.equal(messages[0].message, 'Driver join validated Corrida de Saint Germain en Laye');
+                            assert.include(messages[0].title, 'Corrida de Saint Germain en Laye');
+                            return done();
+                        });
+                    });
                 });
             })
             .catch(function (err) {

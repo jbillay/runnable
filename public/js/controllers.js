@@ -1047,18 +1047,6 @@ angular.module('runnable.controllers', []).
 							lastname: Session.userLastname}
 				});
 			Discussion.addPrivateMessage(text, $scope.selectedJourney.id);
-/*
-			angular.forEach($scope.discussionUsers, function (user) {
-				if (user.id !== Session.userId) {
-                    var values = {runName: $scope.selectedJourney.Run.name,
-                                    userFirstname: Session.userFirstname,
-                                    userLastname: Session.userLastname,
-                                    text: text},
-                        template = 'JourneyPrivateMessage';
-                    Inbox.addMessage(template, values, user.id);
-				}
-			});
-*/
 		};
 	}).
 	controller('RunnableUserPublicProfileController', function ($scope, $q, $routeParams, User) {

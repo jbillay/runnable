@@ -3,10 +3,13 @@
  */
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
 var assert = require('chai').assert;
 var models = require('../../server/models/index');
 var Join = require('../../server/objects/join');
 var Invoice = require('../../server/objects/invoice');
+var Inbox = require('../../server/objects/inbox');
 var settings = require('../../conf/config');
 
 describe('Test of join object', function () {
@@ -25,7 +28,7 @@ describe('Test of join object', function () {
         join.getList(function (err, joinList) {
             if (err) return done(err);
             assert.isNull(err);
-            assert.equal(joinList.length, 4);
+            assert.equal(joinList.length, 5);
             return done();
         });
     });
@@ -61,14 +64,14 @@ describe('Test of join object', function () {
         join.getByUser(1, function (err, joinList) {
             if (err) return done(err);
             assert.isNull(err);
-            assert.equal(joinList.length, 2);
+            assert.equal(joinList.length, 1);
             join.getByUser(2, function (err, joinList) {
                 if (err) return done(err);
                 assert.isNull(err);
-                assert.equal(joinList.length, 1);
-                assert.equal(joinList[0].id, 3);
-                assert.equal(joinList[0].nb_place_outward, 1);
-                assert.isNull(joinList[0].nb_place_return);
+                assert.equal(joinList.length, 2);
+                assert.equal(joinList[1].id, 5);
+                assert.equal(joinList[1].nb_place_outward, 1);
+                assert.isNull(joinList[1].nb_place_return);
                 join.getByUser(-1, function (err, joinList) {
                     assert.isNotNull(err);
                     return done();
@@ -96,7 +99,7 @@ describe('Test of join object', function () {
     it('Create a new Join', function (done) {
        var join = new Join(),
            newJoin = {
-                id: 5,
+                id: 6,
                 nb_place_outward: 3,
                 nb_place_return: 2,
                 journey_id: 3
@@ -108,7 +111,7 @@ describe('Test of join object', function () {
         join.setJourney(newJoin.journey_id);
         join.setUser(user);
         var tmp = join.get();
-        assert.equal(tmp.id, 5);
+        assert.equal(tmp.id, 6);
         assert.equal(tmp.nb_place_outward, 3);
         assert.equal(tmp.nb_place_return, 2);
         join.save(tmp, user, function (err, createdJoin) {
@@ -116,10 +119,10 @@ describe('Test of join object', function () {
             assert.isNull(err);
             join.getList(function (err, joinList) {
                 assert.isNull(err);
-                assert.equal(joinList.length, 5);
-                join.getById(5, function (err, joinInfo) {
+                assert.equal(joinList.length, 6);
+                join.getById(6, function (err, joinInfo) {
                     assert.isNull(err);
-                    assert.equal(joinInfo.id, 5);
+                    assert.equal(joinInfo.id, 6);
                     assert.equal(joinInfo.nb_place_outward, 3);
                     assert.equal(joinInfo.nb_place_return, 2);
                     return done();
@@ -130,14 +133,30 @@ describe('Test of join object', function () {
 
     it('Cancel join by id', function (done) {
         var join = new Join(),
-            invoice = new Invoice();
-        join.cancelById(2)
+            invoice = new Invoice(),
+            inbox = new Inbox(),
+            user = { id: 2 },
+            driver = { id: 1 };
+        join.cancelById(2, user, true)
             .then(function (joinInfo) {
                 invoice.getById(2, function (err, invoiceInfo) {
                     if (err) return done(err);
                     assert.isNull(err);
                     assert.equal(invoiceInfo.status, 'cancelled');
-                    return done();
+                    inbox.getList(user, function (err, messages) {
+                        if (err) return done(err);
+                        assert.equal(messages.length, 3);
+                        assert.equal(messages[0].message, 'Cancel participation trajet Les templiers');
+                        assert.include(messages[0].title, 'Les templiers');
+                        inbox.getList(driver, function (err, messages) {
+                            if (err) return done(err);
+                            console.log(messages);
+                            assert.equal(messages.length, 3);
+                            assert.equal(messages[0].message, 'User cancel trajet Les templiers');
+                            assert.include(messages[0].title, 'Les templiers');
+                            return done();
+                        });
+                    });
                 });
             })
             .catch(function (err) {
@@ -146,8 +165,9 @@ describe('Test of join object', function () {
     });
 
     it('Cancel not existing join', function (done) {
-        var join = new Join();
-        join.cancelById(42)
+        var join = new Join(),
+            user = { id: 1 };
+        join.cancelById(42, user, true)
             .then(function (joinInfo) {
                 return done(new Error('Should be an error'));
             })

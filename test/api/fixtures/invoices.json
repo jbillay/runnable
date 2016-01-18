@@ -36,7 +36,7 @@
       "fees": 2.96,
       "ref": "MRT20150217JZL8D",
       "transaction": "",
-      "UserId": 2,
+      "UserId": 3,
       "JourneyId": 2,
       "JoinId": 3
     }
@@ -53,6 +53,20 @@
       "UserId": 1,
       "JourneyId": 3,
       "JoinId": 4
+    }
+  },
+  {
+    "model": "Invoice",
+    "data": {
+      "id": 5,
+      "status": "completed",
+      "amount": 12.49,
+      "fees": 2.49,
+      "ref": "MRT20150217I87YG",
+      "transaction": "",
+      "UserId": 2,
+      "JourneyId": 5,
+      "JoinId": 5
     }
   }
 ]

@@ -2,6 +2,7 @@
 
 var models = require('../models');
 var Invoice = require('./invoice');
+var Inbox = require('./inbox');
 var q = require('q');
 
 function join() {
@@ -130,21 +131,45 @@ join.prototype.getList = function (done) {
 		});
 };
 
-join.prototype.cancelById = function (id) {
+join.prototype.cancelById = function (id, user, notif) {
 	'use strict';
 	var deferred = q.defer(),
         invoice = new Invoice();
-	models.Join.find({ where: {id: id}, include: [models.Invoice]})
+	models.Join.find({ where: {id: id}, include: [{
+                                            model: models.Journey,
+                                            as: 'Journey',
+                                            include: [ models.Run ]},
+                                        models.User, models.Invoice]})
 		.then(function (join) {
 			if (!join) {
                 deferred.reject(new Error('Join not found'));
-			} else {			
-				invoice.updateStatus(join.Invoice.id, 'cancelled', function (err, invoice) {
+			} else {
+                invoice.updateStatus(join.Invoice.id, 'cancelled', function (err, invoice) {
 					if (err) {
-                        deferred.reject(err);
+                        deferred.reject(new Error(err));
 					} else {
-                        deferred.resolve(invoice);
-					}
+                        if (notif) {
+                            var inbox = new Inbox(),
+                                templateUser = 'UserJoinJourneyCancel',
+                                templateDriver = 'DriverJoinJourneyCancel',
+                                values = { runName: join.Journey.Run.name };
+                            inbox.add(templateDriver, values, join.Journey.UserId)
+                                .then(function (msg) {
+                                    inbox.add(templateUser, values, user.id)
+                                        .then(function (msg) {
+                                            deferred.resolve(invoice);
+                                        })
+                                        .catch(function (err) {
+                                            deferred.reject(new Error(err));
+                                        });
+                                })
+                                .catch(function (err) {
+                                    deferred.reject(new Error(err));
+                                });
+                        } else {
+                            deferred.resolve(invoice);
+                        }
+    				}
 				});
 			}
 		})

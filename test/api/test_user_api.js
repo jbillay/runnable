@@ -299,7 +299,7 @@ describe('Test of user API', function () {
                 .get('http://localhost:' + settings.port + '/api/user/joins')
                 .end(function (err, res) {
                     if (err) return done(err);
-                    assert.equal(res.body.length, 2);
+                    assert.equal(res.body.length, 1);
                     return done();
                 });
         });

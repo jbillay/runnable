@@ -32,10 +32,10 @@ describe('Test of Invoice object', function () {
                 if (err) return done(err);
                 assert.isNull(err);
                 assert.equal(invoiceList.length, 1);
-                assert.equal(invoiceList[0].id, 3);
+                assert.equal(invoiceList[0].id, 5);
                 assert.equal(invoiceList[0].status, 'completed');
-                assert.equal(invoiceList[0].amount, 50.96);
-                assert.equal(invoiceList[0].fees, 2.96);
+                assert.equal(invoiceList[0].amount, 12.49);
+                assert.equal(invoiceList[0].fees, 2.49);
                 invoice.getByUser(-1, function (err, invoiceList) {
                     assert.isNotNull(err);
                     return done();
@@ -67,7 +67,7 @@ describe('Test of Invoice object', function () {
         invoice.getByDriver(1, function (err, invoiceInfo) {
             if (err) return done(err);
             assert.isNull(err);
-            assert.equal(invoiceInfo.length, 3);
+            assert.equal(invoiceInfo.length, 4);
             return done();
         });
     });
@@ -75,7 +75,7 @@ describe('Test of Invoice object', function () {
     it('Create a new Invoice', function (done) {
         var invoice = new Invoice(),
             newInvoice = {
-                id: 5,
+                id: 6,
                 status: 'pending',
                 amount: 38.83,
                 fees: 8.83,
@@ -93,7 +93,7 @@ describe('Test of Invoice object', function () {
         invoice.setJoin(newInvoice.join_id);
         invoice.setUser(user);
         var tmp = invoice.get();
-        assert.equal(tmp.id, 5);
+        assert.equal(tmp.id, 6);
         assert.equal(tmp.status, 'pending');
         assert.equal(tmp.amount, 38.83);
         assert.equal(tmp.fees, 8.83);
@@ -106,13 +106,13 @@ describe('Test of Invoice object', function () {
                 return done(err);
             }
             assert.isNull(err);
-            invoice.getById(5, function (err, invoiceInfo) {
+            invoice.getById(6, function (err, invoiceInfo) {
                 if (err) {
                     console.log(err);
                     return done(err);
                 }
                 assert.isNull(err);
-                assert.equal(invoiceInfo.id, 5);
+                assert.equal(invoiceInfo.id, 6);
                 assert.equal(invoiceInfo.status, 'pending');
                 assert.equal(invoiceInfo.amount, 38.83);
                 assert.equal(invoiceInfo.fees, 8.83);

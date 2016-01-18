@@ -52,7 +52,7 @@ inbox.prototype.add = function (template, values, userId) {
     var deferred = q.defer(),
         that = this;
 
-    console.log('add a message for user : ' + userId);
+    console.log('add a message for user : ' + userId + ' with template ' + template);
     that.mail.init()
         .then(function () {
             that.mail.generateContent(template, values)

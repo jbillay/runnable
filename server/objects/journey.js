@@ -395,10 +395,10 @@ journey.prototype.cancelJoinsOfJourney = function (id, runame) {
             deferred.reject(new Error(err));
         } else {
             journeyJoins.forEach(function (journeyJoin) {
-                promises.push(join.cancelById(journeyJoin.id));
+                promises.push(join.cancelById(journeyJoin.id, journeyJoin.UserId, false));
                 promises.push(inbox.add(template, values, journeyJoin.UserId));
             });
-            q.all(promises).then(function () {
+            q.allSettled(promises).then(function () {
                 deferred.resolve(journeyJoins);
             });
         }
@@ -431,12 +431,15 @@ journey.prototype.cancel = function (id, done) {
                                 });
                         })
                         .catch(function (err) {
-                            done(err, null);
+                            done(new Error(err), null);
                         });
+                })
+                .catch(function (err) {
+                    done(new Error(err), null);
                 });
         })
         .catch(function (err) {
-            done(err, null);
+            done(new Error(err), null);
         });
 };
 
@@ -448,15 +451,19 @@ journey.prototype.notifyJoin = function (invoice, done) {
         values = {
             runName: invoice.Journey.Run.name,
             journeyId: invoice.Journey.id };
-    q.all([
-        inbox.add(templateUser, values, invoice.UserId),
-        inbox.add(templateDriver, values, invoice.Journey.UserId)])
-        .then(function (res) {
-            done(null, 'done');
-        })
-        .catch(function (err) {
-            done(new Error('Journey notification : ' + err), null);
-        });
+        inbox.add(templateUser, values, invoice.UserId)
+            .then(function (msg) {
+                inbox.add(templateDriver, values, invoice.Journey.UserId)
+                    .then(function (res) {
+                        done(null, 'done');
+                    })
+                    .catch(function (err) {
+                        done(new Error('Journey notification : ' + err), null);
+                    });
+            })
+            .catch(function (err) {
+                done(new Error('Journey notification : ' + err), null);
+            });
 };
 
 module.exports = journey;

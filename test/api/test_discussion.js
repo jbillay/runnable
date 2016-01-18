@@ -56,7 +56,7 @@ describe('Test of discussion object', function () {
         var discussion = new Discussion();
         discussion.getUsers(2)
             .then(function (users) {
-                assert.equal(users.length, 2);
+                assert.equal(users.length, 3);
                 discussion.getUsers(-1)
                     .then(function (users) {
                         assert.isNull(users);

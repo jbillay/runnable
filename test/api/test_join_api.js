@@ -82,7 +82,7 @@ describe('Test of join API', function () {
             agent
                 .get('http://localhost:' + settings.port + '/api/admin/joins')
                 .end(function (err, res) {
-                    assert.equal(res.body.length, 4);
+                    assert.equal(res.body.length, 5);
                     return done();
                 });
         });
@@ -96,7 +96,7 @@ describe('Test of join API', function () {
         it('should create a new join', function(done) {
 
             var join = {
-                    id: 5,
+                    id: 6,
                     nb_place_outward: 1,
                     nb_place_return: 1,
                     amount: 50.96,
@@ -109,11 +109,13 @@ describe('Test of join API', function () {
                 .post('http://localhost:' + settings.port + '/api/join')
                 .send(join)
                 .end(function (err, res) {
+                    if (err) return done(err);
                     assert.equal(res.body.msg, 'userJoined');
                     agent
                         .get('http://localhost:' + settings.port + '/api/admin/joins')
                         .end(function (err, res) {
-                            assert.equal(res.body.length, 5);
+                            if (err) return done(err);
+                            assert.equal(res.body.length, 6);
                             return done();
                         });
                 });
