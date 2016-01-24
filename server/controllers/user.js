@@ -318,20 +318,22 @@ exports.publicDriverInfo = function (req, res) {
 
 exports.uploadPicture = function (req, res) {
     'use strict';
-    console.dir(req.headers['content-type']);
-    var userId= req.user.id,
-        path = req.files.file.path,
-        user = new User();
-    // Remove root path from path
-    path = path.replace(settings.path + '/public', '');
-    user.addPicture(userId, path, function (err) {
-        if (err) {
-            console.log('[ERROR] Not able to save profil picture : ' + err);
-            return res.jsonp({msg: err, type: 'error'});
-        } else {
-            return res.jsonp({msg: 'userPictureSaved', type: 'success'});
-        }
-    });
+    if (req.files.file) {
+        var userId = req.user.id,
+            path = req.files.file[0].path,
+            user = new User();
+        user.addPicture(userId, path, function (err) {
+            if (err) {
+                console.log('[ERROR] Not able to save profil picture : ' + err);
+                return res.jsonp({msg: err, type: 'error'});
+            } else {
+                return res.jsonp({msg: 'userPictureSaved', type: 'success'});
+            }
+        });
+    } else {
+        console.log(new Error('Not able to save profil picture : as no file in req.files !'));
+        return res.jsonp({msg: 'userPictureNotSaved', type: 'error'});
+    }
 };
 
 exports.deletePicture = function (req, res) {

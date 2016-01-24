@@ -32,7 +32,7 @@ module.exports = function (app, passport, auth) {
 	app.put('/api/user', auth.requiresLogin, controllers.user.update);
 	app.post('/api/user/password/reset', controllers.user.resetPassword);
 	app.post('/api/user/password/update', auth.requiresLogin, controllers.user.updatePassword);
-	app.post('/api/user/picture', auth.requiresLogin, controllers.user.uploadPicture);
+	app.post('/api/user/picture', auth.requiresLogin, controllers.root.fileParser, controllers.user.uploadPicture);
 	app.get('/api/user/remove/picture', auth.requiresLogin, controllers.user.deletePicture);
 	app.post('/api/user/invite', auth.requiresLogin, controllers.user.invite);
     app.get('/api/user/active/:id/:hash', controllers.user.active);

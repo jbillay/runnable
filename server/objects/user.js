@@ -3,6 +3,9 @@
 var models = require('../models');
 var Itra = require('../objects/itra');
 var Run = require('./run');
+var cloudinary = require('cloudinary');
+var fs = require('fs');
+var settings    = require('../../conf/config');
 
 function user() {
     'use strict';
@@ -309,21 +312,35 @@ user.prototype.delete = function (id, done) {
 
 user.prototype.addPicture = function (id, path, done) {
     'use strict';
+    var fileExt = path.substr(path.lastIndexOf('.'));
+    var fileName = 'avatar_' + id + fileExt;
     console.log('Try to add picture to user : ' + path);
+    cloudinary.config({
+        cloud_name: settings.cloudinary.cloud_name,
+        api_key: settings.cloudinary.api_key,
+        api_secret: settings.cloudinary.api_secret
+    });
     models.User.find({ where: {id: id}})
         .then(function (user) {
             if (!user) {
                 done(new Error('User not found'));
             }
-            var shortPath = path.substring(path.indexOf('/'));
-            user.picture = shortPath;
-            user.save()
-                .then(function (res) {
-                    done(null);
-                })
-                .catch(function (err) {
-                    done(err);
-                });
+            cloudinary.uploader.upload(path,
+                function(result) {
+                    user.picture = result.url;
+                    fs.unlink(path, function (err) {
+                        if (err) console.log(new Error(err));
+                        console.log('successfully deleted ' + path);
+                    });
+                    user.save()
+                        .then(function (res) {
+                            done(null);
+                        })
+                        .catch(function (err) {
+                            done(err);
+                        });
+                },
+                {public_id: fileName});
         });
 };
 

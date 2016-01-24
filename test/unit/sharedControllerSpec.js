@@ -7,13 +7,14 @@ describe('Runnable Controllers', function() {
     beforeEach(module('runnable.services'));
 
     describe('RunnableSharedController', function(){
-        var scope, rootScope, ctrl, service, $httpBackend;
+        var scope, rootScope, ctrl, service, $httpBackend, User;
 
-        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $routeParams, $controller, Session) {
+        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $routeParams, $controller, Session, _User_) {
             $httpBackend = _$httpBackend_;
             rootScope = _$rootScope_;
             scope = _$rootScope_.$new();
             service = Session;
+            User = _User_;
             ctrl = $controller('RunnableSharedController', {$scope: scope, 'Session': service});
         }));
 
@@ -25,12 +26,13 @@ describe('Runnable Controllers', function() {
                     'jusqu\'à la prochaine course.- ' + service.userFirstname,
                     inviteEmails: ''
                 };
-            $httpBackend.whenPOST('/api/user/invite').respond({msg: 'Invitation(s) envoyée(s)'});
+            spyOn(User, 'inviteFriends').and.callFake(function() {
+                return { then: function(callback) { return callback(inviteData); } }; });
             expect(scope.invitForm.inviteMessage).toContain('J’utilise My Run Trip pour organiser mes voyages jusqu\'aux différentes courses.');
             expect(scope.invitForm.inviteEmails).toEqual('');
             scope.inviteFriends(inviteData);
-            $httpBackend.flush();
             expect(inviteData.inviteEmails).toEqual('');
+            expect(User.inviteFriends).toHaveBeenCalled();
         });
     });
 });

@@ -11,20 +11,11 @@
                                 <i ng-hide="imageSrc">Pas de photo choisie</i>
                                 <img ng-show="imageSrc" ng-src="{{imageSrc}}" class="img-rounded avatar"/><br/>
                                 <div class="row-fluid">
-                                    <div class="col-xs-12 col-sm-6 col-md-6">
-                                        <div class="input-group">
-                                            <span class="input-group-btn">
-                                                <span class="btn btn-primary btn-file">
-                                                    <i class="fa fa-folder-open"></i> Fichier
-                                                    <input type="file" ng-file-select="onFileSelect($files)">
-                                                </span>
-                                             </span>
-                                            <input type="text" class="form-control" readonly>
-                                        </div>
-                                    </div>
                                     <div class="col-xs-6 col-sm-3 col-md-3">
-                                        <button type="button" class="btn btn-success" ng-click="saveFile()">
-                                            <i class="fa fa-floppy-o"></i> Enregistrer
+                                        <button type="button" class="btn btn-success"
+                                                ngf-select="uploadFiles($file, $invalidFiles)"
+                                                accept="image/*" ngf-max-size="1MB">
+                                            <i class="fa fa-floppy-o"></i> Choisir photo
                                         </button>
                                     </div>
                                     <div class="col-xs-6 col-sm-3 col-md-3">

@@ -172,7 +172,8 @@ angular.module('runnable.controllers', []).
             Email.send(data);
         };
 	}).
-	controller('RunnableProfileController', function ($scope, $q, $rootScope, $location, $sce, User, BankAccount, fileReader) {
+	controller('RunnableProfileController', function ($scope, $q, $rootScope, $location, $timeout, $sce, User, BankAccount,
+                                                      fileReader, Upload) {
 		$scope.page = 'Profile';
 		var userItraRunPromise = User.getItraRuns(),
 			userBankAccountPromise = BankAccount.get(),
@@ -188,7 +189,31 @@ angular.module('runnable.controllers', []).
 				$location.path('/');
 			}
 		});
-		$scope.updatePassword = function (passwords, form) {
+
+        $scope.uploadFiles = function(file, errFiles) {
+            $scope.getFile(file);
+            $scope.errFile = errFiles && errFiles[0];
+            if (file) {
+                file.upload = Upload.upload({
+                    url: '/api/user/picture',
+                    data: {file: file}
+                });
+
+                file.upload.then(function (response) {
+                    $timeout(function () {
+                        file.result = response.data;
+                    });
+                }, function (response) {
+                    if (response.status > 0)
+                        $scope.errorMsg = response.status + ': ' + response.data;
+                }, function (evt) {
+                    file.progress = Math.min(100, parseInt(100.0 *
+                        evt.loaded / evt.total));
+                });
+            }
+        };
+
+        $scope.updatePassword = function (passwords, form) {
 			if (form) {
 				form.$setPristine();
 				form.$setUntouched();
@@ -215,11 +240,6 @@ angular.module('runnable.controllers', []).
                     $scope.file = file;
                     $scope.imageSrc = result;
                 });
-        };
-        $scope.saveFile = function () {
-            if ($scope.file) {
-                fileReader.savePicture($scope.file);
-            }
         };
         $scope.deleteFile = function () {
             $scope.imageSrc = null;
@@ -790,7 +810,7 @@ angular.module('runnable.controllers', []).
 		};
 	}).
 	controller('RunnableJourneyCreateController', function ($scope, $q, $timeout, $routeParams, $rootScope, $location,
-                                                            Journey, Run, Inbox, GoogleMapApi, Session, $facebook) {
+                                                            Journey, Run, GoogleMapApi, Session, $facebook) {
         $scope.page = 'Journey';
         if (!Session.userEmail) {
             $scope.isConnected = false;

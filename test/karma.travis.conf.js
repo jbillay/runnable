@@ -15,6 +15,7 @@ module.exports = function(config) {
             'public/lib/angular-sanitize/angular-sanitize.js',
             'public/lib/angular-ui-calendar/src/calendar.js',
             'public/lib/angular-messages/angular-messages.min.js',
+            'public/lib/ng-file-upload/ng-file-upload.min.js',
             'public/lib/bootstrap/dist/js/bootstrap.min.js',
             'public/lib/angular-bootstrap/ui-bootstrap-tpls.min.js',
             'public/lib/ng-facebook/ngFacebook.js',

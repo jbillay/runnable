@@ -13,6 +13,7 @@ angular.module('runnable', [
     'ngFacebook',
     'ui.calendar',
     'ui.bootstrap',
+    'ngFileUpload',
     'runnable.filters',
     'runnable.constant',
     'runnable.services',

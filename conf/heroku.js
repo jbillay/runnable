@@ -17,6 +17,11 @@ module.exports = {
         password    : '198ddf5a',
         port        : 3306
     },
+    cloudinary  : {
+        cloud_name: 'myruntrip',
+        api_key: '511661424693833',
+        api_secret: 'K_K_qK7njgwSDvpTExVnuBfayCM'
+    },
     port        : process.env.PORT || 9615,
     domain      : 'localhost:9615',
     timeout     : 6000

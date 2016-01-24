@@ -5,8 +5,6 @@
 var path     = require('path');
 var express  = require('express');
 var flash = require('connect-flash');
-var multer = require('multer');
-var Options = require('./objects/option');
 var jwt = require('jsonwebtoken');
 
 module.exports = function (app, passport) {
@@ -61,41 +59,6 @@ module.exports = function (app, passport) {
         //use passport session
         app.use(passport.initialize());
         app.use(passport.session());
-
-        // Directory to save uploaded files
-        app.use(multer({ dest: path.join(__dirname, '../public/uploads'),
-            changeDest: function (dest, req) {
-                if (req.path.match(/^\/api\/user\/.+/)) {
-                    dest = dest + '/users';
-                } else if (req.path.match(/^\/api\/run\/.+/)) {
-                    dest = dest + '/runs';
-                }
-                console.log(dest);
-                return dest;
-            },
-            rename: function (fieldname, filename, req) {
-                return 'avatar_' + req.user.id;
-            },
-            onFileUploadStart: function (file) {
-                console.log(file.originalname + ' is starting ...');
-            },
-            onFileUploadComplete: function (file) {
-                console.log(file.fieldname + ' uploaded to  ' + file.path);
-            },
-            onParseStart: function() {
-                console.log('Starting to parse request!');
-            },
-            onParseEnd: function(req, next) {
-                console.log('Done parsing!');
-                next();
-            },
-            onError: function(e, next) {
-                if (e) {
-                    console.log(e.stack);
-                }
-                next();
-            }
-        }));
 
         app.use(function(req, res, next) {
             var token = req.body.token || req.query.token || req.headers['x-access-token'];

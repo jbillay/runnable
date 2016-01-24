@@ -88,15 +88,16 @@ describe('Runnable Controllers', function() {
     });
 
     describe('RunnableJourneyCreateController with route params', function(){
-        var scope, rootScope, timeout, service, location, ctrl, ctrlMain, $httpBackend;
+        var scope, rootScope, timeout, service, location, ctrl, ctrlMain, $httpBackend, Journey;
 
-        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $timeout, $routeParams, $location, $controller, Session) {
+        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $timeout, $routeParams, $location, $controller, Session, _Journey_) {
             $httpBackend = _$httpBackend_;
             rootScope = _$rootScope_;
             scope = _$rootScope_.$new();
             timeout = $timeout;
             service = Session;
             location = $location;
+            Journey = _Journey_;
             $routeParams.runId = 1;
             $httpBackend.whenGET('/api/run/list').respond([{
                     id: 1,
@@ -242,9 +243,6 @@ describe('Runnable Controllers', function() {
         });
 
         it ('Submit Journey', function () {
-            expect(scope.page).toEqual('Journey');
-            $httpBackend.flush();
-            timeout.flush();
             var journey = {
                 address_start: 'Nice',
                 distance: '300 km',
@@ -266,7 +264,13 @@ describe('Runnable Controllers', function() {
                     name: 'test'
                 }
             };
+            spyOn(Journey, 'create').and.callFake(function() {
+                return { then: function(callback) { return callback(journey); } }; });
+            expect(scope.page).toEqual('Journey');
+            $httpBackend.flush();
+            timeout.flush();
             scope.submitJourney(journey);
+            expect(Journey.create).toHaveBeenCalled();
         });
     });
 });

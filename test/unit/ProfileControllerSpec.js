@@ -99,17 +99,6 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
         });
 
-        it ('save a file', function () {
-            scope.file = '.jshintrc';
-            scope.saveFile();
-            $httpBackend.flush();
-        });
-
-        it ('save without a file', function () {
-            scope.saveFile();
-            $httpBackend.flush();
-        });
-
         it ('delete a file', function () {
             scope.file = '.jshintrc';
             scope.deleteFile();

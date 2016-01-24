@@ -331,6 +331,7 @@ describe('Test of user object', function () {
         });
     });
 
+    /*
     it('Save picture for a user', function (done) {
         var user = new User();
         user.addPicture(1, 'public/uploads/users/avatar_1.jpg', function (err) {
@@ -343,6 +344,7 @@ describe('Test of user object', function () {
             });
         });
     });
+    */
 
     it('Delete picture for a user', function (done) {
         var user = new User();

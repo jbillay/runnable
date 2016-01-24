@@ -4,6 +4,7 @@ var Mail = require('../objects/mail');
 var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
+var multiparty = require('multiparty');
 
 /*jslint node: true */
 
@@ -55,6 +56,27 @@ exports.version = function (req, res) {
         }
         err = null;
         data = null;
+    });
+};
+
+exports.fileParser = function (req, res, next) {
+    'use strict';
+    var form = new multiparty.Form();
+
+    form.parse(req, function (err, fields, files) {
+        if (err) {
+            next();
+        } else {
+            console.log('************');
+            console.log('Files : ');
+            console.log(files);
+            console.log('Fields : ');
+            console.log(fields);
+            console.log('************');
+            req.files = files;
+            req.fields = fields;
+            next();
+        }
     });
 };
 

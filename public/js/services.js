@@ -1012,13 +1012,16 @@ angular.module('runnable.services', ['ngResource']).
             reader.readAsDataURL(file);
             return deferred.promise;
         };
+        /*
         var savePicture = function (file) {
             var deferred = $q.defer();
             var fd = new FormData();
             fd.append('file', file);
             $http.post('/api/user/picture', fd, {
                 transformRequest: angular.identity,
-                headers: {'Content-Type': undefined}
+                headers: {'Content-Type': undefined},
+                processData: false, // important
+                contentType: false // important
             }).
                 success(function (result) {
                     $rootScope.$broadcast('USER_MSG', result);
@@ -1029,6 +1032,7 @@ angular.module('runnable.services', ['ngResource']).
                 });
             return deferred.promise;
         };
+        */
         var deletePicture = function () {
             var deferred = $q.defer();
             $http.get('/api/user/remove/picture').
@@ -1043,7 +1047,7 @@ angular.module('runnable.services', ['ngResource']).
         };
         return {
             readAsDataUrl: readAsDataURL,
-            savePicture: savePicture,
+            //savePicture: savePicture,
             deletePicture: deletePicture
         };
     }).
