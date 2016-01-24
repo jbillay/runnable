@@ -4,6 +4,8 @@
 
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
 var assert = require('chai').assert;
 var models = require('../../server/models/index');
 var User = require('../../server/objects/user');
@@ -11,6 +13,8 @@ var request = require('request');
 var sinon = require('sinon');
 var settings = require('../../conf/config');
 var Itra = require('../../server/objects/itra.js');
+var fs = require('fs');
+var path = require('path');
 
 describe('Test of user object', function () {
     beforeEach(function (done) {
@@ -331,20 +335,24 @@ describe('Test of user object', function () {
         });
     });
 
-    /*
     it('Save picture for a user', function (done) {
-        var user = new User();
-        user.addPicture(1, 'public/uploads/users/avatar_1.jpg', function (err) {
+        this.timeout(6000);
+        sinon.clock.restore();
+        var user = new User(),
+            fakeFile = path.normalize(path.join(__dirname, '/fixtures/myruntrip.jpg')),
+            targetFile = path.normalize(path.join(__dirname, '../myruntrip.jpg'));
+        fs.createReadStream(fakeFile).pipe(fs.createWriteStream(targetFile));
+        user.addPicture(1, targetFile, function (err) {
             if (err) return done(err);
+            assert.isNull(err);
             user.getById(1, function (err, userDetail) {
                 if (err) return done(err);
                 assert.equal(userDetail.firstname, 'Jeremy');
-                assert.equal(userDetail.picture, '/uploads/users/avatar_1.jpg');
+                assert.match(userDetail.picture, /^http:\/\/res\.cloudinary\.com\/myruntrip.*avatar_.*_1/);
                 return done();
             });
         });
     });
-    */
 
     it('Delete picture for a user', function (done) {
         var user = new User();

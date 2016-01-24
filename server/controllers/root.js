@@ -67,12 +67,6 @@ exports.fileParser = function (req, res, next) {
         if (err) {
             next();
         } else {
-            console.log('************');
-            console.log('Files : ');
-            console.log(files);
-            console.log('Fields : ');
-            console.log(fields);
-            console.log('************');
             req.files = files;
             req.fields = fields;
             next();

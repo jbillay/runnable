@@ -312,8 +312,8 @@ user.prototype.delete = function (id, done) {
 
 user.prototype.addPicture = function (id, path, done) {
     'use strict';
-    var fileExt = path.substr(path.lastIndexOf('.'));
-    var fileName = 'avatar_' + id + fileExt;
+    //var fileExt = path.substr(path.lastIndexOf('.'));
+    var fileName = 'avatar_' + process.env.NODE_ENV + '_' + id;// + fileExt;
     console.log('Try to add picture to user : ' + path);
     cloudinary.config({
         cloud_name: settings.cloudinary.cloud_name,
