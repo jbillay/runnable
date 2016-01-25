@@ -10,6 +10,11 @@
                             <div class="profile">
                                 <i ng-hide="imageSrc">Pas de photo choisie</i>
                                 <img ng-show="imageSrc" ng-src="{{imageSrc}}" class="img-rounded avatar"/><br/>
+                                <div class="row-fluid" ng-show="errFile">
+                                    <div class="alert alert-danger" role="alert">
+                                        Le fichier {{errFile.name}} dépasse la taille maximum ({{errFile.$errorParam}}) !
+                                    </div>
+                                </div>
                                 <div class="row-fluid">
                                     <div class="col-xs-6 col-sm-3 col-md-3">
                                         <button type="button" class="btn btn-success"

@@ -175,6 +175,7 @@ angular.module('runnable.controllers', []).
 	controller('RunnableProfileController', function ($scope, $q, $rootScope, $location, $timeout, $sce, User, BankAccount,
                                                       fileReader, Upload) {
 		$scope.page = 'Profile';
+        $scope.errFile = null;
 		var userItraRunPromise = User.getItraRuns(),
 			userBankAccountPromise = BankAccount.get(),
             all = $q.all([userItraRunPromise, userBankAccountPromise]);
@@ -191,9 +192,9 @@ angular.module('runnable.controllers', []).
 		});
 
         $scope.uploadFiles = function(file, errFiles) {
-            $scope.getFile(file);
             $scope.errFile = errFiles && errFiles[0];
             if (file) {
+                $scope.getFile(file);
                 file.upload = Upload.upload({
                     url: '/api/user/picture',
                     data: {file: file}
@@ -239,10 +240,12 @@ angular.module('runnable.controllers', []).
                 .then(function(result) {
                     $scope.file = file;
                     $scope.imageSrc = result;
+                    $scope.errFile = null;
                 });
         };
         $scope.deleteFile = function () {
             $scope.imageSrc = null;
+            $scope.errFile = null;
             fileReader.deletePicture($scope.file);
         };
     }).
