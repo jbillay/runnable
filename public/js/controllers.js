@@ -805,11 +805,13 @@ angular.module('runnable.controllers', []).
                 email = discussion.userEmailEntry || null;
             discussion.newMessageEntry = '';
             discussion.userEmailEntry = '';
-			$scope.publicMessages.unshift(
-				{	message: text,
-					createdAt: Date.now()
-				});
-			Discussion.addPublicMessage(text, $scope.journeyId, email);
+            if (text.length) {
+                $scope.publicMessages.unshift(
+                    {	message: text,
+                        createdAt: Date.now()
+                    });
+                Discussion.addPublicMessage(text, $scope.journeyId, email);
+            }
 		};
 	}).
 	controller('RunnableJourneyCreateController', function ($scope, $q, $timeout, $routeParams, $rootScope, $location,

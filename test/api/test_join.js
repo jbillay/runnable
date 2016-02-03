@@ -115,7 +115,6 @@ describe('Test of join object', function () {
         assert.equal(tmp.nb_place_outward, 3);
         assert.equal(tmp.nb_place_return, 2);
         join.save(tmp, user, function (err, createdJoin) {
-            if (err) console.log(err);
             assert.isNull(err);
             join.getList(function (err, joinList) {
                 assert.isNull(err);
@@ -150,7 +149,6 @@ describe('Test of join object', function () {
                         assert.include(messages[0].title, 'Les templiers');
                         inbox.getList(driver, function (err, messages) {
                             if (err) return done(err);
-                            console.log(messages);
                             assert.equal(messages.length, 3);
                             assert.equal(messages[0].message, 'User cancel trajet Les templiers');
                             assert.include(messages[0].title, 'Les templiers');

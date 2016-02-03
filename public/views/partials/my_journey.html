@@ -17,7 +17,8 @@
                                 <div class="panel panel-default">
                                     <div class="panel-heading clearfix">
                                         <div class="panel-title col-xs-11 col-sm-11 col-md-11">
-                                            <a href="/journey-{{join.Journey.id}}"><strong>{{join.Journey.Run.name}}</strong></a>
+                                            <strong>Votre voyage pour la course {{join.Journey.Run.name}}</strong>
+                                            - <small><a href="/journey-{{join.Journey.id}}">voir le trajet</a></small>
                                         </div>
                                         <div class="col-xs-1 col-sm-1 col-md-1">
                                             <span class="glyphicon glyphicon-remove red pull-right" ng-click="askValidationJoinCancelFromMyJourney(join, $index)"></span>
@@ -92,7 +93,8 @@
                                 <div class="panel panel-default">
                                     <div class="panel-heading clearfix">
                                         <div class="panel-title col-xs-12 col-sm-9 col-md-9">
-                                            <a href="/journey-{{journey.id}}"><strong>{{journey.Run.name}}</strong></a>
+                                            <strong>Votre proposition de trajet pour la course {{journey.Run.name}}</strong>
+                                            - <small><a href="/journey-{{journey.id}}">voir le trajet</a></small>
                                         </div>
                                         <div class="panel-title col-xs-8 col-sm-2 col-md-2">
                                             {{journey.journey_type | capitalize}}

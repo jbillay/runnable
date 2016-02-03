@@ -18,7 +18,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <button type="button" id="login" class="btn btn-primary btn-block btn-sm picthome" ng-if="!isAuthenticated" ng-click="showLogin()">Se connecter</button>
-                <li ng-if="isAuthenticated"><a href="/myjourney"><i class="fa fa-road"></i></a></li>
+                <li ng-if="isAuthenticated"><a href="/myjourney"><i class="fa fa-home"></i></a></li>
                 <li ng-if="isAuthenticated">
 					<a href="/inbox"><i class="fa fa-inbox"></i> <span ng-if="userUnreadEmail>0" class="badge">{{userUnreadEmail}}</span></a>					
 				</li>

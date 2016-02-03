@@ -521,14 +521,12 @@ describe('Test of journey object', function () {
                     assert.equal(msg, 'done');
                     inbox.getList(user, function (err, messages) {
                         if (err) return done(err);
-                        console.log(messages[0]);
                         assert.equal(messages.length, 3);
                         assert.equal(messages[0].message, 'User join validated Corrida de Saint Germain en Laye');
                         assert.include(messages[0].title, 'Corrida de Saint Germain en Laye');
                         var driver = {id: invoice.Journey.UserId};
                         inbox.getList(driver, function (err, messages) {
                             if (err) return done(err);
-                            console.log(messages[0]);
                             assert.equal(messages.length, 3);
                             assert.equal(messages[0].message, 'Driver join validated Corrida de Saint Germain en Laye');
                             assert.include(messages[0].title, 'Corrida de Saint Germain en Laye');

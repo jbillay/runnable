@@ -5,18 +5,6 @@
             <div id="journey-header" class="col-xs-12 col-sm-12 col-md-9 journey_head">
                 <h2>Parcours pour la course <a id="journey-run-name" href="/run-{{journey.Run.id}}">{{journey.Run.name}}</a></h2>
             </div>
-            <div class="col-sm-12 col-md-3 pull-right hidden-xs">
-                <div ng-if="nbFreeSpace()">
-                    <button type="button" id="joinBtn" class="btn btn-primary" ng-if="!joined" ng-click="showJoinForm()">
-                        Participer à ce voyage
-                    </button>
-                </div>
-                <div>
-                    <button type="button" id="joinedBtn" class="btn btn-danger" ng-if="joined" ng-click="askValidationJoinCancelFromJourney()">
-                        Je souhaite annuler ma participation
-                    </button>
-                </div>
-            </div>
             <div class="col-xs-12 col-sm-12 col-md-12 hr"><hr></div>
     </div>
         <div class="col-xs-12 col-sm-12 col-md-6">
@@ -52,23 +40,26 @@
                             <div class="col-xs-4 col-sm-4 col-md-4" id="return_free_space"><span class="pull-right">{{journey.nb_space_return - reserved_return}} place(s)</span></div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="panel visible-xs-block">
-                <div ng-if="nbFreeSpace()">
-                    <button type="button" id="joinBtnXS" class="btn btn-primary" ng-if="!joined" ng-click="showJoinForm()">
-                        Participer à ce voyage
-                    </button>
-                </div>
-                <div>
-                    <button type="button" id="joinedBtnXS" class="btn btn-danger" ng-if="joined" ng-click="askValidationJoinCancelFromJourney()">
-                        Je souhaite annuler ma participation
-                    </button>
+                    <div class="col-xs-12 col-sm-12 col-md-12 hr"><hr></div>
+                    <!--<div class="col-sm-12 col-md-3 pull-right hidden-xs">-->
+                    <div class="col-sm-12 col-sm-12 col-md-12">
+                        <div ng-if="nbFreeSpace()" class="pull-right">
+                            <button type="button" id="joinBtn" class="btn btn-primary" ng-if="!joined" ng-click="showJoinForm()">
+                                Participer à ce voyage
+                            </button>
+                        </div>
+                        <div class="pull-right">
+                            <button type="button" id="joinedBtn" class="btn btn-danger" ng-if="joined" ng-click="askValidationJoinCancelFromJourney()">
+                                Je souhaite annuler ma participation
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
-                    <span>Questions publiques</span>
+                    <span>Questions publiques</span><br>
+                    <small><strong>Pour vous inscrire merci de cliquer sur le bouton Participer à ce voyage</strong></small>
                 </div>
                 <div class="panel-body">
                     <div class="panel panel-default">
