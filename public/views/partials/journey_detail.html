@@ -31,13 +31,13 @@
                                 class="col-xs-12 col-sm-12 col-md-12 journey_info">
                             <div class="col-xs-12 col-sm-2 col-md-2"><span class="pull-left"><strong>Aller</strong></span></div>
                             <div class="col-xs-8 col-sm-6 col-md-6" id="outward_date"><i class="glyphicon glyphicon-calendar"></i> {{journey.date_start_outward | date:'dd/MM/yyyy'}} {{journey.time_start_outward}}</div>
-                            <div class="col-xs-4 col-sm-4 col-md-4" id="outward_free_space"><span class="pull-right">{{journey.nb_space_outward - reserved_outward}} place(s)</span></div>
+                            <div class="col-xs-4 col-sm-4 col-md-4" id="outward_free_space"><span class="pull-right">{{journey.nb_space_outward - reserved_outward}} place(s) disponible(s)</span></div>
                         </div>
                         <div ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'retour'"
                              class="col-xs-12 col-sm-12 col-md-12 journey_info">
                             <div class="col-xs-12 col-sm-2 col-md-2"><span class="pull-left"><strong>Retour</strong></span></div>
                             <div class="col-xs-8 col-sm-6 col-md-6" id="return_date"><i class="glyphicon glyphicon-calendar"></i> {{journey.date_start_return | date:'dd/MM/yyyy'}} {{journey.time_start_return}}</div>
-                            <div class="col-xs-4 col-sm-4 col-md-4" id="return_free_space"><span class="pull-right">{{journey.nb_space_return - reserved_return}} place(s)</span></div>
+                            <div class="col-xs-4 col-sm-4 col-md-4" id="return_free_space"><span class="pull-right">{{journey.nb_space_return - reserved_return}} place(s) disponible(s)</span></div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 hr"><hr></div>
@@ -59,7 +59,8 @@
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
                     <span>Questions publiques</span><br>
-                    <small><strong>Pour vous inscrire merci de cliquer sur le bouton Participer à ce voyage</strong></small>
+                    <small><strong>Pour votre sécurité aucune information d’ordre privé ne doit être échangé sur cet espace public.</strong></small><br/>
+                    <small ng-if="!joined"><strong>Pour vous inscrire merci de cliquer sur le bouton Participer à ce voyage.</strong></small>
                 </div>
                 <div class="panel-body">
                     <div class="panel panel-default">

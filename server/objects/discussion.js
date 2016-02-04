@@ -142,7 +142,12 @@ discussion.prototype.addMessage = function (message, journeyId, isPublic, user, 
                         newDiscussion.setJourney(journey)
                             .then(function (newDiscussion) {
                                 var inbox = new Inbox(),
+                                    template;
+                                if (isPublic) {
                                     template = 'JourneyPublicMessage';
+                                } else {
+                                    template = 'JourneyPrivateMessage';
+                                }
                                 if (user) {
                                     models.User.find({where: {id: user.id}})
                                         .then(function(user) {

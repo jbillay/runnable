@@ -43,7 +43,7 @@
                                                     <div class="col-xs-12 col-sm-2 col-md-2"><span class="pull-left"><strong>Aller</strong></span></div>
                                                     <div class="col-xs-12 col-sm-4 col-md-4"><i class="fa fa-calendar"></i> {{join.Journey.date_start_outward | date:'dd/MM/yyyy'}}</div>
                                                     <div class="col-xs-12 col-sm-2 col-md-3"><i class="fa fa-clock-o"></i> {{join.Journey.time_start_outward}}</div>
-                                                    <div class="col-xs-12 col-sm-4 col-md-3"><span class="remaining">{{join.nb_place_outward}} place(s) restante(s)</span></div>
+                                                    <div class="col-xs-12 col-sm-4 col-md-3"><span class="remaining">{{join.nb_place_outward}} place(s) réservée(s)</span></div>
                                                 </div>
                                                 <div ng-if="join.Journey.journey_type === 'aller-retour' || join.Journey.journey_type === 'retour'"
                                                      class="col-xs-12 col-sm-12 col-md-12">
@@ -51,7 +51,7 @@
                                                     <div class="col-xs-12 col-sm-2 col-md-2"><span class="pull-left"><strong>Retour</strong></span></div>
                                                     <div class="col-xs-12 col-sm-4 col-md-4"><i class="fa fa-calendar"></i> {{join.Journey.date_start_return | date:'dd/MM/yyyy'}}</div>
                                                     <div class="col-xs-12 col-sm-2 col-md-3"><i class="fa fa-clock-o"></i> {{join.Journey.time_start_return}}</div>
-                                                    <div class="col-xs-12 col-sm-4 col-md-3"><span class="remaining">{{join.nb_place_return}} place(s) restante(s)</span></div>
+                                                    <div class="col-xs-12 col-sm-4 col-md-3"><span class="remaining">{{join.nb_place_return}} place(s) réservée(s)</span></div>
                                                 </div>
                                             </div>
                                             <div class="col-xs-12 visible-xs-block">
@@ -66,7 +66,7 @@
                                                 </span>
                                             </div>
                                             <div class="col-xs-12 col-sm-12 col-md-12 info_driver">
-                                                <button class="btn btn-success" ng-click="showJourneyModal(join.Journey, join)">En savoir +</button>
+                                                <button class="btn btn-success" ng-click="showJourneyModal(join.Journey, join)">Discussion sur votre trajet</button>
                                             </div>
                                             <div class="col-xs-12 col-sm-12 col-md-12 info_driver" ng-if="dateActual > join.Journey.date_max">
                                                 <button ng-if="!join.validated" class="btn btn-success btn-sm" ng-click="showJourneyValidationModal(join)">Valider</button>
@@ -94,7 +94,7 @@
                                     <div class="panel-heading clearfix">
                                         <div class="panel-title col-xs-12 col-sm-9 col-md-9">
                                             <strong>Votre proposition de trajet pour la course {{journey.Run.name}}</strong>
-                                            - <small><a href="/journey-{{journey.id}}">voir le trajet</a></small>
+                                            - <small><a href="/journey-{{journey.id}}">voir votre trajet</a></small>
                                         </div>
                                         <div class="panel-title col-xs-8 col-sm-2 col-md-2">
                                             {{journey.journey_type | capitalize}}
@@ -148,7 +148,7 @@
                                                 </span>
                                             </div>
                                             <div class="col-xs-12 col-sm-12 col-md-12 info_driver">
-                                                <button class="btn btn-success" ng-click="showJourneyModal(journey, null)">En savoir +</button>
+                                                <button class="btn btn-success" ng-click="showJourneyModal(journey, null)">Discussion sur votre trajet</button>
                                             </div>
                                         </div>
                                     </div>
