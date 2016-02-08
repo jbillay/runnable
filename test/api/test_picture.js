@@ -30,11 +30,34 @@ describe('Test of picture object', function () {
             fakeFile = path.normalize(path.join(__dirname, '/fixtures/myruntrip.jpg')),
             targetFile = path.normalize(path.join(__dirname, '../myruntrip.jpg'));
         fs.createReadStream(fakeFile).pipe(fs.createWriteStream(targetFile));
-        picture.create(targetFile, 1, 1)
-            .then(function (picture) {
-                assert.equal(picture.id, 1);
-                assert.isTrue(picture.default);
-                assert.match(picture.link, /^http:\/\/res\.cloudinary\.com\/myruntrip.*Run_1_Picture_1_test.*/);
+        picture.create(targetFile, 1)
+            .then(function (newPicture) {
+                assert.equal(newPicture.id, 4);
+                assert.isFalse(newPicture.default);
+                assert.match(newPicture.link, /^http:\/\/res\.cloudinary\.com\/myruntrip.*Run_1_Picture_4_test.*/);
+                picture.getList(1)
+                    .then(function (pictures) {
+                        assert.equal(pictures.length, 3);
+                        return done();
+                    })
+                    .catch(function (err) {
+                        return done(err);
+                    });
+            })
+            .catch(function (err) {
+                return done(err);
+            });
+    });
+
+    it('Set image id 2 as default', function (done) {
+        var picture = new Picture();
+
+        picture.setDefault(2, 1)
+            .then(function (pictures) {
+                assert.equal(pictures.length, 3);
+                assert.equal(pictures[0].default, false);
+                assert.equal(pictures[1].default, true);
+                assert.equal(pictures[2].default, false);
                 return done();
             })
             .catch(function (err) {
@@ -42,14 +65,56 @@ describe('Test of picture object', function () {
             });
     });
 
-    it('Remove image with id 1', function (done) {
+    it('Get images for run 1 and 2', function (done) {
+        var picture = new Picture();
+
+        picture.getList(1)
+            .then(function (pictures) {
+                assert.equal(pictures.length, 3);
+                picture.getList(2)
+                    .then(function (pictures) {
+                        assert.equal(pictures.length, 1);
+                        return done();
+                    })
+                    .catch(function (err) {
+                        return done(err);
+                    });
+            })
+            .catch(function (err) {
+                return done(err);
+            });
+    });
+
+    it('Get image id 4', function (done) {
+        var picture = new Picture();
+
+        picture.get(4)
+            .then(function (picture) {
+                assert.equal(picture.id, 4);
+                assert.isFalse(picture.default);
+                assert.match(picture.link, /^http:\/\/res\.cloudinary\.com\/myruntrip.*Run_1_Picture_4_test.*/);
+                return done();
+            })
+            .catch(function (err) {
+                return done(err);
+            });
+    });
+
+    it('Remove image with id 4', function (done) {
         this.timeout(6000);
         var picture = new Picture();
 
-        picture.remove(1)
-            .then(function (result) {
-                assert.equal(result.result, 'ok');
-                return done();
+        picture.remove(4)
+            .then(function (oldPicture) {
+                assert.equal(oldPicture.result, 'ok');
+                picture.getList(1)
+                    .then(function (pictures) {
+                        assert.equal(pictures.length, 2);
+                        return done();
+                    })
+                    .catch(function (err) {
+                        return done(err);
+                    });
             })
             .catch(function (err) {
                 return done(err);

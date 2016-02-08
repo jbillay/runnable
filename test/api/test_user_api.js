@@ -10,6 +10,8 @@ var supertest = require('supertest'),
     assert = require('chai').assert,
     app = require('../../server.js'),
     sinon = require('sinon'),
+    fs = require('fs'),
+    path = require('path'),
     request = require('request'),
     settings = require('../../conf/config'),
     superagent = require('superagent');
@@ -550,6 +552,30 @@ describe('Test of user API', function () {
                     assert.equal(res.body.msg, 'userPictureRemoved');
                     return done();
                 });
+        });
+    });
+
+    describe('POST /api/user/picture', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('Should add profile picture of user profil', function(done) {
+            var filename = 'myruntrip.jpg',
+                boundary = Math.random();
+            var req = agent.post('http://localhost:' + settings.port + '/api/user/picture')
+            req.set('Content-Type', 'multipart/form-data; boundary=' + boundary);
+            req.write('--' + boundary + '\r\n');
+            req.write('Content-Disposition: form-data; name="file"; filename="'+filename+'"\r\n');
+            req.write('Content-Type: application/octet-stream\r\n');
+            req.write('\r\n');
+            req.write(fs.readFileSync(path.normalize(path.join(__dirname, '/fixtures/' + filename))));
+            req.write('\r\n--' + boundary + '--');
+            req.end(function (err, res) {
+                if (err) return done(err);
+                assert.equal(res.body.msg, 'userPictureSaved');
+                return done();
+            });
         });
     });
 });

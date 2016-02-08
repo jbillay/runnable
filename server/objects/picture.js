@@ -29,13 +29,15 @@ picture.prototype.set = function (picture) {
         this.link = picture.link;
     if (picture.default)
         this.default = picture.default;
+    else
+        this.default = false;
     if (picture.createdAt)
         this.createdAt = picture.createdAt;
     if (picture.updatedAt)
         this.updatedAt = picture.updatedAt;
 };
 
-picture.prototype.create = function (filePath, isDefault, runId) {
+picture.prototype.create = function (filePath, runId) {
     var deferred = q.defer();
 
     cloudinary.config({
@@ -54,7 +56,7 @@ picture.prototype.create = function (filePath, isDefault, runId) {
                                 function(result) {
                                     fs.unlink(filePath, function (err) { if (err) console.log(new Error(err)); });
                                     picture.link = result.url;
-                                    picture.default = isDefault;
+                                    picture.default = false;
                                     picture.save()
                                         .then(function (picture) {
                                             deferred.resolve(picture);
@@ -84,11 +86,21 @@ picture.prototype.remove = function (id) {
     var deferred = q.defer();
     models.Picture.find({where: {id: id}})
         .then(function (picture) {
-            var fileName = 'Run_' + picture.RunId + '_Picture_' + id + '_' + process.env.NODE_ENV;
-            cloudinary.uploader.destroy(fileName,
-                function(result) {
-                    deferred.resolve(result);
-                });
+            if (picture) {
+                var fileName = 'Run_' + picture.RunId + '_Picture_' + id + '_' + process.env.NODE_ENV;
+                cloudinary.uploader.destroy(fileName,
+                    function(result) {
+                        picture.destroy()
+                            .then(function (obj) {
+                                deferred.resolve(result);
+                            })
+                            .catch(function (err) {
+                                deferred.reject(new Error(err));
+                            });
+                    });
+            } else {
+                deferred.reject(new Error('not found'));
+            }
         })
         .catch(function (err) {
             deferred.reject(new Error(err));
@@ -96,17 +108,24 @@ picture.prototype.remove = function (id) {
     return deferred.promise;
 };
 
-picture.prototype.setDefault = function (name, runId) {
+picture.prototype.setDefault = function (id, runId) {
     var deferred = q.defer();
-    models.Picture.find({where: {name: name, RunId: runId}})
-        .then(function (picture) {
-            if (picture) {
-                deferred.reject(new Error('Picture not found'));
+    models.Picture.findAll({where: {RunId: runId}})
+        .then(function (pictures) {
+            if (!pictures) {
+                deferred.reject(new Error('No pictures found for run ' + runId));
             } else {
-                picture.default = true;
-                picture.save()
-                    .then(function (picture) {
-                        deferred.resolve(picture);
+                var promises = [];
+                pictures.forEach(function (picture) {
+                    if (picture.id === id)
+                        picture.default = true;
+                    else
+                        picture.default = false;
+                    promises.push(picture.save());
+                });
+                q.all(promises)
+                    .then(function (newPictures) {
+                        deferred.resolve(newPictures);
                     })
                     .catch(function (err) {
                         deferred.reject(new Error(err));

@@ -1,0 +1,29 @@
+[
+  {
+    "model": "Picture",
+    "data": {
+      "id": 1,
+      "link": "http://res.cloudinary.com/myruntrip/image/upload/v1453786210/Run_1_Picture_1_test",
+      "default": true,
+      "RunId": 1
+    }
+  },
+  {
+    "model": "Picture",
+    "data": {
+      "id": 2,
+      "link": "http://res.cloudinary.com/myruntrip/image/upload/v1453786210/Run_1_Picture_2_test",
+      "default": false,
+      "RunId": 1
+    }
+  },
+  {
+    "model": "Picture",
+    "data": {
+      "id": 3,
+      "link": "http://res.cloudinary.com/myruntrip/image/upload/v1453786210/Run_2_Picture_3_test",
+      "default": true,
+      "RunId": 2
+    }
+  }
+]

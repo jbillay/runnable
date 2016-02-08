@@ -117,11 +117,17 @@ module.exports = function (app, passport, auth) {
     app.get('/api/admin/partners', auth.requireAdmin, controllers.partner.getList);
     app.get('/api/admin/partner/:token', auth.requireAdmin, controllers.partner.getByToken);
 
+    app.get('/api/pictures/:runId', controllers.picture.getList);
+    app.get('/api/picture/:id', controllers.picture.get);
+	app.post('/api/picture/default/:id/:runId', auth.requiresLogin, controllers.picture.setDefault);
+    app.post('/api/picture/:runId', auth.requiresLogin, controllers.root.fileParser, controllers.picture.add);
+    app.get('/api/picture/delete/:id', auth.requiresLogin, controllers.picture.remove);
+
     app.get('/api/page/:tag', controllers.page.getByTag);
 
     app.get('/api/invoice', auth.requiresLogin, controllers.invoice.getByUser);
     app.get('/api/invoice/driver', auth.requiresLogin, controllers.invoice.getByDriver);
-	
+
 	app.post('/api/user/bankaccount', auth.requiresLogin, controllers.bank_account.save);
 	app.get('/api/user/bankaccount', auth.requiresLogin, controllers.bank_account.get);
 
