@@ -563,7 +563,7 @@ describe('Test of user API', function () {
         it('Should add profile picture of user profil', function(done) {
             var filename = 'myruntrip.jpg',
                 boundary = Math.random();
-            var req = agent.post('http://localhost:' + settings.port + '/api/user/picture')
+            var req = agent.post('http://localhost:' + settings.port + '/api/user/picture');
             req.set('Content-Type', 'multipart/form-data; boundary=' + boundary);
             req.write('--' + boundary + '\r\n');
             req.write('Content-Disposition: form-data; name="file"; filename="'+filename+'"\r\n');
