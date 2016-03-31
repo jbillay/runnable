@@ -1,84 +1,165 @@
 <div ng-include="'partials/nav'"></div>
-
-<div class="container-fluid body" ng-controller="RunnableRunDetailController">
-    <div class="row-fluid run_detail">
-		<div class="col-xs-12 col-sm-12 col-md-12">
-			<div class="panel panel-default">
-				<div class="panel-heading clearfix">
-					<div class="col-xs-9 col-sm-6 col-md-6">
-						<h3 id="run_name">{{run.name}}</h3>
-					</div>
-					<div class="hidden-xs col-sm-6 col-md-6">
-                        <div class="pull-right btn-group btn-group-sm" role="group">
-							<button class="btn btn-sm btn-success" ng-click="createJourney()" role="button">Proposer un parcours</button>
-							<button class="btn btn-sm btn-primary" ng-click="participateRun()" role="button" ng-if="!userJoined">Ajouter à mon agenda</button>
-							<button class="btn btn-sm" role="button" ng-if="userJoined">Cette course est dans votre agenda</button>
-    					</div>
-				    </div>
-                    <div class="visible-xs-block col-xs-3 pull-right">
-                        <a href="#" ng-click="createJourney()"><i class="glyphicon glyphicon-road green"></i></a>
-                        <a href="#" ng-click="participateRun()" ng-if="!userJoined"><i class="glyphicon glyphicon-calendar"></i></a>
-                        <a href="#" ng-if="userJoined"><i class="glyphicon glyphicon-calendar green"></i></a>
-                    </div>
-				</div>
-				<div class="panel-body">
-					<div class="col-xs-12 col-sm-6 col-md-4">
-						<p id="run_address_start"><i class="glyphicon glyphicon-map-marker"></i> {{run.address_start | capitalize}}</p>
-						<p id="run_date_start"><i class="glyphicon glyphicon-calendar"></i> {{run.date_start | date:'dd / MM / yyyy'}}</p>
-						<p id="run_time_start"><i class="glyphicon glyphicon-time"></i> {{run.time_start}}</p>
-					</div>
-					<div class="col-xs-12 col-sm-6 col-md-4">
-						<p id="run_type"><i class="glyphicon glyphicon-road"></i> {{run.type | capitalize}}</p>
-						<p id="run_distances"><i class="glyphicon glyphicon-text-width"></i> {{run.distances}}</p>
-						<p id="run_elevations"><i class="fa-area-chart"></i> {{run.elevations}}</p>
-					</div>
-					<div class="col-xs-12 col-sm-6 col-md-4">
-						<p id="run_info">{{run.info}}</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="row-fluid">
-		<div class="col-xs-12 col-sm-12 col-md-6">
-			<div class="row-fluid run_journey_info">
-				<div class="no_journey" id="no_journey" ng-if="journeyList.length === 0">
-					<p>Aucun parcours pour cette course actuellement.<br>N'hésitez pas à en proposer un en quelques secondes !</p>
-					<a class="btn btn-success" href="#" ng-click="createJourney()" role="button">Proposer un parcours</a>
-				</div>
-				<div ng-repeat="journey in journeyList">
-					<div class="panel panel-default">
-						<div class="panel-heading clearfix">
-                            <div class="panel-title">
-							    <div class="pull-left"><a class="journey_link" href="/journey-{{journey.id}}">Départ de {{journey.address_start}}</a></div>
-							    <div class="pull-right journey_type">{{journey.journey_type | capitalize}}</div>
-                            </div>
-						</div>
-						<div class="panel-body">
-							<div class="clearfix" ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'aller'">
-								<strong>Aller </strong>
-								<span class="journey_start_outward">{{journey.date_start_outward | date:'dd/MM/yyyy'}} {{journey.time_start_outward}}</span>
-								<span class="pull-right journey_space_positive journey_space_outward">{{journey.nb_space_outward}} place(s)</span>
-							</div>
-							<div class="clearfix" ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'retour'">
-								<strong>Retour </strong>
-								<span class="journey_start_return">{{journey.date_start_return | date:'dd/MM/yyyy'}} {{journey.time_start_return}}</span>
-								<span class="pull-right journey_space_positive journey_space_return">{{journey.nb_space_return}} place(s)</span>
-							</div>
-							<div class="clearfix journey_head_price">
-								<div class="pull-left" ng-if="journey.userDistance">
-									Distance de chez vous {{journey.userDistance.distance}}
-								</div>
-								<div class="pull-right journey_price">{{journey.amount | currency:'€ '}}</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="hidden-xs col-sm-12 col-md-6">
-			<div id="map_canvas_run" class="map"></div>
-		</div>
+<div class="col-md-10 col-md-offset-1 runDetailHeader">
+    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            <div class="item" ng-class="{active: $first}" ng-repeat="picture in run.pictures" ng-if="!!run.pictures.length">
+                <img class    = "img-responsive runDetailSliderImg"
+                     ng-src   = {{picture}}
+                     alt      = "Run Image">
+            </div>
+            <div class="item active" ng-if="!!!run.pictures.length">
+                <img class    = "img-responsive runDetailSliderImg"
+                     src      = "http://res.cloudinary.com/myruntrip/image/upload/v1456596630/Run_72_Picture_2_test.jpg"
+                     alt      = "Run Image">
+            </div>
+        </div>
+        <a class="left carousel-control" href="#carousel-example-generic" ng-non-bindable data-slide="prev">
+        </a>
+        <a class="right carousel-control" href="#carousel-example-generic" ng-non-bindable data-slide="next">
+        </a>
     </div>
+    <div class="hidden-xs hidden-sm col-md-5 runTrialInfoPanelLarge">
+        <div class="text-left runTrialInfoPanelTextLeft">
+            <p class="runTrialInfoPanelTextParagraph">
+                <i class="glyphicon glyphicon-map-marker runTrialInfoPanelTextIcon"></i> {{run.address_start | capitalize}}
+            </p>
+            <p class="runTrialInfoPanelTextParagraph">
+                <i class="glyphicon glyphicon-calendar runTrialInfoPanelTextIcon"></i> {{run.date_start | date:'dd / MM / yyyy'}}
+            </p>
+            <p class="runTrialInfoPanelTextParagraph">
+                <i class="glyphicon glyphicon-time runTrialInfoPanelTextIcon"></i> {{run.time_start}}
+            </p>
+        </div>
+        <div class="text-left runTrialInfoPanelTextRight">
+            <p class="runTrialInfoPanelTextParagraph">
+                <i class="glyphicon glyphicon-road runTrialInfoPanelTextIcon"></i> {{run.type | capitalize}}
+            </p>
+            <p class="runTrialInfoPanelTextParagraph">
+                <i class="glyphicon glyphicon-text-width runTrialInfoPanelTextIcon"></i> {{run.distances}}
+            </p>
+            <p class="runTrialInfoPanelTextParagraph">
+                <i class="fa fa-area-chart runTrialInfoPanelTextIcon"></i> {{run.elevations}}
+            </p>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-4 col-sm-offset-4 col-md-2 col-md-offset-0 runTrialLogo">
+        <img class="img-circle runTrailLogoImg" ng-src="{{run.sticker}}">
+        <h2 class="runTrailLogoTitle">{{run.name}}</h2>
+    </div>
+    <div class="hidden-xs hidden-sm col-md-5 runSocialInfoLarge text-center">
+        <div class="runSocialInfoFollower">
+            <div class="form-group">
+                <span class="runSocialInfoNumber">{{participateList.length}}</span><i class="fa fa-heart"></i><br/>
+                <button ng-click="participateRun()" ng-if="!userJoined" class="btn btn-xs runSocialInfoFollowerToJoinBtn">Suivre</button>
+                <button ng-if="userJoined" class="btn btn-xs active runSocialInfoFollowerJoinedBtn">Vous suivez</button>
+            </div>
+        </div>
+        <div class="runSocialInfoJourney">
+            <span class="runSocialInfoNumber">{{journeyList.length}}</span><i class="fa fa-car"></i><br/>
+            <button ng-click="createJourney()" class="btn btn-xs runSocialInfoJourneyBtn">Proposer trajet</button>
+        </div>
+        <a class="btn btn-default btn-xs center-block runInfoLink" href="{{run.info}}" target="_blank">Site de la course</a>
+    </div>
+    <div class="col-xs-12 visible-xs col-sm-6 visible-sm runTrialInfoPanelSmall text-center">
+        <div class="text-left runTrialInfoPanelTextLeft">
+            <p class="runTrialInfoPanelTextParagraph">
+                <i class="glyphicon glyphicon-map-marker runTrialInfoPanelTextIcon"></i> {{run.address_start | capitalize}}
+            </p>
+            <p class="runTrialInfoPanelTextParagraph">
+                <i class="glyphicon glyphicon-calendar runTrialInfoPanelTextIcon"></i> {{run.date_start | date:'dd / MM / yyyy'}}
+            </p>
+            <p class="runTrialInfoPanelTextParagraph">
+                <i class="glyphicon glyphicon-time runTrialInfoPanelTextIcon"></i> {{run.time_start}}
+            </p>
+        </div>
+        <div class="text-left runTrialInfoPanelTextRight">
+            <p class="runTrialInfoPanelTextParagraph">
+                <i class="glyphicon glyphicon-road runTrialInfoPanelTextIcon"></i> {{run.type | capitalize}}
+            </p>
+            <p class="runTrialInfoPanelTextParagraph">
+                <i class="glyphicon glyphicon-text-width runTrialInfoPanelTextIcon"></i> {{run.distances}}
+            </p>
+            <p class="runTrialInfoPanelTextParagraph">
+                <i class="fa fa-area-chart runTrialInfoPanelTextIcon"></i> {{run.elevations}}
+            </p>
+        </div>
+    </div>
+    <div class="col-xs-12 visible-xs col-sm-6 visible-sm runSocialInfoSmall text-center">
+        <div class="runSocialInfoFollower">
+            <div class="form-group">
+                <span class="runSocialInfoNumber">{{participateList.length}}</span><i class="fa fa-heart"></i><br/>
+                <button ng-click="participateRun()" ng-if="!userJoined" class="btn btn-xs runSocialInfoFollowerToJoinBtn">Suivre</button>
+                <button ng-if="userJoined" class="btn btn-xs active runSocialInfoFollowerJoinedBtn">Vous suivez</button>
+            </div>
+        </div>
+        <div class="runSocialInfoJourney">
+            <span class="runSocialInfoNumber">{{journeyList.length}}</span><i class="fa fa-car"></i><br/>
+            <button ng-click="createJourney()" class="btn btn-xs runSocialInfoJourneyBtn">Proposer trajet</button>
+        </div>
+        <a class="btn btn-default btn-xs center-block runInfoLink" href="{{run.info}}" target="_blank">Site de la course</a>
+    </div>
+
+    <div class="row-fluid">
+        <div class="col-xs-12 col-sm-12 col-md-7 runDetailJourneysPanel" id="journeyPanel">
+            <div class="runDetailJourneysNoJourney" id="no_journey" ng-if="journeyList.length === 0">
+                <p>Aucun parcours pour cette course actuellement.<br>N'hésitez pas à en proposer un en quelques secondes !</p>
+                <button class="btn runSocialInfoJourneyBtn" ng-click="createJourney()">Proposer un trajet</button>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 runDetailJourneyDetailPanel"
+                 id="{{journey.markerId}}" ng-repeat="journey in journeyList">
+                <div class="col-xs-12 col-sm-12 col-md-12 runDetailJourneyDetailCard">
+                    <p class="runDetailJourneyCardTitleParagraph">
+                        <a href="/journey-{{journey.id}}" class="runDetailJourneyCardTitleLink">
+                            Départ de {{journey.address_start}}
+                        </a>
+                    </p>
+                    <div>
+                        <p ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'aller'">
+                            <i class="fa fa-hand-o-right"></i><span> Aller </span>
+                            <span>{{journey.date_start_outward | date:'dd/MM/yyyy'}} {{journey.time_start_outward}}</span>
+                        </p>
+                        <p ng-if="journey.nb_space_outward">
+                            <span class="runDetailJourneyCardBold">{{journey.nb_space_outward}}</span>
+                            <span> place(s) restante(s)</span>
+                        </p>
+                        <p ng-if="journey.nb_space_outward === 0">
+                            <span class="runDetailJourneyCardBold">Complet</span>
+                        </p>
+                        <p ng-if="journey.journey_type === 'aller-retour' || journey.journey_type === 'retour'">
+                            <i class="fa fa-hand-o-left"></i><span> Retour </span>
+                            <span>{{journey.date_start_return | date:'dd/MM/yyyy'}} {{journey.time_start_return}}</span>
+                        </p>
+                        <p ng-if="journey.nb_space_return">
+                            <span class="runDetailJourneyCardBold">{{journey.nb_space_return}}</span>
+                            <span> place(s) restante(s)</span>
+                        </p>
+                        <p ng-if="journey.nb_space_return === 0">
+                            <span class="runDetailJourneyCardBold">Complet</span>
+                        </p>
+                    </div>
+                    <div class="runDetailJourneyCardFooter">
+                        <p class="runDetailJourneyCardFooterDistance" ng-if="journey.userDistance">
+                            Distance de chez vous {{journey.userDistance.distance}}
+                        </p>
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p class="pull-right runDetailJourneyCardFooterPrice">
+                                {{journey.amount | currency:'€ '}}
+                            </p>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 text-center">
+                            <a href="/journey-{{journey.id}}" class="btn btn-primary">Voir le trajet</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hidden-xs hidden-sm col-md-5 runDetailMapPanel">
+            <div id="MyAffix">
+                <div id="map_canvas_run" class="runDetailMap"></div>
+            </div>
+        </div>
+    </div>
+
 </div>
+
 <div ng-include="'partials/footer'"></div>

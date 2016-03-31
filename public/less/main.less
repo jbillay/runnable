@@ -17,6 +17,8 @@
 @text_shadow: 2px 2px 8px #494949;
 @block_border: solid 1px black;
 @img_home: '/public/img/home.jpg';
+@img_run_trail: '/img/trail_default.jpg';
+@img_run_default: '/img/run_default.jpg';
 @footer_height: 100px;
 @discussion_info: #808080;
 
@@ -195,8 +197,22 @@ section.imgback {
 
 // Run image
 .run_img {
-  width: 100%;
-  height: 100%;
+  min-height: 220px;
+  margin: 0;
+  padding: 0;
+}
+.run_img_trail {
+  content: url(@img_run_trail);
+  min-height: 220px;
+  margin: 0;
+  padding: 0;
+}
+
+.run_img_default {
+  content: url(@img_run_default);
+  min-height: 220px;
+  margin: 0;
+  padding: 0;
 }
 
 // Used several times
@@ -227,11 +243,215 @@ section.imgback {
 }
 
 // Run detail
-.run_detail .panel-heading h3 {
-  margin-top: 0;
-  font-family: @font_familly;
-  font-weight: normal;
-  color: @text;
+.runDetailHeader {
+  margin-top: 50px;
+  .runDetailMapPanel {
+    padding:0 0 0 0;
+    margin-top: 10px;
+    .runDetailMap {
+      height: 600px;
+    }
+  }
+  .runDetailSliderImg {
+    height: 250px !important;
+    width: 100% !important;
+  }
+  .runTrialInfoPanelTextParagraph {
+    margin-bottom:10px;
+  }
+  .runTrialInfoPanelTextIcon {
+    margin-right:5px;
+  }
+  .runTrialInfoPanelSmall {
+    padding-top: 15px;
+    .runTrialInfoPanelTextLeft {
+      display:inline-block;
+      padding-right: 30px;
+    }
+    .runTrialInfoPanelTextRight {
+      display:inline-block;
+    }
+  }
+  .runTrialInfoPanelLarge {
+    padding-left: 0px;
+    padding-top: 15px;
+    padding-right: 0px;
+    font-size: small;
+    .runTrialInfoPanelTextLeft {
+      display:inline-block;
+      padding-right: 30px;
+      max-width: 49%;
+    }
+    .runTrialInfoPanelTextRight {
+      display:inline-block;
+      max-width: 49%;
+    }
+  }
+  .runTrialLogo {
+    text-align: center;
+    padding-left: 0px;
+    padding-right: 0px;
+    .runTrailLogoImg {
+      width: 150px;
+      height: 150px;
+      background-color: white;
+      position: absolute;
+      top: -75px;
+      border: solid 1px black;
+      margin-left: -75px;
+    }
+    .runTrailLogoTitle {
+      color:white;
+      text-shadow:2px 2px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;
+      margin-top:85px;
+    }
+  }
+  .runSocialInfoSmall {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    .runInfoLink {
+      display: block;
+      font-family: sans-serif;
+      width: 50%;
+    }
+  }
+  .runSocialInfoLarge {
+    padding-left: 40px;
+    padding-top: 15px;
+    .runInfoLink {
+      display: block;
+      font-family: sans-serif;
+      width: 40%
+    }
+  }
+  .runSocialInfoNumber {
+    padding-right: 5px;
+  }
+  .runSocialInfoFollower {
+    display:inline-block;
+    font-size:x-large;
+    margin-right: 20px;
+    color: #BC3790;
+    text-align: center;
+    .runSocialInfoFollowerToJoinBtn {
+      background-color: #BC3790;
+      border-color: #BC3790;
+      color: white;
+    }
+    .runSocialInfoFollowerJoinedBtn {
+      background-color: white;
+      border-color: white;
+      color: #BC3790;
+    }
+  }
+  .runSocialInfoJourneyBtn {
+    background-color: #35a5a2;
+    border-color: #35a5a2;
+    color: white;
+  }
+  .runSocialInfoJourney {
+    display:inline-block;
+    font-size:x-large;
+    color: #35a5a2;
+    text-align: center;
+  }
+  .runDetailJourneysPanel {
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-bottom: 30px;
+    .runDetailJourneyDetailPanel {
+      margin-top: 10px;
+      padding-left: 0px;
+      .runDetailJourneyDetailCard {
+        border: solid 1px black;
+        padding: 10px;
+        min-height: 320px;
+        .runDetailJourneyCardTitleParagraph {
+          margin-bottom: 10px;
+          min-height: 40px;
+          .runDetailJourneyCardTitleLink {
+            font-size: larger;
+            font-weight: bold;
+            color: black;
+          }
+        }
+        .runDetailJourneyCardBold {
+          font-size: large;
+          font-weight: bold;
+        }
+        .runDetailJourneyCardFooter {
+          position: absolute;
+          bottom: 10px;
+          left: 0px;
+          width: 100%;
+          .runDetailJourneyCardFooterDistance {
+            font-size: smaller;
+            margin-left: 10px;
+          }
+          .runDetailJourneyCardFooterPrice {
+            font-weight: bold;
+            font-size: xx-large;
+            color: green;
+          }
+        }
+      }
+    }
+  }
+}
+.affix {
+  top: 50px;
+}
+.affix-bottom {
+  position: absolute;
+}
+
+
+// Run Create
+.run_create {
+  .map {
+    border-radius: 25px;
+    min-height: 150px;
+    margin-bottom: 15px;
+  }
+  .map_large {
+    border-radius: 25px;
+    min-height: 400px;
+    margin-bottom: 15px;
+  }
+  .pictures_area {
+    border-radius: 25px;
+    border: 1px solid #cccccc;
+    margin: 15px 0px 15px 0px;
+    padding-left: 15px;
+    padding-right: 15px;
+    min-height: 225px;
+    .picture_area {
+      float: left;
+      margin-bottom: 5px;
+      .picture {
+        display: block;
+        width: 150px;
+        margin-right: 5px;
+        margin-left: 5px;
+        margin-top: 10px;
+        margin-bottom: 5px;
+      }
+      .selected_picture {
+        width: 150px;
+        margin-right: 4px;
+        margin-left: 4px;
+        margin-top: 8px;
+        margin-bottom: 5px;
+        border-color: lightgreen;
+        border-style: solid;
+        border-width: 3px;
+      }
+      .delete_btn {
+        display: block !important;
+        margin: 0 auto !important;
+      }
+    }
+  }
 }
 
 .run_journey_info {

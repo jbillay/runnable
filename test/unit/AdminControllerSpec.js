@@ -89,7 +89,7 @@ describe('Runnable Controllers', function() {
                 createdAt: '2015-02-04 18:55:39',
                 updatedAt: '2015-02-04 18:55:39'
             }]);
-            $httpBackend.whenGET('/api/admin/runs').respond([{
+            $httpBackend.whenGET('/api/admin/runs').respond({msg: [{
                 id: 1,
                 name: 'Maxicross',
                 type: 'trail',
@@ -112,7 +112,7 @@ describe('Runnable Controllers', function() {
                     elevations: '2500+',
                     info: 'ksdjlsdjlf jsdlfjl sjdflj',
                     is_active: 1
-                }]);
+                }], type: 'success'});
             $httpBackend.whenGET('/api/admin/journeys').respond([{
                 id: 1,
                 address_start: 'Saint-Germain-en-Laye, France',

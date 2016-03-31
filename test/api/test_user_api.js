@@ -561,6 +561,7 @@ describe('Test of user API', function () {
         before(loginUser(agent));
 
         it('Should add profile picture of user profil', function(done) {
+            this.timeout(6000);
             var filename = 'myruntrip.jpg',
                 boundary = Math.random();
             var req = agent.post('http://localhost:' + settings.port + '/api/user/picture');

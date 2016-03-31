@@ -75,7 +75,7 @@ describe('Run Service', function() {
         });
 
         it('should get run active list', function() {
-            $httpBackend.whenGET('/api/run/list').respond([{
+            $httpBackend.whenGET('/api/run/list').respond({msg: [{
                     id: 1,
                     name: 'Maxicross',
                     type: 'trail',
@@ -98,7 +98,7 @@ describe('Run Service', function() {
                     elevations: '2500+',
                     info: 'ksdjlsdjlf jsdlfjl sjdflj',
                     is_active: 1
-                }]);
+                }], type: 'success'});
             var promise = service.getActiveList(),
                 runList = null;
 
@@ -136,7 +136,7 @@ describe('Run Service', function() {
         });
 
         it('should get next run list', function() {
-            $httpBackend.whenGET('/api/run/next/1').respond([{
+            $httpBackend.whenGET('/api/run/next/1').respond({msg: [{
                     id: 1,
                     name: 'Maxicross',
                     type: 'trail',
@@ -147,7 +147,7 @@ describe('Run Service', function() {
                     elevations: '500+ - 1400+',
                     info: 'Toutes les infos sur le maxicross',
                     is_active: 1
-                }]);
+                }], type: 'success'});
             var promise = service.getNextList(1),
                 runList = null;
 
@@ -185,7 +185,7 @@ describe('Run Service', function() {
         });
 
         it('should get run list', function() {
-            $httpBackend.whenGET('/api/admin/runs').respond([{
+            $httpBackend.whenGET('/api/admin/runs').respond({msg: [{
                 id: 1,
                 name: 'Maxicross',
                 type: 'trail',
@@ -208,7 +208,7 @@ describe('Run Service', function() {
                     elevations: '2500+',
                     info: 'ksdjlsdjlf jsdlfjl sjdflj',
                     is_active: 1
-                }]);
+                }], type: 'success'});
             var promise = service.getList(),
                 runList = null;
 
@@ -272,7 +272,7 @@ describe('Run Service', function() {
         });
 
         it('should search run', function() {
-            $httpBackend.whenPOST('/api/run/search').respond([{
+            $httpBackend.whenPOST('/api/run/search').respond({msg: [{
                 id: 2,
                 name: 'Les templiers',
                 type: 'trail',
@@ -283,7 +283,7 @@ describe('Run Service', function() {
                 elevations: '2500+',
                 info: 'ksdjlsdjlf jsdlfjl sjdflj',
                 is_active: 1
-            }]);
+            }], type: 'success'});
             var promise = service.search({name: 'Les templ'}),
                 searchRunList = null;
 

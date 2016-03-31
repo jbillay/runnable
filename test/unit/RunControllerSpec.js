@@ -17,7 +17,7 @@ describe('Runnable Controllers', function() {
             location = $location;
             mapAPI = GoogleMapApi;
             DEFAULT_DISTANCE = 30;
-            $httpBackend.whenGET('/api/run/list').respond([{
+            $httpBackend.whenGET('/api/run/list').respond({msg: [{
                 id: 1,
                 name: 'Maxicross',
                 type: 'trail',
@@ -40,8 +40,8 @@ describe('Runnable Controllers', function() {
                 elevations: '2500+',
                 info: 'ksdjlsdjlf jsdlfjl sjdflj',
                 is_active: 1
-            }]);
-            $httpBackend.whenPOST('/api/run/search').respond([{
+            }], type: 'success'});
+            $httpBackend.whenPOST('/api/run/search').respond({msg: [{
                 id: 2,
                 name: 'Les templiers',
                 type: 'trail',
@@ -52,7 +52,7 @@ describe('Runnable Controllers', function() {
                 elevations: '2500+',
                 info: 'ksdjlsdjlf jsdlfjl sjdflj',
                 is_active: 1
-            }]);
+            }], type: 'success'});
 
             ctrl = $controller('RunnableRunController',
                 {$rootScope: rootScope, $scope: scope, $timeout: timeout, 'GoogleMapApi': mapAPI, 'DEFAULT_DISTANCE': DEFAULT_DISTANCE});

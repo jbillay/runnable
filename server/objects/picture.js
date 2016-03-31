@@ -13,7 +13,7 @@ var settings    = require('../../conf/config');
 function picture() {
     this.id = null;
     this.link = null;
-    this.default = 0;
+    this.default = false;
     this.createdAt = null;
     this.updatedAt = null;
 }
@@ -52,6 +52,7 @@ picture.prototype.create = function (filePath, runId) {
                     picture.setRun(run)
                         .then(function (picture) {
                             var fileName = 'Run_' + run.id + '_Picture_' + picture.id + '_' + process.env.NODE_ENV;
+                            console.log(fileName);
                             cloudinary.uploader.upload(filePath,
                                 function(result) {
                                     fs.unlink(filePath, function (err) { if (err) console.log(new Error(err)); });

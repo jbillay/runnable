@@ -1,20 +1,61 @@
 
 var Run = require('../objects/run');
+var Picture = require('../objects/picture');
+var _ = require('lodash');
+var async = require('async');
 
 exports.create = function (req, res) {
     'use strict';
-	console.log('Create the run : ' + req.body.run.name);
-	var run = new Run();
-	run.save(req.body.run, req.user, function (err, run) {
+	var run = new Run(),
+        picture = new Picture();
+    // Transform fields array in string due to multipart mapping
+    var newRun = _.transform(req.fields, function (newRun, value, key) {
+        newRun[key] = value.toString();
+    });
+    console.log('Create the run : ' + newRun.name);
+	run.save(newRun, req.user, function (err, run) {
         if (err) {
-            res.jsonp({msg: err, type: 'error'});
-        } else {
-            res.jsonp({msg: 'runCreated', type: 'success'});
+            return res.jsonp({msg: err, type: 'error'});
         }
-		err = null;
-		run = null;
+        if (req.files.file) {
+            var q = async.queue(function (options, callback) {
+                    picture.create(options.path, options.runId)
+                        .then(function (img) {
+                            if (options.isDefault === 'true') {
+                                picture.setDefault(img.id, options.runId)
+                                    .then(function (img) {
+                                        callback(null, img);
+                                    })
+                                    .catch(function (err) {
+                                        callback(err, null);
+                                    });
+                            } else {
+                                callback(null, img);
+                            }
+                        })
+                        .catch(function (err) {
+                            callback(err, null);
+                        });
+                }, 1),
+                fileInfo = newRun.fileInfo.split(','),
+                iterator = 0;
+            req.files.file.forEach(function (file) {
+                q.push({path: file.path, runId: run.id, isDefault: fileInfo[iterator]}, function (err, img) {
+                    if (err) {
+                        console.log(new Error('Not able to upload picture ' + file.originalFilename));
+                    } else {
+                        console.log('File ' + file.originalFilename + ' added');
+                    }
+                });
+                iterator++;
+            });
+            q.drain = function () {
+                return res.jsonp({msg: 'runCreated', type: 'success'});
+            };
+        } else {
+            return res.jsonp({msg: 'runCreated', type: 'success'});
+        }
 	});
-	run = null;
 };
 
 exports.search = function (req, res) {
@@ -22,68 +63,50 @@ exports.search = function (req, res) {
     var run = new Run();
     run.search(req.body, function (err, runs) {
         if (err) {
-            console.log('Not able to search run : ' + err);
-            res.jsonp({msg: err, type: 'error'});
-        } else {
-            res.jsonp(runs);
+            return res.jsonp({msg: err, type: 'error'});
         }
-		err = null;
-		runs = null;
+        return res.jsonp({msg: runs, type: 'success'});
     });
-	run = null;
 };
 
+// Function used in the widget don t change API without update widget code
 exports.activeList = function (req, res) {
     'use strict';
 	console.log('Get list of active run');
 	var run = new Run();
 	run.getActiveList(function (err, runs) {
 		if (err) {
-			console.log('Not able to get active list : ' + err);
-			res.jsonp({msg: err, type: 'error'});
-		} else {
-			res.jsonp(runs);
+			return res.jsonp({msg: err, type: 'error'});
 		}
-		err = null;
-		runs = null;
+		return res.jsonp({msg: runs, type: 'success'});
 	});
-	run = null;
 };
 
+// Function used in the widget don t change API without update widget code
 exports.detail = function (req, res) {
     'use strict';
 	console.log('Get info on run ' + req.params.id);
-	var id = req.params.id;
+	var id = _.toNumber(req.params.id);
 	var run = new Run();
 	run.getById(id, function (err, runDetail) {
 		if (err) {
-			console.log('Not able to get info on the run : ' + err);
-			res.jsonp({msg: err, type: 'error'});
-		} else {
-			res.jsonp(runDetail);
+			return res.jsonp({msg: err, type: 'error'});
 		}
-		err = null;
-		runDetail = null;
+        return res.jsonp(runDetail);
 	});
-	run = null;
-	id = null;
 };
 
 exports.next = function (req, res) {
     'use strict';
 	console.log('Get list of next run limited to ' + req.params.nb);
-	var run = new Run();
-	run.getNextList(req.params.nb, function (err, runs) {
+	var nb = _.toNumber(req.params.nb),
+        run = new Run();
+	run.getNextList(nb, function (err, runs) {
 		if (err) {
-			console.log('Not able to get active run list : ' + err);
-			res.jsonp({msg: err, type: 'error'});
-		} else {
-			res.jsonp(runs);
+			return res.jsonp({msg: err, type: 'error'});
 		}
-		err = null;
-		runs = null;
+        return res.jsonp({msg: runs, type: 'success'});
 	});
-	run = null;
 };
 
 exports.list = function (req, res) {
@@ -92,15 +115,10 @@ exports.list = function (req, res) {
 	var run = new Run();
 	run.getList(0, function (err, runs) {
 		if (err) {
-			console.log('Not able to get run list : ' + err);
-			res.jsonp({msg: err, type: 'error'});
-		} else {
-			res.jsonp(runs);
+			return res.jsonp({msg: err, type: 'error'});
 		}
-		err = null;
-		runs = null;
+        return res.jsonp({msg: runs, type: 'success'});
 	});
-	run = null;
 };
 
 exports.toggleActive = function (req, res) {
@@ -110,16 +128,10 @@ exports.toggleActive = function (req, res) {
 		run = new Run();
 	run.toggleActive(id, function (err, run) {
 		if (err) {
-			console.log('Not able to get info on the run : ' + err);
-			res.jsonp({msg: err, type: 'error'});
-		} else {
-			res.jsonp({msg: 'done', type: 'success'});
+			return res.jsonp({msg: err, type: 'error'});
 		}
-		err = null;
-		run = null;
+		return res.jsonp({msg: 'done', type: 'success'});
 	});
-	id = null;
-	run = null;
 };
 
 exports.update = function (req, res) {
@@ -128,12 +140,8 @@ exports.update = function (req, res) {
     var run = new Run();
     run.save(req.body.run, req.user, function (err, run) {
         if (err) {
-            res.jsonp({msg: err, type: 'error'});
-        } else {
-            res.jsonp({msg: 'runUpdated', type: 'success'});
+            return res.jsonp({msg: err, type: 'error'});
         }
-		err = null;
-		run = null;
+        return res.jsonp({msg: 'runUpdated', type: 'success'});
     });
-	run = null;
 };

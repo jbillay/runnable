@@ -6,6 +6,8 @@
 process.env.NODE_ENV = 'test';
 
 var request = require('supertest'),
+    fs = require('fs'),
+    path = require('path'),
     models = require('../../server/models/index'),
     assert = require('chai').assert,
     app = require('../../server.js'),
@@ -56,7 +58,8 @@ describe('Test of run API', function () {
                 .get('/api/run/list')
                 .end(function (err, res) {
                     if (err) return done(err);
-                    assert.equal(res.body.length, 3);
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg.length, 3);
                     return done();
                 });
         });
@@ -90,8 +93,7 @@ describe('Test of run API', function () {
                 .get('/api/run/-1')
                 .end(function (err, res) {
                     if (err) return done(err);
-                    var obj = {};
-                    assert.deepEqual(res.body, obj);
+                    assert.equal(res.body.type, 'error');
                     return done();
                 });
         });
@@ -108,7 +110,8 @@ describe('Test of run API', function () {
                 .get('/api/run/next/2')
                 .end(function (err, res) {
                     if (err) return done(err);
-                    assert.equal(res.body.length, 2);
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg.length, 2);
                     return done();
                 });
         });
@@ -133,7 +136,8 @@ describe('Test of run API', function () {
                 .get('http://localhost:' + settings.port + '/api/admin/runs')
                 .end(function (err, res) {
                     if (err) return done(err);
-                    assert.equal(res.body.length, 4);
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg.length, 4);
                     return done();
                 });
         });
@@ -155,7 +159,8 @@ describe('Test of run API', function () {
                         .get('/api/run/list')
                         .end(function (err, res) {
                             if (err) return done(err);
-                            assert.equal(res.body.length, 4);
+                            assert.equal(res.body.type, 'success');
+                            assert.equal(res.body.msg.length, 4);
                             return done();
                         });
                 });
@@ -189,17 +194,27 @@ describe('Test of run API', function () {
                 elevations: '3214+',
                 info: 'dkqsd lqldsj lqkjdsllq ksjdlq'
             };
-            agent
-                .post('http://localhost:' + settings.port + '/api/run')
-                .send({run: run})
-                .end(function (err, res) {
+            var fileInfo = '[]',
+                req = agent.post('http://localhost:' + settings.port + '/api/run');
+            req.field('fileInfo', fileInfo);
+            req.field('name', run.name);
+            req.field('type', run.type);
+            req.field('address_start', run.address_start);
+            req.field('date_start', run.date_start);
+            req.field('time_start', run.time_start);
+            req.field('distances', run.distances);
+            req.field('elevations', run.elevations);
+            req.field('info', run.info);
+            req.end(function (err, res) {
                     if (err) return done(err);
+                    assert.equal(res.body.type, 'success');
                     assert.equal(res.body.msg, 'runCreated');
                     agent
                         .get('http://localhost:' + settings.port + '/api/admin/runs')
                         .end(function (err, res) {
                             if (err) return done(err);
-                            assert.equal(res.body.length, 5);
+                            assert.equal(res.body.type, 'success');
+                            assert.equal(res.body.msg.length, 5);
                             agent
                                 .get('http://localhost:' + settings.port + '/api/run/7')
                                 .end(function (err, res) {
@@ -244,6 +259,7 @@ describe('Test of run API', function () {
                 .send({run: run})
                 .end(function (err, res) {
                     if (err) return done(err);
+                    assert.equal(res.body.type, 'success');
                     assert.equal(res.body.msg, 'runUpdated');
                     agent
                         .get('http://localhost:' + settings.port + '/api/run/1')
@@ -278,7 +294,8 @@ describe('Test of run API', function () {
                 .send(searchInfo)
                 .end(function (err, res) {
                     if (err) return done(err);
-                    assert.equal(res.body.length, 1);
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg.length, 1);
                     return done();
                 });
         });

@@ -32,6 +32,9 @@ describe('GoogleMapApi Service', function() {
             InfoWindow: function (object) {
                 this.open = function (map, marker) { return marker; };
             },
+            Animation: function () {
+                this.DROP = 1;
+            },
             DirectionsService: function () {
                 this.route = function (request, fn) {
                     fn([{geometry: {location: 1}}], window.google.maps.GeocoderStatus.OK);

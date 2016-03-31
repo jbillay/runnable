@@ -17,7 +17,7 @@ describe('Runnable Controllers', function() {
             service = Session;
             location = $location;
             $routeParams.journeyId = 1;
-            $httpBackend.whenGET('/api/run/list').respond([{
+            $httpBackend.whenGET('/api/run/list').respond({msg: [{
                 id: 1,
                 name: 'Maxicross',
                 type: 'trail',
@@ -40,7 +40,7 @@ describe('Runnable Controllers', function() {
                     elevations: '2500+',
                     info: 'ksdjlsdjlf jsdlfjl sjdflj',
                     is_active: 1
-                }]);
+                }], type: 'success'});
             $httpBackend.whenGET('/api/journey/1').respond({
                 id: 1,
                 address_start: 'Nantes, France',

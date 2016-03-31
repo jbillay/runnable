@@ -1,24 +1,31 @@
 <div ng-include="'partials/nav'"></div>
 
 <div class="container body" ng-controller="RunnableRunCreateController">
-    <div class="row spacehead">
-		<div class="col-sm-6">
+    <div class="row spacehead run_create">
+		<div class="col-sm-6 col-sm-offset-3">
 			<h2>Créer une course</h2>
 			<hr>
-			<form role="form" name="createRun" ng-submit="submitRun(newRun)">
+			<form name="createRun" novalidate ng-submit="submitRun(newRun)">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12">
-						<div class="form-group">
-							<input type="text" name="run[name]" id="name" class="form-control"
-                                   ng-model="newRun.name" placeholder="Nom de la course" tabindex="1">
+						<div class="form-group" ng-class="{
+                                'has-error': createRun.name.$touched && createRun.name.$invalid,
+                                'has-success' : createRun.name.$valid && createRun.name.$dirty }">
+							<input type="text" name="name" id="name" class="form-control"
+                                   ng-model="newRun.name" placeholder="Nom de la course" tabindex="1" ng-required="true">
 						</div>
-					</div>
+                        <div class="text-danger" ng-messages="createRun.name.$error" ng-show="createRun.name.$touched">
+                            <p ng-message="required">Vous devez définir le nom de la course</p>
+                        </div>
+                    </div>
 				</div>
 				<div class="row">
 					<div class="col-xs-6 col-sm-6 col-md-6">
-						<div class="form-group">
-							<select class="form-control" name="run[type]" id="type"
-                                    ng-model="newRun.type" placeholder="Type de course" tabindex="2">
+						<div class="form-group"  ng-class="{
+                            'has-error': createRun.type.$touched && createRun.type.$invalid,
+                            'has-success' : createRun.type.$valid && createRun.type.$dirty }">
+							<select class="form-control" name="type" id="type"
+                                    ng-model="newRun.type" placeholder="Type de course" tabindex="2" ng-required="true">
 								<option value="trail">Trail</option>
 								<option value="ultra">Ultra</option>
 								<option value="10k">10k</option>
@@ -27,49 +34,74 @@
 								<option value="marathon">Marathon</option>
 								<option value="triathlon">Triathlon</option>
 							</select>
-						</div>
+                            <div class="text-danger" ng-messages="createRun.type.$error" ng-show="createRun.type.$touched">
+                                <p ng-message="required">Vous devez définir le type de course</p>
+                            </div>
+                        </div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12">
-						<div class="form-group">
+						<div class="form-group" ng-class="{
+                                'has-error': createRun.address_start.$touched && createRun.address_start.$invalid,
+                                'has-success' : createRun.address_start.$valid && createRun.address_start.$dirty }">
 							<input type="text" ng-model="newRun.address_start" placeholder="Lieu de départ"
 								   typeahead="address for address in getLocation($viewValue)"
-								   typeahead-loading="loadingLocations" name="run[address_start]" id="address_start"
-								   class="form-control"  tabindex="3" typeahead-on-select='selectedAddress($item, $model, $label)'>
+								   typeahead-loading="loadingLocations" name="address_start" id="address_start"
+								   class="form-control"  tabindex="3" ng-required="true"
+                                   typeahead-on-select='selectedAddress($item, $model, $label)'>
 							<i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
-						</div>
+                            <div class="text-danger" ng-messages="createRun.address_start.$error" ng-show="createRun.address_start.$touched">
+                                <p ng-message="required">Vous devez définir le lieu de départ</p>
+                            </div>
+                        </div>
 					</div>
 				</div>
-				<div class="row">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div id="map_canvas" class="map"></div>
+                    </div>
+                </div>
+                <div class="row">
 					<div class="col-xs-6 col-sm-6 col-md-6">
-                        <div class="form-group">
+                        <div class="form-group" ng-class="{
+                                'has-error': createRun.date_start.$touched && createRun.date_start.$invalid,
+                                'has-success' : createRun.date_start.$valid && createRun.date_start.$dirty }">
                             <div class="input-group">
-							<span class="input-group-btn">
-								<button type="button" class="btn btn-default" ng-click="calendar.open($event)">
-                                    <i class="glyphicon glyphicon-calendar"></i>
-                                </button>
-							</span>
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="calendar.open($event)">
+                                        <i class="glyphicon glyphicon-calendar"></i>
+                                    </button>
+                                </span>
                                 <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
-                                       ng-model="newRun.date_start" name="run[date_start]"
+                                       ng-model="newRun.date_start" name="date_start"
                                        is-open="calendar.opened" min-date="today"
                                        datepicker-options="calendar.dateOptions" close-text="Fermer"
                                        data-toggle="tooltip" data-placement="bottom"
-                                       title="Date course" tabindex="4" required>
+                                       placeholder="Date course" tabindex="4" ng-required="true"
+                                       aw-datepicker-pattern="^([0-9]{2})\/([0-1][012])\/([12][0-9]{3})$">
+                            </div>
+                            <div class="text-danger" ng-messages="createRun.date_start.$error" ng-show="createRun.date_start.$touched">
+                                <p ng-message="required">Vous devez définir le date de la course</p>
+                                <p ng-message="date">Le format de la date est incorrect (ex: 27/01/2016)</p>
                             </div>
                         </div>
 					</div>
 					<div class="col-xs-6 col-sm-6 col-md-6">
-                        <div class="form-group">
-                            <div class="form-group">
-                                <div class="input-group clockpicker" id="clockpicker" data-autoclose="true">
-                                    <input type="text" class="form-control" id="time_start"
-                                           name="run[time_start]" ng-model="newRun.time_start"
-                                           placeholder="Heure" tabindex="5" required>
+                        <div class="form-group" ng-class="{
+                                'has-error': createRun.time_start.$touched && createRun.time_start.$invalid,
+                                'has-success' : createRun.time_start.$valid && createRun.time_start.$dirty }">
+                            <div class="input-group clockpicker" id="clockpicker" data-autoclose="true">
+                                <input type="text" class="form-control" id="time_start"
+                                       name="time_start" ng-model="newRun.time_start"
+                                       placeholder="Heure" tabindex="5" ng-required="true" ng-pattern="/^\d\d:\d\d$/" timeRun>
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-time"></span>
                                 </span>
-                                </div>
+                            </div>
+                            <div class="text-danger" ng-messages="createRun.time_start.$error" ng-show="createRun.time_start.$touched">
+                                <p ng-message="required">Vous devez définir l'heure de départ de la course</p>
+                                <p ng-message="pattern">Le format de l'heure est incorrect (ex: 08:00)</p>
                             </div>
                         </div>
 					</div>
@@ -77,15 +109,18 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12">
 						<div class="form-group">
-							<input type="text" name="run[distances]" id="distances" class="form-control"
-                                   ng-model="newRun.distances" placeholder="Distance(s)" tabindex="6">
+							<input type="text" name="distances" id="distances" class="form-control"
+                                   ng-model="newRun.distances" placeholder="Distance(s)" tabindex="6" ng-required="true">
 						</div>
+                        <div class="text-danger" ng-messages="createRun.distances.$error" ng-show="createRun.distances.$touched">
+                            <p ng-message="required">Vous devez définir la/les distances de la course</p>
+                        </div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12">
 						<div class="form-group">
-							<input type="text" name="run[elevations]" id="elevations" class="form-control"
+							<input type="text" name="elevations" id="elevations" class="form-control"
                                    ng-model="newRun.elevations" placeholder="Dénivelé(s)" tabindex="7">
 						</div>
 					</div>
@@ -93,21 +128,53 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12">
 						<div class="form-group">
-							<textarea class="form-control" name="run[info]" id="info" 
-								rows="3" placeholder="Informations" tabindex="8" ng-model="newRun.info"></textarea>
-							<input type="hidden" name="run[owner_id]" value="{{user.id}}">
+                            <input type="url" name="info" id="info" class="form-control"
+                                   ng-model="newRun.info" placeholder="Lien vers le site de la course" tabindex="8"
+                                   ng-required="true">
 						</div>
-					</div>
+                        <div class="text-danger" ng-messages="createRun.info.$error" ng-show="createRun.info.$touched">
+                            <p ng-message="required">Vous devez définir le lien vers la course</p>
+                            <p ng-message="url">Le format de l'url est incorrect (ex: http://www.myruntrip.com)</p>
+                        </div>
+                    </div>
 				</div>
-				<div class="row">
+				<div class="fluid">
+                    <div class="col-xs-12 col-sm-12 col-md-12" style="padding: 0px;">
+                        <div class="col-xs-12 col-sm-12 col-md-4" style="padding: 0px;">
+                            <button type="button" class="btn btn-success"
+                                    ngf-select="uploadFile($file, $invalidFiles)"
+                                    accept="image/*" ngf-max-size="3MB">
+                                <i class="fa fa-floppy-o"></i> Ajouter une photo
+                            </button>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-8" style="padding: 0px;">
+                            <p class="text-info">Selectionnez une de vos images comme vignette de la course en cliquant simplement dessus</p>
+                        </div>
+                        <div class="row-fluid" ng-show="errFile">
+                            <div class="alert alert-danger" role="alert">
+                                Le fichier {{errFile.name}} dépasse la taille maximum ({{errFile.$errorParam}}) !
+                            </div>
+                        </div>
+                        <div class="row-fluid" ng-show="maxFile">
+                            <div class="alert alert-warning" role="warning">
+                                Le nombre maximum de 6 images a été atteint !
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 pictures_area">
+                        <div ng-show="runListImg" ng-repeat="img in runListImg" class="picture_area">
+                                <img  ng-src="{{img.src}}" ng-click="defaultImg($index)" ng-class="{selected_picture: img.default}" class="img-rounded picture"/>
+                                <button class="btn btn-danger btn-xs delete_btn" ng-click="removePicture($index)">Supprimer</button>
+                        </div>
+                    </div>
+				</div>
+                <div class="row">
 					<div class="col-xs-3 col-md-3 pull-right">
+                        <input type="hidden" name="run[owner_id]" value="{{user.id}}">
 						<input type="submit" value="Créer" class="btn btn-primary btn-block" tabindex="9">
 					</div>
 				</div>
 			</form>
-        </div>
-		<div class="col-sm-5">
-			<div id="map_canvas" class="map"></div>
         </div>
     </div>
 </div>

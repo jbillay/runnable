@@ -15,7 +15,7 @@ describe('Runnable Controllers', function() {
             scope = _$rootScope_.$new();
             timeout = $timeout;
             location = $location;
-            $httpBackend.whenGET('/api/run/list').respond([{
+            $httpBackend.whenGET('/api/run/list').respond({msg: [{
                 id: 1,
                 name: 'Maxicross',
                 type: 'trail',
@@ -38,7 +38,7 @@ describe('Runnable Controllers', function() {
                     elevations: '2500+',
                     info: 'ksdjlsdjlf jsdlfjl sjdflj',
                     is_active: 1
-                }]);
+                }], type: 'success'});
             $httpBackend.whenPOST('/api/run').respond({msg: 'runCreated', type: 'success'});
 
             ctrl = $controller('RunnableRunCreateController',
@@ -95,6 +95,7 @@ describe('Runnable Controllers', function() {
             expect(scope.page).toEqual('Run');
             $httpBackend.flush();
             timeout.flush();
+            newRun.isValid = true;
             scope.submitRun(newRun);
             $httpBackend.flush();
             expect(location.path).toHaveBeenCalledWith('/run');

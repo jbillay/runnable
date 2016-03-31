@@ -112,6 +112,7 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
             timeout.flush();
             expect(scope.currentRun.name).toEqual('Maxicross');
+            newRun.isValid = true;
             scope.submitRun(newRun);
             $httpBackend.flush();
             expect(location.path).toHaveBeenCalledWith('/run');

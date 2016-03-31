@@ -33,6 +33,28 @@ angular.module('runnable.directives', []).
             }
         };
     }).
+    directive('awDatepickerPattern',function() {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function(scope,elem,attrs,ngModelCtrl) {
+                var dRegex = new RegExp(attrs.awDatepickerPattern);
+                // TODO : build a date if format not compliant with new Date
+                ngModelCtrl.$parsers.unshift(function(value) {
+                    if (typeof value === 'string') {
+                        var valueDate = new Date(value);
+                        var isValid = dRegex.test(valueDate);
+                        ngModelCtrl.$setValidity('date', isValid);
+                        if (!isValid) {
+                            return undefined;
+                        }
+                    }
+                    return value;
+                });
+
+            }
+        };
+    }).
     directive('ngFormCommit', [function(){
         return {
             require:'form',

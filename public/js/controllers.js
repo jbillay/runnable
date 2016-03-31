@@ -454,22 +454,61 @@ angular.module('runnable.controllers', []).
         allPublic.then(function (res) {
 			$scope.run = res[0];
 			$scope.journeyList = res[1];
+            if ($scope.run.sticker === null && $scope.run.type === 'trail') {
+                $scope.run.sticker = '/img/trail_default.jpg';
+            } else if ($scope.run.sticker === null) {
+                $scope.run.sticker = '/img/run_default.jpg';
+            }
 			$timeout( function() {
 				var obj = 'map_canvas_run';
-				GoogleMapApi.initMap(obj, $scope.run.address_start);
+				GoogleMapApi.initMap(obj);
+                GoogleMapApi.addMaker(obj, $scope.run.address_start,
+                    'Départ de la course', 'Départ de la course',
+                    'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=flag|FFFFFF');
 				angular.forEach($scope.journeyList, function (journey) {
-					GoogleMapApi.showDirection(obj, journey.address_start, $scope.run.address_start);
+                    GoogleMapApi.addMaker(obj, journey.address_start,
+                        null, null,
+                        'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=car-dealer|35a5a2')
+                        .then(function (markerId) {
+                            journey.markerId = markerId;
+                        });
 				});
                 $(document).scrollTop(0);
-			});
-			if (Session.userAddress) {
-				angular.forEach($scope.journeyList, function (journey) {
-					GoogleMapApi.getDistance(Session.userAddress, journey.address_start).then(function (result) {
-						journey.userDistance = result;
-					});
-				});
-			}
+                var headerHeight = $('#journeyPanel').offset().top - 40;
+                var footerHeight = $(document).height() - ($('#journeyPanel').outerHeight() + $('#journeyPanel').offset().top);
+                if ($('#journeyPanel').outerHeight(true) >= 600)
+                {
+                    $('#MyAffix').affix({
+                        offset: {
+                            top: headerHeight,
+                            bottom: footerHeight
+                        }
+                    }).on('affix.bs.affix', function () { // before affix
+                        $(this).css({
+                            'width': $(this).outerWidth()  // variable widths
+                        });
+                    }).on('affix-bottom.bs.affix', function () { // before affix-bottom
+                        $(this).css('bottom', 'auto'); // THIS is what makes the jumping
+                    });
+                }
+                $('.runDetailJourneyDetailPanel').on( {
+                    'mouseenter':function() { $scope.toggleBounce(this.id); },
+                    'mouseleave':function() { $scope.toggleBounce(this.id); }
+                });
+            });
+            if (Session.userAddress) {
+                angular.forEach($scope.journeyList, function (journey) {
+                    GoogleMapApi.getDistance(Session.userAddress, journey.address_start).then(function (result) {
+                        journey.userDistance = result;
+                    });
+                });
+            }
 		});
+        $scope.toggleBounce = function (id) {
+            GoogleMapApi.toggleAnimation('map_canvas_run', id, 'BOUNCE',
+                'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=car-dealer|35a5a2',
+                'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=car-dealer|BC3790');
+        };
 		$scope.createJourney = function () {
             $location.path('/journey-create-' + $scope.runId);
 		};
@@ -477,13 +516,17 @@ angular.module('runnable.controllers', []).
             if (!Session.userEmail) {
                 $scope.showLogin();
             } else {
-                Participate.add($scope.run.id);
-                $scope.userJoined = true;
+                Participate.add($scope.run.id)
+                    .then(function (participe) {
+                        $scope.userJoined = true;
+                    });
             }
         };
     }).
-    controller('RunnableRunCreateController', function ($scope, $q, $timeout, $location, Run, GoogleMapApi) {
+    controller('RunnableRunCreateController', function ($scope, $q, $timeout, $location, Run, GoogleMapApi,
+                                                        fileReader, Upload) {
         $scope.page = 'Run';
+        var maxImgByRace = 6;
 		var runPromise = Run.getActiveList(),
             all = $q.all([runPromise]);
         all.then(function (res) {
@@ -501,6 +544,7 @@ angular.module('runnable.controllers', []).
 		};
         $scope.newRun = {};
         $scope.newRun.type = 'trail';
+        $scope.runListImg = [];
         $scope.today = new Date();
         $scope.calendar = {
             opened: false,
@@ -515,10 +559,70 @@ angular.module('runnable.controllers', []).
                 $scope.calendar.opened = true;
             }
         };
-        $scope.submitRun = function (newRun) {
-            Run.create(newRun).then(function () {
-                $location.path('/run');
+        $scope.uploadFile = function (file, errFiles) {
+            $scope.errFile = errFiles && errFiles[0];
+            if (file) {
+                $scope.getFile(file);
+            }
+        };
+        $scope.getFile = function (file) {
+            fileReader.readAsDataUrl(file, $scope)
+                .then(function(result) {
+                    var img = {
+                        name: file.name,
+                        default: false,
+                        src: result,
+                        file: file
+                    };
+                    if ($scope.runListImg.length < maxImgByRace) {
+                        if (_.findIndex($scope.runListImg, function (o) { return o.name === file.name; }) === -1) {
+                            $scope.runListImg.push(img);
+                            $scope.errFile = $scope.maxFile = null;
+                        }
+                    } else {
+                        $scope.maxFile = 1;
+                    }
+                });
+        };
+        $scope.removePicture = function (idx) {
+            $scope.runListImg.splice(idx, 1);
+        };
+        $scope.defaultImg = function (idx) {
+            var iterator = 0;
+            angular.forEach($scope.runListImg, function (img) {
+                if (iterator === idx) {
+                    img.default = true;
+                } else {
+                    img.default = false;
+                }
+                iterator++;
             });
+        };
+        $scope.submitRun = function (newRun) {
+            if (newRun.isValid) {
+                var runForm = new FormData(),
+                    fileInfo = [];
+                angular.forEach($scope.runListImg, function (image) {
+                    runForm.append('file', image.file);
+                    if (image.default) {
+                        fileInfo.push(true);
+                    } else {
+                        fileInfo.push(false);
+                    }
+                });
+                runForm.append('fileInfo', fileInfo);
+                runForm.append('name', newRun.name);
+                runForm.append('type', newRun.type);
+                runForm.append('address_start', newRun.address_start);
+                runForm.append('date_start', newRun.date_start);
+                runForm.append('time_start', newRun.time_start);
+                runForm.append('distances', newRun.distances);
+                runForm.append('elevations', newRun.elevations);
+                runForm.append('info', newRun.info);
+                Run.create(runForm).then(function () {
+                    $location.path('/run');
+                });
+            }
         };
     }).
     controller('RunnableRunUpdateController', function ($scope, $q, $timeout, $routeParams, $rootScope, $location,
@@ -560,9 +664,11 @@ angular.module('runnable.controllers', []).
             }
         };
         $scope.submitRun = function (updatedRun) {
-            Run.update(updatedRun).then(function () {
+            if (updatedRun.isValid) {
+                Run.update(updatedRun).then(function () {
                     $location.path('/run');
-            });
+                });
+            }
         };
     }).
     controller('RunnableRunController', function ($scope, $q, Run, $timeout, GoogleMapApi, Email, DEFAULT_DISTANCE) {
@@ -1256,7 +1362,7 @@ angular.module('runnable.controllers', []).
             });
         };
 	}).
-	controller('RunnableJourneyController', function ($scope, $q, $timeout, Run, Journey, GoogleMapApi) {
+	controller('RunnableJourneyController', function ($scope, $q, $timeout, $location, Run, Journey, GoogleMapApi) {
         $scope.page = 'Journey';
         $scope.displayModeIcon = 'fa-list';
         $scope.displayMode = 'list';
@@ -1322,4 +1428,7 @@ angular.module('runnable.controllers', []).
                 $scope.displayModeIcon = 'fa-globe';
             }
         };
-	});
+        $scope.createJourney = function () {
+            $location.path('/journey-create');
+        };
+});

@@ -25,7 +25,7 @@ describe('Participate Service', function() {
         });
 
         it('should add a participation', function () {
-            $httpBackend.whenPOST('/api/participate/add').respond('addParticipate');
+            $httpBackend.whenPOST('/api/participate/add').respond({msg: 'addParticipate', type: 'success'});
 
             var runId = 1,
                 message = null;
@@ -37,7 +37,7 @@ describe('Participate Service', function() {
             });
 
             $httpBackend.flush();
-            expect(message).toEqual('addParticipate');
+            expect(message.msg).toEqual('addParticipate');
         });
 
         it('should failed to add a participation', function () {

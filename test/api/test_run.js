@@ -4,11 +4,14 @@
 
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
 var assert = require('chai').assert;
 var models = require('../../server/models/index');
 var Run = require('../../server/objects/run');
 var request = require('request');
 var sinon = require('sinon');
+var _ = require('lodash');
 var distance = require('google-distance');
 var settings = require('../../conf/config');
 
@@ -52,6 +55,9 @@ describe('Tests of run objects', function () {
             assert.equal(run.slug, 'maxicross');
             assert.equal(run.type, 'trail');
             assert.equal(run.address_start, 'Bouffémont, France');
+            assert.equal(run.sticker, 'http://res.cloudinary.com/myruntrip/image/upload/v1453786210/Run_1_Picture_1_test');
+            assert.equal(run.pictures.length, 1);
+            assert.equal(run.pictures[0], 'http://res.cloudinary.com/myruntrip/image/upload/v1453786210/Run_1_Picture_2_test');
             return done();
         });
     });
@@ -259,5 +265,23 @@ describe('Tests of run objects', function () {
 			assert.equal(runs.length, 1);
 			return done();
 		});
+    });
+
+    it('Should get sticker for a list of race', function (done) {
+        var run = new Run();
+
+        run.getList(1, function (err, runs) {
+            if (err) return done(err);
+            assert.equal(runs.length, 6);
+            assert.equal(
+                _.find(runs, _.matchesProperty('id', 1)).sticker,
+                'http://res.cloudinary.com/myruntrip/image/upload/v1453786210/Run_1_Picture_1_test'
+            );
+            assert.equal(
+                _.find(runs, _.matchesProperty('id', 2)).sticker,
+                'http://res.cloudinary.com/myruntrip/image/upload/v1453786210/Run_2_Picture_3_test'
+            );
+            return done();
+        });
     });
 });

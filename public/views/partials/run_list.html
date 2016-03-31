@@ -78,8 +78,8 @@
         <div class="col-xs-12 col-sm-6 col-md-3" ng-repeat="run in listRun | filter:{name:run_name} as results">
             <div class="block_inside">
                 <a href="/run-{{run.id}}">
-                    <img ng-if="run.type === 'trail'" src="/img/trail_default.jpg" class="run_img" alt="Image de la course">
-                    <img ng-if="run.type !== 'trail'" src="/img/run_default.jpg" class="run_img" alt="Image de la course">
+                    <img ng-if="!run.sticker" ng-class="run.type === 'trail' ? 'run_img_trail' : 'run_img_default'" class="img-responsive" alt="Image de la course">
+                    <img ng-if="run.sticker" ng-src="{{run.sticker}}" class="run_img img-responsive"  alt="Image de la course">
                 </a>
                 <div class="block_title"><a href="/run-{{run.id}}">{{run.name | capitalize | limitTo:25}}</a></div>
                 <div class="block_desc">

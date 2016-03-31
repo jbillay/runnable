@@ -16,7 +16,7 @@ describe('Runnable Controllers', function() {
             timeout = $timeout;
             service = Session;
             location = $location;
-            $httpBackend.whenGET('/api/run/list').respond([{
+            $httpBackend.whenGET('/api/run/list').respond({msg: [{
                     id: 1,
                     name: 'Maxicross',
                     type: 'trail',
@@ -39,7 +39,7 @@ describe('Runnable Controllers', function() {
                     elevations: '2500+',
                     info: 'ksdjlsdjlf jsdlfjl sjdflj',
                     is_active: 1
-                }]);
+                }], type: 'success'});
             $httpBackend.whenGET('/api/user/me').respond({
                 id: 1,
                 firstname: 'Jeremy',
@@ -99,7 +99,7 @@ describe('Runnable Controllers', function() {
             location = $location;
             Journey = _Journey_;
             $routeParams.runId = 1;
-            $httpBackend.whenGET('/api/run/list').respond([{
+            $httpBackend.whenGET('/api/run/list').respond({msg: [{
                     id: 1,
                     name: 'Maxicross',
                     type: 'trail',
@@ -122,7 +122,7 @@ describe('Runnable Controllers', function() {
                     elevations: '2500+',
                     info: 'ksdjlsdjlf jsdlfjl sjdflj',
                     is_active: 1
-                }]);
+                }], type: 'success'});
             $httpBackend.whenGET('/api/user/me').respond({
                 id: 1,
                 firstname: 'Jeremy',

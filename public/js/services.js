@@ -386,6 +386,7 @@ angular.module('runnable.services', ['ngResource']).
 		return {
 			initMap: function (object, address) {
 				$rootScope[object] = [];
+                $rootScope[object].marker = $rootScope[object].infoWindow = [];
 				var mapOptions = {
 					center: { lat: 46.22764, lng: 2.21375},
 					zoom: 5
@@ -397,7 +398,6 @@ angular.module('runnable.services', ['ngResource']).
 				}
 				$rootScope[object].directionsService = new google.maps.DirectionsService();
                 $rootScope[object].directionsRenderer = new google.maps.DirectionsRenderer();
-                $rootScope[object].marker = $rootScope[object].infoWindow = [];
 			},
 			resetDirection: function (object) {
 				if ($rootScope[object].directionsRenderer) {
@@ -463,22 +463,55 @@ angular.module('runnable.services', ['ngResource']).
 					});
 				return deferred.promise;
 			},
-            addMaker: function (object, address, title, info) {
+            addMaker: function (object, address, title, info, image) {
+                var deferred = $q.defer();
                 $rootScope[object].geocoder.geocode( { 'address': address}, function(results, status) {
                     if (status === google.maps.GeocoderStatus.OK) {
-                        var infoWindowIdx = $rootScope[object].infoWindow.push(new google.maps.InfoWindow({
-                            content: info
-                        })) - 1;
-                        var markerIdx = $rootScope[object].marker.push(new google.maps.Marker({
-                                map: $rootScope[object].map,
-                                position: results[0].geometry.location,
-                                title: title
-                            })) - 1;
-                        $rootScope[object].marker[markerIdx].addListener('click', function() {
-                            $rootScope[object].infoWindow[infoWindowIdx].open($rootScope[object].map, $rootScope[object].marker[markerIdx]);
-                        });
+                        var markerIdx = null;
+                        if (title) {
+                            var infoWindowIdx = $rootScope[object].infoWindow.push(new google.maps.InfoWindow({
+                                    content: info
+                                })) - 1;
+                            markerIdx = $rootScope[object].marker.push(new google.maps.Marker({
+                                    map: $rootScope[object].map,
+                                    position: results[0].geometry.location,
+                                    draggable: false,
+                                    animation: google.maps.Animation.DROP,
+                                    title: title,
+                                    icon: image
+                                })) - 1;
+                            $rootScope[object].marker[markerIdx].addListener('click', function() {
+                                $rootScope[object].infoWindow[infoWindowIdx].open($rootScope[object].map, $rootScope[object].marker[markerIdx]);
+                                deferred.resolve(markerIdx);
+                            });
+                        } else {
+                            markerIdx = $rootScope[object].marker.push(new google.maps.Marker({
+                                    map: $rootScope[object].map,
+                                    draggable: false,
+                                    animation: google.maps.Animation.DROP,
+                                    position: results[0].geometry.location,
+                                    icon: image
+                                })) - 1;
+                            deferred.resolve(markerIdx);
+                        }
+                    } else {
+                        deferred.reject('Not able to localized ' + address);
                     }
                 });
+                return deferred.promise;
+            },
+            toggleAnimation: function (object, id, animation, image_back, image_front) {
+                if (animation === 'BOUNCE') {
+                    animation = google.maps.Animation.BOUNCE;
+                }
+                if ($rootScope[object].marker[id].getAnimation() !== null) {
+                    $rootScope[object].marker[id].setAnimation(null);
+                    $rootScope[object].marker[id].setIcon(image_back);
+                } else {
+                    $rootScope[object].marker[id].setAnimation(animation);
+                    $rootScope[object].marker[id].setIcon(image_front);
+                }
+
             },
             refresh: function (object) {
                 var center = $rootScope[object].map.getCenter();
@@ -548,7 +581,10 @@ angular.module('runnable.services', ['ngResource']).
         return {
             create: function (run) {
                 var deferred = $q.defer();
-                $http.post('/api/run', {run: run}).
+                $http.post('/api/run', run, {
+                    transformRequest: [],
+                    headers: {'Content-Type': undefined}
+                }).
                     success(function (result) {
                         $rootScope.$broadcast('USER_MSG', result);
                         deferred.resolve(result);
@@ -574,8 +610,8 @@ angular.module('runnable.services', ['ngResource']).
 				var deferred = $q.defer();
                 $http.get('/api/run/' + id).
 					success(function (result) {
-						deferred.resolve(result);
-					}).
+                        deferred.resolve(result);
+                    }).
 					error(function(data, status) {
                         deferred.reject('error ' + status + ' : ' + data);
 					});
@@ -585,7 +621,11 @@ angular.module('runnable.services', ['ngResource']).
                 var deferred = $q.defer();
                 $http.get('/api/run/list').
 					success(function (result) {
-						deferred.resolve(result);
+                        if (result.type === 'success') {
+                            deferred.resolve(result.msg);
+                        } else  {
+                            deferred.reject('error : ' + result.msg);
+                        }
 					}).
 					error(function(data, status) {
                         deferred.reject('error ' + status + ' : ' + data);
@@ -596,7 +636,11 @@ angular.module('runnable.services', ['ngResource']).
 				var deferred = $q.defer();
                 $http.get('/api/run/next/' + nb).
 					success(function (result) {
-						deferred.resolve(result);
+                        if (result.type === 'success') {
+                            deferred.resolve(result.msg);
+                        } else  {
+                            deferred.reject('error : ' + result.msg);
+                        }
 					}).
 					error(function(data, status) {
                         deferred.reject('error ' + status + ' : ' + data);
@@ -607,7 +651,11 @@ angular.module('runnable.services', ['ngResource']).
                 var deferred = $q.defer();
                 $http.get('/api/admin/runs').
 					success(function (result) {
-						deferred.resolve(result);
+                        if (result.type === 'success') {
+                            deferred.resolve(result.msg);
+                        } else  {
+                            deferred.reject('error : ' + result.msg);
+                        }
 					}).
 					error(function(data, status) {
                         deferred.reject('error ' + status + ' : ' + data);
@@ -629,7 +677,11 @@ angular.module('runnable.services', ['ngResource']).
                 var deferred = $q.defer();
                 $http.post('/api/run/search', searchInfo).
                     success(function (result) {
-                        deferred.resolve(result);
+                        if (result.type === 'success') {
+                            deferred.resolve(result.msg);
+                        } else  {
+                            deferred.reject('error : ' + result.msg);
+                        }
                     }).
                     error(function (data, status) {
                         deferred.reject('error ' + status + ' : ' + data);
@@ -1067,8 +1119,21 @@ angular.module('runnable.services', ['ngResource']).
             getListForRun: function (id) {
                 var deferred = $q.defer();
                 $http.get('/api/journey/run/' + id).
-					success(function (result) {
-						deferred.resolve(result);
+					success(function (journeys) {
+                        // Remove reserved spaces
+                        journeys.forEach(function (journey) {
+                            if (journey.Joins) {
+                                journey.Joins.forEach(function (join) {
+                                    if (join.nb_place_outward > 0) {
+                                        journey.nb_space_outward = journey.nb_space_outward - join.nb_place_outward;
+                                    }
+                                    if (join.nb_place_return > 0) {
+                                        journey.nb_space_return = journey.nb_space_return - join.nb_place_return;
+                                    }
+                                });
+                            }
+                        });
+						deferred.resolve(journeys);
 					}).
 					error(function(data, status) {
 						deferred.reject('error ' + status + ' : ' + data);

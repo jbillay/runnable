@@ -7,9 +7,10 @@ describe('Runnable Controllers', function() {
     beforeEach(module('runnable.services'));
 
     describe('RunnableRunDetailController', function(){
-        var scope, rootScope, timeout, service, location, ctrl, ctrlMain, $httpBackend;
+        var scope, rootScope, timeout, service, location, ctrl, ctrlMain, $httpBackend, element;
 
-        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $routeParams, $timeout, $location, $controller, Session) {
+        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $routeParams, $timeout, $location, $controller,
+                                   $compile, Session) {
             $httpBackend = _$httpBackend_;
             rootScope = _$rootScope_;
             scope = _$rootScope_.$new();
@@ -88,6 +89,12 @@ describe('Runnable Controllers', function() {
                 picture: null
             });
             $httpBackend.whenGET('/api/inbox/unread/nb/msg').respond(200, 2);
+            $httpBackend.whenPOST('/api/participate/add').respond({msg: 'addParticipate', type: 'success'});
+
+            element = angular.element('<div class="runDetailJourneyDetailPanel" id="journeyPanel"></div><div id="MyAffix"></div>');
+            element.appendTo(document.body);
+            element = $compile(element)(scope);
+            scope.$digest();
 
             ctrlMain = $controller('RunnableMainController',
                 {$scope: scope, $rootScope: rootScope});
@@ -150,6 +157,7 @@ describe('Runnable Controllers', function() {
             timeout.flush();
             scope.userJoined = false;
             scope.participateRun();
+            $httpBackend.flush();
             expect(scope.userJoined).toBeTruthy();
         });
 

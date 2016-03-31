@@ -44,10 +44,10 @@ module.exports = function (app, passport, auth) {
     app.get('/api/user/journeys', auth.requiresLogin, controllers.user.showJourneys);
     app.get('/api/user/joins', auth.requiresLogin, controllers.user.showJoins);
 
-    app.post('/api/run', auth.requiresLogin, controllers.run.create);
+    app.post('/api/run', auth.requiresLogin, controllers.root.fileParser, controllers.run.create);
     app.put('/api/run', auth.requiresLogin, controllers.run.update);
     app.post('/api/run/search', controllers.run.search);
-    app.get('/api/run/list', controllers.run.activeList);
+    app.get('/api/run/list', cors(), controllers.run.activeList);
     app.get('/api/run/:id', cors(), controllers.run.detail);
     app.get('/api/run/next/:nb', controllers.run.next);
 
@@ -94,8 +94,8 @@ module.exports = function (app, passport, auth) {
     app.get('/api/join/cancel/:id', auth.requiresLogin, controllers.join.cancel);
 
     app.post('/api/participate/add', auth.requiresLogin, controllers.participate.add);
-    app.get('/api/participate/user/list', auth.requiresLogin, controllers.participate.userList);
-    app.get('/api/participate/run/user/list/:id', auth.requiresLogin, controllers.participate.userRunList);
+    app.get('/api/participate/user/list', controllers.participate.userList);
+    app.get('/api/participate/run/user/list/:id', controllers.participate.userRunList);
 
 	app.get('/api/admin/users', auth.requireAdmin, controllers.user.list);
 	app.get('/api/admin/runs', auth.requireAdmin, controllers.run.list);
