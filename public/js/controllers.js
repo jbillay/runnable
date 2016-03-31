@@ -1074,11 +1074,11 @@ angular.module('runnable.controllers', []).
 			});
 			angular.forEach($scope.userJoin, function (join) {
                 // Check if journey has been validated by the user
-                angular.forEach(join.ValidationJourneys, function (validation) {
-                    if (validation.UserId === Session.userId) {
+                if (join.ValidationJourney) {
+                    if (join.ValidationJourney.UserId === Session.userId) {
                         join.validated = true;
                     }
-                });
+                }
                 // Define max date to show validation form
                 if (join.Journey.date_start_return > join.Journey.date_start_outward) {
                     var dsr = join.Journey.date_start_return.split(/[- :T.]/);
@@ -1103,7 +1103,10 @@ angular.module('runnable.controllers', []).
                 angular.element('#journeyValidationModal').modal('hide');
                 ValidationJourney.validation($scope.vadidationJoin.id, validation.commentDriver,
                                                 validation.commentService, validation.rate_driver,
-                                                validation.rate_service);
+                                                validation.rate_service)
+                    .then(function (msg) {
+                        join.validated = true;
+                    });
             };
         };
 		$scope.showJourneyModal = function (journey, join) {

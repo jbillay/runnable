@@ -81,11 +81,9 @@ describe('Runnable Controllers', function() {
                         name: 'Maxicross'
                     }
                 },
-                ValidationJourneys: [
-                    {
-                        UserId: 1
-                    }
-                ]
+                ValidationJourney: {
+                    UserId: 1
+                }
             }, {
                 id: 2,
                 nb_place_outward: 3,
@@ -100,7 +98,7 @@ describe('Runnable Controllers', function() {
                         name: 'Les templiers'
                     }
                 },
-                ValidationJourneys: []
+                ValidationJourney: {}
             }]);
             $httpBackend.whenGET('/api/user/me').respond({
                 id: 1,
@@ -184,11 +182,9 @@ describe('Runnable Controllers', function() {
                     date_start_outward: '2015-06-24 00:00:00',
                     date_start_return: '2015-06-26 00:00:00'
                 },
-                ValidationJourneys: [
-                    {
-                        UserId: 1
-                    }
-                ]
+                ValidationJourney: {
+                    UserId: 1
+                }
             },
             validationForm = {
                 commentDriver: 'Good',
