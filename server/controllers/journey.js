@@ -242,3 +242,29 @@ exports.notifyJoin = function (req, res) {
         }
     });
 };
+
+exports.toPay = function (req, res) {
+    'use strict';
+    var journey = new Journey();
+
+    journey.toPay()
+        .then(function (journeys) {
+            return res.jsonp({msg: journeys, type: 'success'});
+        })
+        .catch(function (err) {
+            return res.jsonp({msg: err, type: 'error'});
+        });
+};
+
+exports.toRefund = function (req, res) {
+    'use strict';
+    var journey = new Journey();
+
+    journey.toRefund()
+        .then(function (journeys) {
+            return res.jsonp({msg: journeys, type: 'success'});
+        })
+        .catch(function (err) {
+            return res.jsonp({msg: err, type: 'error'});
+        });
+};

@@ -111,6 +111,8 @@ module.exports = function (app, passport, auth) {
 	app.get('/api/admin/pages', auth.requireAdmin, controllers.page.getList);
 	app.get('/api/admin/user/bankaccount/:id', auth.requireAdmin, controllers.bank_account.getByUser);
     app.post('/api/admin/journey/payed', auth.requireAdmin, controllers.journey.togglePayed);
+    app.get('/api/admin/journey/topay', auth.requireAdmin, controllers.journey.toPay);
+    app.get('/api/admin/journey/torefund', auth.requireAdmin, controllers.journey.toRefund);
 
     app.post('/api/admin/partner', auth.requireAdmin, controllers.partner.create, controllers.partner.sendInfo);
     app.post('/api/admin/partner/info', auth.requireAdmin, controllers.partner.sendInfo);

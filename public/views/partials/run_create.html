@@ -1,11 +1,10 @@
 <div ng-include="'partials/nav'"></div>
-
 <div class="container body" ng-controller="RunnableRunCreateController">
     <div class="row spacehead run_create">
 		<div class="col-sm-6 col-sm-offset-3">
 			<h2>Créer une course</h2>
 			<hr>
-			<form name="createRun" novalidate ng-submit="submitRun(newRun)">
+			<form name="createRun" novalidate ng-submit="submitRun(createRun, newRun)">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12">
 						<div class="form-group" ng-class="{
@@ -179,3 +178,4 @@
     </div>
 </div>
 <div ng-include="'partials/footer'"></div>
+<div class="loadingModal"><!-- Place at bottom of page --></div>

@@ -7,9 +7,9 @@ describe('Runnable Controllers', function() {
     beforeEach(module('runnable.services'));
 
     describe('RunnableRunCreateController', function(){
-        var scope, rootScope, timeout, location, ctrl, $httpBackend;
+        var scope, rootScope, timeout, location, ctrl, $httpBackend, form;
 
-        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $timeout, $location, $controller) {
+        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $timeout, $location, $controller, $compile) {
             $httpBackend = _$httpBackend_;
             rootScope = _$rootScope_;
             scope = _$rootScope_.$new();
@@ -40,6 +40,11 @@ describe('Runnable Controllers', function() {
                     is_active: 1
                 }], type: 'success'});
             $httpBackend.whenPOST('/api/run').respond({msg: 'runCreated', type: 'success'});
+
+            form = angular.element('<form name="createRun" novalidate></form>');
+            form.appendTo(document.body);
+            form = $compile(form)(scope);
+            scope.$digest();
 
             ctrl = $controller('RunnableRunCreateController',
                 {$rootScope: rootScope, $scope: scope, $location: location});
@@ -95,8 +100,7 @@ describe('Runnable Controllers', function() {
             expect(scope.page).toEqual('Run');
             $httpBackend.flush();
             timeout.flush();
-            newRun.isValid = true;
-            scope.submitRun(newRun);
+            scope.submitRun(scope.createRun, newRun);
             $httpBackend.flush();
             expect(location.path).toHaveBeenCalledWith('/run');
         });

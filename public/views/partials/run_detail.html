@@ -1,6 +1,6 @@
 <div ng-include="'partials/nav'"></div>
 <div class="col-md-10 col-md-offset-1 runDetailHeader">
-    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+    <div id="carousel-run-picture" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
             <div class="item" ng-class="{active: $first}" ng-repeat="picture in run.pictures" ng-if="!!run.pictures.length">
                 <img class    = "img-responsive runDetailSliderImg"
@@ -13,9 +13,9 @@
                      alt      = "Run Image">
             </div>
         </div>
-        <a class="left carousel-control" href="#carousel-example-generic" ng-non-bindable data-slide="prev">
+        <a class="left carousel-control" href="#carousel-run-picture" ng-non-bindable data-slide="prev">
         </a>
-        <a class="right carousel-control" href="#carousel-example-generic" ng-non-bindable data-slide="next">
+        <a class="right carousel-control" href="#carousel-run-picture" ng-non-bindable data-slide="next">
         </a>
     </div>
     <div class="hidden-xs hidden-sm col-md-5 runTrialInfoPanelLarge">

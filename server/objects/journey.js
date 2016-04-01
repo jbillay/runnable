@@ -466,4 +466,14 @@ journey.prototype.notifyJoin = function (invoice, done) {
             });
 };
 
+journey.prototype.toPay = function () {
+    'use strict';
+    return 'toto';
+};
+
+journey.prototype.toRefund = function () {
+    'use strict';
+    return 'toto';
+};
+
 module.exports = journey;

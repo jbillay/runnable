@@ -5,7 +5,7 @@
         <div class="col-sm-6 col-sm-offset-3">
             <h2>Mettre à jour une course</h2>
             <hr>
-            <form name="updateRun" novalidate ng-submit="submitRun(currentRun)">
+            <form name="updateRun" novalidate ng-submit="submitRun(updateRun, currentRun)">
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         <div class="form-group" ng-class="{
@@ -175,112 +175,7 @@
                     </div>
                 </div>
             </form>
-            <!--
-            <form role="form" name="updateRun" ng-submit="submitRun(currentRun)">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <input type="text" name="run[name]" id="name" class="form-control"
-                                   ng-model="currentRun.name" placeholder="Nom de la course" tabindex="1">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-6 col-sm-6 col-md-6">
-                        <div class="form-group">
-                            <select class="form-control" name="run[type]" id="type"
-                                    ng-model="currentRun.type" placeholder="Type de course" tabindex="2">
-                                <option value="trail">Trail</option>
-                                <option value="ultra">Ultra</option>
-                                <option value="10k">10k</option>
-                                <option value="20k">20k</option>
-                                <option value="semi">Semi</option>
-                                <option value="marathon">Marathon</option>
-                                <option value="triathlon">Triathlon</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <input type="text" ng-model="currentRun.address_start" placeholder="Lieu de départ"
-                                   typeahead="address for address in getLocation($viewValue)"
-                                   typeahead-loading="loadingLocations" name="run[address_start]" id="address_start"
-                                   class="form-control"  tabindex="3" typeahead-on-select='selectedAddress($item, $model, $label)'>
-                            <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-6 col-sm-6 col-md-6">
-                        <div class="form-group">
-                            <div class="input-group">
-							<span class="input-group-btn">
-								<button type="button" class="btn btn-default" ng-click="calendar.open($event)">
-                                    <i class="glyphicon glyphicon-calendar"></i>
-                                </button>
-							</span>
-                                <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
-                                       ng-model="currentRun.date_start" name="run[date_start]"
-                                       is-open="calendar.opened" min-date="today"
-                                       datepicker-options="calendar.dateOptions" close-text="Fermer"
-                                       data-toggle="tooltip" data-placement="bottom"
-                                       title="Date course" tabindex="4" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-6 col-sm-6 col-md-6">
-                        <div class="form-group">
-                            <div class="form-group">
-                                <div class="input-group clockpicker" id="clockpicker" data-autoclose="true">
-                                    <input type="text" class="form-control" id="time_start_run"
-                                           name="run[time_start]" ng-model="currentRun.time_start"
-                                           placeholder="Heure" tabindex="5" required>
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-time"></span>
-                                </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <input type="text" name="run[distances]" id="distances" class="form-control"
-                                   ng-model="currentRun.distances" placeholder="Distance(s)" tabindex="6">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-                            <input type="text" name="run[elevations]" id="elevations" class="form-control"
-                                   ng-model="currentRun.elevations" placeholder="Dénivelé(s)" tabindex="7">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <div class="form-group">
-							<textarea class="form-control" name="run[info]" id="info" rows="3"
-                                      placeholder="Informations" tabindex="8" ng-model="currentRun.info"></textarea>
-                            <input type="hidden" name="run[owner_id]" value="{{user.id}}" ng-model="currentRun.UserId">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-3 col-md-3 pull-right">
-                        <input type="submit" value="Update" class="btn btn-primary btn-block" tabindex="9">
-                    </div>
-                </div>
-            </form>
         </div>
-        <div class="col-sm-5">
-            <div id="map_canvas" class="map"></div>
-        </div>
-        -->
-    </div>
 </div>
 <div ng-include="'partials/footer'"></div>
+<div class="loadingModal"><!-- Place at bottom of page --></div>

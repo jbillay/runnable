@@ -99,6 +99,7 @@
     "mocha": "~1.21.3",
     "mockery": "^1.4.0",
     "phantomjs": "~1.9.16",
+    "phantomjs-prebuilt": "^2.1.7",
     "protractor": "~2.1.0",
     "querystring": "~0.2.0",
     "superagent": "~0.21.0",

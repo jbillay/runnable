@@ -474,6 +474,7 @@ angular.module('runnable.controllers', []).
                         });
 				});
                 $(document).scrollTop(0);
+                $('#carousel-run-picture').carousel({ interval: 5000, cycle: true });
                 var headerHeight = $('#journeyPanel').offset().top - 40;
                 var footerHeight = $(document).height() - ($('#journeyPanel').outerHeight() + $('#journeyPanel').offset().top);
                 if ($('#journeyPanel').outerHeight(true) >= 600)
@@ -598,8 +599,9 @@ angular.module('runnable.controllers', []).
                 iterator++;
             });
         };
-        $scope.submitRun = function (newRun) {
-            if (newRun.isValid) {
+        $scope.submitRun = function (form, newRun) {
+            if (form.$valid) {
+                $('body').addClass('loading');
                 var runForm = new FormData(),
                     fileInfo = [];
                 angular.forEach($scope.runListImg, function (image) {
@@ -620,6 +622,7 @@ angular.module('runnable.controllers', []).
                 runForm.append('elevations', newRun.elevations);
                 runForm.append('info', newRun.info);
                 Run.create(runForm).then(function () {
+                    $('body').removeClass('loading');
                     $location.path('/run');
                 });
             }
@@ -663,9 +666,11 @@ angular.module('runnable.controllers', []).
                 $scope.calendar.opened = true;
             }
         };
-        $scope.submitRun = function (updatedRun) {
-            if (updatedRun.isValid) {
+        $scope.submitRun = function (form, updatedRun) {
+            if (form.$valid) {
+                $('body').addClass('loading');
                 Run.update(updatedRun).then(function () {
+                    $('body').removeClass('loading');
                     $location.path('/run');
                 });
             }

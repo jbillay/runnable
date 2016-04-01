@@ -7,9 +7,10 @@ describe('Runnable Controllers', function() {
     beforeEach(module('runnable.services'));
 
     describe('RunnableRunUpdateController for user allowed', function(){
-        var scope, rootScope, timeout, location, ctrl, ctrlMain, mapAPI, $httpBackend;
+        var scope, rootScope, timeout, location, ctrl, ctrlMain, mapAPI, $httpBackend, form;
 
-        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $routeParams, $timeout, $location, $controller, GoogleMapApi) {
+        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $routeParams, $timeout, $location,
+                                   $controller, GoogleMapApi, $compile) {
             $httpBackend = _$httpBackend_;
             rootScope = _$rootScope_;
             scope = _$rootScope_.$new();
@@ -44,6 +45,11 @@ describe('Runnable Controllers', function() {
                 picture: null
             });
             $httpBackend.whenGET('/api/inbox/unread/nb/msg').respond(200, 2);
+
+            form = angular.element('<form name="updateRun" novalidate></form>');
+            form.appendTo(document.body);
+            form = $compile(form)(scope);
+            scope.$digest();
 
             ctrlMain = $controller('RunnableMainController',
                 {$scope: scope, $rootScope: rootScope});
@@ -112,8 +118,7 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
             timeout.flush();
             expect(scope.currentRun.name).toEqual('Maxicross');
-            newRun.isValid = true;
-            scope.submitRun(newRun);
+            scope.submitRun(scope.updateRun, newRun);
             $httpBackend.flush();
             expect(location.path).toHaveBeenCalledWith('/run');
         });
