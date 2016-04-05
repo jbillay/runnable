@@ -4,8 +4,6 @@
 
 'use strict';
 
-process.env.NODE_ENV = 'test';
-
 var assert = require('chai').assert;
 var models = require('../../server/models/index');
 var BankAccount = require('../../server/objects/bank_account');
