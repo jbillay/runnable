@@ -10,5 +10,17 @@
       "JoinId": 4,
       "UserId": 1
     }
+  },
+  {
+    "model": "ValidationJourney",
+    "data": {
+      "id": 2,
+      "comment_driver": "Bon conducteur",
+      "comment_service": "Un grand merci à l'équipe Myruntrip",
+      "rate_driver": 4,
+      "rate_service": 5,
+      "JoinId": 2,
+      "UserId": 1
+    }
   }
 ]

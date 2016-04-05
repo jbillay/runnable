@@ -4,7 +4,7 @@ var Invoice = require('../objects/invoice');
 
 exports.create = function (req, res) {
     'use strict';
-	console.log('Create a join for journey : %j', req.body);
+	console.log('Create a join for journey');
 	var join = new Join(),
         invoice = new Invoice();
 	join.save(req.body, req.user, function (err, join) {

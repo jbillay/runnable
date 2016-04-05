@@ -75,6 +75,7 @@ describe('Test of picture API', function () {
                 });
         });
     });
+
     describe('POST /api/pictures/:runId', function () {
         this.timeout(6000);
         var agent = superagent.agent();
@@ -99,6 +100,17 @@ describe('Test of picture API', function () {
                 assert.equal(res.body.msg.RunId, 1);
                 return done();
             });
+        });
+
+        it('should fail has there is no picture to save', function (done) {
+            agent
+                .post('http://localhost:' + settings.port + '/api/picture/1')
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.type, 'error');
+                    assert.equal(res.body.msg, 'runPictureNotSaved');
+                    return done();
+                });
         });
     });
 
@@ -140,6 +152,33 @@ describe('Test of picture API', function () {
                                     assert.equal(res.body.msg.length, 2);
                                     return done();
                                 });
+                        });
+                });
+        });
+    });
+
+    describe('POST /api/picture/default/:id/:runId', function () {
+        this.timeout(6000);
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should set default picture 2 for run 1', function(done) {
+            agent
+                .post('http://localhost:' + settings.port + '/api/picture/default/2/1')
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg.id, 2);
+                    assert.equal(res.body.msg.default, true);
+                    agent
+                        .get('http://localhost:' + settings.port + '/api/picture/1')
+                        .end(function (err, res) {
+                            if (err) return done(err);
+                            assert.equal(res.body.type, 'success');
+                            assert.equal(res.body.msg.id, 1);
+                            assert.isFalse(res.body.msg.default);
+                            return done();
                         });
                 });
         });

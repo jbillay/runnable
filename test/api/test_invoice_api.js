@@ -4,7 +4,10 @@
 
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
 var request = require('supertest'),
+    qs = require('querystring'),
     models = require('../../server/models/index'),
     assert = require('chai').assert,
     app = require('../../server.js'),
@@ -67,6 +70,30 @@ describe('Test of invoice API', function () {
         });
     });
 
+    describe('POST /api/admin/invoice/complete', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should complete an order', function(done) {
+            var data = {
+                amount: 50.96,
+                payment_status: 'completed',
+                txn_id: 'KLJQLSDJLQSJLL3LAJ342',
+                invoice: 'MRT20150217JZL8D'
+            };
+
+            agent
+                .post('http://localhost:' + settings.port + '/api/admin/invoice/complete')
+                .send(data)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.statusCode, 200);
+                    return done();
+                });
+        });
+    });
+
     describe('POST /api/paypal/ipn', function () {
         var agent = superagent.agent();
 
@@ -78,76 +105,28 @@ describe('Test of invoice API', function () {
                 .expect(200, done);
         });
 
-        /* Couldn't be tested as we don't know Paypal behavior
-         it('should update the payment for join 2', function (done) {
-         var ipn = {
-         mc_gross: '50.96', // AMOUNT
-         invoice: 'MRT20150217JZL8D', // INVOICE
-         protection_eligibility: 'Eligible',
-         address_status: 'confirmed',
-         payer_id: 'TWD3EPNPY3YKQ',
-         tax: '0.00',
-         address_street: '1 Main St',
-         payment_date: '06:25:17 Feb 16, 2015 PST',
-         payment_status: 'Completed', // IMPORTANT STATUS PAYEMENT
-         charset: 'windows-1252',
-         address_zip: '95131',
-         first_name: 'test',
-         mc_fee: '1.83',
-         address_country_code: 'US',
-         address_name: 'test buyer',
-         notify_version: '3.8',
-         custom: '',
-         payer_status: 'verified',
-         business: 'jbillay-facilitator@gmail.com',
-         address_country: 'United States',
-         address_city: 'San Jose',
-         quantity: '1',
-         verify_sign: 'AARfy1T5ympFszI-LDzRxLr7PDA0Ay41NpKSmXupFLbgmHrGTiFzkPjN',
-         payer_email: 'jbillay-buyer@gmail.com', // EMAIL CLIENT
-         txn_id: '83V29469P1887825P', // TRANSACTION ID
-         payment_type: 'instant',
-         last_name: 'buyer',
-         address_state: 'CA',
-         receiver_email: 'jbillay-facilitator@gmail.com',
-         payment_fee: '',
-         receiver_id: '622WFSZHPNBH4',
-         txn_type: 'web_accept',
-         item_name: 'Parcours My Run Trip',
-         mc_currency: 'EUR',
-         item_number: '',
-         residence_country: 'US',
-         test_ipn: '1',
-         handling_amount: '0.00',
-         transaction_subject: '',
-         payment_gross: '',
-         shipping: '0.00',
-         ipn_track_id: 'b959e24b7e596' };
+        it('should return match the message', function (done) {
+            var message = 'mc_gross=19.95&protection_eligibility=Eligible&address_status=confirmed&payer_id=LPLWNMTBWMFAY&tax=0.00&address_street=1+Main+St&payment_date=20%3A12%3A59+Jan+13%2C+2009+PST&payment_status=Completed&charset=windows-1252&address_zip=95131&first_name=Test&mc_fee=0.88&address_country_code=US&address_name=Test+User&notify_version=2.6&custom=&payer_status=verified&address_country=United+States&address_city=San+Jose&quantity=1&verify_sign=AtkOfCXbDm2hu0ZELryHFjY-Vb7PAUvS6nMXgysbElEn9v-1XcmSoGtf&payer_email=gpmac_1231902590_per%40paypal.com&txn_id=61E67681CH3238416&payment_type=instant&last_name=User&address_state=CA&receiver_email=gpmac_1231902686_biz%40paypal.com&payment_fee=0.88&receiver_id=S8XGHLYDW9T3S&txn_type=express_checkout&item_name=&mc_currency=USD&item_number=&residence_country=US&test_ipn=1&handling_amount=0.00&transaction_subject=&payment_gross=19.95&shipping=0.00';
 
-         agent
-         .post('http://localhost:' + settings.port + '/api/paypal/ipn')
-         .send(ipn)
-         .end(function (err, res) {
-         if (err) {
-         console.log(err);
-         return done(err);
-         }
-         console.log(res);
-         agent
-         .get('http://localhost:' + settings.port + '/api/join/2')
-         .end(function (err, res) {
-         if (err) {
-         console.log(err);
-         return done(err);
-         }
-         console.log(res.body);
-         assert.equal(res.body.status, 'complete');
-         assert.equal(res.body.amount, 50.96);
-         assert.equal(res.body.invoice, 'MRT20150217JZL8D');
-         assert.equal(res.body.transaction, '83V29469P1887825P');
-         return done();
-         });
-         });
-         });*/
+            var ipn = qs.parse(message);
+
+            agent
+                .post('http://localhost:' + settings.port + '/api/paypal/ipn')
+                .send(ipn)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.statusCode, 200);
+                    setTimeout(function () {
+                        agent
+                            .post('http://localhost:' + settings.port + '/api/paypal/ipn')
+                            .send('VERIFIED')
+                            .end(function (err, res) {
+                                if (err) return done(err);
+                                // TODO: Be able to test with VERIFIED message sent but nothing fund :)
+                                return done();
+                            });
+                    }, 500);
+                });
+        });
     });
 });

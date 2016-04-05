@@ -146,21 +146,27 @@ partner.prototype.notifyJourneyCreation = function (run, journey) {
             as: 'User'}]})
         .then(function (partner) {
             if (partner) {
-                var inbox = new Inbox(),
-                    template = 'PartnerJourneyNotification',
-                    values = {
-                        runName: run.name,
-                        journeyId: journey.id,
-                        journeyStart: journey.address_start};
-                inbox.add(template, values, partner.User.id)
-                    .then(function (msg) {
-                        deferred.resolve('Partner notification sent');
+                models.Run.find({where: {id: run.id}})
+                    .then(function (run) {
+                        var inbox = new Inbox(),
+                            template = 'PartnerJourneyNotification',
+                            values = {
+                                runName: run.name,
+                                journeyId: journey.id,
+                                journeyStart: journey.address_start};
+                        inbox.add(template, values, partner.User.id)
+                            .then(function (msg) {
+                                deferred.resolve('Partner notification sent');
+                            })
+                            .catch(function (err) {
+                                deferred.reject(new Error('Partner send info err : ' + err));
+                            });
                     })
                     .catch(function (err) {
-                        deferred.reject(new Error('Partner send info err : ' + err));
+                        deferred.reject(new Error(err));
                     });
             } else {
-                deferred.resolve('No Partner identified');
+                deferred.reject('No Partner identified');
             }
         })
         .catch(function (err) {

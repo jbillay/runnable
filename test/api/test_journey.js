@@ -539,4 +539,23 @@ describe('Test of journey object', function () {
                 return done(err);
             });
     });
+
+    it('Get Journey to pay', function (done) {
+        var journey = new Journey();
+
+        journey.toPay()
+            .then(function (journeys) {
+                assert.equal(journeys.length, 2);
+                assert.equal(journeys[0].Joins[0].Invoice.amount, 108.27);
+                assert.equal(journeys[0].Joins[0].Invoice.fees, 8.27);
+                assert.equal(journeys[0].Joins[0].Invoice.ref, 'MRT20150217LA6E9');
+                assert.equal(journeys[1].Joins.length, 2);
+                assert.equal(journeys[1].Joins[0].ValidationJourney.comment_driver, 'Bon conducteur');
+                assert.equal(journeys[1].Joins[0].ValidationJourney.comment_service, 'Un grand merci à l\'équipe Myruntrip');
+                return done();
+            })
+            .catch(function(err) {
+                return done(err);
+            });
+    });
 });

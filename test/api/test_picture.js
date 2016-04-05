@@ -24,6 +24,25 @@ describe('Test of picture object', function () {
         console.log('Test of picture over !');
     });
 
+    it('Create and get picture object', function (done) {
+        var picture = new Picture(),
+            newPicture = {
+                id: 4,
+                link: 'http://res.cloudinary.com/myruntrip/image/upload/v1456596630/Run_72_Picture_2_test.jpg',
+                default: true,
+                createdAt: '2016-02-23 00:00:00',
+                updatedAt: '2016-02-23 00:00:00'
+            };
+
+        picture.set(newPicture);
+        var retrievePicture = picture.get();
+        assert.equal(retrievePicture.id, 4);
+        assert.equal(retrievePicture.link, 'http://res.cloudinary.com/myruntrip/image/upload/v1456596630/Run_72_Picture_2_test.jpg');
+        assert.isTrue(retrievePicture.default);
+        assert.equal(retrievePicture.createdAt, '2016-02-23 00:00:00');
+        assert.equal(retrievePicture.updatedAt, '2016-02-23 00:00:00');
+        return done();
+    });
     it('Create new image as default for the run 1', function (done) {
         this.timeout(6000);
         var picture = new Picture(),
@@ -53,12 +72,19 @@ describe('Test of picture object', function () {
         var picture = new Picture();
 
         picture.setDefault(2, 1)
-            .then(function (pictures) {
-                assert.equal(pictures.length, 3);
-                assert.equal(pictures[0].default, false);
-                assert.equal(pictures[1].default, true);
-                assert.equal(pictures[2].default, false);
-                return done();
+            .then(function (newPicture) {
+                assert.equal(newPicture.default, true);
+                picture.getList(1)
+                    .then(function (pictures) {
+                        assert.equal(pictures.length, 3);
+                        assert.equal(pictures[0].default, false);
+                        assert.equal(pictures[1].default, true);
+                        assert.equal(pictures[2].default, false);
+                        return done();
+                    })
+                    .catch(function (err) {
+                        return done(err);
+                    });
             })
             .catch(function (err) {
                 return done(err);
@@ -88,7 +114,7 @@ describe('Test of picture object', function () {
     it('Get image id 4', function (done) {
         var picture = new Picture();
 
-        picture.get(4)
+        picture.retrieve(4)
             .then(function (picture) {
                 assert.equal(picture.id, 4);
                 assert.isFalse(picture.default);

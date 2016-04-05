@@ -540,4 +540,29 @@ describe('Test of journey API', function () {
                 });
         });
     });
+
+    describe('GET /api/admin/journey/topay', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should get list of journey for which we have to pay something', function (done) {
+
+            agent
+                .get('http://localhost:' + settings.port + '/api/admin/journey/topay')
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    if (res.res.body.type === 'error') return done(res.res.body.msg);
+                    assert.equal(res.res.body.type, 'success');
+                    assert.equal(res.res.body.msg.length, 2);
+                    assert.equal(res.res.body.msg[0].Joins[0].Invoice.amount, 108.27);
+                    assert.equal(res.res.body.msg[0].Joins[0].Invoice.fees, 8.27);
+                    assert.equal(res.res.body.msg[0].Joins[0].Invoice.ref, 'MRT20150217LA6E9');
+                    assert.equal(res.res.body.msg[1].Joins.length, 2);
+                    assert.equal(res.res.body.msg[1].Joins[0].ValidationJourney.comment_driver, 'Bon conducteur');
+                    assert.equal(res.res.body.msg[1].Joins[0].ValidationJourney.comment_service, 'Un grand merci à l\'équipe Myruntrip');
+                    return done();
+                });
+        });
+    });
 });

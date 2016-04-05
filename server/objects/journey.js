@@ -468,12 +468,25 @@ journey.prototype.notifyJoin = function (invoice, done) {
 
 journey.prototype.toPay = function () {
     'use strict';
-    return 'toto';
-};
+    var deferred = q.defer();
+    models.Journey.findAll({where: {is_canceled: false, is_payed: false},
+        include: [{
+            model: models.Join,
+            as: 'Joins',
+            include: [{
+                model: models.Invoice,
+                where: {status: 'completed'}
+            }, {model: models.ValidationJourney}]
+        }],
+        order: 'date_start_outward ASC'})
+        .then(function (journeys) {
+            deferred.resolve(journeys);
+        })
+        .catch(function (err) {
+            deferred.reject(err);
+        });
 
-journey.prototype.toRefund = function () {
-    'use strict';
-    return 'toto';
+    return deferred.promise;
 };
 
 module.exports = journey;

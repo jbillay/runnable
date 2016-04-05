@@ -52,7 +52,6 @@ picture.prototype.create = function (filePath, runId) {
                     picture.setRun(run)
                         .then(function (picture) {
                             var fileName = 'Run_' + run.id + '_Picture_' + picture.id + '_' + process.env.NODE_ENV;
-                            console.log(fileName);
                             cloudinary.uploader.upload(filePath,
                                 function(result) {
                                     fs.unlink(filePath, function (err) { if (err) console.log(new Error(err)); });
@@ -116,20 +115,22 @@ picture.prototype.setDefault = function (id, runId) {
             if (!pictures) {
                 deferred.reject(new Error('No pictures found for run ' + runId));
             } else {
-                var promises = [];
-                pictures.forEach(function (picture) {
-                    if (picture.id === id)
-                        picture.default = true;
-                    else
-                        picture.default = false;
-                    promises.push(picture.save());
-                });
-                q.all(promises)
-                    .then(function (newPictures) {
-                        deferred.resolve(newPictures);
-                    })
-                    .catch(function (err) {
-                        deferred.reject(new Error(err));
+                models.Picture.update({default: false}, {where: {RunId: runId}})
+                    .spread(function (affectedCount, affectedRows) {
+                        models.Picture.find({where: {id: id, RunId: runId}})
+                            .then(function (picture) {
+                                picture.default = true;
+                                picture.save()
+                                    .then(function (newPicture) {
+                                        deferred.resolve(newPicture);
+                                    })
+                                    .catch(function (err) {
+                                        deferred.reject(new Error(err));
+                                    });
+                            })
+                            .catch(function (err) {
+                                deferred.reject(new Error(err));
+                            });
                     });
             }
         })
@@ -151,7 +152,7 @@ picture.prototype.getList = function (runId) {
     return deferred.promise;
 };
 
-picture.prototype.get = function (id) {
+picture.prototype.retrieve = function (id) {
     var deferred = q.defer();
     models.Picture.find({where: {id: id}})
         .then(function (picture) {

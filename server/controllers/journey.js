@@ -234,11 +234,13 @@ exports.notifyJoin = function (req, res) {
     'use strict';
     var journey = new Journey();
 
-    journey.notifyJoin(req.invoice, function (err, res) {
+    journey.notifyJoin(req.invoice, function (err, result) {
         if (err) {
-            console.log(new Error('User and Driver not notified'));
+            console.log(new Error('User and Driver not notified : ' + err));
+            return res.send(401);
         } else  {
             console.log('User and Driver notified');
+            return res.send(200);
         }
     });
 };
@@ -248,19 +250,6 @@ exports.toPay = function (req, res) {
     var journey = new Journey();
 
     journey.toPay()
-        .then(function (journeys) {
-            return res.jsonp({msg: journeys, type: 'success'});
-        })
-        .catch(function (err) {
-            return res.jsonp({msg: err, type: 'error'});
-        });
-};
-
-exports.toRefund = function (req, res) {
-    'use strict';
-    var journey = new Journey();
-
-    journey.toRefund()
         .then(function (journeys) {
             return res.jsonp({msg: journeys, type: 'success'});
         })

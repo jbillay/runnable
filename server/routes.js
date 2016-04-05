@@ -112,7 +112,7 @@ module.exports = function (app, passport, auth) {
 	app.get('/api/admin/user/bankaccount/:id', auth.requireAdmin, controllers.bank_account.getByUser);
     app.post('/api/admin/journey/payed', auth.requireAdmin, controllers.journey.togglePayed);
     app.get('/api/admin/journey/topay', auth.requireAdmin, controllers.journey.toPay);
-    app.get('/api/admin/journey/torefund', auth.requireAdmin, controllers.journey.toRefund);
+    app.post('/api/admin/invoice/complete', auth.requireAdmin, controllers.invoice.complete, controllers.journey.notifyJoin);
 
     app.post('/api/admin/partner', auth.requireAdmin, controllers.partner.create, controllers.partner.sendInfo);
     app.post('/api/admin/partner/info', auth.requireAdmin, controllers.partner.sendInfo);
@@ -133,7 +133,7 @@ module.exports = function (app, passport, auth) {
 	app.post('/api/user/bankaccount', auth.requiresLogin, controllers.bank_account.save);
 	app.get('/api/user/bankaccount', auth.requiresLogin, controllers.bank_account.get);
 
-    app.post('/api/paypal/ipn', controllers.invoice.confirm, controllers.journey.notifyJoin);
+    app.post('/api/paypal/ipn', cors(), controllers.invoice.confirm, controllers.journey.notifyJoin);
 	
     app.get('/partials/:name', controllers.root.partials);
 

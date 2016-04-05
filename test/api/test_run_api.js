@@ -177,64 +177,6 @@ describe('Test of run API', function () {
         });
     });
 
-    describe('POST /api/run', function () {
-        var agent = superagent.agent();
-
-        before(loginUser(agent));
-
-        it('should create a run', function (done) {
-            var run = {
-                id: 7,
-                name: 'Marathon du Mont Blanc',
-                type: 'marathon',
-                address_start: 'Chamonix, France',
-                date_start: '2016-07-28 00:00:00',
-                time_start: '06:20',
-                distances: '80km - 42km - 23km - 10km - 3.8km',
-                elevations: '3214+',
-                info: 'dkqsd lqldsj lqkjdsllq ksjdlq'
-            };
-            var fileInfo = '[]',
-                req = agent.post('http://localhost:' + settings.port + '/api/run');
-            req.field('fileInfo', fileInfo);
-            req.field('name', run.name);
-            req.field('type', run.type);
-            req.field('address_start', run.address_start);
-            req.field('date_start', run.date_start);
-            req.field('time_start', run.time_start);
-            req.field('distances', run.distances);
-            req.field('elevations', run.elevations);
-            req.field('info', run.info);
-            req.end(function (err, res) {
-                    if (err) return done(err);
-                    assert.equal(res.body.type, 'success');
-                    assert.equal(res.body.msg, 'runCreated');
-                    agent
-                        .get('http://localhost:' + settings.port + '/api/admin/runs')
-                        .end(function (err, res) {
-                            if (err) return done(err);
-                            assert.equal(res.body.type, 'success');
-                            assert.equal(res.body.msg.length, 5);
-                            agent
-                                .get('http://localhost:' + settings.port + '/api/run/7')
-                                .end(function (err, res) {
-                                    if (err) return done(err);
-                                    assert.equal(res.res.body.name, 'Marathon du Mont Blanc');
-                                    assert.equal(res.res.body.slug, 'marathon-du-mont-blanc');
-                                    assert.equal(res.res.body.type, 'marathon');
-                                    assert.equal(res.res.body.address_start, 'Chamonix, France');
-                                    assert.equal(res.res.body.time_start, '06:20');
-                                    assert.equal(res.res.body.distances, '80km - 42km - 23km - 10km - 3.8km');
-                                    assert.equal(res.res.body.elevations, '3214+');
-                                    assert.equal(res.res.body.info, 'dkqsd lqldsj lqkjdsllq ksjdlq');
-                                    assert.equal(res.res.body.is_active, 0);
-                                    return done();
-                                });
-                        });
-                });
-        });
-    });
-
     describe('PUT /api/run', function () {
         var agent = superagent.agent();
 
@@ -298,6 +240,115 @@ describe('Test of run API', function () {
                     assert.equal(res.body.msg.length, 1);
                     return done();
                 });
+        });
+    });
+
+    describe('POST /api/run', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should create a run without images', function (done) {
+            var run = {
+                id: 7,
+                name: 'Marathon du Mont Blanc',
+                type: 'marathon',
+                address_start: 'Chamonix, France',
+                date_start: '2016-07-28 00:00:00',
+                time_start: '06:20',
+                distances: '80km - 42km - 23km - 10km - 3.8km',
+                elevations: '3214+',
+                info: 'dkqsd lqldsj lqkjdsllq ksjdlq'
+            };
+            var fileInfo = '[]',
+                req = agent.post('http://localhost:' + settings.port + '/api/run');
+            req.field('fileInfo', fileInfo);
+            req.field('name', run.name);
+            req.field('type', run.type);
+            req.field('address_start', run.address_start);
+            req.field('date_start', run.date_start);
+            req.field('time_start', run.time_start);
+            req.field('distances', run.distances);
+            req.field('elevations', run.elevations);
+            req.field('info', run.info);
+            req.end(function (err, res) {
+                if (err) return done(err);
+                assert.equal(res.body.type, 'success');
+                assert.equal(res.body.msg, 'runCreated');
+                agent
+                    .get('http://localhost:' + settings.port + '/api/admin/runs')
+                    .end(function (err, res) {
+                        if (err) return done(err);
+                        assert.equal(res.body.type, 'success');
+                        assert.equal(res.body.msg.length, 5);
+                        agent
+                            .get('http://localhost:' + settings.port + '/api/run/7')
+                            .end(function (err, res) {
+                                if (err) return done(err);
+                                assert.equal(res.res.body.name, 'Marathon du Mont Blanc');
+                                assert.equal(res.res.body.slug, 'marathon-du-mont-blanc');
+                                assert.equal(res.res.body.type, 'marathon');
+                                assert.equal(res.res.body.address_start, 'Chamonix, France');
+                                assert.equal(res.res.body.time_start, '06:20');
+                                assert.equal(res.res.body.distances, '80km - 42km - 23km - 10km - 3.8km');
+                                assert.equal(res.res.body.elevations, '3214+');
+                                assert.equal(res.res.body.info, 'dkqsd lqldsj lqkjdsllq ksjdlq');
+                                assert.equal(res.res.body.is_active, 0);
+                                return done();
+                            });
+                    });
+            });
+        });
+
+        it('should create a run with images', function (done) {
+            sinon.clock.restore();
+            this.timeout(6000);
+            var run = {
+                id: 7,
+                name: 'Trail de la Drôme',
+                type: 'trail',
+                address_start: 'Drome, France',
+                date_start: '2016-09-12 00:00:00',
+                time_start: '05:00',
+                distances: '164km - 82km',
+                elevations: '7283+ - 3214+',
+                info: 'http://www.traildeladrome.fr'
+            };
+            var fileInfo = 'true',
+                filename = 'myruntrip.jpg',
+                boundary = Math.random(),
+                req = agent.post('http://localhost:' + settings.port + '/api/run');
+            req.field('fileInfo', fileInfo);
+            req.field('name', run.name);
+            req.field('type', run.type);
+            req.field('address_start', run.address_start);
+            req.field('date_start', run.date_start);
+            req.field('time_start', run.time_start);
+            req.field('distances', run.distances);
+            req.field('elevations', run.elevations);
+            req.field('info', run.info);
+            req.attach('file', path.normalize(path.join(__dirname, '/fixtures/' + filename)));
+            req.end(function (err, res) {
+                if (err) return done(err);
+                assert.equal(res.body.type, 'success');
+                assert.equal(res.body.msg, 'runCreated');
+                agent
+                    .get('http://localhost:' + settings.port + '/api/run/7')
+                    .end(function (err, res) {
+                        if (err) return done(err);
+                        assert.equal(res.res.body.name, 'Trail de la Drôme');
+                        assert.equal(res.res.body.slug, 'trail-de-la-drome');
+                        assert.equal(res.res.body.type, 'trail');
+                        assert.equal(res.res.body.address_start, 'Drome, France');
+                        assert.equal(res.res.body.time_start, '05:00');
+                        assert.equal(res.res.body.distances, '164km - 82km');
+                        assert.equal(res.res.body.elevations, '7283+ - 3214+');
+                        assert.equal(res.res.body.info, 'http://www.traildeladrome.fr');
+                        assert.isNotNull(res.res.body.sticker);
+                        assert.equal(res.res.body.is_active, 0);
+                        return done();
+                    });
+            });
         });
     });
 });

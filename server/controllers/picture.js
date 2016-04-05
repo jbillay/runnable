@@ -8,7 +8,7 @@ exports.get = function (req, res) {
     'use strict';
     var picture = new Picture(),
         pictureId = req.params.id;
-    picture.get(pictureId)
+    picture.retrieve(pictureId)
         .then(function (picture) {
             return res.jsonp({msg: picture, type: 'success'});
         })
@@ -36,8 +36,8 @@ exports.setDefault = function (req, res) {
         pictureId = req.params.id,
         runId = req.params.runId;
     picture.setDefault(pictureId, runId)
-        .then(function (pictures) {
-            return res.jsonp({msg: pictures, type: 'success'});
+        .then(function (picture) {
+            return res.jsonp({msg: picture, type: 'success'});
         })
         .catch(function (err) {
             return res.jsonp({msg: err, type: 'error'});
@@ -64,7 +64,7 @@ exports.remove = function (req, res) {
 
 exports.add = function (req, res) {
     'use strict';
-    if (req.files.file) {
+    if (req.files && req.files.file) {
         var picture = new Picture(),
             runId = req.params.runId,
             path = req.files.file[0].path;

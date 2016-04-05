@@ -201,7 +201,7 @@ invoice.prototype.updatePaymentStatus = function (invoiceRef, amount, status, tr
             }
         })
         .catch(function (err) {
-            done(err, null);
+            done(new Error(err), null);
         });
 };
 

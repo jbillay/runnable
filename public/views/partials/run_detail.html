@@ -56,7 +56,7 @@
         </div>
         <div class="runSocialInfoJourney">
             <span class="runSocialInfoNumber">{{journeyList.length}}</span><i class="fa fa-car"></i><br/>
-            <button ng-click="createJourney()" class="btn btn-xs runSocialInfoJourneyBtn">Proposer trajet</button>
+            <button ng-click="createJourney()" class="btn btn-xs runSocialInfoJourneyBtn">Créer un trajet</button>
         </div>
         <a class="btn btn-default btn-xs center-block runInfoLink" href="{{run.info}}" target="_blank">Site de la course</a>
     </div>
@@ -94,7 +94,7 @@
         </div>
         <div class="runSocialInfoJourney">
             <span class="runSocialInfoNumber">{{journeyList.length}}</span><i class="fa fa-car"></i><br/>
-            <button ng-click="createJourney()" class="btn btn-xs runSocialInfoJourneyBtn">Proposer trajet</button>
+            <button ng-click="createJourney()" class="btn btn-xs runSocialInfoJourneyBtn">Créer un trajet</button>
         </div>
         <a class="btn btn-default btn-xs center-block runInfoLink" href="{{run.info}}" target="_blank">Site de la course</a>
     </div>
@@ -103,7 +103,7 @@
         <div class="col-xs-12 col-sm-12 col-md-7 runDetailJourneysPanel" id="journeyPanel">
             <div class="runDetailJourneysNoJourney" id="no_journey" ng-if="journeyList.length === 0">
                 <p>Aucun parcours pour cette course actuellement.<br>N'hésitez pas à en proposer un en quelques secondes !</p>
-                <button class="btn runSocialInfoJourneyBtn" ng-click="createJourney()">Proposer un trajet</button>
+                <button class="btn runSocialInfoJourneyBtn" ng-click="createJourney()">Créer un trajet</button>
             </div>
             <div class="col-xs-12 col-sm-6 col-md-6 runDetailJourneyDetailPanel"
                  id="{{journey.markerId}}" ng-repeat="journey in journeyList">

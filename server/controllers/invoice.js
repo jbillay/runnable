@@ -4,6 +4,7 @@
 
 var ipn = require('paypal-ipn');
 var Invoice = require('../objects/invoice');
+var Mail = require('../objects/mail');
 
 exports.getByUser = function (req, res) {
     'use strict';
@@ -83,10 +84,23 @@ exports.getByDriver = function (req, res) {
  */
 exports.confirm = function (req, res, next) {
     'use strict';
+    var mail = new Mail(),
+        sandbox = {'allow_sandbox': true};
+
+    if (process.env.NODE_ENV === 'production') {
+        sandbox = {'allow_sandbox': false};
+    }
     res.send(200);
-    ipn.verify(req.body, {'allow_sandbox': true}, function callback(err, msg) {
+    ipn.verify(req.body, sandbox, function callback(err, msg) {
         if (err) {
             console.log(new Error('IPN Error : ' + err));
+            mail.sendEmail('PayPalIssue', {err: err, info: req.body}, 'jbillay@gmail.com')
+                .then(function (msg) {
+                    console.log('Error sent');
+                })
+                .catch(function (err) {
+                    console.log('Error not sent');
+                });
         } else {
             var amount = parseFloat(req.body.mc_gross),
                 status = req.body.payment_status.toLowerCase(),
@@ -108,4 +122,26 @@ exports.confirm = function (req, res, next) {
                     });
         }
     });
+};
+
+exports.complete = function (req, res, next) {
+    'use strict';
+    console.log('Force invoice completion');
+    var amount = parseFloat(req.body.amount),
+        status = req.body.payment_status.toLowerCase(),
+        invoice = new Invoice();
+        invoice.updatePaymentStatus(req.body.invoice, amount, status, req.body.txn_id,
+            function (err, invoice) {
+                if (err) {
+                    console.log(new Error('IPN Error: ' + err));
+                } else {
+                    console.log('IPN VERIFIED');
+                    if (status === 'completed') {
+                        req.invoice = invoice;
+                        next();
+                    } else {
+                        next('route');
+                    }
+                }
+            });
 };
