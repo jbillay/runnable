@@ -17,6 +17,20 @@ angular.module('runnable.filters', []).
             return (!!input) ? input.replace('.', ',') : '';
         };
     }).
+    filter('joinAdmin', function() {
+        return function(items, flags) {
+            var filtered = [];
+
+            angular.forEach(items, function(item) {
+                angular.forEach(flags, function(value, key) {
+                    if (item.Invoice.status === key.toLowerCase() && value === true) {
+                        filtered.push(item);
+                    }
+                });
+            });
+            return filtered;
+        };
+    }).
     filter('runname', function () {
         return function (items, search) {
             if (!search) {
