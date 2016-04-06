@@ -470,7 +470,7 @@ journey.prototype.toPay = function () {
     'use strict';
     var deferred = q.defer();
     models.Journey.findAll({where: {is_canceled: false, is_payed: false},
-        include: [{
+        include: [models.User, models.Run, {
             model: models.Join,
             as: 'Joins',
             include: [{

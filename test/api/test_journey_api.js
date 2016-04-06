@@ -541,7 +541,7 @@ describe('Test of journey API', function () {
         });
     });
 
-    describe('GET /api/admin/journey/topay', function () {
+    describe('GET /api/admin/journey/toPay', function () {
         var agent = superagent.agent();
 
         before(loginUser(agent));
@@ -549,7 +549,7 @@ describe('Test of journey API', function () {
         it('should get list of journey for which we have to pay something', function (done) {
 
             agent
-                .get('http://localhost:' + settings.port + '/api/admin/journey/topay')
+                .get('http://localhost:' + settings.port + '/api/admin/journey/toPay')
                 .end(function (err, res) {
                     if (err) return done(err);
                     if (res.res.body.type === 'error') return done(res.res.body.msg);

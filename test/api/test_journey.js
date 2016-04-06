@@ -549,6 +549,8 @@ describe('Test of journey object', function () {
                 assert.equal(journeys[0].Joins[0].Invoice.amount, 108.27);
                 assert.equal(journeys[0].Joins[0].Invoice.fees, 8.27);
                 assert.equal(journeys[0].Joins[0].Invoice.ref, 'MRT20150217LA6E9');
+                assert.equal(journeys[0].User.email, 'jbillay@gmail.com');
+                assert.equal(journeys[0].Run.name, 'Marathon du médoc');
                 assert.equal(journeys[1].Joins.length, 2);
                 assert.equal(journeys[1].Joins[0].ValidationJourney.comment_driver, 'Bon conducteur');
                 assert.equal(journeys[1].Joins[0].ValidationJourney.comment_service, 'Un grand merci à l\'équipe Myruntrip');

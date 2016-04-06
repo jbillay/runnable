@@ -760,6 +760,23 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
+            },
+            complete: function (amount, invoiceRef) {
+                var deferred = $q.defer(),
+                    data = {
+                        amount: amount,
+                        payment_status: 'completed',
+                        txn_id: 'TOBECOMPLETEMANUALY',
+                        invoice: invoiceRef
+                    };
+                $http.post('/api/admin/invoice/complete', data).
+                    success(function (result) {
+                        deferred.resolve(result);
+                    }).
+                    error(function(data, status) {
+                        deferred.reject('error ' + status + ' : ' + data);
+                    });
+                return deferred.promise;
             }
         };
     }).
@@ -1110,6 +1127,21 @@ angular.module('runnable.services', ['ngResource']).
                 $http.get('/api/admin/journeys').
 					success(function (result) {
 						deferred.resolve(result);
+					}).
+					error(function(data, status) {
+						deferred.reject('error ' + status + ' : ' + data);
+					});
+                return deferred.promise;
+            },
+            toPay: function () {
+                var deferred = $q.defer();
+                $http.get('/api/admin/journey/toPay').
+					success(function (result) {
+                        if(result.type === 'error') {
+                            deferred.reject('error : ' + result.msg);
+                        } else {
+                            deferred.resolve(result.msg);
+                        }
 					}).
 					error(function(data, status) {
 						deferred.reject('error ' + status + ' : ' + data);

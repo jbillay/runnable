@@ -59,15 +59,15 @@
                                                 <th>Paiement</th>
                                                 <th>Vadidation</th>
                                             </thead>
-                                            <tbody ng-repeat="join in selectedJourneyJoins">
+                                            <tbody ng-repeat="join in selectedJourney.Joins">
                                                 <td>{{join.User.email}}</td>
                                                 <td>{{join.Invoice.amount | currency:'€ '}}</td>
                                                 <td>{{join.Invoice.fees | currency:'€ '}}</td>
                                                 <td class="status-{{join.Invoice.status}}">{{join.Invoice.status}}</td>
                                                 <td>{{join.Invoice.createdAt | date:'dd/MM/yyyy'}}</td>
                                                 <td>
-                                                    <span ng-if="join.Validation" class="glyphicon glyphicon-ok green" aria-hidden="true"></span>
-                                                    <span ng-if="!join.Validation" class="glyphicon glyphicon-remove red" aria-hidden="true"></span>
+                                                    <span ng-if="join.validated" class="glyphicon glyphicon-ok green" aria-hidden="true"></span>
+                                                    <span ng-if="!join.validated" class="glyphicon glyphicon-remove red" aria-hidden="true"></span>
                                                 </td>
                                             </tbody>
                                         </table>
@@ -84,7 +84,7 @@
                                         <span ng-if="selectedJourney.is_payed" class="glyphicon glyphicon-ok green" aria-hidden="true" ng-click="journeyPayedToggle(selectedJourney.is_payed)"></span>
                                         <span ng-if="!selectedJourney.is_payed" class="glyphicon glyphicon-remove red" aria-hidden="true" ng-click="journeyPayedToggle(selectedJourney.is_payed)"></span>
                                     </div>
-                                    <div class="col-sm-6 journey_price_journey">{{amountToPay | currency:'€ '}}</div>
+                                    <div class="col-sm-6 journey_price_journey">{{selectedJourney.amountToPay | currency:'€ '}}</div>
                                 </div>
                             </div>
                         </div>

@@ -250,18 +250,20 @@ angular.module('runnable.controllers', []).
         };
     }).
 	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run, Partner,
-                                                    Journey, Join, EmailOptions, BankAccount, Page, Inbox, Technical) {
+                                                    Journey, Join, EmailOptions, BankAccount, Page, Inbox, Technical,
+                                                    Invoice) {
 		$scope.page = 'Admin';
 		var userListPromise = User.getList(),
 			runListPromise = Run.getList(),
 			journeyListPromise = Journey.getList(),
+			journeyToPayPromise = Journey.toPay(),
 			joinListPromise = Join.getList(),
 			EmailOptionsPromise = EmailOptions.get(),
 			pageListPromise = Page.getList(),
             versionPromise = Technical.version(),
 			partnerListPromise = Partner.getList(),
-			all = $q.all([userListPromise, runListPromise, journeyListPromise, joinListPromise,
-                            EmailOptionsPromise, pageListPromise, versionPromise, partnerListPromise]);
+			all = $q.all([userListPromise, runListPromise, journeyListPromise, joinListPromise, EmailOptionsPromise,
+                pageListPromise, versionPromise, partnerListPromise, journeyToPayPromise]);
 		all.then(function (res) {
 			$scope.userList = res[0];
 			$scope.runList = res[1];
@@ -271,7 +273,29 @@ angular.module('runnable.controllers', []).
 			$scope.pageList = res[5];
             $scope.version = res[6];
             $scope.partnersList = res[7];
-            $scope.nbUser = $scope.userList.length;
+            $scope.journeyToPay = res[8];
+            angular.forEach($scope.journeyToPay, function (journey) {
+                var dates=[];
+                dates.push(new Date(journey.date_start_outward));
+                dates.push(new Date(journey.date_start_return));
+                journey.dateToPay = moment(new Date(Math.max.apply(null, dates))).fromNow();
+                journey.nbJourney = 0;
+                journey.nbValidatedJourney = 0;
+                angular.forEach(journey.Joins, function (join) {
+                    journey.amountToPay = parseFloat(join.Invoice.amount) - parseFloat(join.Invoice.fees);
+                    join.validated = false;
+                    join.User = $scope.userList[_.findIndex($scope.userList, 'id', parseInt(join.UserId))];
+                    if (join.ValidationJourney) {
+                        join.validated = true;
+                    }
+                    if (join.Invoice) {
+                        journey.nbJourney++;
+                    }
+                    if (join.ValidationJourney) {
+                        journey.nbValidatedJourney++;
+                    }
+                });
+            });
             $scope.userNameList = _.map($scope.userList, function (user) {
                 var name = user.firstname + ' ' + user.lastname;
                 return {id: user.id, email: user.email, name: name};
@@ -297,6 +321,11 @@ angular.module('runnable.controllers', []).
                 $scope.calendar.opened[which] = true;
             }
         };
+        $scope.joinSearch = {
+            pending: false,
+            completed: true,
+            cancelled: false
+        };
         $scope.userToggleActive = function(user) {
 			User.userToggleActive(user.id);
 			if (user.isActive) {
@@ -305,7 +334,16 @@ angular.module('runnable.controllers', []).
 				user.isActive = true;
 			}
 		};
-
+        // Join
+        $scope.forceComplete = function (join) {
+            Invoice.complete(join.Invoice.amount, join.Invoice.ref)
+                .then(function(res) {
+                    $rootScope.$broadcast('USER_MSG', {msg: 'forceCompleteSuccess', type: 'success'});
+                })
+                .catch(function (err) {
+                    $rootScope.$broadcast('USER_MSG', {msg: 'forceCompleteFailed', type: 'error'});
+                });
+        };
         // Email options
         $scope.createTemplateEmail = false;
         $scope.switchEmailTemplate = function () {
@@ -381,20 +419,13 @@ angular.module('runnable.controllers', []).
 				run.is_active = true;
 			}
 		};
-        $scope.openJourneyAction = function (journey) {
+        $scope.openJourneyAction = function (journey, idx) {
             $scope.selectedJourney = journey;
+            $scope.selectedJourney.idx = idx;
             var userRIBPromise = BankAccount.getByUser(journey.User.id),
                 all = $q.all([userRIBPromise]);
             all.then(function (res) {
                 $scope.selectedJourneyUserRIB = res[0];
-                $scope.selectedJourneyJoins = [];
-                $scope.amountToPay = 0;
-                angular.forEach($scope.joinList, function (join) {
-                    if (join.JourneyId === $scope.selectedJourney.id && join.Invoice.status === 'completed') {
-                        $scope.amountToPay += join.Invoice.amount - join.Invoice.fees;
-                        $scope.selectedJourneyJoins.push(join);
-                    }
-                });
                 angular.element('#adminJourneyAction').modal('show');
             });
         };
@@ -407,6 +438,9 @@ angular.module('runnable.controllers', []).
             }
         };
         $scope.closeAdminJourney = function () {
+            if ($scope.selectedJourney.is_payed === true) {
+                $scope.journeyToPay.splice($scope.selectedJourney.idx, 1);
+            }
             angular.element('#adminJourneyAction').modal('hide');
         };
         // Partner scope

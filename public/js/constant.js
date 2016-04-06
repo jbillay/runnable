@@ -68,5 +68,7 @@ angular.module('runnable.constant', []).
         journeyUpdated:         'Votre parcours a été mis à jour',
         runCreated:             'La course a bien été créée',
         partnerCreated:         'Le partenaire a bien été créé',
-        partnerInfoSent:        'Les informations ont bien été envoyées au partenaire'
+        partnerInfoSent:        'Les informations ont bien été envoyées au partenaire',
+        forceCompleteSuccess:   'Le voyage a bien été complété et les notifications vont être envoyées',
+        forceCompleteFailed:    'Le voyage n\'a pas pu être complété en raison d\'un problème technique'
 	});

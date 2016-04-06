@@ -31,6 +31,7 @@
         "element": true,
         "by": true,
         "spyOn": true,
+        "moment": true,
         "ApplicationConfiguration": true
     },
     "predef": [ // Extra globals.
