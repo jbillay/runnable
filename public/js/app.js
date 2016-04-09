@@ -134,6 +134,7 @@ angular.module('runnable', [
         });
         $facebookProvider.setAppId('1418340641711854');
         $facebookProvider.setVersion('v2.3');
+        moment.locale('fr');
     }).
 	run(function ($rootScope, AUTH_EVENTS, AuthService, $location) {
 		$rootScope.$on('$routeChangeStart', function (event, next) {

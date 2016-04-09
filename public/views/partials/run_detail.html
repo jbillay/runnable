@@ -49,9 +49,10 @@
     <div class="hidden-xs hidden-sm col-md-5 runSocialInfoLarge text-center">
         <div class="runSocialInfoFollower">
             <div class="form-group">
-                <span class="runSocialInfoNumber">{{participateList.length}}</span><i class="fa fa-heart"></i><br/>
-                <button ng-click="participateRun()" ng-if="!userJoined" class="btn btn-xs runSocialInfoFollowerToJoinBtn">Suivre</button>
-                <button ng-if="userJoined" class="btn btn-xs active runSocialInfoFollowerJoinedBtn">Vous suivez</button>
+                <span class="runSocialInfoNumber">{{participateList.length}}</span>
+                <img src="/img/icons/runner.png" class="icon iconRunner" alt="Runner"><br/>
+                <button ng-click="participateRun()" ng-if="!userJoined" class="btn btn-xs runSocialInfoFollowerToJoinBtn">Participer</button>
+                <button ng-if="userJoined" class="btn btn-xs active runSocialInfoFollowerJoinedBtn">Vous participez</button>
             </div>
         </div>
         <div class="runSocialInfoJourney">
@@ -87,9 +88,10 @@
     <div class="col-xs-12 visible-xs col-sm-6 visible-sm runSocialInfoSmall text-center">
         <div class="runSocialInfoFollower">
             <div class="form-group">
-                <span class="runSocialInfoNumber">{{participateList.length}}</span><i class="fa fa-heart"></i><br/>
-                <button ng-click="participateRun()" ng-if="!userJoined" class="btn btn-xs runSocialInfoFollowerToJoinBtn">Suivre</button>
-                <button ng-if="userJoined" class="btn btn-xs active runSocialInfoFollowerJoinedBtn">Vous suivez</button>
+                <span class="runSocialInfoNumber">{{participateList.length}}</span>
+                <img src="/img/icons/runner.png" class="icon iconRunner" alt="Runner"><br/>
+                <button ng-click="participateRun()" ng-if="!userJoined" class="btn btn-xs runSocialInfoFollowerToJoinBtn">Participer</button>
+                <button ng-if="userJoined" class="btn btn-xs active runSocialInfoFollowerJoinedBtn">Vous participez</button>
             </div>
         </div>
         <div class="runSocialInfoJourney">

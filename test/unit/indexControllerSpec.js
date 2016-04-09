@@ -129,7 +129,7 @@ describe('Runnable Controllers', function() {
                 status: 'OK'
             });
 
-            ctrl = $controller('RunnableIndexController', {$scope: scope});
+            ctrl = $controller('RunnableIndexController', {$rootScope: rootScope, $scope: scope});
         }));
 
         it ('Start controller', function () {

@@ -42,4 +42,15 @@ describe('directives', function() {
         form.commit();
         expect(form.commit).toHaveBeenCalled();
     });
+
+    it('Should check date format', function() {
+        $rootScope.run = {
+            date: new Date()
+        };
+        var element = angular.element('<form name="testForm"><input type="text" ng-model="run.date" name="runDate" aw-datepicker-pattern="^([0-9]{2})\/([0-1][012])\/([12][0-9]{3})$"></form>');
+        $compile(element)($rootScope);
+        var form = $rootScope.testForm;
+        $rootScope.$digest();
+        expect(form.$valid).toBeTruthy();
+    });
 });

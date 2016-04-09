@@ -23,6 +23,35 @@ describe('filter', function() {
                 expect(paypalAmountFilter('')).toBe('');
             }));
     });
+    describe('joinAdmin', function() {
+        it('should filter list based on flags',
+            inject(function(joinAdminFilter) {
+                var items = [
+                        { Invoice: {status: 'completed'} },
+                        { Invoice: {status: 'pending'} },
+                        { Invoice: {status: 'cancelled'} },
+                        { Invoice: {status: 'completed'} }
+                    ],
+                    flags_complete = {
+                        completed: true,
+                        pending: false,
+                        cancelled: false
+                    },
+                    flags_all = {
+                        completed: true,
+                        pending: true,
+                        cancelled: true
+                    },
+                    flags_pending = {
+                        completed: false,
+                        pending: true,
+                        cancelled: false
+                    };
+                expect(joinAdminFilter(items, flags_complete).length).toBe(2);
+                expect(joinAdminFilter(items, flags_pending).length).toBe(1);
+                expect(joinAdminFilter(items, flags_all).length).toBe(4);
+            }));
+    });
     describe('runname', function() {
         it('should filter name of run',
             inject(function(runnameFilter) {

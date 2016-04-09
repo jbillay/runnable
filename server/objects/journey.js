@@ -84,7 +84,7 @@ journey.prototype.saveDraft = function (journeyKey, userId, done) {
     var self = this;
     Rclient.get(journeyKey, function (err, reply) {
         var draftJourney = JSON.parse(reply);
-        self.save(draftJourney, userId, function (err, journey) {
+        self.save(draftJourney, userId, 'user', function (err, journey) {
             if (err) {
                 done(err, null);
             } else {
@@ -94,7 +94,7 @@ journey.prototype.saveDraft = function (journeyKey, userId, done) {
     });
 };
 
-journey.prototype.save = function (journey, userId, done) {
+journey.prototype.save = function (journey, userId, role, done) {
     'use strict';
     var that = this,
         partner = new Partner(),
@@ -143,25 +143,41 @@ journey.prototype.save = function (journey, userId, done) {
                                                     .then(function () {
                                                         updatedJourney.setUser(user)
                                                             .then(function(updatedJourney) {
-                                                                var template = 'JourneyUpdated',
-                                                                    values = {
-                                                                        runName: run.name,
-                                                                        journeyId: updatedJourney.id
-                                                                    };
-                                                                inbox.add(template, values, user.id)
-                                                                    .then(function (msg) {
-                                                                        if (selectedPartner) {
-                                                                            updatedJourney.setPartner(selectedPartner)
-                                                                                .then(function (updatedJourney) {
-                                                                                    done(null, updatedJourney, run);
-                                                                                });
-                                                                        } else {
-                                                                            done(null, updatedJourney, run);
-                                                                        }
-                                                                    })
-                                                                    .catch(function (err) {
-                                                                        done(new Error(err), null, null);
-                                                                    });
+                                                                if (selectedPartner) {
+                                                                    updatedJourney.setPartner(selectedPartner)
+                                                                        .then(function (updatedJourney) {
+                                                                            if (role !== 'admin') {
+                                                                                var template = 'JourneyUpdated',
+                                                                                    values = {
+                                                                                        runName: run.name,
+                                                                                        journeyId: updatedJourney.id
+                                                                                    };
+                                                                                inbox.add(template, values, user.id)
+                                                                                    .then(function (msg) {
+                                                                                        done(null, updatedJourney, run);
+                                                                                    });
+                                                                            } else {
+                                                                                done(null, updatedJourney, run);
+                                                                            }
+                                                                        })
+                                                                        .catch(function (err) {
+                                                                            done(new Error(err), null, null);
+                                                                        });
+                                                                } else {
+                                                                    if (role !== 'admin') {
+                                                                        var template = 'JourneyUpdated',
+                                                                            values = {
+                                                                                runName: run.name,
+                                                                                journeyId: updatedJourney.id
+                                                                            };
+                                                                        inbox.add(template, values, user.id)
+                                                                            .then(function (msg) {
+                                                                                done(null, updatedJourney, run);
+                                                                            });
+                                                                    } else {
+                                                                        done(null, updatedJourney, run);
+                                                                    }
+                                                                }
                                                             });
                                                     });
                                             });

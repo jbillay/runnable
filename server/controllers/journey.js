@@ -22,7 +22,7 @@ exports.create = function (req, res, next) {
         });
         journey = null;
     } else {
-        journey.save(req.body.journey, req.user.id, function (err, journey, run) {
+        journey.save(req.body.journey, req.user.id, req.user.role, function (err, journey, run) {
             if (err) {
                 console.log('Journey not created ' + err);
                 return res.jsonp({msg: 'journeyNotCreated', type: 'error'});
@@ -64,7 +64,7 @@ exports.update = function (req, res) {
     console.log('Update the journey for run : ' + req.body.journey.id);
     var journey = new Journey();
     if (req.user.id === req.body.journey.UserId || req.user.role === 'admin') {
-        journey.save(req.body.journey, req.body.journey.UserId, function (err, journey, run) {
+        journey.save(req.body.journey, req.body.journey.UserId, req.user.role, function (err, journey, run) {
             if (err) {
                 console.log('Journey not updated ' + err);
                 res.jsonp({msg: 'journeyNotUpdated', type: 'error'});

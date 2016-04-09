@@ -135,7 +135,7 @@ angular.module('runnable.controllers', []).
             }
         };
 	}).
-	controller('RunnableIndexController', function ($scope, $q, $timeout, Run, User, Journey, GoogleMapApi, Email,
+	controller('RunnableIndexController', function ($scope, $q, $timeout, Run, Journey, GoogleMapApi, Email,
                                                     ValidationJourney) {
 		$scope.page = 'Index';
 		$scope.nbRunItems = 4;
@@ -823,6 +823,7 @@ angular.module('runnable.controllers', []).
 			$scope.joined = 0;
 			$scope.reserved_outward = 0;
 			$scope.reserved_return = 0;
+            $scope.messageFilter = false;
 
 			angular.forEach($scope.joinList, function (join) {
 				$scope.reserved_outward += join.nb_place_outward;
@@ -834,6 +835,9 @@ angular.module('runnable.controllers', []).
 					$scope.userJoin = join;
 				}
 			});
+            angular.forEach($scope.publicMessages, function (message) {
+                message.showDate = moment(message.createdAt).fromNow();
+            });
 			$timeout( function() {
 				var obj = 'map_canvas';
 				GoogleMapApi.initMap(obj);
@@ -945,17 +949,32 @@ angular.module('runnable.controllers', []).
 			}
 			return fees;
 		};
+        $scope.resetFilterMsg = function () {
+            $scope.messageFilter = false;
+        };
+        $scope.checkEmailPhone = function (text) {
+            if (text.match(/[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?/gi) !== null) {
+                return true;
+            }
+            if (text.match(/((\+|00)33\s?|0)[679]([\s\.\-]?\d{2}){4}/gi) !== null) {
+                return true;
+            }
+            return false;
+        };
 		$scope.sendMessage = function (discussion) {
 			var text = String(discussion.newMessageEntry).replace(/<[^>]+>/gm, ''),
                 email = discussion.userEmailEntry || null;
             discussion.newMessageEntry = '';
             discussion.userEmailEntry = '';
-            if (text.length) {
+            if (text.length && !$scope.checkEmailPhone(text)) {
                 $scope.publicMessages.unshift(
                     {	message: text,
+                        showDate: moment(Date.now()).fromNow(),
                         createdAt: Date.now()
                     });
                 Discussion.addPublicMessage(text, $scope.journeyId, email);
+            } else if ($scope.checkEmailPhone(text)) {
+                $scope.messageFilter = $scope.checkEmailPhone(text);
             }
 		};
 	}).

@@ -198,7 +198,6 @@ describe('Test of journey API', function () {
                     assert.equal(res.body.journey.amount, 5);
                     assert.equal(res.body.journey.RunId, 4);
                     assert.equal(res.body.journey.UserId, 1);
-
                     agent
                         .get('http://localhost:' + settings.port + '/api/admin/journeys')
                         .end(function (err, res) {
@@ -529,14 +528,6 @@ describe('Test of journey API', function () {
                     assert.equal(res.body.journey.UserId, 1);
                     assert.equal(res.body.journey.PartnerId, 1);
                     return done();
-                    //agent
-                    //    .get('http://localhost:' + settings.port + '/api/inbox/msg')
-                    //    .end(function (err, res) {
-                    //        if (err) return done(err);
-                    //        console.log(res.body);
-                    //        assert.equal(res.body.length, 4);
-                    //        return done();
-                    //    });
                 });
         });
     });
