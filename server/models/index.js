@@ -204,6 +204,16 @@ db.loadFixture = function (done) {
                     q.all(promises).then(function() {
                         callback(null);
                     });
+                },
+                function(callback) {
+                    var fixtures = require('../../test/api/fixtures/fees.json');
+                    var promises = [];
+                    fixtures.forEach(function (fix) {
+                        promises.push(db.loadData(fix));
+                    });
+                    q.all(promises).then(function() {
+                        callback(null);
+                    });
                 }
             ], function (err, result) {
                 done();

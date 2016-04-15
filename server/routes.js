@@ -113,7 +113,10 @@ module.exports = function (app, passport, auth) {
     app.post('/api/admin/journey/payed', auth.requireAdmin, controllers.journey.togglePayed);
     app.get('/api/admin/journey/toPay', auth.requireAdmin, controllers.journey.toPay);
     app.post('/api/admin/invoice/complete', auth.requireAdmin, controllers.invoice.complete, controllers.journey.notifyJoin);
-
+    app.get('/api/admin/fees', auth.requireAdmin, controllers.fee.getList);
+    app.post('/api/admin/fee', auth.requireAdmin, controllers.fee.add);
+    app.put('/api/admin/fee', auth.requireAdmin, controllers.fee.update);
+    app.delete('/api/admin/fee/:id', auth.requireAdmin, controllers.fee.delete);
     app.post('/api/admin/partner', auth.requireAdmin, controllers.partner.create, controllers.partner.sendInfo);
     app.post('/api/admin/partner/info', auth.requireAdmin, controllers.partner.sendInfo);
     app.get('/api/admin/partners', auth.requireAdmin, controllers.partner.getList);
@@ -126,6 +129,8 @@ module.exports = function (app, passport, auth) {
     app.get('/api/picture/delete/:id', auth.requiresLogin, controllers.picture.remove);
 
     app.get('/api/page/:tag', controllers.page.getByTag);
+
+    app.get('/api/fee/:runId', auth.requiresLogin, controllers.fee.getFee);
 
     app.get('/api/invoice', auth.requiresLogin, controllers.invoice.getByUser);
     app.get('/api/invoice/driver', auth.requiresLogin, controllers.invoice.getByDriver);

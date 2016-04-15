@@ -1,0 +1,100 @@
+[
+  {
+    "model": "Fee",
+    "data": {
+      "id": 1,
+      "percentage": 0.12,
+      "value": 1,
+      "discount": null,
+      "default": true,
+      "start_date": "2015-09-05 00:00:00",
+      "end_date": null,
+      "RunId": null,
+      "UserId": null
+    }
+  },
+  {
+    "model": "Fee",
+    "data": {
+      "id": 2,
+      "percentage": null,
+      "value": null,
+      "discount": 0.05,
+      "default": false,
+      "start_date": "2015-09-05 00:00:00",
+      "end_date": "2018-01-27 00:00:00",
+      "RunId": 1,
+      "UserId": null
+    }
+  },
+  {
+    "model": "Fee",
+    "data": {
+      "id": 3,
+      "percentage": 0.10,
+      "value": 2,
+      "discount": null,
+      "default": false,
+      "start_date": "2015-09-05 00:00:00",
+      "end_date": "2018-01-27 00:00:00",
+      "RunId": 2,
+      "UserId": null
+    }
+  },
+  {
+    "model": "Fee",
+    "data": {
+      "id": 4,
+      "percentage": null,
+      "value": null,
+      "discount": 0.10,
+      "default": false,
+      "start_date": "2015-09-05 00:00:00",
+      "end_date": null,
+      "RunId": null,
+      "UserId": 1
+    }
+  },
+  {
+    "model": "Fee",
+    "data": {
+      "id": 5,
+      "percentage": null,
+      "value": null,
+      "discount": 0.20,
+      "default": false,
+      "start_date": "2015-09-05 00:00:00",
+      "end_date": "2018-01-27 00:00:00",
+      "RunId": 2,
+      "UserId": 1
+    }
+  },
+  {
+    "model": "Fee",
+    "data": {
+      "id": 6,
+      "percentage": null,
+      "value": null,
+      "discount": 0.80,
+      "default": false,
+      "start_date": "2015-09-05 00:00:00",
+      "end_date": "2016-01-27 00:00:00",
+      "RunId": null,
+      "UserId": 1
+    }
+  },
+  {
+    "model": "Fee",
+    "data": {
+      "id": 7,
+      "percentage": 0.15,
+      "value": 2.8,
+      "discount": null,
+      "default": true,
+      "start_date": "2016-09-05 00:00:00",
+      "end_date": "2017-01-27 00:00:00",
+      "RunId": null,
+      "UserId": null
+    }
+  }
+]
