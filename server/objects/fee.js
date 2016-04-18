@@ -9,10 +9,12 @@ var q = require('q');
 
 function fee() {
     this.id = null;
+    this.code = null;
     this.percentage = null;
     this.value = null;
     this.discount = null;
     this.default = false;
+    this.remaining = null;
     this.start_date = null;
     this.end_date = null;
     this.createdAt = null;
@@ -28,6 +30,8 @@ fee.prototype.get = function () {
 fee.prototype.set = function (fee) {
     if (fee.id)
         this.id = fee.id;
+    if (fee.code)
+        this.code = fee.code;
     if (fee.percentage)
         this.percentage = fee.percentage;
     else
@@ -44,6 +48,8 @@ fee.prototype.set = function (fee) {
         this.default = fee.default;
     else
         this.default = false;
+    if (fee.remaining)
+        this.remaining = fee.remaining;
     if (fee.start_date)
         this.start_date = fee.start_date;
     else
@@ -65,7 +71,9 @@ fee.prototype.set = function (fee) {
 fee.prototype.getDefault = function () {
     var deferred = q.defer(),
         limitDate = new Date();
-    models.Fee.find({where: {default: true, start_date: {$lt: limitDate}, $or: [{end_date: {$gt: limitDate}}, {end_date: {$eq: null}}]}})
+    models.Fee.find({where: {default: true, code: {$eq: null}, start_date: {$lt: limitDate},
+        $or: [{end_date: {$gt: limitDate}}, {end_date: {$eq: null}}]
+    }})
         .then(function(fees) {
             deferred.resolve(fees);
         })
@@ -122,8 +130,10 @@ fee.prototype.getForUser = function (userId, runId) {
         .then(function (defaultFees) {
             models.Fee.findAll({where: {
                     start_date: {$lt: limitDate},
+                    code: {$eq: null},
                     $and: [
                         {$or: [{end_date: {$gt: limitDate}}, {end_date: {$eq: null}}]},
+                        {$or: [{remaining: {$gt: 0}}, {remaining: {$eq: null}}]},
                         {$or: [{UserId: userId}, {RunId: runId}]}
                     ]
                 }})
@@ -144,7 +154,11 @@ fee.prototype.getForUser = function (userId, runId) {
 fee.prototype.getList = function () {
     var deferred = q.defer(),
         limitDate = new Date();
-    models.Fee.findAll({where: {start_date: {$lt: limitDate}, $or: [{end_date: {$gt: limitDate}}, {end_date: {$eq: null}}]}})
+    models.Fee.findAll({where: {start_date: {$lt: limitDate},
+            $and: [
+                {$or: [{end_date: {$gt: limitDate}}, {end_date: {$eq: null}}]},
+                {$or: [{remaining: {$gt: 0}}, {remaining: {$eq: null}}]}
+            ]}})
         .then(function(fees) {
             deferred.resolve(fees);
         })
@@ -211,14 +225,16 @@ fee.prototype.attachRun = function (fee, runId) {
     return deferred.promise;
 };
 
-fee.prototype.add = function (percentage, value, discount, isDefault, startDate, endDate, userId, runId) {
+fee.prototype.add = function (code, percentage, value, discount, isDefault, remaining, startDate, endDate, userId, runId) {
     var deferred = q.defer(),
         self = this,
         newFee = {
+            code: code,
             percentage: percentage,
             value: value,
             discount: discount,
             default: isDefault,
+            remaining: remaining,
             start_date: startDate,
             end_date: endDate
         };
@@ -261,15 +277,17 @@ fee.prototype.add = function (percentage, value, discount, isDefault, startDate,
     return deferred.promise;
 };
 
-fee.prototype.update = function (id, percentage, value, discount, isDefault, startDate, endDate, userId, runId) {
+fee.prototype.update = function (id, code, percentage, value, discount, isDefault, remaining, startDate, endDate, userId, runId) {
     var deferred = q.defer(),
         self = this,
         newFee = {
             id: id,
+            code: code,
             percentage: percentage,
             value: value,
             discount: discount,
             default: isDefault,
+            remaining: remaining,
             start_date: startDate,
             end_date: endDate
         };
@@ -329,6 +347,58 @@ fee.prototype.update = function (id, percentage, value, discount, isDefault, sta
         .catch(function (err) {
             deferred.reject(new Error(err));
         });
+    return deferred.promise;
+};
+
+fee.prototype.checkCode = function (code) {
+    var deferred = q.defer(),
+        limitDate = new Date();
+
+    models.Fee.find({where: {
+            code: code,
+            start_date: {$lt: limitDate},
+            $and: [
+                {$or: [{end_date: {$gt: limitDate}}, {end_date: {$eq: null}}]},
+                {$or: [{remaining: {$gt: 0}}, {remaining: {$eq: null}}]}
+            ]
+        }})
+            .then(function (fee) {
+                var newFee = {
+                    id: null,
+                    discount: null
+                };
+                if (fee && fee.discount && fee.id) {
+                    newFee.discount = fee.discount;
+                    newFee.id = fee.id;
+                }
+                deferred.resolve(newFee);
+            })
+            .catch(function (err) {
+                deferred.reject(new Error(err));
+            });
+    return deferred.promise;
+};
+
+fee.prototype.useCode = function (id) {
+    var deferred = q.defer();
+
+    models.Fee.find({where: {id: id}})
+            .then(function (usedFee) {
+                if (usedFee.remaining > 0) {
+                    usedFee.update({remaining: usedFee.remaining - 1})
+                        .then(function (newFee) {
+                            deferred.resolve(newFee);
+                        })
+                        .catch(function (err) {
+                            deferred.reject(new Error(err));
+                        });
+                } else {
+                    deferred.resolve(null);
+                }
+            })
+            .catch(function (err) {
+                deferred.reject(new Error(err));
+            });
 
     return deferred.promise;
 };

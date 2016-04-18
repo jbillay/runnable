@@ -6,10 +6,12 @@
 
 module.exports = function(sequelize, DataTypes) {
     var Fee = sequelize.define('Fee', {
+        code:       DataTypes.STRING,
         percentage: DataTypes.FLOAT,
         value:      DataTypes.FLOAT,
         discount:   DataTypes.FLOAT,
         default:    DataTypes.BOOLEAN,
+        remaining:  DataTypes.INTEGER,
         start_date: DataTypes.DATE,
         end_date:   DataTypes.DATE
     }, {

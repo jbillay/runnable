@@ -68,7 +68,7 @@ describe('Test of fee API', function () {
                 .end(function (err, res) {
                     if (err) return done(err);
                     assert.equal(res.body.type, 'success');
-                    assert.equal(res.body.msg.length, 5);
+                    assert.equal(res.body.msg.length, 6);
                     return done();
                 });
         });
@@ -81,9 +81,11 @@ describe('Test of fee API', function () {
 
         it('should create fee run 3', function(done) {
             var newFee = {
+                code: null,
                 percentage: 0.18,
                 value: 1.5,
                 discount: null,
+                remaining: null,
                 start_date: new Date(),
                 end_date: null,
                 userId: null,
@@ -107,7 +109,7 @@ describe('Test of fee API', function () {
                         .end(function (err, res) {
                             if (err) return done(err);
                             assert.equal(res.body.type, 'success');
-                            assert.equal(res.body.msg.length, 6);
+                            assert.equal(res.body.msg.length, 7);
                             agent
                                 .get('http://localhost:' + settings.port + '/api/fee/3')
                                 .end(function (err, res) {
@@ -131,9 +133,11 @@ describe('Test of fee API', function () {
         it('should update fee 2', function(done) {
             var updateFee = {
                 id: 2,
+                code: null,
                 percentage: 0.2,
                 value: 6,
                 discount: 0.8,
+                remaining: null,
                 start_date: new Date(),
                 end_date: null,
                 userId: null,
@@ -178,6 +182,36 @@ describe('Test of fee API', function () {
                     if (err) return done(err);
                     assert.equal(res.body.type, 'success');
                     assert.isNotNull(res.body.msg.end_date);
+                    return done();
+                });
+        });
+    });
+
+    describe('GET /api/fee/check/:code', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should check code viability on an existing code', function (done) {
+            agent
+                .get('http://localhost:' + settings.port + '/api/fee/check/MRT-JR-2016')
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg.id, 8);
+                    assert.equal(res.body.msg.discount, 0.20);
+                    return done();
+                });
+        });
+
+        it('should check code viability on an expired code', function (done) {
+            agent
+                .get('http://localhost:' + settings.port + '/api/fee/check/MRT-JR-2015')
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.type, 'success');
+                    assert.isNull(res.body.msg.id);
+                    assert.isNull(res.body.msg.discount);
                     return done();
                 });
         });
