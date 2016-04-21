@@ -388,6 +388,42 @@
                     </button>
                 </div>
 			</tab>
+			<tab heading="Marges">
+                <div class="text-center">
+                    <div class="text-center col-md-12">
+                        <h3><strong>Marge par défaut</strong></h3>
+                        <form class="form-inline">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <label class="sr-only" for="percentageFee">Pourcentage de marge</label>
+                                    <input type="number" class="form-control" id="percentageFee"
+                                           ng-model="defaultFee.percentage" placeholder="Pourcentage de marge" required>
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <label class="sr-only" for="valueFee">Frais fixe</label>
+                                    <input type="text" class="form-control" id="valueFee"
+                                           ng-model="defaultFee.value" placeholder="Frais Fixe" required>
+                                    <span class="input-group-addon">€</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary" ng-click="saveDefaultFee(defaultFee)">
+                                    Enregistrer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <h3><strong>Marge par course / utilisateur</strong></h3>
+                    </div>
+                    <div class="col-md-6">
+                        <h3><strong>Code réudction</strong></h3>
+                    </div>
+                </div>
+            </tab>
 			<tab heading="Pages">
 				<h2>Pages</h2>
 				<form class="form-inline">

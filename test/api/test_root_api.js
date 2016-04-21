@@ -47,16 +47,15 @@ describe('Test of root API', function () {
         it('should return code 302', function (done) {
             request(app)
                 .get('/logout')
-                .expect(302, done);
+                .expect(200, done);
         });
         it('should return redirect /', function (done) {
             request(app)
                 .get('/logout')
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
-                    assert.equal(res.header.location, '/');
+                    if (err) return done(err);
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg, 'userLogoff');
                     return done();
                 });
         });
@@ -72,9 +71,7 @@ describe('Test of root API', function () {
             request(app)
                 .get('/sync')
                 .end(function (err, res) {
-                    if (err) {
-                        return done(err);
-                    }
+                    if (err) return done(err);
                     assert.equal(res.header.location, '/');
                     return done();
                 });

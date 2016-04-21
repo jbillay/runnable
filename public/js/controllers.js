@@ -8,7 +8,7 @@
 'use strict';
 
 angular.module('runnable.controllers', []).
-	controller('RunnableMainController', function ($scope, $rootScope, $q, $location, USER_ROLES, AUTH_EVENTS,
+	controller('RunnableMainController', function ($scope, $rootScope, $q, $location, $window, USER_ROLES, AUTH_EVENTS,
 												   AuthService, USER_MSG, User, Session, Inbox, Journey) {
 		$rootScope.currentUser = null;
 		$rootScope.userRoles = USER_ROLES;
@@ -33,6 +33,12 @@ angular.module('runnable.controllers', []).
 		$scope.showLogin = function () {
 			angular.element('#loginModal').modal('show');
 		};
+        $scope.logout = function () {
+            AuthService.logout()
+                .then(function (res) {
+                    $window.location.reload();
+                });
+        };
 		$scope.inviteFriend = function () {
 			angular.element('#modalInviteFriends').modal('show');
 		};
@@ -251,7 +257,7 @@ angular.module('runnable.controllers', []).
     }).
 	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run, Partner,
                                                     Journey, Join, EmailOptions, BankAccount, Page, Inbox, Technical,
-                                                    Invoice) {
+                                                    Invoice, MyRunTripFees) {
 		$scope.page = 'Admin';
 		var userListPromise = User.getList(),
 			runListPromise = Run.getList(),
@@ -262,8 +268,11 @@ angular.module('runnable.controllers', []).
 			pageListPromise = Page.getList(),
             versionPromise = Technical.version(),
 			partnerListPromise = Partner.getList(),
+            feeDefaultPromise = MyRunTripFees.getDefault(),
+            feeListPromise = MyRunTripFees.getFeeList(),
 			all = $q.all([userListPromise, runListPromise, journeyListPromise, joinListPromise, EmailOptionsPromise,
-                pageListPromise, versionPromise, partnerListPromise, journeyToPayPromise]);
+                pageListPromise, versionPromise, partnerListPromise, journeyToPayPromise, feeDefaultPromise,
+                feeListPromise]);
 		all.then(function (res) {
 			$scope.userList = res[0];
 			$scope.runList = res[1];
@@ -274,6 +283,9 @@ angular.module('runnable.controllers', []).
             $scope.version = res[6];
             $scope.partnersList = res[7];
             $scope.journeyToPay = res[8];
+            $scope.defaultFee = res[9];
+            $scope.feeList = res[10];
+            $scope.defaultFee.percentage = $scope.defaultFee.percentage * 100;
             angular.forEach($scope.journeyToPay, function (journey) {
                 var dates=[];
                 dates.push(new Date(journey.date_start_outward));
@@ -284,7 +296,7 @@ angular.module('runnable.controllers', []).
                 angular.forEach(journey.Joins, function (join) {
                     journey.amountToPay = parseFloat(join.Invoice.amount) - parseFloat(join.Invoice.fees);
                     join.validated = false;
-                    join.User = $scope.userList[_.findIndex($scope.userList, 'id', parseInt(join.UserId))];
+                    join.User = $scope.userList[_.findIndex($scope.userList, {'id': parseInt(join.UserId)})];
                     if (join.ValidationJourney) {
                         join.validated = true;
                     }
@@ -363,6 +375,18 @@ angular.module('runnable.controllers', []).
 		$scope.submitEmailOptions = function (mailConfig) {
 			EmailOptions.save(mailConfig);
 		};
+
+        // Margin options
+        $scope.saveDefaultFee = function (fees) {
+            var newDefaultFee = angular.copy(fees);
+            if (_.toNumber(newDefaultFee.percentage) !== 0) {
+                newDefaultFee.percentage = _.toNumber(newDefaultFee.percentage) / 100;
+            }
+            if (newDefaultFee.value) {
+                newDefaultFee.value = _.toNumber(newDefaultFee.value);
+            }
+            MyRunTripFees.update(newDefaultFee);
+        };
 
         // Page options
 		$scope.editPage = function (page) {
@@ -1017,7 +1041,7 @@ angular.module('runnable.controllers', []).
                 $(document).scrollTop(0);
             });
             if ($routeParams.runId) {
-                $scope.journey.Run = $scope.runList[_.findIndex($scope.runList, 'id', parseInt($routeParams.runId))];
+                $scope.journey.Run = $scope.runList[_.findIndex($scope.runList, {'id': parseInt($routeParams.runId)})];
                 $scope.selectDestination($scope.journey.Run);
             }
             $scope.today = new Date();
@@ -1322,7 +1346,7 @@ angular.module('runnable.controllers', []).
                 !($rootScope.currentUser.role === 'admin' || $rootScope.currentUser.id === $scope.journey.UserId)) {
                 $location.path('/journey');
             }
-            $scope.journey.Run = $scope.runList[_.findIndex($scope.runList, 'id', $scope.journey.Run.id)];
+            $scope.journey.Run = $scope.runList[_.findIndex($scope.runList, {'id': $scope.journey.Run.id})];
             $scope.journeyTypeChange();
             $scope.parcoursModeList = [
                 {code: 'aller-retour', name: 'Aller-Retour'},
@@ -1337,8 +1361,8 @@ angular.module('runnable.controllers', []).
                 {code: 'coupe', name: 'Coupé'},
                 {code: 'cabriolet', name: 'Cabriolet'}
             ];
-            $scope.journey.journey_type = $scope.parcoursModeList[_.findIndex($scope.parcoursModeList, 'code', $scope.journey.journey_type)].code;
-            $scope.journey.car_type = $scope.carTypeList[_.findIndex($scope.carTypeList, 'code', $scope.journey.car_type)].code;
+            $scope.journey.journey_type = $scope.parcoursModeList[_.findIndex($scope.parcoursModeList, {'code': $scope.journey.journey_type})].code;
+            $scope.journey.car_type = $scope.carTypeList[_.findIndex($scope.carTypeList, {'code': $scope.journey.car_type})].code;
             $timeout( function() {
                 GoogleMapApi.initMap('map_canvas');
                 $('#clockpicker_outward').clockpicker();

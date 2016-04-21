@@ -18,6 +18,18 @@ exports.getFee = function (req, res) {
         });
 };
 
+exports.getDefaultFee = function (req, res) {
+    'use strict';
+    var fee = new Fee();
+    fee.getDefault()
+        .then(function (fee) {
+            return res.jsonp({msg: fee, type: 'success'});
+        })
+        .catch(function (err) {
+            return res.jsonp({msg: err, type: 'error'});
+        });
+};
+
 exports.getList = function (req, res) {
     'use strict';
     var fee = new Fee();

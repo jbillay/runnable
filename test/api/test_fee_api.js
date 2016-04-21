@@ -68,7 +68,25 @@ describe('Test of fee API', function () {
                 .end(function (err, res) {
                     if (err) return done(err);
                     assert.equal(res.body.type, 'success');
-                    assert.equal(res.body.msg.length, 6);
+                    assert.equal(res.body.msg.length, 5);
+                    return done();
+                });
+        });
+
+        it('should get default fee', function (done) {
+            agent
+                .get('http://localhost:' + settings.port + '/api/admin/default/fee')
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg.id, 1);
+                    assert.isNull(res.body.msg.code);
+                    assert.equal(res.body.msg.percentage, 0.12);
+                    assert.equal(res.body.msg.value, 1);
+                    assert.isNull(res.body.msg.discount);
+                    assert.isNull(res.body.msg.remaining);
+                    assert.isNull(res.body.msg.RunId);
+                    assert.isNull(res.body.msg.UserId);
                     return done();
                 });
         });
@@ -109,7 +127,7 @@ describe('Test of fee API', function () {
                         .end(function (err, res) {
                             if (err) return done(err);
                             assert.equal(res.body.type, 'success');
-                            assert.equal(res.body.msg.length, 7);
+                            assert.equal(res.body.msg.length, 6);
                             agent
                                 .get('http://localhost:' + settings.port + '/api/fee/3')
                                 .end(function (err, res) {

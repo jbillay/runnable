@@ -154,7 +154,7 @@ fee.prototype.getForUser = function (userId, runId) {
 fee.prototype.getList = function () {
     var deferred = q.defer(),
         limitDate = new Date();
-    models.Fee.findAll({where: {start_date: {$lt: limitDate},
+    models.Fee.findAll({where: {start_date: {$lt: limitDate}, default: false,
             $and: [
                 {$or: [{end_date: {$gt: limitDate}}, {end_date: {$eq: null}}]},
                 {$or: [{remaining: {$gt: 0}}, {remaining: {$eq: null}}]}

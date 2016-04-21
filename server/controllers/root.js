@@ -22,7 +22,7 @@ exports.partials = function (req, res) {
 exports.logout = function (req, res) {
     'use strict';
     req.logout();
-    res.redirect('/');
+    return res.jsonp({msg: 'userLogoff', type: 'success'});
 };
 
 exports.auth = function (req, res) {

@@ -114,6 +114,7 @@ module.exports = function (app, passport, auth) {
     app.get('/api/admin/journey/toPay', auth.requireAdmin, controllers.journey.toPay);
     app.post('/api/admin/invoice/complete', auth.requireAdmin, controllers.invoice.complete, controllers.journey.notifyJoin);
     app.get('/api/admin/fees', auth.requireAdmin, controllers.fee.getList);
+    app.get('/api/admin/default/fee', auth.requireAdmin, controllers.fee.getDefaultFee);
     app.post('/api/admin/fee', auth.requireAdmin, controllers.fee.add);
     app.put('/api/admin/fee', auth.requireAdmin, controllers.fee.update);
     app.delete('/api/admin/fee/:id', auth.requireAdmin, controllers.fee.delete);

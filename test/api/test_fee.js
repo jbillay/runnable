@@ -89,7 +89,7 @@ describe('Test of fee object', function () {
         var fee = new Fee();
         fee.getList()
             .then(function (res) {
-                assert.equal(res.length, 6);
+                assert.equal(res.length, 5);
                 return done();
             })
             .catch(function (err) {
@@ -104,7 +104,7 @@ describe('Test of fee object', function () {
             .then(function (res) {
                 fee.getList()
                     .then(function (res) {
-                        assert.equal(res.length, 7);
+                        assert.equal(res.length, 6);
                         assert.equal(res[res.length - 1].id, 10);
                         assert.equal(res[res.length - 1].percentage, 0.15);
                         assert.equal(res[res.length - 1].value, 2);
@@ -128,7 +128,7 @@ describe('Test of fee object', function () {
             .then(function (res) {
                 fee.getList()
                     .then(function (res) {
-                        assert.equal(res.length, 6);
+                        assert.equal(res.length, 5);
                         return done();
                     })
                     .catch(function (err) {
@@ -156,7 +156,7 @@ describe('Test of fee object', function () {
                         assert.isNull(res.RunId);
                         fee.getList()
                             .then(function (res) {
-                                assert.equal(res.length, 6);
+                                assert.equal(res.length, 5);
                                 return done();
                             })
                             .catch(function (err) {
@@ -186,7 +186,7 @@ describe('Test of fee object', function () {
                 assert.equal(res.RunId, 3);
                 fee.getList()
                     .then(function (res) {
-                        assert.equal(res.length, 6);
+                        assert.equal(res.length, 5);
                         return done();
                     })
                     .catch(function (err) {
@@ -205,7 +205,7 @@ describe('Test of fee object', function () {
             .then(function (res) {
                 fee.getList()
                     .then(function (res) {
-                        assert.equal(res.length, 7);
+                        assert.equal(res.length, 6);
                         assert.equal(res[res.length - 1].id, 13);
                         assert.equal(res[res.length - 1].code, 'MYRUNTRIP-TEST');
                         assert.isNull(res[res.length - 1].percentage);

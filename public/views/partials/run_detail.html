@@ -50,14 +50,17 @@
         <div class="runSocialInfoFollower">
             <div class="form-group">
                 <span class="runSocialInfoNumber">{{participateList.length}}</span>
-                <img src="/img/icons/runner.png" class="icon iconRunner" alt="Runner"><br/>
+                <img src="/img/icons/runner.jpg" class="icon iconRunner" alt="Runner"><br/>
                 <button ng-click="participateRun()" ng-if="!userJoined" class="btn btn-xs runSocialInfoFollowerToJoinBtn">Participer</button>
                 <button ng-if="userJoined" class="btn btn-xs active runSocialInfoFollowerJoinedBtn">Vous participez</button>
             </div>
         </div>
         <div class="runSocialInfoJourney">
-            <span class="runSocialInfoNumber">{{journeyList.length}}</span><i class="fa fa-car"></i><br/>
-            <button ng-click="createJourney()" class="btn btn-xs runSocialInfoJourneyBtn">Créer un trajet</button>
+            <div class="form-group">
+                <span class="runSocialInfoNumber">{{journeyList.length}}</span>
+                <i class="fa fa-car"></i><br/>
+                <button ng-click="createJourney()" class="btn btn-xs runSocialInfoJourneyBtn">Créer un trajet</button>
+            </div>
         </div>
         <a class="btn btn-default btn-xs center-block runInfoLink" href="{{run.info}}" target="_blank">Site de la course</a>
     </div>
@@ -89,14 +92,17 @@
         <div class="runSocialInfoFollower">
             <div class="form-group">
                 <span class="runSocialInfoNumber">{{participateList.length}}</span>
-                <img src="/img/icons/runner.png" class="icon iconRunner" alt="Runner"><br/>
+                <img src="/img/icons/runner.jpg" class="icon iconRunner" alt="Runner"><br/>
                 <button ng-click="participateRun()" ng-if="!userJoined" class="btn btn-xs runSocialInfoFollowerToJoinBtn">Participer</button>
                 <button ng-if="userJoined" class="btn btn-xs active runSocialInfoFollowerJoinedBtn">Vous participez</button>
             </div>
         </div>
         <div class="runSocialInfoJourney">
-            <span class="runSocialInfoNumber">{{journeyList.length}}</span><i class="fa fa-car"></i><br/>
-            <button ng-click="createJourney()" class="btn btn-xs runSocialInfoJourneyBtn">Créer un trajet</button>
+            <div class="form-group">
+                <span class="runSocialInfoNumber">{{journeyList.length}}</span>
+                <i class="fa fa-car"></i><br/>
+                <button ng-click="createJourney()" class="btn btn-xs runSocialInfoJourneyBtn">Créer un trajet</button>
+            </div>
         </div>
         <a class="btn btn-default btn-xs center-block runInfoLink" href="{{run.info}}" target="_blank">Site de la course</a>
     </div>

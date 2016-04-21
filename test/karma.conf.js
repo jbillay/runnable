@@ -25,7 +25,7 @@ module.exports = function(config) {
             'public/lib/fullcalendar/dist/gcal.js',
             'public/lib/clockpicker/dist/bootstrap-clockpicker.min.js',
             'public/lib/noty/js/noty/packaged/jquery.noty.packaged.min.js',
-            'public/lib/lodash/lodash.min.js',
+            'public/lib/lodash/dist/lodash.min.js',
             'public/js/*.js',
             'test/unit/*.js'
         ],

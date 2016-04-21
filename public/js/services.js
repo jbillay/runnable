@@ -79,6 +79,18 @@ angular.module('runnable.services', ['ngResource']).
                     });
                 return deferred.promise;
             },
+            logout: function () {
+                var deferred = $q.defer();
+                $http.get('/logout').
+                    success(function (result) {
+                        Session.destroy();
+                        deferred.resolve(result.msg);
+                    }).
+                    error(function (data, status) {
+                        deferred.reject('error ' + status + ' : ' + data);
+                    });
+                return deferred.promise;
+            },
             isAuthenticated: function () {
                 return !!Session.userId;
             },
@@ -347,7 +359,7 @@ angular.module('runnable.services', ['ngResource']).
             }
         };
     }).
-	factory('MyRunTripFees', function () {
+	factory('MyRunTripFees', function ($rootScope, $http, $q) {
 		var feesMap = [
 			{timeMin: 259200, 	timeMax: null, 		fixed: 1, variable: 12},
 			{timeMin: 172800, 	timeMax: 259201, 	fixed: 1, variable: 12},
@@ -379,7 +391,78 @@ angular.module('runnable.services', ['ngResource']).
 					}
 				});
 				return Number((fees).toFixed(2));
-			}
+			},
+            getDefault: function () {
+                var deferred = $q.defer();
+                $http.get('/api/admin/default/fee').
+                    success(function (result) {
+                        if (result.type === 'error') {
+                            deferred.reject(new Error(result.msg));
+                        } else {
+                            deferred.resolve(result.msg);
+                        }
+                    }).
+                    error(function(data, status) {
+                        deferred.reject(new Error(data));
+                    });
+                return deferred.promise;
+            },
+            update: function (values) {
+                var deferred = $q.defer(),
+                    newValues = {
+                        id: null,
+                        code: null,
+                        percentage: null,
+                        value: null,
+                        discount: null,
+                        default: false,
+                        remaining: null,
+                        start_date: null,
+                        end_date: null,
+                        RunId: null,
+                        UserId: null
+                    };
+                newValues = _.assign(newValues, values);
+                $http.put('/api/admin/fee', {fee: newValues}).
+                    success(function (result) {
+                        if (result.type === 'error') {
+                            deferred.reject(new Error(result.msg));
+                        } else {
+                            $rootScope.$broadcast('USER_MSG', {msg: 'defaultFeeUpdated', type: 'success'});
+                            deferred.resolve(result.msg);
+                        }
+                    }).
+                    error(function(data, status) {
+                        deferred.reject(new Error(data));
+                    });
+                return deferred.promise;
+            },
+            getFeeList: function () {
+                var deferred = $q.defer(),
+                    fees = {
+                        fees: [],
+                        code: []
+                    };
+                $http.get('/api/admin/fees').
+                    success(function (result) {
+                        if (result.type === 'error') {
+                            deferred.reject(new Error(result.msg));
+                        } else {
+                            result.msg.forEach(function (fee) {
+                                if (fee.code === null) {
+                                    fees.fees.push(fee);
+                                } else {
+                                    fees.code.push(fee);
+                                }
+                            });
+                            deferred.resolve(fees);
+                        }
+                    }).
+                    error(function(data, status) {
+                        deferred.reject(new Error(data));
+                    });
+                return deferred.promise;
+            }
 		};
 	}).
     factory('GoogleMapApi', function ($rootScope, $http, $q) {

@@ -618,6 +618,68 @@ describe('Runnable Controllers', function() {
                 emailTemplate: [{id:1, name:'test', key:'test', title:'tbd', html:'tdb'}],
                 mailConfig: {host:'ovh', user:'root', password:'root'}
             });
+            $httpBackend.whenGET('/api/admin/fees').respond({msg: [
+                    {
+                        RunId: 1,
+                        UserId: null,
+                        code: null,
+                        createdAt: '0000-00-00 00:00:00',
+                        default:false,
+                        discount: 0.05,
+                        end_date: '2016-12-06T00:00:00.000Z',
+                        id: 2,
+                        percentage: null,
+                        remaining: null,
+                        start_date: '0000-00-00 00:00:00',
+                        updatedAt: '0000-00-00 00:00:00',
+                        value: null
+                    },
+                    {
+                        RunId: null,
+                        UserId: 1,
+                        code: null,
+                        createdAt: '0000-00-00 00:00:00',
+                        default: false,
+                        discount: 0.1,
+                        end_date: null,
+                        id: 4,
+                        percentage: null,
+                        remaining: null,
+                        start_date: '0000-00-00 00:00:00',
+                        updatedAt: '0000-00-00 00:00:00',
+                        value: null
+                    },
+                    {
+                        RunId: null,
+                        UserId: null,
+                        code: 'MRT-JR-2016',
+                        createdAt: '2016-04-21T00:00:00.000Z',
+                        default: false,
+                        discount: 0.2,
+                        end_date: null,
+                        id: 8,
+                        percentage: null,
+                        remaining: 5,
+                        start_date: '2015-12-08T00:00:00.000Z',
+                        updatedAt: '2016-04-21T00:00:00.000Z',
+                        value: null
+                    }
+                ], type: 'success'});
+            $httpBackend.whenGET('/api/admin/default/fee').respond({msg: {
+                RunId: null,
+                UserId: null,
+                code: null,
+                createdAt: '2016-04-19T19:03:26.000Z',
+                default: true,
+                discount: null,
+                end_date: null,
+                id: 12,
+                percentage: 13,
+                remaining: null,
+                start_date: '0000-00-00 00:00:00',
+                updatedAt: '2016-04-19T19:03:26.000Z',
+                value: 1
+            }, type: 'success'});
             $httpBackend.whenGET('/api/admin/pages').respond([
                 { id: 1, owner: 'Jeremy Billay', agency_name: 'Crédit Agricole', IBAN: 'FR7618206000576025840255308', BIC: 'AGRIFRPP882', UserId: 1 },
                 { id: 2, title: 'Page pour toto', tag: 'toto', content: 'ENCORE UN TEST', is_active: false }

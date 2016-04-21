@@ -40,7 +40,7 @@
                         <li ng-if="isAuthorized([userRoles.admin, userRoles.editor])" ><a href="/run-create">Créer une course</a></li>
                         <li ng-if="isAuthorized(userRoles.admin)" ><a href="/admin">Admin</a></li>
                         <li ng-if="isAuthorized([userRoles.admin, userRoles.editor])" role="presentation" class="divider"></li>
-                        <li><a target="_self" href="/logout"><span class="glyphicon glyphicon-off"></span> Déconnecter</a></li>
+                        <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon-off"></span> Déconnecter</a></li>
                     </ul>
                 </li>
             </ul>
