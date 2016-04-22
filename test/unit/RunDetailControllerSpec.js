@@ -156,8 +156,10 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
             timeout.flush();
             scope.userJoined = false;
+            expect(scope.participateList.length).toBe(2);
             scope.participateRun();
             $httpBackend.flush();
+            expect(scope.participateList.length).toBe(3);
             expect(scope.userJoined).toBeTruthy();
         });
 
@@ -168,7 +170,9 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
             timeout.flush();
             service.destroy();
+            expect(scope.participateList.length).toBe(2);
             scope.participateRun();
+            expect(scope.participateList.length).toBe(2);
             expect(scope.showLogin).toHaveBeenCalled();
         });
     });

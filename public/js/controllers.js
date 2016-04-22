@@ -96,8 +96,11 @@ angular.module('runnable.controllers', []).
 				});
 		});
 	}).
-	controller('RunnableConnectController', function ($scope, $rootScope) {
-	}).
+	controller('RunnableConnectController', function ($scope, $rootScope, GoogleMapApi) {
+        $scope.getLocation = function(val) {
+            return GoogleMapApi.getLocation(val);
+        };
+    }).
 	controller('RunnableSharedController', function ($scope, Session, User) {
 		$scope.invitForm = {
 			inviteMessage: 'J’utilise My Run Trip pour organiser mes voyages jusqu\'aux différentes courses. ' +
@@ -577,6 +580,7 @@ angular.module('runnable.controllers', []).
             } else {
                 Participate.add($scope.run.id)
                     .then(function (participe) {
+                        $scope.participateList.push({RunId: $scope.run.id, UserId: Session.userId, id: null});
                         $scope.userJoined = true;
                     });
             }

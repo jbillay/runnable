@@ -13,6 +13,7 @@ var request = require('supertest'),
     app = require('../../server.js'),
     sinon = require('sinon'),
     settings = require('../../conf/config'),
+    cloudinary = require('cloudinary'),
     superagent = require('superagent');
 
 function loginUser(agent) {
@@ -29,6 +30,12 @@ function loginUser(agent) {
 }
 
 describe('Test of run API', function () {
+
+    cloudinary.config({
+        cloud_name: settings.cloudinary.cloud_name,
+        api_key: settings.cloudinary.api_key,
+        api_secret: settings.cloudinary.api_secret
+    });
 
     // Recreate the database after each test to ensure isolation
     beforeEach(function (done) {
@@ -302,7 +309,7 @@ describe('Test of run API', function () {
 
         it('should create a run with images', function (done) {
             sinon.clock.restore();
-            this.timeout(6000);
+            this.timeout(15000);
             var run = {
                 id: 7,
                 name: 'Trail de la Drôme',
@@ -346,7 +353,9 @@ describe('Test of run API', function () {
                         assert.equal(res.res.body.info, 'http://www.traildeladrome.fr');
                         assert.isNotNull(res.res.body.sticker);
                         assert.equal(res.res.body.is_active, 0);
-                        return done();
+                        cloudinary.uploader.destroy('Run_7_Picture_4_test', function(result) {
+                            return done();
+                        });
                     });
             });
         });

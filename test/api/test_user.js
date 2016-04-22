@@ -12,9 +12,9 @@ var User = require('../../server/objects/user');
 var request = require('request');
 var sinon = require('sinon');
 var settings = require('../../conf/config');
-var Itra = require('../../server/objects/itra.js');
 var fs = require('fs');
 var path = require('path');
+var cloudinary = require('cloudinary');
 
 describe('Test of user object', function () {
     beforeEach(function (done) {
@@ -31,6 +31,11 @@ describe('Test of user object', function () {
     });
 
     var html = '<tbody><tr class="odd"><td><a href="?id=340083&nom=COURET#tab">Andre COURET</a></td><td>Homme</td><td>France</td><td>??</td></tr><tr><td><a href="?id=78273&nom=COURET#tab">Jacques-Andre COURET</a></td><td>Homme</td><td>France</td><td>1965</td></tr><tr class="odd"><td><a href="?id=267249&nom=COURET#tab">Jaques Andre COURET</a></td><td>Homme</td><td>France</td><td>??</td></tr><tr><td><a href="?id=437314&nom=COURET#tab">Nicolas COURET</a></td><td>Homme</td><td>France</td><td>??</td></tr><tr class="odd"><td><a href="?id=84500&nom=COURET#tab">Richard COURET</a></td><td>Homme</td><td>France</td><td>1980</td></tr><tr><td><a href="?id=489223&nom=DUCOURET#tab">Fabien DUCOURET</a></td><td>Homme</td><td>France</td><td>1978</td></tr><tr class="odd"><td><a href="?id=475698&nom=PICOURET#tab">Apollo PICOURET</a></td><td>Homme</td><td>France</td><td>1985</td></tr>				</tbody>';
+    cloudinary.config({
+        cloud_name: settings.cloudinary.cloud_name,
+        api_key: settings.cloudinary.api_key,
+        api_secret: settings.cloudinary.api_secret
+    });
 
     before(function(done){
         sinon
@@ -336,7 +341,7 @@ describe('Test of user object', function () {
     });
 
     it('Save picture for a user', function (done) {
-        this.timeout(6000);
+        this.timeout(15000);
         sinon.clock.restore();
         var user = new User(),
             fakeFile = path.normalize(path.join(__dirname, '/fixtures/myruntrip.jpg')),
@@ -349,7 +354,10 @@ describe('Test of user object', function () {
                 if (err) return done(err);
                 assert.equal(userDetail.firstname, 'Jeremy');
                 assert.match(userDetail.picture, /^http:\/\/res\.cloudinary\.com\/myruntrip.*avatar_.*_1/);
-                return done();
+                cloudinary.uploader.destroy('avatar_test_1', function(result) {
+                    console.log(result);
+                    return done();
+                });
             });
         });
     });
