@@ -113,5 +113,31 @@ describe('Invoice Service', function() {
             $httpBackend.flush();
             expect(result).toContain('error');
         });
+
+        it('should force completed for a Inoivce - PayPal Issue', function() {
+            $httpBackend.whenPOST('/api/admin/invoice/complete').respond(200);
+            var promise = service.complete(24, 'MRT20150217LA6E9'),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            });
+            $httpBackend.flush();
+            expect(result).toBeUndefined();
+        });
+
+        it('should force completed for a Inoivce - PayPal Issue', function() {
+            $httpBackend.whenPOST('/api/admin/invoice/complete').respond(401);
+            var promise = service.complete(24, 'MRT20150217LA6E9'),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function (err) {
+                result = err;
+            });
+            $httpBackend.flush();
+            expect(result).toContain('error');
+        });
     });
 });

@@ -44,7 +44,7 @@
                     <!--<div class="col-sm-12 col-md-3 pull-right hidden-xs">-->
                     <div class="col-sm-12 col-sm-12 col-md-12">
                         <div ng-if="nbFreeSpace()" class="pull-right">
-                            <button type="button" id="joinBtn" class="btn btn-primary" ng-if="!joined" ng-click="showJoinForm()">
+                            <button type="button" id="joinBtn" class="btn btn-primary" ng-if="!joined" ng-click="startCheckout()">
                                 Participer à ce voyage
                             </button>
                         </div>
@@ -117,7 +117,7 @@
             </div>
         </div>
     </div>
-	<div ng-include="'partials/modal_invoice'"></div>
+	<!-- <div ng-include="'partials/modal_invoice'"></div> -->
 	<div ng-include="'partials/modal_validation'"></div>
 </div>
 <div ng-include="'partials/footer'"></div>

@@ -7,15 +7,16 @@ describe('Runnable Controllers', function() {
     beforeEach(module('runnable.services'));
 
     describe('RunnableJourneyUpdateController with route params', function(){
-        var scope, rootScope, timeout, service, location, ctrl, ctrlMain, $httpBackend;
+        var scope, rootScope, timeout, service, location, ctrl, ctrlMain, $httpBackend, Journey;
 
-        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $timeout, $routeParams, $location, $controller, Session) {
+        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $timeout, $routeParams, $location, $controller, Session, _Journey_) {
             $httpBackend = _$httpBackend_;
             rootScope = _$rootScope_;
             scope = _$rootScope_.$new();
             timeout = $timeout;
             service = Session;
             location = $location;
+            Journey = _Journey_;
             $routeParams.journeyId = 1;
             $httpBackend.whenGET('/api/run/list').respond({msg: [{
                 id: 1,
@@ -185,6 +186,7 @@ describe('Runnable Controllers', function() {
         });
 
         it ('Submit Journey', function () {
+            $httpBackend.whenPUT('/api/journey').respond({msg: 'journeyUpdated', type: 'success'});
             expect(scope.page).toEqual('Journey');
             $httpBackend.flush();
             timeout.flush();
@@ -251,9 +253,110 @@ describe('Runnable Controllers', function() {
                         name: 'test'
                     }
                 };
+            spyOn(location, 'path');
+            spyOn(Journey, 'update').and.callFake(function() {
+                return { then: function(callback) { return callback('journeyUpdated'); } }; });
             scope.submitJourney(journeyAR);
+            rootScope.$digest();
+            expect(Journey.update).toHaveBeenCalled();
+            expect(location.path).toHaveBeenCalledWith('/journey');
             scope.submitJourney(journeyA);
+            rootScope.$digest();
+            expect(Journey.update).toHaveBeenCalled();
+            expect(location.path).toHaveBeenCalledWith('/journey');
             scope.submitJourney(journeyR);
+            rootScope.$digest();
+            expect(Journey.update).toHaveBeenCalled();
+            expect(location.path).toHaveBeenCalledWith('/journey');
+        });
+    });
+
+    describe('RunnableJourneyUpdateController none accessible for current user', function(){
+        var scope, rootScope, timeout, service, location, ctrl, ctrlMain, $httpBackend, Journey;
+
+        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $timeout, $routeParams, $location, $controller, Session, _Journey_) {
+            $httpBackend = _$httpBackend_;
+            rootScope = _$rootScope_;
+            scope = _$rootScope_.$new();
+            timeout = $timeout;
+            service = Session;
+            location = $location;
+            Journey = _Journey_;
+            $routeParams.journeyId = 1;
+            $httpBackend.whenGET('/api/run/list').respond({msg: [{
+                id: 1,
+                name: 'Maxicross',
+                type: 'trail',
+                address_start: 'Bouffémont, France',
+                date_start: '2015-02-02 00:00:00',
+                time_start: '09:15',
+                distances: '15k - 30k - 7k',
+                elevations: '500+ - 1400+',
+                info: 'Toutes les infos sur le maxicross',
+                is_active: 1
+            },
+                {
+                    id: 2,
+                    name: 'Les templiers',
+                    type: 'trail',
+                    address_start: 'Millau, France',
+                    date_start: '2015-09-15 00:00:00',
+                    time_start: '06:30',
+                    distances: '72km',
+                    elevations: '2500+',
+                    info: 'ksdjlsdjlf jsdlfjl sjdflj',
+                    is_active: 1
+                }], type: 'success'});
+            $httpBackend.whenGET('/api/journey/1').respond({
+                id: 1,
+                address_start: 'Nantes, France',
+                distance: '754 km',
+                duration: '6 heures 36 minute',
+                journey_type: 'aller',
+                date_start_outward: '2015-06-02 00:00:00',
+                time_start_outward: '03:00',
+                nb_space_outward: 2,
+                date_start_return: null,
+                time_start_return: null,
+                nb_space_return: null,
+                car_type: 'citadine',
+                amount: 32,
+                is_canceled: true,
+                updatedAt: '2014-12-22 13:41:38',
+                RunId: 2,
+                UserId: 1,
+                Run: {
+                    id: 2,
+                    name: 'Maxicross'
+                }
+            });
+            $httpBackend.whenGET('/api/user/me').respond({
+                id: 2,
+                firstname: 'Jeremy',
+                lastname: 'Billay',
+                address: 'Saint-Germain-en-Laye',
+                phone: '0689876547',
+                email: 'jbillay@gmail.com',
+                itra: null,
+                isActive: 1,
+                role: 'user',
+                picture: null
+            });
+            $httpBackend.whenGET('/api/inbox/unread/nb/msg').respond(200, 2);
+
+            ctrlMain = $controller('RunnableMainController',
+                {$scope: scope, $rootScope: rootScope});
+            ctrl = $controller('RunnableJourneyUpdateController',
+                {$rootScope: rootScope, $scope: scope, 'Session': service, $location: location});
+        }));
+
+        it ('Start controller', function () {
+            spyOn(location, 'path');
+            expect(scope.page).toEqual('Journey');
+            expect(scope.journeyId).toBe(1);
+            $httpBackend.flush();
+            timeout.flush();
+            expect(location.path).toHaveBeenCalledWith('/journey');
         });
     });
 });

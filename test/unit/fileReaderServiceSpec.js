@@ -36,9 +36,10 @@ describe('fileReader Service', function() {
         });
 
         it('should read file', function () {
-            // To be rewrite when FileReader will be clearer
+            // TODO: Need to find to put a file in a blob from Karma. Remove mock on FileReader !
             var message = null,
-                promise = service.readAsDataUrl('.jshintrc', scope);
+                file = '../api/fixtures/myruntrip.jpg',
+                promise = service.readAsDataUrl(file, scope);
 
             promise.then(function(ret){
                 message = ret;

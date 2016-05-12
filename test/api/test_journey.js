@@ -158,6 +158,7 @@ describe('Test of journey object', function () {
         journey.getListForRun(4, function (err, journeyList) {
             if (err) return done(err);
             assert.equal(journeyList.length, 1);
+            assert.equal(journeyList[0].Joins.length, 1);
             assert.equal(journeyList[0].Run.name, 'Corrida de Saint Germain en Laye');
             journey.getListForRun(2, function (err, journeyList) {
                 if (err) return done(err);

@@ -5,6 +5,7 @@
 var models = require('../models');
 var Inbox = require('./inbox');
 var q = require('q');
+var async = require('async');
 
 function participate() {
     'use strict';
@@ -95,25 +96,47 @@ participate.prototype.userRunList = function (runId, done) {
 
 participate.prototype.notify = function (run, journey, done) {
     'use strict';
-    var inbox = new Inbox(),
-        template = 'NotifyNewJourney',
-        values = {
-            runName: run.name,
-            journeyId: journey.id,
-            journeyStart: journey.address_start};
-        models.Participate.findAll({where: {runId: run.id}, include: [models.User]})
-            .then(function (participations) {
-                var promises = [];
-                participations.forEach(function (participation) {
-                    promises.push(inbox.add(template, values, participation.User.id));
+    var inbox = new Inbox();
+
+    models.Run.findOne({where: {id: run.id}})
+        .then(function (selectedRun) {
+            models.Participate.findAll({where: {runId: selectedRun.id}, include: [models.User]})
+                .then(function (participations) {
+                    var queue = async.queue(function (options, callback) {
+                        inbox.add(options.template, options.values, options.userId)
+                            .then(function (msg) {
+                                callback(null, msg);
+                            })
+                            .catch(function (err) {
+                                callback(err, null);
+                            });
+                    });
+                    var template = 'NotifyNewJourney',
+                        values = {
+                            runName: run.name,
+                            journeyId: journey.id,
+                            journeyStart: journey.address_start};
+
+                    participations.forEach(function (participation) {
+                        queue.push({template: template, values: values, userId: participation.User.id}, function (err, msg) {
+                            if (err) {
+                                console.log(new Error('Message not sent : ' + err));
+                            } else {
+                                console.log('Msg sent to notify new journey to participant');
+                            }
+                        });
+                    });
+                    queue.drain = function () {
+                        done(null, participations);
+                    };
+                })
+                .catch(function (err) {
+                    done(err, null);
                 });
-                q.all(promises).then(function () {
-                    done(null, participations);
-                });
-            })
-            .catch(function (err) {
-                done(err, null);
-            });
+        })
+        .catch(function (err) {
+            done(err, null);
+        });
 };
 
 module.exports = participate;

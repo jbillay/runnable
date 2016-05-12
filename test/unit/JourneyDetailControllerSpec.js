@@ -54,7 +54,6 @@ describe('Runnable Controllers', function() {
                 UserId: 2,
                 JourneyId: 4
             }]);
-            $httpBackend.whenGET('/api/version').respond('DEV');
             $httpBackend.whenGET('/api/user/me').respond({
                 id: 1,
                 firstname: 'Jeremy',
@@ -76,7 +75,6 @@ describe('Runnable Controllers', function() {
                 UserId: 1,
                 createdAt: '2015-01-28 09:57:02'
             });
-            $httpBackend.whenPOST('/api/join').respond('userJoined');
             $httpBackend.whenGET('/api/join/cancel/1').respond({msg: 'joinCancelled', type: 'success'});
             $httpBackend.whenGET('/api/discussion/public/messages/4').respond([{
                 id: 4,
@@ -93,9 +91,6 @@ describe('Runnable Controllers', function() {
                 JourneyId: 2,
                 createdAt: '2015-01-28 11:29:13'
             }]);
-            var formElem = angular.element('<form ng-form-commit name="form"><input type="text" name="number"></form>');
-            $compile(formElem)(scope);
-
             ctrlMain = $controller('RunnableMainController',
                 {$scope: scope, $rootScope: rootScope});
             ctrl = $controller('RunnableJourneyDetailController',
@@ -107,7 +102,6 @@ describe('Runnable Controllers', function() {
             expect(scope.journeyId).toBe(4);
             $httpBackend.flush();
             timeout.flush();
-            expect(scope.key_paypal).toEqual('622WFSZHPNBH4');
             expect(scope.joined).toBe(1);
             expect(scope.reserved_outward).toBe(3);
             expect(scope.reserved_return).toBe(0);
@@ -118,7 +112,6 @@ describe('Runnable Controllers', function() {
             expect(scope.journeyId).toBe(4);
             $httpBackend.flush();
             timeout.flush();
-            expect(scope.key_paypal).toEqual('622WFSZHPNBH4');
             expect(scope.joined).toBe(1);
             expect(scope.reserved_outward).toBe(3);
             expect(scope.reserved_return).toBe(0);
@@ -130,7 +123,6 @@ describe('Runnable Controllers', function() {
             expect(scope.journeyId).toBe(4);
             $httpBackend.flush();
             timeout.flush();
-            expect(scope.key_paypal).toEqual('622WFSZHPNBH4');
             expect(scope.joined).toBe(1);
             expect(scope.reserved_outward).toBe(3);
             expect(scope.reserved_return).toBe(0);
@@ -145,35 +137,28 @@ describe('Runnable Controllers', function() {
             expect(scope.nbFreeSpace()).toBe(1);
         });
 
-        it ('Show join form', function () {
+        it ('Get message date using moment', function () {
+            // TODO: Fake time to be sure to have the same message date
             expect(scope.page).toEqual('Journey');
             expect(scope.journeyId).toBe(4);
             $httpBackend.flush();
             timeout.flush();
-            scope.showJoinForm();
-            var d = new Date();
-            var curr_date = ('0' + d.getDate()).slice(-2);
-            var curr_month = ('0' + (d.getMonth() + 1)).slice(-2);
-            var curr_year = d.getFullYear();
-            var invoice_date = curr_year + '' + curr_month + '' + curr_date;
-            expect(scope.invoice_ref.length).toBe(16);
-            expect(scope.invoice_ref).toContain('MRT' + invoice_date);
+            expect(scope.publicMessages.length).toBe(2);
+            angular.forEach(scope.publicMessages, function (message) {
+                expect(message.showDate).toEqual('a year ago');
+            });
         });
 
-        it ('Join the journey', function () {
-            var form = scope.form;
-            spyOn(form, 'commit');
+        it ('Start check for that journey', function () {
+            spyOn(location, 'path');
             expect(scope.page).toEqual('Journey');
             expect(scope.journeyId).toBe(4);
             scope.joined = 0;
             $httpBackend.flush();
             timeout.flush();
-            scope.joinJourney(1, 0, form);
-            $httpBackend.flush();
-            expect(scope.joined).toBe(1);
-            expect(scope.reserved_outward).toBe(4);
-            expect(scope.reserved_return).toBe(0);
-            expect(form.commit).toHaveBeenCalled();
+            scope.startCheckout();
+            expect(rootScope.checkout.journeyId).toBe(4);
+            expect(location.path).toHaveBeenCalledWith('/checkout-4');
         });
 
         it ('Ask Validation Join Cancel From Journey', function () {
@@ -204,6 +189,14 @@ describe('Runnable Controllers', function() {
             expect(scope.reserved_outward).toBe(1);
             expect(scope.reserved_return).toBe(0);
             $httpBackend.flush();
+        });
+
+        it ('Check if a message is posted and not filtered', function () {
+           // TODO: all
+        });
+
+        it ('Check if a message is posted and filtered', function () {
+           // TODO: all
         });
     });
 
@@ -255,7 +248,6 @@ describe('Runnable Controllers', function() {
                 UserId: 2,
                 JourneyId: 4
             }]);
-            $httpBackend.whenGET('/api/version').respond('DEV');
             $httpBackend.whenGET('/api/user/me').respond({
                 id: 1,
                 firstname: 'Jeremy',
@@ -309,7 +301,6 @@ describe('Runnable Controllers', function() {
             expect(scope.journeyId).toBe(4);
             $httpBackend.flush();
             timeout.flush();
-            expect(scope.key_paypal).toEqual('622WFSZHPNBH4');
             expect(scope.joined).toBe(1);
             expect(scope.reserved_outward).toBe(0);
             expect(scope.reserved_return).toBe(3);
@@ -320,7 +311,6 @@ describe('Runnable Controllers', function() {
             expect(scope.journeyId).toBe(4);
             $httpBackend.flush();
             timeout.flush();
-            expect(scope.key_paypal).toEqual('622WFSZHPNBH4');
             expect(scope.joined).toBe(1);
             expect(scope.reserved_outward).toBe(0);
             expect(scope.reserved_return).toBe(3);
@@ -332,27 +322,10 @@ describe('Runnable Controllers', function() {
             expect(scope.journeyId).toBe(4);
             $httpBackend.flush();
             timeout.flush();
-            expect(scope.key_paypal).toEqual('622WFSZHPNBH4');
             expect(scope.joined).toBe(1);
             expect(scope.reserved_outward).toBe(0);
             expect(scope.reserved_return).toBe(3);
             expect(scope.nbFreeSpaceReturn()).toBe(1);
-        });
-
-        it ('Join the journey', function () {
-            var form = scope.form;
-            spyOn(form, 'commit');
-            expect(scope.page).toEqual('Journey');
-            expect(scope.journeyId).toBe(4);
-            scope.joined = 0;
-            $httpBackend.flush();
-            timeout.flush();
-            scope.joinJourney(0, 1, form);
-            $httpBackend.flush();
-            expect(scope.joined).toBe(1);
-            expect(scope.reserved_outward).toBe(0);
-            expect(scope.reserved_return).toBe(4);
-            expect(form.commit).toHaveBeenCalled();
         });
 
         it ('Confirm validation for join cancel', function () {
@@ -380,6 +353,53 @@ describe('Runnable Controllers', function() {
             scope.sendMessage(discussion);
             expect(scope.publicMessages.length).toBe(3);
             $httpBackend.flush();
+        });
+
+        it ('Send a message with phone number which is not allowed in public discussion', function () {
+            var discussion = {
+                newMessageEntry: '0689896547',
+                userEmailEntry: 'myruntrip@gmail.com'
+            };
+            expect(scope.page).toEqual('Journey');
+            expect(scope.journeyId).toBe(4);
+            $httpBackend.flush();
+            timeout.flush();
+            expect(scope.publicMessages.length).toBe(2);
+            scope.sendMessage(discussion);
+            expect(scope.publicMessages.length).toBe(2);
+            expect(scope.messageFilter).toBeTruthy();
+        });
+
+        it ('Send a message with an email which is not allowed in public discussion', function () {
+            var discussion = {
+                newMessageEntry: 'Bonjour vous pouvez me contacter sur mon mail jbillay@gmail.com comme ça on va les avoir :) !',
+                userEmailEntry: 'myruntrip@gmail.com'
+            };
+            expect(scope.page).toEqual('Journey');
+            expect(scope.journeyId).toBe(4);
+            $httpBackend.flush();
+            timeout.flush();
+            expect(scope.publicMessages.length).toBe(2);
+            scope.sendMessage(discussion);
+            expect(scope.publicMessages.length).toBe(2);
+            expect(scope.messageFilter).toBeTruthy();
+            scope.resetFilterMsg();
+            expect(scope.publicMessages.length).toBe(2);
+            expect(scope.messageFilter).toBeFalsy();
+        });
+
+        it ('Send an empty message in public discussion', function () {
+            var discussion = {
+                newMessageEntry: '',
+                userEmailEntry: null
+            };
+            expect(scope.page).toEqual('Journey');
+            expect(scope.journeyId).toBe(4);
+            $httpBackend.flush();
+            timeout.flush();
+            expect(scope.publicMessages.length).toBe(2);
+            scope.sendMessage(discussion);
+            expect(scope.publicMessages.length).toBe(2);
         });
     });
 
@@ -431,7 +451,6 @@ describe('Runnable Controllers', function() {
                 UserId: 1,
                 JourneyId: 4
             }]);
-            $httpBackend.whenGET('/api/version').respond('DEV');
             $httpBackend.whenGET('/api/user/me').respond(401);
             $httpBackend.whenGET('/api/inbox/unread/nb/msg').respond(401);
             $httpBackend.whenGET('/api/discussion/public/messages/4').respond([{
@@ -461,7 +480,6 @@ describe('Runnable Controllers', function() {
             expect(scope.journeyId).toBe(4);
             $httpBackend.flush();
             timeout.flush();
-            expect(scope.key_paypal).toEqual('622WFSZHPNBH4');
             expect(scope.reserved_outward).toBe(0);
             expect(scope.reserved_return).toBe(3);
         });
@@ -471,7 +489,6 @@ describe('Runnable Controllers', function() {
             expect(scope.journeyId).toBe(4);
             $httpBackend.flush();
             timeout.flush();
-            expect(scope.key_paypal).toEqual('622WFSZHPNBH4');
             expect(scope.reserved_outward).toBe(0);
             expect(scope.reserved_return).toBe(3);
             expect(scope.nbFreeSpaceOutward()).toBe(0);
@@ -482,29 +499,19 @@ describe('Runnable Controllers', function() {
             expect(scope.journeyId).toBe(4);
             $httpBackend.flush();
             timeout.flush();
-            expect(scope.key_paypal).toEqual('622WFSZHPNBH4');
             expect(scope.reserved_outward).toBe(0);
             expect(scope.reserved_return).toBe(3);
             expect(scope.nbFreeSpaceReturn()).toBe(1);
         });
 
         it ('Show join form', function () {
-            spyOn(scope, 'showLogin');
+            spyOn(location, 'path');
             expect(scope.page).toEqual('Journey');
             expect(scope.journeyId).toBe(4);
             $httpBackend.flush();
             timeout.flush();
-            scope.showJoinForm();
-            expect(scope.showLogin).toHaveBeenCalled();
-        });
-
-        it ('Calculate fees', function () {
-            expect(scope.page).toEqual('Journey');
-            expect(scope.journeyId).toBe(4);
-            $httpBackend.flush();
-            timeout.flush();
-            var fees = scope.calculateFees(0, 1, scope.journey);
-            expect(fees).toEqual(4.84);
+            scope.startCheckout();
+            expect(location.path).toHaveBeenCalledWith('/connect');
         });
     });
 
@@ -556,7 +563,6 @@ describe('Runnable Controllers', function() {
                 UserId: 1,
                 JourneyId: 4
             }]);
-            $httpBackend.whenGET('/api/version').respond('sj3uE09');
             $httpBackend.whenGET('/api/user/me').respond({
                 id: 1,
                 firstname: 'Jeremy',
@@ -599,7 +605,6 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
             timeout.flush();
             expect(location.path).toHaveBeenCalledWith('/journey');
-            expect(scope.key_paypal).toEqual('ST4SRXB6PJAGC');
             expect(scope.joined).toBe(1);
             expect(scope.reserved_outward).toBe(3);
             expect(scope.reserved_return).toBe(2);

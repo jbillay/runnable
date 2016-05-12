@@ -365,7 +365,8 @@ angular.module('runnable.services', ['ngResource']).
 			{timeMin: 172800, 	timeMax: 259201, 	fixed: 1, variable: 12},
 			{timeMin: 86400, 	timeMax: 172801, 	fixed: 1, variable: 12},
 			{timeMin: null,		timeMax: 86401, 	fixed: 1, variable: 12}
-		];
+		],
+            applicableFees = null;
 		return {
 			getTimeBeforeStart: function (startDate, startHour) {
 				var dateTime = startDate + 'T' + startHour + ':00.000Z',
@@ -392,18 +393,52 @@ angular.module('runnable.services', ['ngResource']).
 				});
 				return Number((fees).toFixed(2));
 			},
+            calculateFee: function (amount, discount) {
+                var fees = _.toNumber(applicableFees.value) + (_.toNumber(amount) * _.toNumber(applicableFees.percentage)) || 0;
+                if (discount || discount === 0) {
+                    fees = fees - (fees * _.toNumber(discount / 100));
+                } else if (applicableFees.discount) {
+                    fees = fees - (fees * _.toNumber(applicableFees.discount));
+                }
+                return _.toNumber((fees).toFixed(2));
+            },
+            getFee: function (journeyId) {
+                var deferred = $q.defer(),
+                    fees = {
+                        percentage: 0.12,
+                        value: 1,
+                        discount: 0
+                    };
+
+                $http.get('/api/fee/' + journeyId)
+                    .success(function (result) {
+                        if (result.type === 'error') {
+                            applicableFees = fees;
+                            deferred.resolve(fees);
+                        } else {
+                            applicableFees = result.msg;
+                            deferred.resolve(result.msg);
+                        }
+                    })
+                    .error(function (err) {
+                        // WARNING: Temporary fallback with figures set as 12% and 1 €
+                        applicableFees = fees;
+                        deferred.resolve(fees);
+                    });
+                return deferred.promise;
+            },
             getDefault: function () {
                 var deferred = $q.defer();
                 $http.get('/api/admin/default/fee').
                     success(function (result) {
                         if (result.type === 'error') {
-                            deferred.reject(new Error(result.msg));
+                            deferred.reject('error ' + result.msg);
                         } else {
                             deferred.resolve(result.msg);
                         }
                     }).
                     error(function(data, status) {
-                        deferred.reject(new Error(data));
+                        deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             },
@@ -426,14 +461,60 @@ angular.module('runnable.services', ['ngResource']).
                 $http.put('/api/admin/fee', {fee: newValues}).
                     success(function (result) {
                         if (result.type === 'error') {
-                            deferred.reject(new Error(result.msg));
+                            deferred.reject('error ' + result.msg);
                         } else {
                             $rootScope.$broadcast('USER_MSG', {msg: 'defaultFeeUpdated', type: 'success'});
                             deferred.resolve(result.msg);
                         }
                     }).
                     error(function(data, status) {
-                        deferred.reject(new Error(data));
+                        deferred.reject('error ' + status + ' : ' + data);
+                    });
+                return deferred.promise;
+            },
+            create: function (values) {
+                var deferred = $q.defer(),
+                    newValues = {
+                        id: null,
+                        code: null,
+                        percentage: null,
+                        value: null,
+                        discount: null,
+                        default: false,
+                        remaining: null,
+                        start_date: null,
+                        end_date: null,
+                        RunId: null,
+                        UserId: null
+                    };
+                newValues = _.assign(newValues, values);
+                $http.post('/api/admin/fee', {fee: newValues}).
+                    success(function (result) {
+                        if (result.type === 'error') {
+                            deferred.reject('error ' + result.msg);
+                        } else {
+                            $rootScope.$broadcast('USER_MSG', {msg: 'feeCreated', type: 'success'});
+                            deferred.resolve(result.msg);
+                        }
+                    }).
+                    error(function(data, status) {
+                        deferred.reject('error ' + status + ' : ' + data);
+                    });
+                return deferred.promise;
+            },
+            checkCode: function (code) {
+                var deferred = $q.defer();
+
+                $http.get('/api/fee/check/' + code)
+                    .success(function (result) {
+                        if (result.type === 'error') {
+                            deferred.reject('error ' + result.msg);
+                        } else {
+                            deferred.resolve(result.msg);
+                        }
+                    })
+                    .error(function (data, status) {
+                        deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             },
@@ -446,7 +527,7 @@ angular.module('runnable.services', ['ngResource']).
                 $http.get('/api/admin/fees').
                     success(function (result) {
                         if (result.type === 'error') {
-                            deferred.reject(new Error(result.msg));
+                            deferred.reject('error ' + result.msg);
                         } else {
                             result.msg.forEach(function (fee) {
                                 if (fee.code === null) {
@@ -459,7 +540,7 @@ angular.module('runnable.services', ['ngResource']).
                         }
                     }).
                     error(function(data, status) {
-                        deferred.reject(new Error(data));
+                        deferred.reject('error ' + status + ' : ' + data);
                     });
                 return deferred.promise;
             }
@@ -1306,8 +1387,12 @@ angular.module('runnable.services', ['ngResource']).
                 var deferred = $q.defer();
                 $http.put('/api/journey', {journey: journey}).
                     success(function (result) {
-                        $rootScope.$broadcast('USER_MSG', result);
-                        deferred.resolve(result);
+                    if (result.type === 'success') {
+                        $rootScope.$broadcast('USER_MSG', result.msg);
+                        deferred.resolve(result.msg);
+                    } else  {
+                        deferred.reject('error : ' + result.msg);
+                    }
                     }).
                     error(function (data, status) {
 						deferred.reject('error ' + status + ' : ' + data);

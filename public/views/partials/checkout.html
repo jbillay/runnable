@@ -1,0 +1,107 @@
+<div ng-include="'partials/nav'"></div>
+
+<div class="container-fluid body">
+    <form name="invoiceForm" ng-submit="joinJourney(selectedPlaceOutward, selectedPlaceReturn)" novalidate>
+        <div class="col-md-8 col-md-offset-2">
+            <p>Vous allez participer au voyage au départ de {{journey.address_start}} pour la course {{journey.Run.name}}
+                se déroulant à {{journey.Run.address_start}}.</p>
+            <p>Combien de place souhaitez vous réserver :</p>
+            <p ng-show="journey.journey_type === 'aller-retour' || journey.journey_type === 'aller'">
+                Pour l'aller <select ng-model="selectedPlaceOutward"
+                                     ng-options="placeOutward.id as placeOutward.id for placeOutward in nbFreeSpaceListOutward"
+                                     ng-change="calculatePrices(selectedPlaceOutward, selectedPlaceReturn, discount, journey)">
+            </select>
+                place(s)
+            </p>
+            <p ng-show="journey.journey_type === 'aller-retour' || journey.journey_type === 'retour'">
+                Pour le retour <select ng-model="selectedPlaceReturn"
+                                       ng-options="placeReturn.id as placeReturn.id for placeReturn in nbFreeSpaceListReturn"
+                                       ng-change="calculatePrices(selectedPlaceOutward, selectedPlaceReturn, discount, journey)">
+            </select>
+                place(s)
+            </p>
+            <hr>
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Départ/Arrivée</th>
+                        <th>Sens</th>
+                        <th>Montant</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-if="selectedPlaceOutward > 0">
+                        <th scope="row">{{journey.Run.name}}</th>
+                        <td>{{journey.address_start}}</td>
+                        <td>Aller</td>
+                        <!-- <td>{{selectedPlaceOutward * journey.amount | currency:'€ '}}</td> -->
+                        <td>{{journeyPrice.outwardAmount | currency:'€ '}}</td>
+                    </tr>
+                    <tr ng-if="selectedPlaceReturn > 0">
+                        <th scope="row">{{journey.Run.name}}</th>
+                        <td>{{journey.address_start}}</td>
+                        <td>Retour</td>
+                        <!-- <td>{{selectedPlaceReturn * journey.amount | currency:'€ '}}</td> -->
+                        <td>{{journeyPrice.returnAmount | currency:'€ '}}</td>
+                    </tr>
+                    <tr ng-if="selectedPlaceOutward + selectedPlaceReturn > 0">
+                        <th scope="row">Frais de service
+                            <small><span class="text-danger" ng-if="discount">
+                                (Vous bénéficiez d'une réduction de {{discountLabel}})
+                            </span></small>
+                        </th>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <!-- <td>{{calculateFees(selectedPlaceOutward, selectedPlaceReturn, journey) | currency:'€ '}}</td> -->
+                        <td>{{journeyPrice.fees | currency:'€ '}}</td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th scope="row" colspan="3">TOTAL</th>
+                        <!-- <td>{{(selectedPlaceOutward + selectedPlaceReturn) * journey.amount + calculateFees(selectedPlaceOutward, selectedPlaceReturn, journey) | currency:'€ ' }}</td> -->
+                        <td>{{journeyPrice.totalAmount | currency:'€ ' }}</td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="form-inline">
+                <input ng-if="!promoCode.promoCodeValid" type="text" ng-model="promoCode.code">
+                <a ng-if="!promoCode.promoCodeValid" class="btn btn-info" ng-click="checkPromoCode()">Vérifier</a>
+                <span ng-if="promoCode.promoCodeValid" class="text-success">
+                    Votre code bien a été pris en compte <small>(<a ng-click="resetPromoCode()">Modifier le code</a>)</small>
+                </span>
+                <span ng-if="promoCode.codeError" class="text-danger">{{promoCode.codeErrorMsg}}</span>
+            </div>
+            <div ng-class="{red: !cgv_validation, green: cgv_validation}">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="cgv_validation"> J'ai lu et j'accepte les Conditions Générales
+                    </label>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form ng-form-commit name="paypalForm" action="{{url_paypal}}" method="post">
+        <div class="col-md-8 col-md-offset-2">
+            <input type="hidden" name="cmd" value="_xclick">
+            <INPUT TYPE="hidden" name="charset" value="utf-8">
+            <INPUT TYPE="hidden" name="return" value="{{url_website}}/journey-{{journey.id}}">
+            <input type="hidden" name="business" value="{{key_paypal}}">
+            <input type="hidden" name="currency_code" value="EUR">
+            <input type="hidden" name="country" value="FR">
+            <input type="hidden" name="invoice" value="{{invoice_ref}}">
+            <input type="hidden" name="lc" value="FR">
+            <input type="hidden" name="notify_url" value="{{url_website}}/api/paypal/ipn">
+            <input type="hidden" name="item_name" value="Parcours My Run Trip">
+            <input type="hidden" name="amount" value="{{journeyPrice.totalAmount | number:2}}">
+            <button type="button" class="btn btn-primary btn-block" ng-disabled="!cgv_validation"
+                    ng-click="joinJourney(selectedPlaceOutward, selectedPlaceReturn, paypalForm)">
+                Procéder au paiement
+            </button>
+        </div>
+    </form>
+</div>
+<div ng-include="'partials/footer'"></div>

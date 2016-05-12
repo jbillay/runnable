@@ -7,16 +7,16 @@ describe('Runnable Controllers', function() {
     beforeEach(module('runnable.services'));
 
     describe('RunnableIndexController', function(){
-        var scope, rootScope, ctrl, $httpBackend, timeout;
+        var scope, rootScope, ctrl, $httpBackend, Email, timeout;
 
-        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $routeParams, $controller, $timeout) {
+        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $routeParams, $controller, $timeout, _Email_) {
             $httpBackend = _$httpBackend_;
             rootScope = _$rootScope_;
             scope = _$rootScope_.$new();
             timeout = $timeout;
-            spyOn(rootScope, '$broadcast').and.callThrough();
+            Email = _Email_;
 
-            $httpBackend.whenGET('/api/run/next/4').respond([{
+            $httpBackend.whenGET('/api/run/next/4').respond({msg: [{
                 id: 1,
                 name: 'Maxicross',
                 type: 'trail',
@@ -27,7 +27,7 @@ describe('Runnable Controllers', function() {
                 elevations: '500+ - 1400+',
                 info: 'Toutes les infos sur le maxicross',
                 is_active: 1
-            }]);
+            }], type: 'success'});
             $httpBackend.whenGET('/api/journey/next/4').respond([{
                 id: 3,
                 address_start: 'Rouen',
@@ -68,7 +68,6 @@ describe('Runnable Controllers', function() {
                 JoinId: 4,
                 UserId: 1
             }]);
-            $httpBackend.whenPOST('/api/send/mail').respond('message envoyé');
             $httpBackend.whenGET('https://maps.googleapis.com/maps/api/geocode/json?address=Paris&sensor=false').respond({
                 results: [
                     {
@@ -144,6 +143,9 @@ describe('Runnable Controllers', function() {
             expect(scope.nbJourneyItems).toBe(4);
             $httpBackend.flush();
             timeout.flush();
+            expect(scope.listRun.length).toBe(1);
+            expect(scope.listJourney.length).toBe(1);
+            expect(scope.userFeedback.length).toBe(1);
         });
 
         it ('Get location', function () {
@@ -151,10 +153,11 @@ describe('Runnable Controllers', function() {
             expect(scope.nbRunItems).toBe(4);
             expect(scope.nbJourneyItems).toBe(4);
             scope.getLocation('Paris');
-            $httpBackend.flush();
         });
 
         it ('Send contact email', function () {
+            spyOn(Email, 'send').and.callFake(function() {
+                return { then: function(callback) { return callback('message envoyé'); } }; });
             var contact = {
                 demande: 'Titre',
                 email: 'richard.couret@free.fr',
@@ -164,8 +167,7 @@ describe('Runnable Controllers', function() {
             expect(scope.nbRunItems).toBe(4);
             expect(scope.nbJourneyItems).toBe(4);
             scope.sendContact(contact);
-            $httpBackend.flush();
-            expect(rootScope.$broadcast).toHaveBeenCalled();
+            expect(Email.send).toHaveBeenCalled();
         });
     });
 });

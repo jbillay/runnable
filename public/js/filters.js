@@ -17,6 +17,31 @@ angular.module('runnable.filters', []).
             return (!!input) ? input.replace('.', ',') : '';
         };
     }).
+    filter('showInPercentage', function () {
+        return function(input) {
+            return (!!input) ? '' + (_.toNumber(input) * 100).toFixed(0) + '%' : '-';
+        };
+    }).
+    filter('showAll', function () {
+        return function(input) {
+            return (!!input) ? input : '*';
+        };
+    }).
+    filter('showRun', function () {
+        return function(input) {
+            return (!!input) ? input.name : '*';
+        };
+    }).
+    filter('showUser', function () {
+        return function(input) {
+            return (!!input) ? input.firstname + ' ' + input.lastname : '*';
+        };
+    }).
+    filter('showInfinite', function () {
+        return function(input) {
+            return (!!input) ? input : '∞';
+        };
+    }).
     filter('joinAdmin', function() {
         return function(items, flags) {
             var filtered = [];

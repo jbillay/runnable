@@ -8,9 +8,7 @@ describe('GoogleMapApi Service', function() {
     // load modules
     beforeEach(module('runnable.services'));
 
-    var service,
-        $httpBackend,
-        rootScope;
+    var service, $httpBackend, $q, deferred, rootScope;
     window.google = {
         maps: {
             Geocoder: function() {
@@ -18,12 +16,21 @@ describe('GoogleMapApi Service', function() {
                     fn([{geometry: {location: 1}}], window.google.maps.GeocoderStatus.OK);
                 };
             },
+            event: {
+                trigger: function (maps, obj) { return true; }
+            },
             Map: function(element, options) {
                 this.setCenter = function (location) { return location; };
                 this.setZoom = function (zoom) { return true; };
+                this.getCenter = function () { return this.center || 0; };
+                this.setCenter = function (center) { this.center = center; };
             },
             Marker: function (options) {
+                var active = true;
                 this.addListener = function  (event, done) { return event; };
+                this.getAnimation = function (obj) { return this.active; };
+                this.setAnimation = function (obj) { this.active = null; };
+                this.setIcon = function (icon) { return true; };
             },
             DirectionsRenderer: function() {
                 this.setMap = function (location) { return location; };
@@ -34,6 +41,7 @@ describe('GoogleMapApi Service', function() {
             },
             Animation: function () {
                 this.DROP = 1;
+                this.BOUNCE = 1;
             },
             DirectionsService: function () {
                 this.route = function (request, fn) {
@@ -81,10 +89,20 @@ describe('GoogleMapApi Service', function() {
 
     describe('GoogleMapApi Service', function() {
 
-        beforeEach(inject(function(GoogleMapApi, _$httpBackend_, $rootScope){
+        beforeEach(inject(function(GoogleMapApi, _$httpBackend_, _$q_, _$rootScope_){
             service = GoogleMapApi;
             $httpBackend = _$httpBackend_;
-            rootScope = $rootScope;
+            $q = _$q_;
+            rootScope = _$rootScope_;
+
+            rootScope.testToggleAnimation =  {
+                marker: { 0: {
+                        active: true,
+                        getAnimation: function (obj) { return this.active; },
+                        setAnimation: function (obj) { this.active = !this.active; },
+                        setIcon: function (icon) { return true; }
+                    }}
+            };
         }));
 
         it('check the existence of GoogleMapApi', function() {
@@ -133,6 +151,28 @@ describe('GoogleMapApi Service', function() {
             promise.then(function(ret){
                 distance = ret;
             });
+            rootScope.$digest();
+            expect(distance.distance).toEqual('1595 mi');
+            expect(distance.duration).toEqual('1 day 3 hours');
+        });
+
+        it('should toggle animation', function () {
+            service.initMap('testToggleAnimation');
+            service.addMaker('testToggleAnimation', 'Paris, France', null, null, null)
+                .then(function (markerId) {
+                    google.maps.event.trigger(rootScope.testToggleAnimation.marker[0], 'click', {
+                        latLng: {lat: -34, lng: 151}
+                    });
+                    service.toggleAnimation('testToggleAnimation', 0, 'TOTO', '.', '.');
+                    service.toggleAnimation('testToggleAnimation', 0, 'BOUNCE', '.', '.');
+                    service.toggleAnimation('testToggleAnimation', 0, 'BOUNCE', '.', '.');
+                });
+            rootScope.$digest();
+        });
+
+        it('should refresh map', function () {
+            service.initMap('testRefresh');
+            service.refresh('testRefresh');
         });
 
         it('should get geo location', function() {

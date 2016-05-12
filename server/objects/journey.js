@@ -287,7 +287,10 @@ journey.prototype.getListForRun = function (id, done) {
         {
             model: models.Join,
             as: 'Joins',
-            include: [ models.Invoice ]
+            include: [{
+                model: models.Invoice,
+                where: {status: 'completed'}
+            }]
         },
         { model: models.Run }
     ]})

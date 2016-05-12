@@ -71,5 +71,6 @@ angular.module('runnable.constant', []).
         partnerInfoSent:        'Les informations ont bien été envoyées au partenaire',
         forceCompleteSuccess:   'Le voyage a bien été complété et les notifications vont être envoyées',
         forceCompleteFailed:    'Le voyage n\'a pas pu être complété en raison d\'un problème technique',
-        defaultFeeUpdated:      'Les marges par défaut ont bien été sauvegardées'
+        defaultFeeUpdated:      'Les information sur les marges ont bien été sauvegardées',
+        feeCreated:             'La nouvelle marge a bien été sauvegardée'
 	});

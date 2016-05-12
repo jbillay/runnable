@@ -250,7 +250,7 @@ describe('Journey Service', function() {
                 journey_type: 'aller-retour',
                 date_start_outward: '2014-12-12 00:00:00',
                 time_start_outward: '09:00',
-                nb_space_outward: 2,
+                nb_space_outward: 4,
                 date_start_return: '2014-12-13 00:00:00',
                 time_start_return: '09:00',
                 nb_space_return: 2,
@@ -259,7 +259,21 @@ describe('Journey Service', function() {
                 is_canceled: false,
                 updatedAt: '2015-02-02 05:02:11',
                 RunId: 4,
-                UserId: 2
+                UserId: 2,
+                Joins: [{
+                        id: 1,
+                        nb_place_outward: 2,
+                        nb_place_return: 2,
+                        UserId: 1,
+                        JourneyId: 3
+                    },
+                    {
+                        id: 2,
+                        nb_place_outward: 1,
+                        nb_place_return: null,
+                        UserId: 1,
+                        JourneyId: 3
+                    }]
             }, {
                 id: 4,
                 address_start: 'Nice',
@@ -289,6 +303,8 @@ describe('Journey Service', function() {
             expect(journeyList instanceof Array);
             expect(journeyList.length).toBe(2);
             expect(journeyList[0].RunId).toBe(4);
+            expect(journeyList[0].nb_space_outward).toBe(1);
+            expect(journeyList[0].nb_space_return).toBe(0);
             expect(journeyList[1].id).toBe(4);
             expect(journeyList[1].address_start).toEqual('Nice');
             expect(journeyList[1].distance).toEqual('300 km');
@@ -305,6 +321,8 @@ describe('Journey Service', function() {
             expect(journeyList[1].is_canceled).toBeTruthy();
             expect(journeyList[1].RunId).toBe(4);
             expect(journeyList[1].UserId).toBe(2);
+            expect(journeyList[0].nb_space_outward).toBe(1);
+            expect(journeyList[0].nb_space_return).toBe(0);
         });
 
         it('should fail to get list of journey for the run 4', function() {
@@ -588,7 +606,7 @@ describe('Journey Service', function() {
 
         it('should update a journey', function () {
             spyOn(rootScope, '$broadcast').and.callThrough();
-            $httpBackend.whenPUT('/api/journey').respond('journeyUpdated');
+            $httpBackend.whenPUT('/api/journey').respond({msg: 'journeyUpdated', type: 'success'});
 
             var journey = {
                     address_start: 'Nice',
@@ -619,6 +637,42 @@ describe('Journey Service', function() {
             $httpBackend.flush();
             expect(message).toEqual('journeyUpdated');
             expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should failed to update with an error a journey', function () {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            $httpBackend.whenPUT('/api/journey').respond({msg: 'journeyNotUpdated', type: 'error'});
+
+            var journey = {
+                    address_start: 'Nice',
+                    distance: '300 km',
+                    duration: '3 heures 10 minutes',
+                    journey_type: 'aller-retour',
+                    date_start_outward: '2015-06-25 00:00:00',
+                    time_start_outward: '09:00',
+                    nb_space_outward: 1,
+                    date_start_return: '2015-06-26 00:00:00',
+                    time_start_return: '11:00',
+                    nb_space_return: 1,
+                    car_type: 'citadine',
+                    amount: 26,
+                    is_canceled: true,
+                    updatedAt: '2015-02-02 05:02:11',
+                    RunId: 4,
+                    UserId: 2
+                },
+                message = null;
+
+            var promise = service.update(journey);
+
+            promise.then(function(ret){
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            expect(message).toContain('error');
         });
 
         it('should failed to update a journey', function () {
@@ -709,6 +763,90 @@ describe('Journey Service', function() {
             var message = null;
 
             var promise = service.cancel(2);
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
+
+        it('should get journey to pay', function () {
+            $httpBackend.whenGET('/api/admin/journey/toPay').respond({msg: [{
+                id: 3,
+                address_start: 'Rouen',
+                distance: '250 km',
+                duration: '2 heures 45 minutes',
+                journey_type: 'aller-retour',
+                date_start_outward: '2014-12-12 00:00:00',
+                time_start_outward: '09:00',
+                nb_space_outward: 2,
+                date_start_return: '2014-12-13 00:00:00',
+                time_start_return: '09:00',
+                nb_space_return: 2,
+                car_type: 'citadine',
+                amount: 12,
+                is_canceled: false,
+                updatedAt: '2015-02-02 05:02:11',
+                RunId: 4,
+                UserId: 2
+            }, {
+                id: 4,
+                address_start: 'Nice',
+                distance: '300 km',
+                duration: '3 heures 10 minutes',
+                journey_type: 'aller-retour',
+                date_start_outward: '2015-06-25 00:00:00',
+                time_start_outward: '09:00',
+                nb_space_outward: 1,
+                date_start_return: '2015-06-26 00:00:00',
+                time_start_return: '11:00',
+                nb_space_return: 1,
+                car_type: 'citadine',
+                amount: 26,
+                is_canceled: true,
+                updatedAt: '2015-02-02 05:02:11',
+                RunId: 4,
+                UserId: 2
+            }], type: 'success'});
+
+            var message = null;
+
+            var promise = service.toPay();
+
+            promise.then(function(ret){
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message.length).toBe(2);
+        });
+
+        it('should get error when retrieve journey to pay', function () {
+            $httpBackend.whenGET('/api/admin/journey/toPay').respond({msg: 'Message incorrect', type: 'error'});
+
+            var message = null;
+
+            var promise = service.toPay();
+
+            promise.then(function(ret){
+                message = ret;
+            }).catch(function (err) {
+                message = err;
+            });
+
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
+
+        it('should failed to retrieve journeys to pay', function () {
+            $httpBackend.whenGET('/api/admin/journey/toPay').respond(500);
+
+            var message = null;
+
+            var promise = service.toPay();
 
             promise.then(function(ret) {
                 message = ret;

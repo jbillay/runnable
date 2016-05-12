@@ -122,24 +122,30 @@ fee.prototype.filterNotOwnedFees = function (userId, runId, fees) {
     return filtered;
 };
 
-fee.prototype.getForUser = function (userId, runId) {
+fee.prototype.getForUser = function (userId, journeyId) {
     var deferred = q.defer(),
         self = this,
         limitDate = new Date();
     self.getDefault()
         .then(function (defaultFees) {
-            models.Fee.findAll({where: {
-                    start_date: {$lt: limitDate},
-                    code: {$eq: null},
-                    $and: [
-                        {$or: [{end_date: {$gt: limitDate}}, {end_date: {$eq: null}}]},
-                        {$or: [{remaining: {$gt: 0}}, {remaining: {$eq: null}}]},
-                        {$or: [{UserId: userId}, {RunId: runId}]}
-                    ]
-                }})
-                .then(function(fees) {
-                    var filteredFees = self.filterNotOwnedFees(userId, runId, fees);
-                    deferred.resolve(self.getAggregatedFees(filteredFees, defaultFees));
+            models.Journey.find({where: {id: journeyId}})
+                .then(function (journey) {
+                    models.Fee.findAll({where: {
+                            start_date: {$lt: limitDate},
+                            code: {$eq: null},
+                            $and: [
+                                {$or: [{end_date: {$gt: limitDate}}, {end_date: {$eq: null}}]},
+                                {$or: [{remaining: {$gt: 0}}, {remaining: {$eq: null}}]},
+                                {$or: [{UserId: userId}, {RunId: journey.RunId}]}
+                            ]
+                        }})
+                        .then(function(fees) {
+                            var filteredFees = self.filterNotOwnedFees(userId, journey.RunId, fees);
+                            deferred.resolve(self.getAggregatedFees(filteredFees, defaultFees));
+                        })
+                        .catch(function (err) {
+                            deferred.reject(new Error(err));
+                        });
                 })
                 .catch(function (err) {
                     deferred.reject(new Error(err));
@@ -158,7 +164,7 @@ fee.prototype.getList = function () {
             $and: [
                 {$or: [{end_date: {$gt: limitDate}}, {end_date: {$eq: null}}]},
                 {$or: [{remaining: {$gt: 0}}, {remaining: {$eq: null}}]}
-            ]}})
+            ]}, include: [models.Run, models.User]})
         .then(function(fees) {
             deferred.resolve(fees);
         })

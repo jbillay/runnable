@@ -8,8 +8,8 @@ var _ = require('lodash');
 exports.getFee = function (req, res) {
     'use strict';
     var fee = new Fee(),
-        runId = _.toNumber(req.params.runId);
-    fee.getForUser(req.user.id, runId)
+        journeyId = _.toNumber(req.params.journeyId);
+    fee.getForUser(req.user.id, journeyId)
         .then(function (fee) {
             return res.jsonp({msg: fee, type: 'success'});
         })
@@ -49,7 +49,7 @@ exports.add = function (req, res) {
 
     // New fees will always be false has default fees will be only updated
     fee.add(newFee.code, newFee.percentage, newFee.value, newFee.discount, false,
-            newFee.remaining, newFee.start_date, newFee.end_date, newFee.userId, newFee.runId)
+            newFee.remaining, newFee.start_date, newFee.end_date, newFee.UserId, newFee.RunId)
         .then(function (fee) {
             return res.jsonp({msg: fee, type: 'success'});
         })
@@ -64,7 +64,7 @@ exports.update = function (req, res) {
         updateFee = req.body.fee;
 
     fee.update(updateFee.id, updateFee.code, updateFee.percentage, updateFee.value, updateFee.discount, updateFee.default,
-            updateFee.remaining, updateFee.start_date, updateFee.end_date, updateFee.userId, updateFee.runId)
+            updateFee.remaining, updateFee.start_date, updateFee.end_date, updateFee.UserId, updateFee.RunId)
         .then(function (fee) {
             return res.jsonp({msg: fee, type: 'success'});
         })

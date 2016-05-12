@@ -53,36 +53,55 @@ describe('Test of fee object', function () {
             });
     });
 
-    it('Should get fees value for a user on a run', function(done) {
-        var fee = new Fee();
-        fee.getForUser(1, 2)
-            .then(function (res) {
-                assert.equal(res.percentage, 0.10);
-                assert.equal(res.value, 2);
-                assert.equal(res.discount, 0.20);
-                fee.getForUser(2, 2)
-                    .then(function (res) {
-                        assert.equal(res.percentage, 0.10);
-                        assert.equal(res.value, 2);
-                        assert.isNull(res.discount);
-                        fee.getForUser(3, 10)
-                            .then(function (res) {
-                                assert.equal(res.percentage, 0.12);
-                                assert.equal(res.value, 1);
-                                assert.isNull(res.discount);
-                                return done();
-                            })
-                            .catch(function (err) {
-                                return done(err);
-                            });
-                    })
-                    .catch(function (err) {
-                        return done(err);
-                    });
-            })
-            .catch(function (err) {
-                return done(err);
-            });
+    describe('Should get fees value for a user on a journey', function() {
+        beforeEach(function (done) {
+            models.loadFixture(done);
+        });
+        it('Should get fees for user 1 on Run 2', function(done) {
+            // Default fees : percentage : 0.12 / value : 1
+            var fee = new Fee();
+            fee.getForUser(1, 2)
+                .then(function (res) {
+                    assert.equal(res.percentage, 0.10);
+                    assert.equal(res.value, 2);
+                    assert.equal(res.discount, 0.2);
+                    return done();
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    return done(err);
+                });
+        });
+
+        it('Should get fees for user 2 on run 2', function(done) {
+            // Default fees : percentage : 0.12 / value : 1
+            var fee = new Fee();
+            fee.getForUser(2, 2)
+                .then(function (res) {
+                    assert.equal(res.percentage, 0.10);
+                    assert.equal(res.value, 2);
+                    assert.isNull(res.discount);
+                    return done();
+                })
+                .catch(function (err) {
+                    return done(err);
+                });
+        });
+
+        it('Should get fees for user 3 on run 4', function(done) {
+            // Default fees : percentage : 0.12 / value : 1
+            var fee = new Fee();
+            fee.getForUser(3, 1)
+                .then(function (res) {
+                    assert.equal(res.percentage, 0.12);
+                    assert.equal(res.value, 1);
+                    assert.isNull(res.discount);
+                    return done();
+                })
+                .catch(function (err) {
+                    return done(err);
+                });
+        });
     });
 
     it('Should get list of all fees values', function(done) {
@@ -225,14 +244,14 @@ describe('Test of fee object', function () {
             });
     });
 
-    it('Should add a code to the list of all fees values', function(done) {
+    it('Should update a code to the list of all fees values', function(done) {
         var fee = new Fee();
         // id, code, percentage, value, discount, isDefault, remaining, startDate, endDate, userId, runId
-        fee.update(11, 'MYRUNTRIP-TEST', null, null, 0.23, false, 2, null, null, 1, 5)
+        fee.update(13, 'MYRUNTRIP-TEST', null, null, 0.23, false, 2, null, null, 1, 5)
             .then(function (res) {
                 fee.getList()
                     .then(function (res) {
-                        assert.equal(res.length, 7);
+                        assert.equal(res.length, 6);
                         assert.equal(res[res.length - 1].id, 14);
                         assert.equal(res[res.length - 1].code, 'MYRUNTRIP-TEST');
                         assert.isNull(res[res.length - 1].percentage);
@@ -310,7 +329,7 @@ describe('Test of fee object', function () {
                     assert.equal(newFee.remaining, 1);
                     fee.getList()
                         .then(function (listFees) {
-                            assert.equal(listFees.length, 8);
+                            assert.equal(listFees.length, 6);
                             assert.equal(listFees[listFees.length - 1].code, 'MRT-TEST-1');
                             assert.isNull(listFees[listFees.length - 1].percentage);
                             assert.isNull(listFees[listFees.length - 1].value);
@@ -337,7 +356,7 @@ describe('Test of fee object', function () {
                             assert.equal(updatedFee.remaining, 0);
                             fee.getList()
                                 .then(function (listFees) {
-                                    assert.equal(listFees.length, 7);
+                                    assert.equal(listFees.length, 5);
                                     return done();
                                 })
                                 .catch(function (err) {

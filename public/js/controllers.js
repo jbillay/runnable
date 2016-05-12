@@ -55,6 +55,8 @@ angular.module('runnable.controllers', []).
                     Journey.confirm($rootScope.draftId).then(function (journey) {
                         $location.path('/journey');
                     });
+                } else if ($rootScope.checkout) {
+                    $location.path('/checkout-' + $rootScope.checkout.journeyId);
                 }
             });
             angular.element('#loginModal').modal('hide');
@@ -100,6 +102,167 @@ angular.module('runnable.controllers', []).
         $scope.getLocation = function(val) {
             return GoogleMapApi.getLocation(val);
         };
+    }).
+	controller('RunnableCheckoutController', function ($scope, $rootScope, $q, $location, $sce, $routeParams, Journey,
+                                                       Technical, MyRunTripFees, Join) {
+        if ($rootScope.checkout) {
+            $scope.selectedJourneyId = $rootScope.checkout.journeyId;
+        } else  {
+            if (!$rootScope.isAuthenticated) {
+                $rootScope.checkout = {
+                    journeyId: parseInt($routeParams.journeyId)
+                };
+                $location.path('/connect');
+            } else {
+                $scope.selectedJourneyId = $routeParams.journeyId;
+            }
+        }
+        var journeyPromise = Journey.getDetail($scope.selectedJourneyId),
+            feePromise = MyRunTripFees.getFee($scope.selectedJourneyId),
+            versionPromise = Technical.version(),
+            all = $q.all([journeyPromise, feePromise, versionPromise]);
+        all.then(function (res) {
+            $scope.journey = res[0];
+            if ($scope.journey.is_canceled) {
+                $location.path('/journey');
+            }
+            $scope.fees = res[1];
+            $scope.version = res[2];
+            if ($scope.version === 'DEV') {
+                $scope.url_paypal = $sce.trustAsResourceUrl('https://www.sandbox.paypal.com/cgi-bin/webscr');
+                $scope.key_paypal = '622WFSZHPNBH4';
+                $scope.url_website = 'https://myruntrip-staging.herokuapp.com';
+            } else {
+                $scope.url_paypal = $sce.trustAsResourceUrl('https://www.paypal.com/cgi-bin/webscr');
+                $scope.key_paypal = 'ST4SRXB6PJAGC';
+                $scope.url_website = 'http://www.myruntrip.com';
+            }
+            $scope.reserved_outward = 0;
+            $scope.reserved_return = 0;
+            $scope.discount = 0;
+            $scope.discountOld = 0;
+            if ($scope.fees.discount) {
+                $scope.discount = _.toNumber($scope.fees.discount * 100);
+                $scope.discountLabel = _.toString($scope.discount) + ' %';
+            }
+            $scope.getFreeSpaceOutward = function() {
+                var result = [], start = 1,
+                    end = parseInt($scope.journey.nb_space_outward) - parseInt($scope.reserved_outward);
+                for (var i = start; i <= end; i++) {
+                    result.push({id: i});
+                }
+                return result;
+            };
+            $scope.getFreeSpaceReturn = function() {
+                var result = [], start = 1,
+                    end = parseInt($scope.journey.nb_space_return) - parseInt($scope.reserved_return);
+                for (var i = start; i <= end; i++) {
+                    result.push({id: i});
+                }
+                return result;
+            };
+            $scope.nbFreeSpaceListOutward = $scope.getFreeSpaceOutward();
+            $scope.nbFreeSpaceListReturn = $scope.getFreeSpaceReturn();
+            $scope.selectedPlaceOutward = 0;
+            $scope.selectedPlaceReturn = 0;
+
+            var invoice_key = Math.random().toString(36).substring(2, 7).toUpperCase();
+            var d = new Date();
+            var curr_date = ('0' + d.getDate()).slice(-2);
+            var curr_month = ('0' + (d.getMonth() + 1)).slice(-2);
+            var curr_year = d.getFullYear();
+            var invoice_date = curr_year + '' + curr_month + '' + curr_date;
+            $scope.invoice_ref = 'MRT' + invoice_date + invoice_key;
+
+            $scope.promoCode = {
+                promoCodeValid: 0,
+                discount: 0,
+                code: '',
+                codeError: 0,
+                codeErrorMsg: ''
+            };
+
+            $scope.journeyPrice = {
+                outwardAmount: 0,
+                returnAmount: 0,
+                fees: 0,
+                totalAmount: 0
+            };
+
+            $scope.calculatePrices = function () {
+                var feeBySpace = MyRunTripFees.calculateFee($scope.journey.amount, $scope.discount);
+
+                $scope.journeyPrice.fees = 0;
+                if ($scope.selectedPlaceOutward) {
+                    $scope.journeyPrice.outwardAmount = $scope.journey.amount * $scope.selectedPlaceOutward;
+                    $scope.journeyPrice.fees += $scope.selectedPlaceOutward * feeBySpace;
+                }
+                if ($scope.selectedPlaceReturn) {
+                    $scope.journeyPrice.returnAmount = $scope.journey.amount * $scope.selectedPlaceReturn;
+                    $scope.journeyPrice.fees += $scope.selectedPlaceReturn * feeBySpace;
+                }
+                $scope.journeyPrice.totalAmount = ($scope.journeyPrice.outwardAmount +
+                                                    $scope.journeyPrice.returnAmount +
+                                                    $scope.journeyPrice.fees).toFixed(2);
+                $scope.journeyPrice.fees = $scope.journeyPrice.fees.toFixed(2);
+                return $scope.journeyPrice;
+            };
+
+            $scope.joinJourney = function (placeOutward, placeReturn, form) {
+                var prices = $scope.calculatePrices(),
+                    amount = prices.totalAmount,
+                    fees = prices.fees;
+                placeOutward = placeOutward  || 0;
+                placeReturn = placeReturn  || 0;
+                $scope.joined = 1;
+                $scope.reserved_outward = $scope.reserved_outward + placeOutward;
+                $scope.reserved_return = $scope.reserved_return + placeReturn;
+                Join.add($scope.journeyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref)
+                    .then(function (join) {
+                        form.commit();
+                    });
+            };
+
+            $scope.resetPromoCode = function () {
+                $scope.discount = $scope.discountOld;
+                $scope.discountLabel = _.toString($scope.discount) + ' %';
+                $scope.calculatePrices();
+                $scope.promoCode.promoCodeValid = 0;
+                $scope.promoCode.discount = 0;
+                $scope.promoCode.codeError = 0;
+                $scope.promoCode.codeErrorMsg = '';
+            };
+            
+            $scope.checkPromoCode = function () {
+                $scope.promoCode.promoCodeValid = 0;
+                $scope.promoCode.codeError = 0;
+                $scope.promoCode.codeErrorMsg = '';
+                if ($scope.promoCode.code.length) {
+                    MyRunTripFees.checkCode(_.toString($scope.promoCode.code))
+                        .then(function (code) {
+                            if (code.id) {
+                                $scope.promoCode.promoCodeValid = 1;
+                                $scope.promoCode.discount = code.discount * 100;
+                                if ($scope.discount < $scope.promoCode.discount) {
+                                    $scope.discountOld = $scope.discount;
+                                    $scope.discount = $scope.promoCode.discount;
+                                }
+                                $scope.discountLabel = _.toString($scope.discount) + ' %';
+                                $scope.calculatePrices();
+                            } else {
+                                $scope.promoCode.promoCodeValid = 0;
+                                $scope.promoCode.codeError = 1;
+                                $scope.promoCode.codeErrorMsg = 'Désolé mais votre code n\'existe pas ou n\'est plus valide.';
+                            }
+                        })
+                        .catch(function (err) {
+                            $scope.promoCode.promoCodeValid = 0;
+                            $scope.promoCode.codeError = 1;
+                            $scope.promoCode.codeErrorMsg = 'En raison d\'un problème nous pouvons pas vérifier votre code';
+                        });
+                }
+            };
+        });
     }).
 	controller('RunnableSharedController', function ($scope, Session, User) {
 		$scope.invitForm = {
@@ -260,7 +423,7 @@ angular.module('runnable.controllers', []).
     }).
 	controller('RunnableAdminController', function ($scope, $q, $rootScope, $location, AuthService, User, Run, Partner,
                                                     Journey, Join, EmailOptions, BankAccount, Page, Inbox, Technical,
-                                                    Invoice, MyRunTripFees) {
+                                                    Invoice, MyRunTripFees, uiGridConstants) {
 		$scope.page = 'Admin';
 		var userListPromise = User.getList(),
 			runListPromise = Run.getList(),
@@ -288,7 +451,9 @@ angular.module('runnable.controllers', []).
             $scope.journeyToPay = res[8];
             $scope.defaultFee = res[9];
             $scope.feeList = res[10];
-            $scope.defaultFee.percentage = $scope.defaultFee.percentage * 100;
+            if ($scope.defaultFee.percentage) {
+                $scope.defaultFee.percentage = $scope.defaultFee.percentage * 100;
+            }
             angular.forEach($scope.journeyToPay, function (journey) {
                 var dates=[];
                 dates.push(new Date(journey.date_start_outward));
@@ -311,6 +476,8 @@ angular.module('runnable.controllers', []).
                     }
                 });
             });
+            $scope.codeGridOptions.data = $scope.feeList.code;
+            $scope.feesGridOptions.data = $scope.feeList.fees;
             $scope.userNameList = _.map($scope.userList, function (user) {
                 var name = user.firstname + ' ' + user.lastname;
                 return {id: user.id, email: user.email, name: name};
@@ -491,6 +658,180 @@ angular.module('runnable.controllers', []).
 
         $scope.sendInfoPartner = function (partnerId) {
             Partner.sendInfo(partnerId);
+        };
+
+        // Margin and code section
+        $scope.feesCreation = false;
+        $scope.switchFeesCreation = function () {
+            $scope.feesCreation = $scope.feesCreation ? false : true;
+        };
+
+        $scope.feesGridOptions = {
+            enableFiltering: true,
+            showGridFooter: true,
+            columnDefs: [
+                { name:'id', field: 'id', enableCellEdit: false, type: 'number', width: '5%' },
+                {
+                    name:'Pourcentage',
+                    field: 'percentage',
+                    cellFilter: 'showInPercentage',
+                    enableHiding: false,
+                    aggregationType: uiGridConstants.aggregationTypes.sum,
+                    width: '15%'
+                },
+                { name:'Frais Fixe', field: 'value', type: 'number', width: '10%' },
+                {
+                    name:'Réduction',
+                    field: 'discount',
+                    cellFilter: 'showInPercentage',
+                    enableHiding: false,
+                    aggregationType: uiGridConstants.aggregationTypes.sum,
+                    width: '14%'
+                },
+                { name:'Début', field: 'start_date', type: 'date', cellFilter: 'showInfinite | date', width: '14%' },
+                { name:'Fin', field: 'end_date', type: 'date', cellFilter: 'showInfinite | date', width: '14%' },
+                { name:'Course', field: 'Run', enableCellEdit: false, cellFilter: 'showRun', width: '14%' },
+                { name:'User', field: 'User', enableCellEdit: false, cellFilter: 'showUser', width: '14%' }
+            ]
+        };
+
+        $scope.feesGridOptions.onRegisterApi = function (gridApi) {
+            //set gridApi on scope
+            $scope.gridApi = gridApi;
+            gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
+                $scope.updateFees(rowEntity.id, colDef.field, oldValue, newValue);
+                $scope.$apply();
+            });
+        };
+
+        $scope.updateFees = function (id, field, oldValue, newValue) {
+            if (oldValue !== newValue) {
+                var idx = _.findIndex($scope.feeList.fees, ['id', id]);
+                $scope.feeList.code[idx].field = newValue;
+                MyRunTripFees.update($scope.feeList.fees[idx])
+                    .then(function (newFee) {
+                        if (newFee.UserId) {
+                            newFee.User = $scope.userList[_.findIndex($scope.userList, {'id': parseInt(newFee.UserId)})];
+                        }
+                        if (newFee.RunId) {
+                            newFee.Run = $scope.runList[_.findIndex($scope.runList, {'id': parseInt(newFee.RunId)})];
+                        }
+                        $scope.feeList.fees.splice(idx, 1);
+                        $scope.feeList.fees.push(newFee);
+                    });
+            }
+        };
+
+        $scope.createFee = function (fee) {
+            var cleanFee= {
+                percentage: fee.percentage / 100 || null,
+                value: fee.value || null,
+                discount: fee.discount / 100 || null,
+                start_date: fee.start_date || new Date(),
+                end_date: fee.end_date || null,
+                UserId: null,
+                RunId: null
+            };
+            if (fee.user) {
+                cleanFee.UserId = fee.user.id;
+            }
+            if (fee.run) {
+                cleanFee.RunId = fee.run.id;
+            }
+            MyRunTripFees.create(cleanFee)
+                .then(function (newFee) {
+                    if (newFee.UserId) {
+                        newFee.User = $scope.userList[_.findIndex($scope.userList, {'id': parseInt(newFee.UserId)})];
+                    }
+                    if (newFee.RunId) {
+                        newFee.Run = $scope.runList[_.findIndex($scope.runList, {'id': parseInt(newFee.RunId)})];
+                    }
+                    $scope.feeList.fees.push(newFee);
+                    $scope.newFee = {};
+                });
+        };
+
+        $scope.codeCreation = false;
+        $scope.switchCodeCreation = function () {
+            $scope.codeCreation = $scope.codeCreation ? false : true;
+        };
+
+        $scope.codeGridOptions = {
+            enableFiltering: true,
+            showGridFooter: true,
+            columnDefs: [
+                { name:'id', field: 'id', enableCellEdit: false, type: 'number', width: '5%' },
+                { name:'Code', field: 'code', enableHiding: false, width: '17%' },
+                {
+                    name:'Réduction',
+                    field: 'discount',
+                    cellFilter: 'showInPercentage',
+                    enableHiding: false,
+                    aggregationType: uiGridConstants.aggregationTypes.sum,
+                    width: '9%'
+                },
+                { name:'Restant', field: 'remaining', type: 'number', cellFilter: 'showInfinite', width: '5%' },
+                { name:'Début', field: 'start_date', type: 'date', cellFilter: 'showInfinite | date', width: '17%' },
+                { name:'Fin', field: 'end_date', type: 'date', cellFilter: 'showInfinite | date', width: '17%' },
+                { name:'Course', field: 'Run', enableCellEdit: false, cellFilter: 'showRun', width: '15%' },
+                { name:'User', field: 'User', enableCellEdit: false, cellFilter: 'showUser', width: '15%' }
+            ]
+        };
+
+        $scope.codeGridOptions.onRegisterApi = function (gridApi) {
+            //set gridApi on scope
+            $scope.gridApi = gridApi;
+            gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
+                $scope.updateCode(rowEntity.id, colDef.field, oldValue, newValue);
+                $scope.$apply();
+            });
+        };
+
+        $scope.updateCode = function (id, field, oldValue, newValue) {
+            if (oldValue !== newValue) {
+                var idx = _.findIndex($scope.feeList.code, ['id', id]);
+                $scope.feeList.code[idx].field = newValue;
+                MyRunTripFees.update($scope.feeList.code[idx])
+                    .then(function (newFee) {
+                        if (newFee.UserId) {
+                            newFee.User = $scope.userList[_.findIndex($scope.userList, {'id': parseInt(newFee.UserId)})];
+                        }
+                        if (newFee.RunId) {
+                            newFee.Run = $scope.runList[_.findIndex($scope.runList, {'id': parseInt(newFee.RunId)})];
+                        }
+                        $scope.feeList.code.splice(idx, 1);
+                        $scope.feeList.code.push(newFee);
+                    });
+            }
+        };
+
+        $scope.createCode = function (code) {
+            var cleanCode = {
+                code: code.code,
+                discount: code.reduction / 100,
+                remaining: code.remaining || null,
+                start_date: code.start_date || new Date(),
+                end_date: code.end_date || null,
+                UserId: null,
+                RunId: null
+            };
+            if (code.user) {
+                cleanCode.UserId = code.user.id;
+            }
+            if (code.run) {
+                cleanCode.RunId = code.run.id;
+            }
+            MyRunTripFees.create(cleanCode)
+                .then(function (newFee) {
+                    if (newFee.UserId) {
+                        newFee.User = $scope.userList[_.findIndex($scope.userList, {'id': parseInt(newFee.UserId)})];
+                    }
+                    if (newFee.RunId) {
+                        newFee.Run = $scope.runList[_.findIndex($scope.runList, {'id': parseInt(newFee.RunId)})];
+                    }
+                    $scope.feeList.code.push(newFee);
+                    $scope.newCode = {};
+                });
         };
 	}).
     controller('RunnableRunDetailController', function ($scope, $q, $timeout, $routeParams, $location,
@@ -828,26 +1169,15 @@ angular.module('runnable.controllers', []).
 		$scope.journeyId = parseInt($routeParams.journeyId);
 		var journeyPromise = Journey.getDetail($scope.journeyId),
 			joinPromise = Join.getListForJourney($scope.journeyId),
-            versionPromise = Technical.version(),
 			publicMessagesPromise = Discussion.getPublicMessages($scope.journeyId, 1),
-			all = $q.all([journeyPromise, joinPromise, versionPromise, publicMessagesPromise]);
+			all = $q.all([journeyPromise, joinPromise, publicMessagesPromise]);
 		all.then(function (res) {
 			$scope.journey = res[0];
             if ($scope.journey.is_canceled) {
                 $location.path('/journey');
             }
 			$scope.joinList = res[1];
-            $scope.version = res[2];
-            $scope.publicMessages = res[3];
-            if ($scope.version === 'DEV') {
-                $scope.url_paypal = $sce.trustAsResourceUrl('https://www.sandbox.paypal.com/cgi-bin/webscr');
-                $scope.key_paypal = '622WFSZHPNBH4';
-                $scope.url_website = 'https://myruntrip-staging.herokuapp.com';
-            } else {
-                $scope.url_paypal = $sce.trustAsResourceUrl('https://www.paypal.com/cgi-bin/webscr');
-                $scope.key_paypal = 'ST4SRXB6PJAGC';
-                $scope.url_website = 'http://www.myruntrip.com';
-            }
+            $scope.publicMessages = res[2];
 			$scope.joined = 0;
 			$scope.reserved_outward = 0;
 			$scope.reserved_return = 0;
@@ -888,55 +1218,16 @@ angular.module('runnable.controllers', []).
 			$scope.nbFreeSpace = function () {
 				return $scope.nbFreeSpaceOutward() + $scope.nbFreeSpaceReturn();
 			};
-			$scope.getFreeSpaceOutward = function() {
-				var result = [], start = 1,
-					end = parseInt($scope.journey.nb_space_outward) - parseInt($scope.reserved_outward);
-				for (var i = start; i <= end; i++) {
-					result.push({id: i});
-				}
-				return result;
-			};
-			$scope.getFreeSpaceReturn = function() {
-				var result = [], start = 1,
-					end = parseInt($scope.journey.nb_space_return) - parseInt($scope.reserved_return);
-				for (var i = start; i <= end; i++) {
-					result.push({id: i});
-				}
-				return result;
-			};
-			$scope.nbFreeSpaceListOutward = $scope.getFreeSpaceOutward();
-			$scope.nbFreeSpaceListReturn = $scope.getFreeSpaceReturn();
 		});
-		$scope.showJoinForm = function () {
-			if (!Session.userEmail) {
-				$scope.showLogin();
-			} else {
-				var invoice_key = Math.random().toString(36).substring(2, 7).toUpperCase();
-				var d = new Date();
-				var curr_date = ('0' + d.getDate()).slice(-2);
-				var curr_month = ('0' + (d.getMonth() + 1)).slice(-2);
-				var curr_year = d.getFullYear();
-				var invoice_date = curr_year + '' + curr_month + '' + curr_date;
-				$scope.invoice_ref = 'MRT' + invoice_date + invoice_key;
-				angular.element('#clientModal').modal('show');
-			}
-		};
-
-		$scope.joinJourney = function (placeOutward, placeReturn, form) {
-            placeOutward = placeOutward  || 0;
-            placeReturn = placeReturn  || 0;
-			var amount = (placeOutward + placeReturn) * $scope.journey.amount +
-						$scope.calculateFees(placeOutward, placeReturn, $scope.journey);
-            var fees = $scope.calculateFees(placeOutward, placeReturn, $scope.journey);
-            $scope.joined = 1;
-			amount = amount.toFixed(2);
-			fees = fees.toFixed(2);
-			$scope.reserved_outward = $scope.reserved_outward + placeOutward;
-			$scope.reserved_return = $scope.reserved_return + placeReturn;
-			Join.add($scope.journeyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref).
-                then(function (join) {
-        			form.commit();
-                });
+		$scope.startCheckout = function () {
+            $rootScope.checkout = {
+                journeyId: $scope.journey.id
+            };
+            if (!$rootScope.isAuthenticated) {
+                $location.path('/connect');
+            } else {
+                $location.path('/checkout-' + $scope.journey.id);
+            }
 		};
         $scope.askValidationJoinCancelFromJourney = function () {
             angular.element('#validationModal').modal('show');
@@ -963,46 +1254,33 @@ angular.module('runnable.controllers', []).
 			$scope.reserved_return = $scope.reserved_return - placeReturnReturn;
 			Join.cancel($scope.userJoin.id);
 		};
-		$scope.calculateFees = function (outwardPlace, returnPlace, journey) {
-			var fees = 0;
-			if (outwardPlace) {
-				fees += outwardPlace * MyRunTripFees.getFees(journey.date_start_outward,
-                                                             journey.time_start_outward,
-                                                             journey.amount);
-			}
-			if (returnPlace) {
-				fees += returnPlace * MyRunTripFees.getFees(journey.date_start_return,
-															journey.time_start_return,
-															journey.amount);
-			}
-			return fees;
-		};
         $scope.resetFilterMsg = function () {
             $scope.messageFilter = false;
         };
         $scope.checkEmailPhone = function (text) {
             if (text.match(/[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?/gi) !== null) {
                 return true;
-            }
-            if (text.match(/((\+|00)33\s?|0)[679]([\s\.\-]?\d{2}){4}/gi) !== null) {
+            } else if (text.match(/((\+|00)33\s?|0)[679]([\s\.\-]?\d{2}){4}/gi) !== null) {
                 return true;
             }
             return false;
         };
 		$scope.sendMessage = function (discussion) {
-			var text = String(discussion.newMessageEntry).replace(/<[^>]+>/gm, ''),
-                email = discussion.userEmailEntry || null;
-            discussion.newMessageEntry = '';
-            discussion.userEmailEntry = '';
-            if (text.length && !$scope.checkEmailPhone(text)) {
-                $scope.publicMessages.unshift(
-                    {	message: text,
-                        showDate: moment(Date.now()).fromNow(),
-                        createdAt: Date.now()
-                    });
-                Discussion.addPublicMessage(text, $scope.journeyId, email);
-            } else if ($scope.checkEmailPhone(text)) {
-                $scope.messageFilter = $scope.checkEmailPhone(text);
+            if (discussion && discussion.newMessageEntry) {
+                var text = String(discussion.newMessageEntry).replace(/<[^>]+>/gm, ''),
+                    email = discussion.userEmailEntry || null;
+                discussion.newMessageEntry = '';
+                discussion.userEmailEntry = '';
+                if (text.length && !$scope.checkEmailPhone(text)) {
+                    $scope.publicMessages.unshift(
+                        {	message: text,
+                            showDate: moment(Date.now()).fromNow(),
+                            createdAt: Date.now()
+                        });
+                    Discussion.addPublicMessage(text, $scope.journeyId, email);
+                } else if ($scope.checkEmailPhone(text)) {
+                    $scope.messageFilter = $scope.checkEmailPhone(text);
+                }
             }
 		};
 	}).
@@ -1446,9 +1724,10 @@ angular.module('runnable.controllers', []).
                 journey.time_start_outward = null;
                 journey.nb_space_outward = null;
             }
-            Journey.update(journey).then(function (msg) {
-                $location.path('/journey');
-            });
+            Journey.update(journey)
+                .then(function (msg) {
+                    $location.path('/journey');
+                });
         };
 	}).
 	controller('RunnableJourneyController', function ($scope, $q, $timeout, $location, Run, Journey, GoogleMapApi) {

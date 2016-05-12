@@ -26,6 +26,7 @@ module.exports = function(config) {
             'public/lib/clockpicker/dist/bootstrap-clockpicker.min.js',
             'public/lib/noty/js/noty/packaged/jquery.noty.packaged.min.js',
             'public/lib/lodash/dist/lodash.min.js',
+            'public/lib/angular-ui-grid/ui-grid.min.js',
             'public/js/*.js',
             'test/unit/*.js'
         ],

@@ -131,7 +131,7 @@ module.exports = function (app, passport, auth) {
 
     app.get('/api/page/:tag', controllers.page.getByTag);
 
-    app.get('/api/fee/:runId', auth.requiresLogin, controllers.fee.getFee);
+    app.get('/api/fee/:journeyId', auth.requiresLogin, controllers.fee.getFee);
     app.get('/api/fee/check/:code', auth.requiresLogin, controllers.fee.checkCode);
 
     app.get('/api/invoice', auth.requiresLogin, controllers.invoice.getByUser);

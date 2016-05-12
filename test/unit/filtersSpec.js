@@ -23,6 +23,45 @@ describe('filter', function() {
                 expect(paypalAmountFilter('')).toBe('');
             }));
     });
+    describe('showInPercentage', function() {
+        it('should show amount in %  or - if nothing',
+            inject(function(showInPercentageFilter) {
+                expect(showInPercentageFilter('')).toBe('-');
+                expect(showInPercentageFilter('0.1')).toBe('10%');
+                expect(showInPercentageFilter('0.56')).toBe('56%');
+                expect(showInPercentageFilter('1')).toBe('100%');
+            }));
+    });
+    describe('showAll', function() {
+        it('should show the value or * if nothing',
+            inject(function(showAllFilter) {
+                expect(showAllFilter('')).toBe('*');
+                expect(showAllFilter('Jeremy Billay')).toBe('Jeremy Billay');
+                expect(showAllFilter('10')).toBe('10');
+                expect(showAllFilter('10%')).toBe('10%');
+            }));
+    });
+    describe('showRun', function() {
+        it('should show run name or * if nothing',
+            inject(function(showRunFilter) {
+                expect(showRunFilter({name: 'test'})).toBe('test');
+                expect(showRunFilter('')).toBe('*');
+            }));
+    });
+    describe('showUser', function() {
+        it('should show user firstname and lastname or * if nothing',
+            inject(function(showUserFilter) {
+                expect(showUserFilter({firstname: 'Jeremy', lastname: 'Billay'})).toBe('Jeremy Billay');
+                expect(showUserFilter('')).toBe('*');
+            }));
+    });
+    describe('showInfinite', function() {
+        it('should show the value or * if nothing',
+            inject(function(showInfiniteFilter) {
+                expect(showInfiniteFilter('')).toBe('∞');
+                expect(showInfiniteFilter('Jeremy Billay')).toBe('Jeremy Billay');
+            }));
+    });
     describe('joinAdmin', function() {
         it('should filter list based on flags',
             inject(function(joinAdminFilter) {

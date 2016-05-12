@@ -87,7 +87,7 @@ describe('Test of Discussion API', function () {
                 .get('http://localhost:' + settings.port + '/api/discussion/public/messages/3')
                 .end(function (err, res) {
                     if (err) return done(err);
-                    assert.equal(res.body.length, 2);
+                    assert.equal(res.body.length, 4);
                     assert.equal(res.body[0].message, 'C est notre site mon ami !!!');
                     return done();
                 });
@@ -138,7 +138,7 @@ describe('Test of Discussion API', function () {
                         .get('http://localhost:' + settings.port + '/api/discussion/public/messages/3')
                         .end(function (err, res) {
                             if (err) return done(err);
-                            assert.equal(res.body.length, 3);
+                            assert.equal(res.body.length, 5);
                             return done();
                         });
                 });

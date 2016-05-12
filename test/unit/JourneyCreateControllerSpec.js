@@ -188,6 +188,7 @@ describe('Runnable Controllers', function() {
             timeout.flush();
             scope.selectSource('Paris, France');
             scope.showMapInfo();
+            rootScope.$digest();
         });
 
         it ('Show Map info', function () {
@@ -270,6 +271,7 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
             timeout.flush();
             scope.submitJourney(journey);
+            rootScope.$digest();
             expect(Journey.create).toHaveBeenCalled();
         });
     });

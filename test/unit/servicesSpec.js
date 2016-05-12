@@ -272,6 +272,40 @@ describe('service', function() {
             expect(message).toContain('error');
         });
 
+        it('Should fail to logout user', function () {
+            $httpBackend.whenGET('/logout').respond(500);
+
+            var message = null;
+
+            var promise = service.logout();
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
+
+        it('Should logout user', function () {
+            $httpBackend.whenGET('/logout').respond({msg: 'userLogoff', type: 'success'});
+
+            var message = null;
+
+            var promise = service.logout();
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            expect(message).toEqual('userLogoff');
+        });
+
         it('Should check authentification', function () {
             $httpBackend.whenGET('/api/user/me').respond({
                 id: 2,
@@ -1365,40 +1399,6 @@ describe('service', function() {
 
             $httpBackend.flush();
             expect(message).toContain('error');
-        });
-    });
-
-    describe('MyRunTripFees Service', function() {
-
-        beforeEach(inject(function(MyRunTripFees, _$httpBackend_, $rootScope){
-            service = MyRunTripFees;
-            $httpBackend = _$httpBackend_;
-            rootScope = $rootScope;
-        }));
-
-        it('check the existence of MyRunTripFees', function() {
-            expect(service).toBeDefined();
-        });
-
-        it('check if time is correctly calculated', function () {
-            var newActualTime = new Date(2015, 8, 10, 8, 30, 0);
-
-            jasmine.clock().mockDate(newActualTime);
-            expect(service.getTimeBeforeStart('2015-09-12', '08:30')).toBe(172800);
-        });
-
-        it('check if fees is correctly calculated', function () {
-            var newActualTime = new Date(2015, 9, 10, 10, 30, 0),
-                startDateTwoDays = '2015-09-12T00:00:00.000Z',
-                startDateOneDays = '2015-09-11T00:00:00.000Z',
-                startDateSameDays = '2015-09-10T00:00:00.000Z',
-                startDateTenDays = '2015-09-22T00:00:00.000Z';
-
-            jasmine.clock().mockDate(newActualTime);
-            expect(service.getFees(startDateTwoDays, '10:30', 10)).toBe(2.2);
-            expect(service.getFees(startDateOneDays, '10:30', 10)).toBe(2.2);
-            expect(service.getFees(startDateSameDays, '10:30', 10)).toBe(2.2);
-            expect(service.getFees(startDateTenDays, '10:30', 10)).toBe(2.2);
         });
     });
 });

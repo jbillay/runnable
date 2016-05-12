@@ -47,7 +47,7 @@ describe('Test of discussion object', function () {
         discussion.getMessages(3, true, function (err, messageList) {
             if (err) return done(err);
             assert.isNull(err);
-            assert.equal(messageList.length, 2);
+            assert.equal(messageList.length, 4);
             return done();
         });
     });
@@ -87,7 +87,7 @@ describe('Test of discussion object', function () {
     it('Add message private for a discussion', function (done) {
         var discussion = new Discussion(),
             message = {
-                id: 7,
+                id: 10,
                 message: 'J ajoute un nouveau message pour les tests',
                 email: null,
                 is_public: false,
@@ -100,13 +100,13 @@ describe('Test of discussion object', function () {
             };
         discussion.set(message);
         var tmp = discussion.get();
-        assert.equal(tmp.id, 7);
+        assert.equal(tmp.id, 10);
         assert.equal(tmp.message, 'J ajoute un nouveau message pour les tests');
         assert.equal(tmp.is_public, false);
         discussion.addMessage(message.message, journeyId, false, user, null, function (err, newMessage) {
             if (err) return done(err);
             assert.isNull(err);
-            assert.equal(newMessage.id, 7);
+            assert.equal(newMessage.id, 10);
             assert.equal(newMessage.message, 'J ajoute un nouveau message pour les tests');
             assert.equal(newMessage.is_public, false);
             assert.equal(newMessage.UserId, 1);
@@ -118,7 +118,7 @@ describe('Test of discussion object', function () {
     it('Add public message for a discussion from an unknown user', function (done) {
         var discussion = new Discussion(),
             message = {
-                id: 8,
+                id: 11,
                 message: 'Nouvelle question publique',
                 is_public: true,
                 createdAt: '2015-01-28 11:29:13',
@@ -128,13 +128,13 @@ describe('Test of discussion object', function () {
             user = null;
         discussion.set(message);
         var tmp = discussion.get();
-        assert.equal(tmp.id, 8);
+        assert.equal(tmp.id, 11);
         assert.equal(tmp.message, 'Nouvelle question publique');
         assert.equal(tmp.is_public, true);
         discussion.addMessage(message.message, journeyId, true, user, null, function (err, newMessage) {
             if (err) return done(err);
             assert.isNull(err);
-            assert.equal(newMessage.id, 8);
+            assert.equal(newMessage.id, 11);
             assert.equal(newMessage.message, 'Nouvelle question publique');
             assert.equal(newMessage.is_public, true);
             assert.equal(newMessage.JourneyId, 2);
@@ -147,7 +147,7 @@ describe('Test of discussion object', function () {
     it('Add public message for a discussion from an user with his email', function (done) {
         var discussion = new Discussion(),
             message = {
-                id: 8,
+                id: 11,
                 message: 'Nouvelle question publique',
                 is_public: true,
                 createdAt: '2015-01-28 11:29:13',
@@ -158,13 +158,13 @@ describe('Test of discussion object', function () {
             email = 'ruestpierrestgermain@gmail.com';
         discussion.set(message);
         var tmp = discussion.get();
-        assert.equal(tmp.id, 8);
+        assert.equal(tmp.id, 11);
         assert.equal(tmp.message, 'Nouvelle question publique');
         assert.equal(tmp.is_public, true);
         discussion.addMessage(message.message, journeyId, true, user, email, function (err, newMessage) {
             if (err) return done(err);
             assert.isNull(err);
-            assert.equal(newMessage.id, 8);
+            assert.equal(newMessage.id, 11);
             assert.equal(newMessage.message, 'Nouvelle question publique');
             assert.equal(newMessage.is_public, true);
             assert.equal(newMessage.JourneyId, 2);
@@ -176,7 +176,7 @@ describe('Test of discussion object', function () {
     it('Add public message for a discussion from an internal user', function (done) {
         var discussion = new Discussion(),
             message = {
-                id: 8,
+                id: 11,
                 message: 'Nouvelle question publique',
                 is_public: true,
                 createdAt: '2015-01-28 11:29:13',
@@ -187,13 +187,13 @@ describe('Test of discussion object', function () {
             email = null;
         discussion.set(message);
         var tmp = discussion.get();
-        assert.equal(tmp.id, 8);
+        assert.equal(tmp.id, 11);
         assert.equal(tmp.message, 'Nouvelle question publique');
         assert.equal(tmp.is_public, true);
         discussion.addMessage(message.message, journeyId, true, user, email, function (err, newMessage) {
             if (err) return done(err);
             assert.isNull(err);
-            assert.equal(newMessage.id, 8);
+            assert.equal(newMessage.id, 11);
             assert.equal(newMessage.message, 'Nouvelle question publique');
             assert.equal(newMessage.is_public, true);
             assert.equal(newMessage.JourneyId, 2);

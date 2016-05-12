@@ -7,13 +7,14 @@ describe('Runnable Controllers', function() {
     beforeEach(module('runnable.services'));
 
     describe('RunnableJourneyController', function() {
-        var scope, rootScope, timeout, ctrl, $httpBackend;
+        var scope, rootScope, timeout, ctrl, location, $httpBackend;
 
         beforeEach(inject(function (_$httpBackend_, _$rootScope_, $timeout, $location, $controller) {
             $httpBackend = _$httpBackend_;
             rootScope = _$rootScope_;
             scope = _$rootScope_.$new();
             timeout = $timeout;
+            location = $location;
             $httpBackend.whenGET('/api/journey/open').respond([{
                 id: 1,
                 address_start: 'Saint-Germain-en-Laye, France',
@@ -58,7 +59,7 @@ describe('Runnable Controllers', function() {
                 }
             }]);
 
-            ctrl = $controller('RunnableJourneyController', {$rootScope: rootScope, $scope: scope});
+            ctrl = $controller('RunnableJourneyController', {$rootScope: rootScope, $scope: scope, $location: location});
         }));
 
         it('Start controller', function () {
@@ -75,6 +76,7 @@ describe('Runnable Controllers', function() {
             expect(scope.displayModeIcon).toEqual('fa-list');
             expect(scope.displayMode).toEqual('list');
             scope.switchDisplay();
+            timeout.flush();
             expect(scope.displayModeIcon).toEqual('fa-list');
             expect(scope.displayMode).toEqual('map');
             scope.switchDisplay();
@@ -91,6 +93,14 @@ describe('Runnable Controllers', function() {
             expect(scope.displayModeIcon).toEqual('fa-globe');
             scope.switchDisplayMode();
             expect(scope.displayModeIcon).toEqual('fa-list');
+        });
+
+        it('Switch Display Mode', function () {
+            spyOn(location, 'path');
+            $httpBackend.flush();
+            timeout.flush();
+            scope.createJourney();
+            expect(location.path).toHaveBeenCalledWith('/journey-create');
         });
     });
 });

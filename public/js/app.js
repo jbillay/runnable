@@ -8,6 +8,8 @@
 
 angular.module('runnable', [
     'ngRoute',
+    'ui.grid',
+    'ui.grid.edit',
     'ngSanitize',
     'ngMessages',
     'ngFacebook',
@@ -116,6 +118,10 @@ angular.module('runnable', [
 				data: {
 					authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user]
 				}
+            }).
+            when('/checkout-:journeyId', {
+                templateUrl: 'partials/checkout',
+                controller: 'RunnableCheckoutController',
             }).
             when('/', {
                 templateUrl: 'partials/index',

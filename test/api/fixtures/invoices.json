@@ -68,5 +68,19 @@
       "JourneyId": 5,
       "JoinId": 5
     }
+  },
+  {
+    "model": "Invoice",
+    "data": {
+      "id": 6,
+      "status": "pending",
+      "amount": 12.49,
+      "fees": 2.49,
+      "ref": "MRT20150217I87YG",
+      "transaction": "",
+      "UserId": 2,
+      "JourneyId": 5,
+      "JoinId": 6
+    }
   }
 ]

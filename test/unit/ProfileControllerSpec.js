@@ -7,14 +7,17 @@ describe('Runnable Controllers', function() {
     beforeEach(module('runnable.services'));
 
     describe('RunnableProfileController', function(){
-        var scope, rootScope, ctrl, ctrlLogin, ctrlMain, location, sce, $httpBackend, AUTH_EVENTS;
+        var scope, rootScope, timeout, ctrl, ctrlLogin, ctrlMain, location, sce, $httpBackend, AUTH_EVENTS, FileReader, MyUpload;
 
-        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $location, $sce, $compile, $controller) {
+        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $location, $sce, $timeout, $compile, $controller, _fileReader_, _Upload_) {
             $httpBackend = _$httpBackend_;
             rootScope = _$rootScope_;
             scope = _$rootScope_.$new();
             location = $location;
+            timeout = $timeout;
             sce = $sce;
+            FileReader = _fileReader_;
+            MyUpload = _Upload_;
             AUTH_EVENTS = {
                 loginSuccess: 'auth-login-success',
                 loginFailed: 'auth-login-failed',
@@ -67,14 +70,15 @@ describe('Runnable Controllers', function() {
             $httpBackend.whenPOST('/api/user/bankaccount').respond({msg: 'bankAccountSaved', type: 'success'});
             $httpBackend.whenPOST('/api/user/password/update').respond({msg: 'userToggleActive', type: 'success'});
 
+            var formElem = angular.element('<form name="form"><input type="text" name="number"></form>');
+            $compile(formElem)(scope);
+
             ctrlMain = $controller('RunnableMainController',
                 {$scope: scope, $rootScope: rootScope});
             ctrlLogin = $controller('RunnableLoginController',
                 {$scope: scope, $rootScope: rootScope, AUTH_EVENTS: AUTH_EVENTS});
             ctrl = $controller('RunnableProfileController',
-                {$scope: scope, $rootScope: rootScope, $location: location, $sce: sce});
-            var formElem = angular.element('<form name="form"><input type="text" name="number"></form>');
-            $compile(formElem)(scope);
+                {$scope: scope, $rootScope: rootScope, $location: location, $sce: sce, fileReader: FileReader, Upload: MyUpload});
         }));
 
         it ('Start controller', function () {
@@ -89,14 +93,17 @@ describe('Runnable Controllers', function() {
 
         it ('get a file', function () {
             // TODO: Test when readAsDataUrl has been called
-            /*
-            var formData = new FormData();
-            var content = '<a id="a"><b id="b">hey!</b></a>';
-            var blob = new Blob([content], { type: 'text/xml' });
-            formData.append('webmasterfile', blob);
-            scope.getFile(blob);
-             */
-            $httpBackend.flush();
+            spyOn(FileReader, 'readAsDataUrl').and.callFake(function() {
+                return { then: function(callback) { return callback('File Read'); } }; });
+            spyOn(MyUpload, 'upload').and.callFake(function() {
+                return { then: function(callback) { return callback('File Read'); } }; });
+            scope.getFile('.jshintrc');
+            rootScope.$digest();
+            scope.uploadFiles({name: '.jshintrc'}, null);
+            rootScope.$digest();
+            timeout.flush();
+            expect(FileReader.readAsDataUrl).toHaveBeenCalled();
+            expect(MyUpload.upload).toHaveBeenCalled();
         });
 
         it ('delete a file', function () {
@@ -111,7 +118,7 @@ describe('Runnable Controllers', function() {
                 lastname: 'Couret',
                 address: 'Bouffemont',
                 phone: '0689876547',
-                email: 'richard.couret@free.fr',
+                email: 'richard.couret@free.fr'
             };
             scope.updateUserInfo(user);
             $httpBackend.flush();

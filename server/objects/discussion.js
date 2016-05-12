@@ -8,6 +8,8 @@ var models = require('../models');
 var Inbox = require('./inbox');
 var Mail = require('./mail');
 var q = require('q');
+var async = require('async');
+var _ = require('lodash');
 
 function discussion() {
     this.id = null;
@@ -62,6 +64,7 @@ discussion.prototype.getUsers = function (journeyId) {
                     joins.forEach(function (join) {
                         userList.push(join.UserId);
                     });
+                    userList = _.uniq(userList);
                     models.User.findAll({where: {id: userList}})
                         .then(function (users) {
                             deferred.resolve(users);
@@ -95,6 +98,8 @@ discussion.prototype.getPublicUsers = function (journeyId) {
                     } else if (discussion.email) {
                         list.emails.push(discussion.email);
                     }
+                    list.users = _.uniq(list.users);
+                    list.emails = _.uniq(list.emails);
                 });
                 models.User.findAll({where: {id: list.users}})
                     .then(function (users) {

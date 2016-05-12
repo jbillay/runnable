@@ -416,11 +416,168 @@
                             </div>
                         </form>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <h3><strong>Marge par course / utilisateur</strong></h3>
+                        <div class="form-group col-md-8">
+                            <div id="gridFeesRun" ui-grid="feesGridOptions" ui-grid-resize-columns ui-grid-edit class="grid"></div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="btn btn-info" ng-click="switchFeesCreation()">Créer une marge</div>
+                            </div>
+                        </div>
+                        <div class="newCode col-md-4" ng-if="feesCreation">
+                            <div class="col-xs-12 col-md-10 col-sm-10">
+                                <div class="form-group">
+                                    <label class="sr-only" for="FeePercentage">Marge (en %)</label>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">%</div>
+                                        <input type="text" class="form-control" id="FeePercentage"
+                                               ng-model="newFee.percentage" placeholder="Marge (%)" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="sr-only" for="FeeValue">Frais fixe (en €)</label>
+                                    <input type="text" class="form-control" id="FeeValue" ng-model="newFee.value"
+                                           placeholder="Frais fixe (en €)" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="sr-only" for="FeeReduction">Réduction (en %)</label>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">%</div>
+                                        <input type="text" class="form-control" id="FeeReduction"
+                                               ng-model="newFee.discount" placeholder="Réduction (%)" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" ng-click="calendar.open($event, 'feeStart')">
+                                                <i class="glyphicon glyphicon-calendar"></i>
+                                            </button>
+                                        </span>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
+                                                   ng-model="newFee.start_date" is-open="calendar.opened.feeStart"
+                                                   min-date="today" datepicker-options="calendar.dateOptions" close-text="Fermer"
+                                                   data-toggle="tooltip" data-placement="bottom" placeholder="Date de début de validité"
+                                                   title="Date d'activation" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" ng-click="calendar.open($event, 'feeExpiry')">
+                                                <i class="glyphicon glyphicon-calendar"></i>
+                                            </button>
+                                        </span>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
+                                                   ng-model="newFee.end_date" is-open="calendar.opened.feeExpiry"
+                                                   min-date="today" datepicker-options="calendar.dateOptions" close-text="Fermer"
+                                                   data-toggle="tooltip" data-placement="bottom" placeholder="Date de fin de validité"
+                                                   title="Date d'expiration" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" ng-model="newFee.user" placeholder="Bénéficiaire"
+                                           typeahead="user as user.name for user in userNameList | filter:{name:$viewValue}"
+                                           id="feeUser" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" ng-model="newFee.run" placeholder="Course"
+                                           typeahead="run as run.name for run in runList | filter:{name:$viewValue}"
+                                           id="feeRun" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <button type="submit" class="btn btn-success btn-block" ng-click="createFee(newFee)">Créer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <h3><strong>Code réudction</strong></h3>
+                    <div class="col-md-12">
+                        <h3><strong>Code réduction</strong></h3>
+                        <div class="form-group col-md-8">
+                            <div id="gridCodes" ui-grid="codeGridOptions" ui-grid-resize-columns ui-grid-edit class="grid"></div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="btn btn-info" ng-click="switchCodeCreation()">Créer un code</div>
+                            </div>
+                        </div>
+                        <div class="newCode col-md-4" ng-if="codeCreation">
+                            <div class="col-xs-12 col-md-10 col-sm-10">
+                                <div class="form-group">
+                                    <label class="sr-only" for="codeName">Code</label>
+                                    <input type="text" class="form-control" id="codeName"
+                                           ng-model="newCode.code" placeholder="Nom" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="sr-only" for="CodeReduction">Réduction (en %)</label>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">%</div>
+                                        <input type="text" class="form-control" id="CodeReduction"
+                                               ng-model="newCode.reduction" placeholder="Réduction (%)" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="sr-only" for="remainingCode">Nb utilisation</label>
+                                    <input type="text" class="form-control" id="remainingCode" ng-model="newCode.remaining"
+                                           placeholder="Laisser vide si pas de limite d'usage" required>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" ng-click="calendar.open($event, 'codeStart')">
+                                                <i class="glyphicon glyphicon-calendar"></i>
+                                            </button>
+                                        </span>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
+                                                   ng-model="newCode.start_date" is-open="calendar.opened.codeStart"
+                                                   min-date="today" datepicker-options="calendar.dateOptions" close-text="Fermer"
+                                                   data-toggle="tooltip" data-placement="bottom" placeholder="Date de début de validité"
+                                                   title="Date d'activation" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" ng-click="calendar.open($event, 'codeExpiry')">
+                                                <i class="glyphicon glyphicon-calendar"></i>
+                                            </button>
+                                        </span>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
+                                                   ng-model="newCode.end_date" is-open="calendar.opened.codeExpiry"
+                                                   min-date="today" datepicker-options="calendar.dateOptions" close-text="Fermer"
+                                                   data-toggle="tooltip" data-placement="bottom" placeholder="Date de fin de validité"
+                                                   title="Date d'expiration" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" ng-model="newCode.user" placeholder="Bénéficiaire"
+                                           typeahead="user as user.name for user in userNameList | filter:{name:$viewValue}"
+                                           id="codeUser" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" ng-model="newCode.run" placeholder="Course"
+                                           typeahead="run as run.name for run in runList | filter:{name:$viewValue}"
+                                           id="codeRun" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <button type="submit" class="btn btn-success btn-block" ng-click="createCode(newCode)">Créer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </tab>

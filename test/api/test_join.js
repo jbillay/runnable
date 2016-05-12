@@ -28,7 +28,7 @@ describe('Test of join object', function () {
         join.getList(function (err, joinList) {
             if (err) return done(err);
             assert.isNull(err);
-            assert.equal(joinList.length, 5);
+            assert.equal(joinList.length, 6);
             return done();
         });
     });
@@ -99,7 +99,7 @@ describe('Test of join object', function () {
     it('Create a new Join', function (done) {
        var join = new Join(),
            newJoin = {
-                id: 6,
+                id: 7,
                 nb_place_outward: 3,
                 nb_place_return: 2,
                 journey_id: 3
@@ -111,17 +111,17 @@ describe('Test of join object', function () {
         join.setJourney(newJoin.journey_id);
         join.setUser(user);
         var tmp = join.get();
-        assert.equal(tmp.id, 6);
+        assert.equal(tmp.id, 7);
         assert.equal(tmp.nb_place_outward, 3);
         assert.equal(tmp.nb_place_return, 2);
         join.save(tmp, user, function (err, createdJoin) {
             assert.isNull(err);
             join.getList(function (err, joinList) {
                 assert.isNull(err);
-                assert.equal(joinList.length, 6);
-                join.getById(6, function (err, joinInfo) {
+                assert.equal(joinList.length, 7);
+                join.getById(7, function (err, joinInfo) {
                     assert.isNull(err);
-                    assert.equal(joinInfo.id, 6);
+                    assert.equal(joinInfo.id, 7);
                     assert.equal(joinInfo.nb_place_outward, 3);
                     assert.equal(joinInfo.nb_place_return, 2);
                     return done();

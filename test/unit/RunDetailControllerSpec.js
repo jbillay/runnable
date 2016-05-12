@@ -27,7 +27,9 @@ describe('Runnable Controllers', function() {
                 time_start: '09:15',
                 distances: '15k - 30k - 7k',
                 elevations: '500+ - 1400+',
-                info: 'Toutes les infos sur le maxicross',
+                info: 'http://www.maxicross.fr',
+                sticker: null,
+                pictures: null,
                 is_active: 1
             });
             $httpBackend.whenGET('/api/journey/run/4').respond([{
@@ -91,7 +93,7 @@ describe('Runnable Controllers', function() {
             $httpBackend.whenGET('/api/inbox/unread/nb/msg').respond(200, 2);
             $httpBackend.whenPOST('/api/participate/add').respond({msg: 'addParticipate', type: 'success'});
 
-            element = angular.element('<div class="runDetailJourneyDetailPanel" id="journeyPanel"></div><div id="MyAffix"></div>');
+            element = angular.element('<div class="runDetailJourneyDetailPanel" id="journeyPanel" style="height: 900px;"></div><div id="MyAffix"></div>');
             element.appendTo(document.body);
             element = $compile(element)(scope);
             scope.$digest();
@@ -122,11 +124,13 @@ describe('Runnable Controllers', function() {
             timeout.flush();
         });
 
-        it ('Test distance service with user address', function () {
+        it ('Test bounce when the mouse in over', function () {
             expect(scope.page).toEqual('Run');
             expect(scope.runId).toBe(4);
             $httpBackend.flush();
             timeout.flush();
+            // TODO: need to create the marker before
+            //scope.toggleBounce('toto');
         });
 
         it ('Test creation journey with user login', function () {

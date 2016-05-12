@@ -106,8 +106,8 @@ describe('Test of fee API', function () {
                 remaining: null,
                 start_date: new Date(),
                 end_date: null,
-                userId: null,
-                runId: 3
+                UserId: null,
+                RunId: 5
             };
             
             agent
@@ -121,7 +121,7 @@ describe('Test of fee API', function () {
                     assert.isNull(res.body.msg.discount);
                     assert.isNull(res.body.msg.end_date);
                     assert.isNull(res.body.msg.UserId);
-                    assert.equal(res.body.msg.RunId, 3);
+                    assert.equal(res.body.msg.RunId, 5);
                     agent
                         .get('http://localhost:' + settings.port + '/api/admin/fees')
                         .end(function (err, res) {
@@ -129,7 +129,7 @@ describe('Test of fee API', function () {
                             assert.equal(res.body.type, 'success');
                             assert.equal(res.body.msg.length, 6);
                             agent
-                                .get('http://localhost:' + settings.port + '/api/fee/3')
+                                .get('http://localhost:' + settings.port + '/api/fee/1')
                                 .end(function (err, res) {
                                     if (err) return done(err);
                                     assert.equal(res.body.type, 'success');
@@ -158,8 +158,8 @@ describe('Test of fee API', function () {
                 remaining: null,
                 start_date: new Date(),
                 end_date: null,
-                userId: null,
-                runId: 1
+                UserId: null,
+                RunId: 4
             };
 
             agent
@@ -173,9 +173,9 @@ describe('Test of fee API', function () {
                     assert.equal(res.body.msg.discount, 0.8);
                     assert.isNull(res.body.msg.end_date);
                     assert.isNull(res.body.msg.UserId);
-                    assert.equal(res.body.msg.RunId, 1);
+                    assert.equal(res.body.msg.RunId, 4);
                     agent
-                        .get('http://localhost:' + settings.port + '/api/fee/1')
+                        .get('http://localhost:' + settings.port + '/api/fee/5')
                         .end(function (err, res) {
                             if (err) return done(err);
                             assert.equal(res.body.type, 'success');

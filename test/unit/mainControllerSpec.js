@@ -7,12 +7,14 @@ describe('Runnable Controllers', function() {
     beforeEach(module('runnable.services'));
 
     describe('RunnableMainController', function(){
-        var scope, rootScope, ctrl, $httpBackend, AUTH_EVENTS, USER_ROLES, USER_MSG;
+        var scope, rootScope, ctrl, $httpBackend, Auth, Window, AUTH_EVENTS, USER_ROLES, USER_MSG;
 
-        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $routeParams, $controller) {
+        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $routeParams, $controller, $window, _AuthService_) {
             $httpBackend = _$httpBackend_;
             rootScope = _$rootScope_;
             scope = _$rootScope_.$new();
+            Auth = _AuthService_;
+            Window = $window;
             spyOn(rootScope, '$broadcast').and.callThrough();
             AUTH_EVENTS = {
                 loginSuccess: 'auth-login-success',
@@ -104,7 +106,7 @@ describe('Runnable Controllers', function() {
                 journey: { id: 1, Run: { name: 'Maxicross' }}});
 
             ctrl = $controller('RunnableMainController',
-                {$scope: scope, $rootScope: rootScope, AUTH_EVENTS: AUTH_EVENTS,
+                {$scope: scope, $rootScope: rootScope, $window: Window, AUTH_EVENTS: AUTH_EVENTS,
                     USER_ROLES: USER_ROLES, USER_MSG: USER_MSG});
         }));
 
@@ -134,6 +136,16 @@ describe('Runnable Controllers', function() {
             expect(rootScope.isAuthenticated).not.toBeTruthy();
             expect(rootScope.isAdmin).not.toBeTruthy();
             scope.showLogin();
+        });
+
+        it ('Try to logout user', function () {
+            // TODO: Handle location reload to avoid blocking test
+            // spyOn(Window.location, 'reload').and.callFake(function() { console.log('reload !!'); });
+            // spyOn(Auth, 'logout').and.callFake(function() {
+            //     return { then: function(callback) { return callback('logoff'); } }; });
+            // scope.logout();
+            // rootScope.$digest();
+            // expect(Auth.logout).toHaveBeenCalled();
         });
 
         it ('Invite friend', function () {

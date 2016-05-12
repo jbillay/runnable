@@ -121,6 +121,21 @@ describe('Run Service', function() {
             expect(runList[0].is_active).toBe(1);
         });
 
+        it('should get error on run active list', function() {
+            $httpBackend.whenGET('/api/run/list').respond({msg: 'No run found', type: 'error'});
+            var promise = service.getActiveList(),
+                runErr = null;
+
+            promise.then(function(ret){
+                runErr = ret;
+            }).catch(function (err) {
+                runErr = err;
+            });
+
+            $httpBackend.flush();
+            expect(runErr).toContain('error');
+        });
+
         it('should fail to get run active list', function() {
             $httpBackend.whenGET('/api/run/list').respond(500);
             var promise = service.getActiveList(),
@@ -231,6 +246,21 @@ describe('Run Service', function() {
             expect(runList[0].is_active).toBe(1);
         });
 
+        it('should get error on get run list', function() {
+            $httpBackend.whenGET('/api/admin/runs').respond({msg: 'No run found', type: 'error'});
+            var promise = service.getList(),
+                runErr = null;
+
+            promise.then(function(ret){
+                runErr = ret;
+            }).catch(function (err) {
+                runErr = err;
+            });
+
+            $httpBackend.flush();
+            expect(runErr).toContain('error');
+        });
+
         it('should fail to get run list', function() {
             $httpBackend.whenGET('/api/admin/runs').respond(500);
             var promise = service.getList(),
@@ -303,6 +333,21 @@ describe('Run Service', function() {
             expect(searchRunList[0].elevations).toEqual('2500+');
             expect(searchRunList[0].info).toEqual('ksdjlsdjlf jsdlfjl sjdflj');
             expect(searchRunList[0].is_active).toBe(1);
+        });
+
+        it('should get error on search a run', function() {
+            $httpBackend.whenPOST('/api/run/search').respond({msg: 'No run found', type: 'error'});
+            var promise = service.search({name: 'Les templ'}),
+                runErr = null;
+
+            promise.then(function(ret){
+                runErr = ret;
+            }).catch(function (err) {
+                runErr = err;
+            });
+
+            $httpBackend.flush();
+            expect(runErr).toContain('error');
         });
 
         it('should fail to search run', function() {
