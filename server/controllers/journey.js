@@ -59,7 +59,7 @@ exports.confirm = function (req, res, next) {
     journey = null;
 };
 
-exports.update = function (req, res) {
+exports.update = function (req, res, next) {
     'use strict';
     console.log('Update the journey for run : ' + req.body.journey.id);
     var journey = new Journey();
@@ -70,7 +70,10 @@ exports.update = function (req, res) {
                 res.jsonp({msg: 'journeyNotUpdated', type: 'error'});
             } else {
                 console.log('Journey updated');
+                req.Run = run;
+                req.Journey = journey;
                 res.jsonp({msg: 'journeyUpdated', type: 'success'});
+                next();
             }
             err = null;
             journey = null;
@@ -256,4 +259,19 @@ exports.toPay = function (req, res) {
         .catch(function (err) {
             return res.jsonp({msg: err, type: 'error'});
         });
+};
+
+exports.notifyJoinedModification = function (req, res) {
+    'use strict';
+    var journey = new Journey();
+
+    journey.notifyJoinedModification(req.Journey, req.Run, function (err, result) {
+        if (err) {
+            console.log(new Error('Journey Modification - User not notified : ' + err));
+            return res.send(401);
+        } else  {
+            console.log('Journey Modification - User notified');
+            return res.send(200);
+        }
+    });
 };

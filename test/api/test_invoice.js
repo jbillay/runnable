@@ -30,15 +30,15 @@ describe('Test of Invoice object', function () {
         invoice.getByUser(1, function (err, invoiceList) {
             if (err) return done(err);
             assert.isNull(err);
-            assert.equal(invoiceList.length, 2);
+            assert.equal(invoiceList.length, 1);
             invoice.getByUser(2, function (err, invoiceList) {
                 if (err) return done(err);
                 assert.isNull(err);
-                assert.equal(invoiceList.length, 1);
-                assert.equal(invoiceList[0].id, 5);
-                assert.equal(invoiceList[0].status, 'completed');
-                assert.equal(invoiceList[0].amount, 12.49);
-                assert.equal(invoiceList[0].fees, 2.49);
+                assert.equal(invoiceList.length, 2);
+                assert.equal(invoiceList[1].id, 5);
+                assert.equal(invoiceList[1].status, 'completed');
+                assert.equal(invoiceList[1].amount, 12.49);
+                assert.equal(invoiceList[1].fees, 2.49);
                 invoice.getByUser(-1, function (err, invoiceList) {
                     assert.isNotNull(err);
                     return done();

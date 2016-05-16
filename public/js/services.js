@@ -1320,11 +1320,13 @@ angular.module('runnable.services', ['ngResource']).
                         journeys.forEach(function (journey) {
                             if (journey.Joins) {
                                 journey.Joins.forEach(function (join) {
-                                    if (join.nb_place_outward > 0) {
-                                        journey.nb_space_outward = journey.nb_space_outward - join.nb_place_outward;
-                                    }
-                                    if (join.nb_place_return > 0) {
-                                        journey.nb_space_return = journey.nb_space_return - join.nb_place_return;
+                                    if (join.Invoice && join.Invoice.status === 'completed') {
+                                        if (join.nb_place_outward > 0) {
+                                            journey.nb_space_outward = journey.nb_space_outward - join.nb_place_outward;
+                                        }
+                                        if (join.nb_place_return > 0) {
+                                            journey.nb_space_return = journey.nb_space_return - join.nb_place_return;
+                                        }
                                     }
                                 });
                             }

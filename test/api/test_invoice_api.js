@@ -48,7 +48,7 @@ describe('Test of invoice API', function () {
             agent
                 .get('http://localhost:' + settings.port + '/api/invoice')
                 .end(function (err, res) {
-                    assert.equal(res.body.length, 2);
+                    assert.equal(res.body.length, 1);
                     return done();
                 });
         });

@@ -158,7 +158,7 @@ describe('Test of journey object', function () {
         journey.getListForRun(4, function (err, journeyList) {
             if (err) return done(err);
             assert.equal(journeyList.length, 1);
-            assert.equal(journeyList[0].Joins.length, 1);
+            assert.equal(journeyList[0].Joins.length, 2);
             assert.equal(journeyList[0].Run.name, 'Corrida de Saint Germain en Laye');
             journey.getListForRun(2, function (err, journeyList) {
                 if (err) return done(err);
@@ -558,6 +558,39 @@ describe('Test of journey object', function () {
                 return done();
             })
             .catch(function(err) {
+                return done(err);
+            });
+    });
+
+    it('Notify users for a modification in a journey', function (done) {
+        var journey = new Journey(),
+            inbox = new Inbox();
+        models.Journey.find({ where: {id: 2}, include: [models.Run]})
+            .then(function (selectedJourney) {
+                journey.notifyJoinedModification(selectedJourney, selectedJourney.Run)
+                    .then(function (joins) {
+                        assert.equal(joins.length, 2);
+                        var user = {id:  3};
+                        inbox.getList(user, function (err, messages) {
+                            if (err) return done(err);
+                            assert.equal(messages.length, 1);
+                            assert.equal(messages[0].message, 'Driver Updated Les templiers');
+                            assert.include(messages[0].title, 'Email pour Les templiers');
+                            var user2 = {id: 2};
+                            inbox.getList(user2, function (err, messages) {
+                                if (err) return done(err);
+                                assert.equal(messages.length, 3);
+                                assert.equal(messages[0].message, 'Driver Updated Les templiers');
+                                assert.include(messages[0].title, 'Email pour Les templiers');
+                                return done();
+                            });
+                        });
+                    })
+                    .catch(function (err) {
+                        return done(err);
+                    });
+            })
+            .catch(function (err) {
                 return done(err);
             });
     });

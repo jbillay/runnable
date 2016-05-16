@@ -265,14 +265,42 @@ describe('Journey Service', function() {
                         nb_place_outward: 2,
                         nb_place_return: 2,
                         UserId: 1,
-                        JourneyId: 3
+                        JourneyId: 3,
+                        Invoice: {
+                            JoinId: 12,
+                            JourneyId: null,
+                            UserId: 1,
+                            amount: 19.52,
+                            createdAt: '2016-05-15T20:30:24.000Z',
+                            driver_payed: false,
+                            fees: 3.52,
+                            id: 12,
+                            ref: 'MRT201605156IEBT',
+                            status: 'completed',
+                            transaction: null,
+                            updatedAt: '2016-05-15T20:30:24.000Z'
+                        }
                     },
                     {
                         id: 2,
                         nb_place_outward: 1,
                         nb_place_return: null,
                         UserId: 1,
-                        JourneyId: 3
+                        JourneyId: 3,
+                        Invoice: {
+                            JoinId: 12,
+                            JourneyId: null,
+                            UserId: 1,
+                            amount: 19.52,
+                            createdAt: '2016-05-15T20:30:24.000Z',
+                            driver_payed: false,
+                            fees: 3.52,
+                            id: 12,
+                            ref: 'MRT201605156IEBT',
+                            status: 'pending',
+                            transaction: null,
+                            updatedAt: '2016-05-15T20:30:24.000Z'
+                        }
                     }]
             }, {
                 id: 4,
@@ -303,7 +331,7 @@ describe('Journey Service', function() {
             expect(journeyList instanceof Array);
             expect(journeyList.length).toBe(2);
             expect(journeyList[0].RunId).toBe(4);
-            expect(journeyList[0].nb_space_outward).toBe(1);
+            expect(journeyList[0].nb_space_outward).toBe(2);
             expect(journeyList[0].nb_space_return).toBe(0);
             expect(journeyList[1].id).toBe(4);
             expect(journeyList[1].address_start).toEqual('Nice');
@@ -321,7 +349,7 @@ describe('Journey Service', function() {
             expect(journeyList[1].is_canceled).toBeTruthy();
             expect(journeyList[1].RunId).toBe(4);
             expect(journeyList[1].UserId).toBe(2);
-            expect(journeyList[0].nb_space_outward).toBe(1);
+            expect(journeyList[0].nb_space_outward).toBe(2);
             expect(journeyList[0].nb_space_return).toBe(0);
         });
 

@@ -217,7 +217,7 @@ angular.module('runnable.controllers', []).
                 $scope.joined = 1;
                 $scope.reserved_outward = $scope.reserved_outward + placeOutward;
                 $scope.reserved_return = $scope.reserved_return + placeReturn;
-                Join.add($scope.journeyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref)
+                Join.add($scope.selectedJourneyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref)
                     .then(function (join) {
                         form.commit();
                     });

@@ -6,6 +6,7 @@ var Join = require('./join');
 var Inbox = require('./inbox');
 var Partner = require('./partner');
 var q = require('q');
+var async = require('async');
 var redis = require('redis');
 
 if (process.env.REDIS_URL) {
@@ -147,7 +148,7 @@ journey.prototype.save = function (journey, userId, role, done) {
                                                                     updatedJourney.setPartner(selectedPartner)
                                                                         .then(function (updatedJourney) {
                                                                             if (role !== 'admin') {
-                                                                                var template = 'JourneyUpdated',
+                                                                                var template = 'DriverJourneyUpdated',
                                                                                     values = {
                                                                                         runName: run.name,
                                                                                         journeyId: updatedJourney.id
@@ -165,7 +166,7 @@ journey.prototype.save = function (journey, userId, role, done) {
                                                                         });
                                                                 } else {
                                                                     if (role !== 'admin') {
-                                                                        var template = 'JourneyUpdated',
+                                                                        var template = 'DriverJourneyUpdated',
                                                                             values = {
                                                                                 runName: run.name,
                                                                                 journeyId: updatedJourney.id
@@ -287,10 +288,7 @@ journey.prototype.getListForRun = function (id, done) {
         {
             model: models.Join,
             as: 'Joins',
-            include: [{
-                model: models.Invoice,
-                where: {status: 'completed'}
-            }]
+            include: [ models.Invoice ]
         },
         { model: models.Run }
     ]})
@@ -505,6 +503,45 @@ journey.prototype.toPay = function () {
             deferred.reject(err);
         });
 
+    return deferred.promise;
+};
+
+journey.prototype.notifyJoinedModification = function (journey, run) {
+    'use strict';
+    var deferred = q.defer(),
+        join = new Join(),
+        inbox = new Inbox();
+    join.getByJourney(journey.id, function (err, journeyJoins) {
+        if (err) {
+            deferred.reject(new Error(err));
+        } else {
+            var q = async.queue(function (options, callback) {
+                inbox.add(options.template, options.values, options.UserId)
+                    .then(function (msg) {
+                        callback(null, msg);
+                    })
+                    .catch(function (err) {
+                        callback(err, null);
+                    });
+            });
+            var template = 'UserJourneyUpdated',
+                values = {
+                    runName: run.name,
+                    journeyId: journey.id };
+            journeyJoins.forEach(function (journeyJoin) {
+                q.push({template: template, values: values, UserId: journeyJoin.UserId}, function (err, msg) {
+                    if (err) {
+                        console.log(new Error('Message UserJourneyUpdated not sent : ' + err));
+                    } else {
+                        console.log('Msg sent to notify update journey to joined');
+                    }
+                });
+            });
+            q.drain = function () {
+                deferred.resolve(journeyJoins);
+            };
+        }
+    });
     return deferred.promise;
 };
 

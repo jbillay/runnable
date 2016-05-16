@@ -55,7 +55,7 @@ module.exports = function (app, passport, auth) {
         controllers.journey.create,
         controllers.participate.notify,
         controllers.partner.notifyJourneyCreation);
-    app.put('/api/journey', auth.requiresLogin, controllers.journey.update);
+    app.put('/api/journey', auth.requiresLogin, controllers.journey.update, controllers.journey.notifyJoinedModification);
     app.post('/api/journey/cancel', auth.requiresLogin, controllers.journey.cancel);
     app.post('/api/journey/confirm', cors(),
         auth.requiresLogin,
