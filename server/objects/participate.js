@@ -113,7 +113,7 @@ participate.prototype.notify = function (run, journey, done) {
                     });
                     var template = 'NotifyNewJourney',
                         values = {
-                            runName: run.name,
+                            runName: selectedRun.name,
                             journeyId: journey.id,
                             journeyStart: journey.address_start};
 
