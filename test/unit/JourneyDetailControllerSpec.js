@@ -157,7 +157,6 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
             timeout.flush();
             scope.startCheckout();
-            expect(rootScope.checkout.journeyId).toBe(4);
             expect(location.path).toHaveBeenCalledWith('/checkout-4');
         });
 
@@ -511,7 +510,7 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
             timeout.flush();
             scope.startCheckout();
-            expect(location.path).toHaveBeenCalledWith('/connect');
+            expect(location.path).toHaveBeenCalledWith('/checkout-4');
         });
     });
 

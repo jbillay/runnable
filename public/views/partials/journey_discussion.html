@@ -1,0 +1,43 @@
+<div ng-include="'partials/nav'"></div>
+<div class="container body">
+    <div class="row spacehead">
+        <h2 class="col-xs-12 col-sm-12 col-md-12">
+            <h2 class="text-center">Discussion pour le trajet vers la course {{selectedJourney.Run.name}}</h2>
+            <div class="hidden-xs col-sm-3 col-md-3 head">
+                <ul class="list-group discussion_users">
+                    <li class="list-group-item" ng-repeat="user in discussionUsers">
+                        <img ng-src="{{user.picture}}" class="img-rounded img-avatar-discussion"> {{user.firstname}} {{user.lastname}}
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xs-12 col-sm-offset-1 col-sm-8 col-md-offset-1 col-md-8 head">
+                <div class="panel panel-default">
+                    <div class="panel-body discussion_board">
+                        <div class="panel panel-default col-xs-9 col-sm-9 col-md-9" ng-class-odd="'pull-left'" ng-class-even="'pull-right'" ng-repeat="message in discussionMessages">
+                            <div class="panel-body discussion_message">
+                                <div class="panel-body discussion_message">
+                                    <p class="discussion_message_text">{{message.message}}</p>
+                                    <span class="discussion_message_info pull-right">{{message.showDate}} by {{message.User.firstname | capitalize}} {{message.User.lastname | capitalize}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form name="discussionForm" class="discussion_send" ng-controller="RunnableMyJourneyController" ng-submit='sendMessage()'>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Entrer votre message" ng-model="newMessageEntry">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit">Envoyer</button>
+                                </span>
+                    </div>
+                </form>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12 discussionReturnLink">
+                <button ng-click="returnToOrigin(selectedJourney.id)" class="btn btn-primary pull-right">
+                    Retour au trajet
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div ng-include="'partials/footer'"></div>

@@ -131,6 +131,43 @@ join.prototype.getList = function (done) {
 		});
 };
 
+join.prototype.toRefund = function () {
+    'use strict';
+    var deferred = q.defer();
+    models.Join.findAll({include: [ {model: models.Journey}, {model: models.User},
+        {
+            model: models.Invoice,
+            where: {status: 'cancelled'}
+        }]})
+        .then(function (joins) {
+            deferred.resolve(joins);
+        })
+        .catch(function (err) {
+            deferred.reject(err);
+        });
+    return deferred.promise;
+};
+
+join.prototype.refund = function (id) {
+    'use strict';
+    var deferred = q.defer();
+    models.Join.find({where: {id: id}, include: {model: models.Invoice}})
+        .then(function (join) {
+            join.Invoice.status = 'refunded';
+            join.Invoice.save()
+                .then(function (updatedInvoice) {
+                    deferred.resolve(updatedInvoice);
+                })
+                .catch(function (err) {
+                    deferred.reject(err);
+                });
+        })
+        .catch(function (err) {
+            deferred.reject(err);
+        });
+    return deferred.promise;
+};
+
 join.prototype.cancelById = function (id, user, notif) {
 	'use strict';
 	var deferred = q.defer(),

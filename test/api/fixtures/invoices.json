@@ -82,5 +82,19 @@
       "JourneyId": 5,
       "JoinId": 6
     }
+  },
+  {
+    "model": "Invoice",
+    "data": {
+      "id": 7,
+      "status": "cancelled",
+      "amount": 23.49,
+      "fees": 3.49,
+      "ref": "MRT20160611I38FI",
+      "transaction": "",
+      "UserId": 3,
+      "JourneyId": 2,
+      "JoinId": 7
+    }
   }
 ]

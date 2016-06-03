@@ -55,8 +55,8 @@ angular.module('runnable.controllers', []).
                     Journey.confirm($rootScope.draftId).then(function (journey) {
                         $location.path('/journey');
                     });
-                } else if ($rootScope.checkout) {
-                    $location.path('/checkout-' + $rootScope.checkout.journeyId);
+                } else if ($rootScope.referer) {
+                    $location.path($rootScope.referer.path);
                 }
             });
             angular.element('#loginModal').modal('hide');
@@ -70,6 +70,8 @@ angular.module('runnable.controllers', []).
                     Journey.confirm($rootScope.draftId).then(function (journey) {
                         $location.path('/journey');
                     });
+                } else if ($rootScope.referer) {
+                    $location.path($rootScope.referer.path);
                 }
             });
         };
@@ -105,164 +107,157 @@ angular.module('runnable.controllers', []).
     }).
 	controller('RunnableCheckoutController', function ($scope, $rootScope, $q, $location, $sce, $routeParams, Journey,
                                                        Technical, MyRunTripFees, Join) {
-        if ($rootScope.checkout) {
-            $scope.selectedJourneyId = $rootScope.checkout.journeyId;
-        } else  {
-            if (!$rootScope.isAuthenticated) {
-                $rootScope.checkout = {
-                    journeyId: parseInt($routeParams.journeyId)
+        if (!$rootScope.isAuthenticated) {
+            $location.path('/connect');
+        } else {
+            $scope.selectedJourneyId = $routeParams.journeyId;
+            var journeyPromise = Journey.getDetail($scope.selectedJourneyId),
+                feePromise = MyRunTripFees.getFee($scope.selectedJourneyId),
+                versionPromise = Technical.version(),
+                all = $q.all([journeyPromise, feePromise, versionPromise]);
+            all.then(function (res) {
+                $scope.journey = res[0];
+                if ($scope.journey.is_canceled) {
+                    $location.path('/journey');
+                }
+                $scope.fees = res[1];
+                $scope.version = res[2];
+                if ($scope.version === 'DEV') {
+                    $scope.url_paypal = $sce.trustAsResourceUrl('https://www.sandbox.paypal.com/cgi-bin/webscr');
+                    $scope.key_paypal = '622WFSZHPNBH4';
+                    $scope.url_website = 'https://myruntrip-staging.herokuapp.com';
+                } else {
+                    $scope.url_paypal = $sce.trustAsResourceUrl('https://www.paypal.com/cgi-bin/webscr');
+                    $scope.key_paypal = 'ST4SRXB6PJAGC';
+                    $scope.url_website = 'http://www.myruntrip.com';
+                }
+                $scope.reserved_outward = 0;
+                $scope.reserved_return = 0;
+                $scope.discount = 0;
+                $scope.discountOld = 0;
+                if ($scope.fees.discount) {
+                    $scope.discount = _.toNumber($scope.fees.discount * 100);
+                    $scope.discountLabel = _.toString($scope.discount) + ' %';
+                }
+                $scope.getFreeSpaceOutward = function() {
+                    var result = [], start = 1,
+                        end = parseInt($scope.journey.nb_space_outward) - parseInt($scope.reserved_outward);
+                    for (var i = start; i <= end; i++) {
+                        result.push({id: i});
+                    }
+                    return result;
                 };
-                $location.path('/connect');
-            } else {
-                $scope.selectedJourneyId = $routeParams.journeyId;
-            }
-        }
-        var journeyPromise = Journey.getDetail($scope.selectedJourneyId),
-            feePromise = MyRunTripFees.getFee($scope.selectedJourneyId),
-            versionPromise = Technical.version(),
-            all = $q.all([journeyPromise, feePromise, versionPromise]);
-        all.then(function (res) {
-            $scope.journey = res[0];
-            if ($scope.journey.is_canceled) {
-                $location.path('/journey');
-            }
-            $scope.fees = res[1];
-            $scope.version = res[2];
-            if ($scope.version === 'DEV') {
-                $scope.url_paypal = $sce.trustAsResourceUrl('https://www.sandbox.paypal.com/cgi-bin/webscr');
-                $scope.key_paypal = '622WFSZHPNBH4';
-                $scope.url_website = 'https://myruntrip-staging.herokuapp.com';
-            } else {
-                $scope.url_paypal = $sce.trustAsResourceUrl('https://www.paypal.com/cgi-bin/webscr');
-                $scope.key_paypal = 'ST4SRXB6PJAGC';
-                $scope.url_website = 'http://www.myruntrip.com';
-            }
-            $scope.reserved_outward = 0;
-            $scope.reserved_return = 0;
-            $scope.discount = 0;
-            $scope.discountOld = 0;
-            if ($scope.fees.discount) {
-                $scope.discount = _.toNumber($scope.fees.discount * 100);
-                $scope.discountLabel = _.toString($scope.discount) + ' %';
-            }
-            $scope.getFreeSpaceOutward = function() {
-                var result = [], start = 1,
-                    end = parseInt($scope.journey.nb_space_outward) - parseInt($scope.reserved_outward);
-                for (var i = start; i <= end; i++) {
-                    result.push({id: i});
-                }
-                return result;
-            };
-            $scope.getFreeSpaceReturn = function() {
-                var result = [], start = 1,
-                    end = parseInt($scope.journey.nb_space_return) - parseInt($scope.reserved_return);
-                for (var i = start; i <= end; i++) {
-                    result.push({id: i});
-                }
-                return result;
-            };
-            $scope.nbFreeSpaceListOutward = $scope.getFreeSpaceOutward();
-            $scope.nbFreeSpaceListReturn = $scope.getFreeSpaceReturn();
-            $scope.selectedPlaceOutward = 0;
-            $scope.selectedPlaceReturn = 0;
+                $scope.getFreeSpaceReturn = function() {
+                    var result = [], start = 1,
+                        end = parseInt($scope.journey.nb_space_return) - parseInt($scope.reserved_return);
+                    for (var i = start; i <= end; i++) {
+                        result.push({id: i});
+                    }
+                    return result;
+                };
+                $scope.nbFreeSpaceListOutward = $scope.getFreeSpaceOutward();
+                $scope.nbFreeSpaceListReturn = $scope.getFreeSpaceReturn();
+                $scope.selectedPlaceOutward = 0;
+                $scope.selectedPlaceReturn = 0;
 
-            var invoice_key = Math.random().toString(36).substring(2, 7).toUpperCase();
-            var d = new Date();
-            var curr_date = ('0' + d.getDate()).slice(-2);
-            var curr_month = ('0' + (d.getMonth() + 1)).slice(-2);
-            var curr_year = d.getFullYear();
-            var invoice_date = curr_year + '' + curr_month + '' + curr_date;
-            $scope.invoice_ref = 'MRT' + invoice_date + invoice_key;
+                var invoice_key = Math.random().toString(36).substring(2, 7).toUpperCase();
+                var d = new Date();
+                var curr_date = ('0' + d.getDate()).slice(-2);
+                var curr_month = ('0' + (d.getMonth() + 1)).slice(-2);
+                var curr_year = d.getFullYear();
+                var invoice_date = curr_year + '' + curr_month + '' + curr_date;
+                $scope.invoice_ref = 'MRT' + invoice_date + invoice_key;
 
-            $scope.promoCode = {
-                promoCodeValid: 0,
-                discount: 0,
-                code: '',
-                codeError: 0,
-                codeErrorMsg: ''
-            };
+                $scope.promoCode = {
+                    promoCodeValid: 0,
+                    discount: 0,
+                    code: '',
+                    codeError: 0,
+                    codeErrorMsg: ''
+                };
 
-            $scope.journeyPrice = {
-                outwardAmount: 0,
-                returnAmount: 0,
-                fees: 0,
-                totalAmount: 0
-            };
+                $scope.journeyPrice = {
+                    outwardAmount: 0,
+                    returnAmount: 0,
+                    fees: 0,
+                    totalAmount: 0
+                };
 
-            $scope.calculatePrices = function () {
-                var feeBySpace = MyRunTripFees.calculateFee($scope.journey.amount, $scope.discount);
+                $scope.calculatePrices = function () {
+                    var feeBySpace = MyRunTripFees.calculateFee($scope.journey.amount, $scope.discount);
 
-                $scope.journeyPrice.fees = 0;
-                if ($scope.selectedPlaceOutward) {
-                    $scope.journeyPrice.outwardAmount = $scope.journey.amount * $scope.selectedPlaceOutward;
-                    $scope.journeyPrice.fees += $scope.selectedPlaceOutward * feeBySpace;
-                }
-                if ($scope.selectedPlaceReturn) {
-                    $scope.journeyPrice.returnAmount = $scope.journey.amount * $scope.selectedPlaceReturn;
-                    $scope.journeyPrice.fees += $scope.selectedPlaceReturn * feeBySpace;
-                }
-                $scope.journeyPrice.totalAmount = ($scope.journeyPrice.outwardAmount +
-                                                    $scope.journeyPrice.returnAmount +
-                                                    $scope.journeyPrice.fees).toFixed(2);
-                $scope.journeyPrice.fees = $scope.journeyPrice.fees.toFixed(2);
-                return $scope.journeyPrice;
-            };
+                    $scope.journeyPrice.fees = 0;
+                    if ($scope.selectedPlaceOutward) {
+                        $scope.journeyPrice.outwardAmount = $scope.journey.amount * $scope.selectedPlaceOutward;
+                        $scope.journeyPrice.fees += $scope.selectedPlaceOutward * feeBySpace;
+                    }
+                    if ($scope.selectedPlaceReturn) {
+                        $scope.journeyPrice.returnAmount = $scope.journey.amount * $scope.selectedPlaceReturn;
+                        $scope.journeyPrice.fees += $scope.selectedPlaceReturn * feeBySpace;
+                    }
+                    $scope.journeyPrice.totalAmount = ($scope.journeyPrice.outwardAmount +
+                    $scope.journeyPrice.returnAmount +
+                    $scope.journeyPrice.fees).toFixed(2);
+                    $scope.journeyPrice.fees = $scope.journeyPrice.fees.toFixed(2);
+                    return $scope.journeyPrice;
+                };
 
-            $scope.joinJourney = function (placeOutward, placeReturn, form) {
-                var prices = $scope.calculatePrices(),
-                    amount = prices.totalAmount,
-                    fees = prices.fees;
-                placeOutward = placeOutward  || 0;
-                placeReturn = placeReturn  || 0;
-                $scope.joined = 1;
-                $scope.reserved_outward = $scope.reserved_outward + placeOutward;
-                $scope.reserved_return = $scope.reserved_return + placeReturn;
-                Join.add($scope.selectedJourneyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref)
-                    .then(function (join) {
-                        form.commit();
-                    });
-            };
+                $scope.joinJourney = function (placeOutward, placeReturn, form) {
+                    var prices = $scope.calculatePrices(),
+                        amount = prices.totalAmount,
+                        fees = prices.fees;
+                    placeOutward = placeOutward  || 0;
+                    placeReturn = placeReturn  || 0;
+                    $scope.joined = 1;
+                    $scope.reserved_outward = $scope.reserved_outward + placeOutward;
+                    $scope.reserved_return = $scope.reserved_return + placeReturn;
+                    Join.add($scope.selectedJourneyId, placeOutward, placeReturn, amount, fees, $scope.invoice_ref)
+                        .then(function (join) {
+                            form.commit();
+                        });
+                };
 
-            $scope.resetPromoCode = function () {
-                $scope.discount = $scope.discountOld;
-                $scope.discountLabel = _.toString($scope.discount) + ' %';
-                $scope.calculatePrices();
-                $scope.promoCode.promoCodeValid = 0;
-                $scope.promoCode.discount = 0;
-                $scope.promoCode.codeError = 0;
-                $scope.promoCode.codeErrorMsg = '';
-            };
-            
-            $scope.checkPromoCode = function () {
-                $scope.promoCode.promoCodeValid = 0;
-                $scope.promoCode.codeError = 0;
-                $scope.promoCode.codeErrorMsg = '';
-                if ($scope.promoCode.code.length) {
-                    MyRunTripFees.checkCode(_.toString($scope.promoCode.code))
-                        .then(function (code) {
-                            if (code.id) {
-                                $scope.promoCode.promoCodeValid = 1;
-                                $scope.promoCode.discount = code.discount * 100;
-                                if ($scope.discount < $scope.promoCode.discount) {
-                                    $scope.discountOld = $scope.discount;
-                                    $scope.discount = $scope.promoCode.discount;
+                $scope.resetPromoCode = function () {
+                    $scope.discount = $scope.discountOld;
+                    $scope.discountLabel = _.toString($scope.discount) + ' %';
+                    $scope.calculatePrices();
+                    $scope.promoCode.promoCodeValid = 0;
+                    $scope.promoCode.discount = 0;
+                    $scope.promoCode.codeError = 0;
+                    $scope.promoCode.codeErrorMsg = '';
+                };
+
+                $scope.checkPromoCode = function () {
+                    $scope.promoCode.promoCodeValid = 0;
+                    $scope.promoCode.codeError = 0;
+                    $scope.promoCode.codeErrorMsg = '';
+                    if ($scope.promoCode.code.length) {
+                        MyRunTripFees.checkCode(_.toString($scope.promoCode.code))
+                            .then(function (code) {
+                                if (code.id) {
+                                    $scope.promoCode.promoCodeValid = 1;
+                                    $scope.promoCode.discount = code.discount * 100;
+                                    if ($scope.discount < $scope.promoCode.discount) {
+                                        $scope.discountOld = $scope.discount;
+                                        $scope.discount = $scope.promoCode.discount;
+                                    }
+                                    $scope.discountLabel = _.toString($scope.discount) + ' %';
+                                    $scope.calculatePrices();
+                                } else {
+                                    $scope.promoCode.promoCodeValid = 0;
+                                    $scope.promoCode.codeError = 1;
+                                    $scope.promoCode.codeErrorMsg = 'Désolé mais votre code n\'existe pas ou n\'est plus valide.';
                                 }
-                                $scope.discountLabel = _.toString($scope.discount) + ' %';
-                                $scope.calculatePrices();
-                            } else {
+                            })
+                            .catch(function (err) {
                                 $scope.promoCode.promoCodeValid = 0;
                                 $scope.promoCode.codeError = 1;
-                                $scope.promoCode.codeErrorMsg = 'Désolé mais votre code n\'existe pas ou n\'est plus valide.';
-                            }
-                        })
-                        .catch(function (err) {
-                            $scope.promoCode.promoCodeValid = 0;
-                            $scope.promoCode.codeError = 1;
-                            $scope.promoCode.codeErrorMsg = 'En raison d\'un problème nous pouvons pas vérifier votre code';
-                        });
-                }
-            };
-        });
+                                $scope.promoCode.codeErrorMsg = 'En raison d\'un problème nous pouvons pas vérifier votre code';
+                            });
+                    }
+                };
+            });
+        }
     }).
 	controller('RunnableSharedController', function ($scope, Session, User) {
 		$scope.invitForm = {
@@ -436,9 +431,10 @@ angular.module('runnable.controllers', []).
 			partnerListPromise = Partner.getList(),
             feeDefaultPromise = MyRunTripFees.getDefault(),
             feeListPromise = MyRunTripFees.getFeeList(),
+            joinToRefundListPromise = Join.toRefund(),
 			all = $q.all([userListPromise, runListPromise, journeyListPromise, joinListPromise, EmailOptionsPromise,
                 pageListPromise, versionPromise, partnerListPromise, journeyToPayPromise, feeDefaultPromise,
-                feeListPromise]);
+                feeListPromise, joinToRefundListPromise]);
 		all.then(function (res) {
 			$scope.userList = res[0];
 			$scope.runList = res[1];
@@ -451,6 +447,7 @@ angular.module('runnable.controllers', []).
             $scope.journeyToPay = res[8];
             $scope.defaultFee = res[9];
             $scope.feeList = res[10];
+            $scope.toRefundList = res[11];
             if ($scope.defaultFee.percentage) {
                 $scope.defaultFee.percentage = $scope.defaultFee.percentage * 100;
             }
@@ -613,6 +610,7 @@ angular.module('runnable.controllers', []).
 				run.is_active = true;
 			}
 		};
+        // Dashboard
         $scope.openJourneyAction = function (journey, idx) {
             $scope.selectedJourney = journey;
             $scope.selectedJourney.idx = idx;
@@ -636,6 +634,12 @@ angular.module('runnable.controllers', []).
                 $scope.journeyToPay.splice($scope.selectedJourney.idx, 1);
             }
             angular.element('#adminJourneyAction').modal('hide');
+        };
+        $scope.refundJoin = function (journey, idx) {
+            Join.refund(journey.id)
+                .then(function (invoice) {
+                    $scope.toRefundList.splice(idx, 1);
+                });
         };
         // Partner scope
         $scope.partnerCreation = false;
@@ -1220,15 +1224,11 @@ angular.module('runnable.controllers', []).
 			};
 		});
 		$scope.startCheckout = function () {
-            $rootScope.checkout = {
-                journeyId: $scope.journey.id
-            };
-            if (!$rootScope.isAuthenticated) {
-                $location.path('/connect');
-            } else {
-                $location.path('/checkout-' + $scope.journey.id);
-            }
+            $location.path('/checkout-' + $scope.journey.id);
 		};
+        $scope.redirectToPrivateDiscussion = function () {
+            $location.path('/myjourney-discussion-' + $scope.journeyId);
+        };
         $scope.askValidationJoinCancelFromJourney = function () {
             angular.element('#validationModal').modal('show');
             $scope.validationMessage = 'Vous souhaitez annuler votre participation à ce voyage. ' +
@@ -1396,7 +1396,12 @@ angular.module('runnable.controllers', []).
 		};
         $scope.submitJourney = function (journey) {
             var fb_titre = 'Mon voyage pour la course ' + journey.Run.name,
-                fb_desc = 'Je vous propose un ' + journey.journey_type + ' au départ de ' + journey.address_start;
+                fb_desc = 'Je vous propose un ' + journey.journey_type;
+            if (journey.journey_type.toLowerCase() === 'retour') {
+                fb_desc += ' à destination de ' + journey.address_start;
+            } else {
+                fb_desc += ' au départ de ' + journey.address_start;
+            }
             Journey.create(journey).then(function (newJourney) {
                 if (!$rootScope.isAuthenticated) {
                     $rootScope.draftId = newJourney;
@@ -1418,8 +1423,8 @@ angular.module('runnable.controllers', []).
             });
         };
 	}).
-	controller('RunnableMyJourneyController', function ($scope, $q, $timeout, $rootScope, User, Discussion, Join,
-                                                        GoogleMapApi, Session, Inbox, ValidationJourney, Journey) {
+	controller('RunnableMyJourneyController', function ($scope, $q, $timeout, $rootScope, $location, User, Discussion,
+                                                        Join, GoogleMapApi, Session, Inbox, ValidationJourney, Journey) {
 		$scope.page = 'MyJourney';
 		var userJourneyPromise = User.getJourney(),
 			userJoinPromise = User.getJoin(),
@@ -1473,7 +1478,11 @@ angular.module('runnable.controllers', []).
                     });
             };
         };
-		$scope.showJourneyModal = function (journey, join) {
+        $scope.redirectToPrivateDiscussion = function (journeyId) {
+            $location.path('/myjourney-discussion-' + journeyId);
+        };
+
+        $scope.showJourneyModal = function (journey, join) {
 			var discussionUsersPromise = Discussion.getUsers(journey.id),
 				discussionMessagesPromise = Discussion.getPrivateMessages(journey.id, 0),
 				all = $q.all([discussionUsersPromise, discussionMessagesPromise]);
@@ -1525,6 +1534,7 @@ angular.module('runnable.controllers', []).
 			$scope.newMessageEntry = '';
 			$scope.discussionMessages.unshift(
 				{	message: text,
+                    showDate: moment(Date.now()).fromNow(),
 					createdAt: Date.now(),
 					User:
 						{	firstname: Session.userFirstname,
@@ -1730,6 +1740,46 @@ angular.module('runnable.controllers', []).
                 });
         };
 	}).
+	controller('RunnableDiscussionJourneyController', function ($scope, $q, $rootScope, $routeParams, $location,
+                                                                Session, Journey, Discussion) {
+        // TODO: Check if user is part of the journey
+        if (!$rootScope.isAuthenticated) {
+            $location.path('/connect');
+        } else {
+            $scope.journeyId = parseInt($routeParams.journeyId);
+            var discussionUsersPromise = Discussion.getUsers($scope.journeyId),
+                discussionMessagesPromise = Discussion.getPrivateMessages($scope.journeyId, 0),
+                journeyDetailPromise = Journey.getDetail($scope.journeyId),
+                all = $q.all([discussionUsersPromise, discussionMessagesPromise, journeyDetailPromise]);
+            all.then(function (res) {
+                $scope.discussionUsers = res[0];
+                $scope.discussionMessages = res[1];
+                $scope.selectedJourney = res[2];
+                if (_.findIndex($scope.discussionUsers, ['id', Session.userId]) < 0) {
+                    $location.path('/journey-' + $scope.journeyId);
+                } else {
+                    angular.forEach($scope.discussionMessages, function (message) {
+                        message.showDate = moment(message.createdAt).fromNow();
+                    });
+                    $scope.sendMessage = function () {
+                        var text = String($scope.newMessageEntry).replace(/<[^>]+>/gm, '');
+                        $scope.newMessageEntry = '';
+                        $scope.discussionMessages.unshift(
+                            {	message: text,
+                                showDate: moment(Date.now()).fromNow(),
+                                User:
+                                {	firstname: Session.userFirstname,
+                                    lastname: Session.userLastname}
+                            });
+                        Discussion.addPrivateMessage(text, $scope.selectedJourney.id);
+                    };
+                }
+            });
+            $scope.returnToOrigin = function(journeyId) {
+                $location.path('/journey-' + journeyId);
+            };
+        }
+    }).
 	controller('RunnableJourneyController', function ($scope, $q, $timeout, $location, Run, Journey, GoogleMapApi) {
         $scope.page = 'Journey';
         $scope.displayModeIcon = 'fa-list';

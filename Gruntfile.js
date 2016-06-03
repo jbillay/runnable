@@ -102,6 +102,9 @@ module.exports = function(grunt) {
     // Angular Test task.
     grunt.registerTask('angular-unit-test', ['env:test', 'karma:unit']);
 
+    // Angular Test task.
+    grunt.registerTask('aut', ['env:test', 'karma:travis']);
+
     // e2e Test task.
     grunt.registerTask('e2e', ['env:test', 'protractor_webdriver', 'protractor']);
 

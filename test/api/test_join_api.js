@@ -84,7 +84,7 @@ describe('Test of join API', function () {
             agent
                 .get('http://localhost:' + settings.port + '/api/admin/joins')
                 .end(function (err, res) {
-                    assert.equal(res.body.length, 6);
+                    assert.equal(res.body.length, 7);
                     return done();
                 });
         });
@@ -98,7 +98,7 @@ describe('Test of join API', function () {
         it('should create a new join', function(done) {
 
             var join = {
-                    id: 7,
+                    id: 8,
                     nb_place_outward: 1,
                     nb_place_return: 1,
                     amount: 50.96,
@@ -117,7 +117,7 @@ describe('Test of join API', function () {
                         .get('http://localhost:' + settings.port + '/api/admin/joins')
                         .end(function (err, res) {
                             if (err) return done(err);
-                            assert.equal(res.body.length, 7);
+                            assert.equal(res.body.length, 8);
                             agent
                                 .get('http://localhost:' + settings.port + '/api/inbox/msg')
                                 .end(function (err, res) {
@@ -152,6 +152,44 @@ describe('Test of join API', function () {
                 .end(function (err, res) {
                     assert.equal(res.body.msg, 'joinNotCancelled');
                     return done();
+                });
+        });
+    });
+
+    describe('GET /api/admin/join/toRefund', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should return a list of joins to refund', function(done) {
+            agent
+                .get('http://localhost:' + settings.port + '/api/admin/join/toRefund')
+                .end(function (err, res) {
+                    assert.equal(res.body.msg.length, 1);
+                    assert.equal(res.body.msg[0].id, 7);
+                    return done();
+                });
+        });
+    });
+
+    describe('POST /api/admin/join/refund', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('should mark a join as refunded', function(done) {
+            agent
+                .post('http://localhost:' + settings.port + '/api/admin/join/refund')
+                .send({id: 7})
+                .end(function (err, res) {
+                    assert.equal(res.body.msg.id, 7);
+                    assert.equal(res.body.msg.status, 'refunded');
+                    agent
+                        .get('http://localhost:' + settings.port + '/api/admin/join/toRefund')
+                        .end(function (err, res) {
+                            assert.equal(res.body.msg.length, 0);
+                            return done();
+                        });
                 });
         });
     });

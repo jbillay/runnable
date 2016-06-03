@@ -28,7 +28,7 @@ describe('Test of join object', function () {
         join.getList(function (err, joinList) {
             if (err) return done(err);
             assert.isNull(err);
-            assert.equal(joinList.length, 6);
+            assert.equal(joinList.length, 7);
             return done();
         });
     });
@@ -99,7 +99,7 @@ describe('Test of join object', function () {
     it('Create a new Join', function (done) {
        var join = new Join(),
            newJoin = {
-                id: 7,
+                id: 8,
                 nb_place_outward: 3,
                 nb_place_return: 2,
                 journey_id: 3
@@ -111,17 +111,17 @@ describe('Test of join object', function () {
         join.setJourney(newJoin.journey_id);
         join.setUser(user);
         var tmp = join.get();
-        assert.equal(tmp.id, 7);
+        assert.equal(tmp.id, 8);
         assert.equal(tmp.nb_place_outward, 3);
         assert.equal(tmp.nb_place_return, 2);
         join.save(tmp, user, function (err, createdJoin) {
             assert.isNull(err);
             join.getList(function (err, joinList) {
                 assert.isNull(err);
-                assert.equal(joinList.length, 7);
-                join.getById(7, function (err, joinInfo) {
+                assert.equal(joinList.length, 8);
+                join.getById(8, function (err, joinInfo) {
                     assert.isNull(err);
-                    assert.equal(joinInfo.id, 7);
+                    assert.equal(joinInfo.id, 8);
                     assert.equal(joinInfo.nb_place_outward, 3);
                     assert.equal(joinInfo.nb_place_return, 2);
                     return done();
@@ -172,6 +172,43 @@ describe('Test of join object', function () {
             .catch(function (err) {
                 assert.isNotNull(err);
                 return done();
+            });
+    });
+
+    it('List all join to refund', function (done) {
+        var join = new Join();
+        
+        join.toRefund()
+            .then(function (joinList) {
+                assert.equal(joinList.length, 1);
+                assert.equal(joinList[0].id, 7);
+                assert.equal(joinList[0].User.email, 'toto.titi@tata.fr');
+                assert.equal(joinList[0].Journey.address_start, 'Nantes, France');
+                return done();
+            })
+            .catch(function (err) {
+                return done(err);
+            });
+    });
+
+    it('Refund the join to refund', function (done) {
+        var join = new Join();
+
+        join.refund(7)
+            .then(function (updatedInvoice) {
+                assert.equal(updatedInvoice.id, 7);
+                assert.equal(updatedInvoice.status, 'refunded');
+                join.toRefund()
+                    .then(function (joinList) {
+                        assert.equal(joinList.length, 0);
+                        return done();
+                    })
+                    .catch(function (err) {
+                        return done(err);
+                    });
+            })
+            .catch(function (err) {
+                return done(err);
             });
     });
 });

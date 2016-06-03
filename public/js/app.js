@@ -83,6 +83,10 @@ angular.module('runnable', [
                     authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.user]
                 }
             }).
+            when('/myjourney-discussion-:journeyId', {
+                templateUrl: 'partials/journey_discussion',
+                controller: 'RunnableDiscussionJourneyController'
+            }).
             when('/journey-:journeyId', {
                 templateUrl: 'partials/journey_detail',
                 controller: 'RunnableJourneyDetailController'
@@ -121,7 +125,7 @@ angular.module('runnable', [
             }).
             when('/checkout-:journeyId', {
                 templateUrl: 'partials/checkout',
-                controller: 'RunnableCheckoutController',
+                controller: 'RunnableCheckoutController'
             }).
             when('/', {
                 templateUrl: 'partials/index',
@@ -143,7 +147,16 @@ angular.module('runnable', [
         moment.locale('fr');
     }).
 	run(function ($rootScope, AUTH_EVENTS, AuthService, $location) {
-		$rootScope.$on('$routeChangeStart', function (event, next) {
+		$rootScope.$on('$routeChangeStart', function (event, next, current) {
+            if (next.$$route.originalPath === '/connect') {
+                if (current) {
+                    var originPath = current.$$route.originalPath;
+                    Object.getOwnPropertyNames(current.params).forEach(function(val, idx, array) {
+                        originPath = originPath.replace(':' + val, current.params[val]);
+                    });
+                    $rootScope.referer = {path: originPath};
+                }
+            }
             if (next.data) {
                 AuthService.init()
                     .then(function () {
@@ -153,11 +166,13 @@ angular.module('runnable', [
                             if (AuthService.isAuthenticated()) {
                                 // user is not allowed
                                 $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
+                                $location.path('/');
                             } else {
                                 // user is not logged in
+                                console.log('ici');
                                 $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
+                                $location.path('/connect');
                             }
-                            $location.path('/');
                         }
                     })
                     .catch(function () {

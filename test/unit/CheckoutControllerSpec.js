@@ -209,7 +209,7 @@ describe('Runnable Controllers', function() {
     });
 
     describe('RunnableCheckoutController existing checkout', function(){
-        var scope, rootScope, timeout, service, location, ctrl, ctrlMain, $httpBackend, q, sce;
+        var scope, rootScope, timeout, service, location, ctrl, ctrlMain, $httpBackend, q, sce, routeParams;
 
         beforeEach(inject(function(_$httpBackend_, _$rootScope_, $routeParams, $timeout, $location, _$q_, _$sce_, $controller, $compile, Session) {
             $httpBackend = _$httpBackend_;
@@ -218,6 +218,8 @@ describe('Runnable Controllers', function() {
             timeout = $timeout;
             service = Session;
             location = $location;
+            routeParams = $routeParams;
+            routeParams.journeyId = 4;
             q = _$q_;
             sce = _$sce_;
 
@@ -262,17 +264,16 @@ describe('Runnable Controllers', function() {
 
             ctrlMain = $controller('RunnableMainController',
                 {$scope: scope, $rootScope: rootScope});
-            rootScope.checkout = {
-                journeyId: 4
-            };
+            rootScope.isAuthenticated = true;
             ctrl = $controller('RunnableCheckoutController',
-                {$rootScope: rootScope, $scope: scope, 'Session': service, $location: location});
+                {$rootScope: rootScope, $scope: scope, 'Session': service, $location: location, $routeParams: routeParams});
         }));
 
         it ('Start controller on DEV environment', function () {
             spyOn(location, 'path');
             $httpBackend.whenGET('/api/version').respond('DEV');
             $httpBackend.flush();
+            rootScope.$digest();
             expect(scope.selectedJourneyId).toBe(4);
             expect(location.path).toHaveBeenCalledWith('/journey');
         });

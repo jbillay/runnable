@@ -610,6 +610,52 @@ describe('Runnable Controllers', function() {
                     amountToPay: 39
                 }
             ]);
+            $httpBackend.whenGET('/api/admin/join/toRefund').respond({
+                msg: [
+                    {
+                        id: 13,
+                        nb_place_outward: 1,
+                        nb_place_return: 1,
+                        createdAt: '2016-05-15T20:34:47.000Z',
+                        updatedAt: '2016-05-15T20:34:47.000Z',
+                        UserId: 1,
+                        JourneyId: null,
+                        Journey: null,
+                        User: {
+                            id: 1,
+                            firstname: 'Jeremy',
+                            lastname: 'Billay',
+                            address: '1 bis rue Saint Pierre 78100 Saint Germain en Laye',
+                            phone: null,
+                            email: 'jbillay@gmail.com',
+                            hashedPassword: '30I/772+OK6uQNdlaY8nriTbNSGznAk9un1zRIXmREB9nOjMz7wDDe2XpiS2ggk9En6lxR4SLqJyzAcW/rni3w==',
+                            provider: 'local',
+                            salt: 'T75xyNJfL19hzc778A08HQ==',
+                            itra: null,
+                            isActive: true,
+                            role: 'admin',
+                            picture: 'http://res.cloudinary.com/myruntrip/image/upload/v1459421867/avatar_development_1.jpg',
+                            createdAt: '2014-12-10T17:17:25.000Z',
+                            updatedAt: '2015-03-27T02:38:09.000Z'
+                        },
+                        Invoice: {
+                            id: 13,
+                            status: 'cancelled',
+                            amount: 19.52,
+                            fees: 3.52,
+                            ref: 'MRT20160515JR8UY',
+                            transaction: null,
+                            driver_payed: false,
+                            createdAt: '2016-05-15T20:34:47.000Z',
+                            updatedAt: '2016-05-31T05:52:36.000Z',
+                            UserId: 1,
+                            JourneyId: null,
+                            JoinId: 13
+                        }
+                    }
+                ],
+                type: 'success'
+            });
             $httpBackend.whenGET('/api/admin/partners').respond({msg: [
                 { id: 1, name: 'TCC', token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwNDgsImV4cCI6MTIwNTA5NjA2NjF9.-vmI9gHnCFX30N2oVhQLiADX-Uz2XHzrHjWjJpvSERo',expiry: '2016-03-09', fee: 6.8 },
                 { id: 2, name: 'I-Run', token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwNjcsImV4cCI6MTIwNTA5NDE5NzR9.fikQ6L2eYUBujEeV-OYMFfX_pER5eC2Z_nQJ0YVyb9w', expiry: '2017-07-09', fee: 8.2 }

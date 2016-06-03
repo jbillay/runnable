@@ -738,7 +738,37 @@ angular.module('runnable.services', ['ngResource']).
                         deferred.reject('error ' + status + ' : ' + data);
 					});
 				return deferred.promise;
-			}
+			},
+            toRefund: function () {
+                var deferred = $q.defer();
+                $http.get('/api/admin/join/toRefund').
+                    success(function (result) {
+                        if (result.type === 'success') {
+                            deferred.resolve(result.msg);
+                        } else  {
+                            deferred.reject(result.msg);
+                        }
+                    }).
+                    error(function(data, status) {
+                        deferred.reject('error ' + status + ' : ' + data);
+                    });
+                return deferred.promise;
+            },
+            refund: function (id) {
+                var deferred = $q.defer();
+                $http.post('/api/admin/join/refund', {id: id}).
+                    success(function (result) {
+                        if (result.type === 'success') {
+                            deferred.resolve(result.msg);
+                        } else  {
+                            deferred.reject(result.msg);
+                        }
+                    }).
+                    error(function(data, status) {
+                        deferred.reject('error ' + status + ' : ' + data);
+                    });
+                return deferred.promise;
+            }
         };
     }).
     factory('Run', function ($q, $http, $rootScope) {

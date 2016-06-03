@@ -51,7 +51,7 @@ describe('testing config block', function() {
 
         it('should load a page with authentification but user not authenticated', function() {
             spyOn(rootScope, '$broadcast').and.callThrough();
-            $httpBackend.whenGET('/api/user/me').respond({});
+            $httpBackend.whenGET('/api/user/me').respond(401);
             $httpBackend.whenGET('partials/profile').respond({});
             $httpBackend.whenGET('partials/index').respond({});
             location.path('/profile');

@@ -49,6 +49,9 @@
                             </button>
                         </div>
                         <div class="pull-right">
+                            <button type="button" id="privDiscussionBtn" class="btn btn-primary" ng-if="joined" ng-click="redirectToPrivateDiscussion()">
+                                Discussion privée au trajet
+                            </button>
                             <button type="button" id="joinedBtn" class="btn btn-danger" ng-if="joined" ng-click="askValidationJoinCancelFromJourney()">
                                 Je souhaite annuler ma participation
                             </button>

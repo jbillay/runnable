@@ -33,6 +33,33 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <h2>Le(s) voayge(s) à rembourser</h2>
+                        <table class="table userlist">
+                            <thead>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Place Aller</th>
+                                    <th>Place Retour</th>
+                                    <th>Montant</th>
+                                    <th>Marges</th>
+                                    <th>Transaction</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody ng-repeat="toRefund in toRefundList">
+                                <tr>
+                                    <td>{{toRefund.User.email}}</td>
+                                    <td>{{toRefund.nb_place_outward}}</td>
+                                    <td>{{toRefund.nb_place_return}}</td>
+                                    <td>{{toRefund.Invoice.amount | currency:'€ '}}</td>
+                                    <td>{{toRefund.Invoice.fees | currency:'€ '}}</td>
+                                    <td>{{toRefund.Invoice.transaction}}</td>
+                                    <td>
+                                        <i class="fa fa-credit-card" ng-click="refundJoin(toRefund, $index)"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </tab>

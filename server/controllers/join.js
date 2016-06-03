@@ -101,3 +101,30 @@ exports.cancel = function (req, res) {
 	id = null;
 	join = null;
 };
+
+exports.toRefund = function (req, res) {
+    'use strict';
+	var join = new Join();
+
+	join.toRefund()
+		.then(function (joinList) {
+			return res.jsonp({msg: joinList, type: 'success'});
+		})
+		.catch(function (err) {
+			return res.jsonp({msg: err, type: 'error'});
+		});
+};
+
+exports.refund = function (req, res) {
+    'use strict';
+	var id = req.body.id,
+        join = new Join();
+
+	join.refund(id)
+		.then(function (updatedInvoice) {
+			return res.jsonp({msg: updatedInvoice, type: 'success'});
+		})
+		.catch(function (err) {
+			return res.jsonp({msg: err, type: 'error'});
+		});
+};

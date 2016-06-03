@@ -58,5 +58,15 @@
       "UserId": 2,
       "JourneyId": 5
     }
+  },
+  {
+    "model": "Join",
+    "data": {
+      "id": 7,
+      "nb_place_outward": 1,
+      "nb_place_return": null,
+      "UserId": 3,
+      "JourneyId": 2
+    }
   }
 ]

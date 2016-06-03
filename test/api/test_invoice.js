@@ -79,7 +79,7 @@ describe('Test of Invoice object', function () {
         var invoice = new Invoice(),
             inbox = new Inbox(),
             newInvoice = {
-                id: 7,
+                id: 8,
                 status: 'pending',
                 amount: 38.83,
                 fees: 8.83,
@@ -97,7 +97,7 @@ describe('Test of Invoice object', function () {
         invoice.setJoin(newInvoice.join_id);
         invoice.setUser(user);
         var tmp = invoice.get();
-        assert.equal(tmp.id, 7);
+        assert.equal(tmp.id, 8);
         assert.equal(tmp.status, 'pending');
         assert.equal(tmp.amount, 38.83);
         assert.equal(tmp.fees, 8.83);
@@ -107,10 +107,10 @@ describe('Test of Invoice object', function () {
         invoice.save(tmp, user, function (err, createdInvoice) {
             if (err) return done(err);
             assert.isNull(err);
-            invoice.getById(7, function (err, invoiceInfo) {
+            invoice.getById(8, function (err, invoiceInfo) {
                 if (err) return done(err);
                 assert.isNull(err);
-                assert.equal(invoiceInfo.id, 7);
+                assert.equal(invoiceInfo.id, 8);
                 assert.equal(invoiceInfo.status, 'pending');
                 assert.equal(invoiceInfo.amount, 38.83);
                 assert.equal(invoiceInfo.fees, 8.83);
