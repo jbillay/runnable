@@ -110,7 +110,7 @@ describe('Test of Discussion API', function () {
                 .send(message)
                 .end(function (err, res) {
                     if (err) return done(err);
-                    assert.equal(res.body.msg, 'Notifications sent to users');
+                    assert.equal(res.body.msg, 'Private msg notifications has been sent to users');
                     agent
                         .get('http://localhost:' + settings.port + '/api/discussion/private/messages/3')
                         .end(function (err, res) {
@@ -133,7 +133,7 @@ describe('Test of Discussion API', function () {
                 .send(message)
                 .end(function (err, res) {
                     if (err) return done(err);
-                    assert.equal(res.body.msg, 'Notifications sent to users');
+                    assert.equal(res.body.msg, 'Public msg notifications has been sent to users');
                     agent
                         .get('http://localhost:' + settings.port + '/api/discussion/public/messages/3')
                         .end(function (err, res) {

@@ -1742,7 +1742,6 @@ angular.module('runnable.controllers', []).
 	}).
 	controller('RunnableDiscussionJourneyController', function ($scope, $q, $rootScope, $routeParams, $location,
                                                                 Session, Journey, Discussion) {
-        // TODO: Check if user is part of the journey
         if (!$rootScope.isAuthenticated) {
             $location.path('/connect');
         } else {

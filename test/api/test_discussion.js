@@ -222,15 +222,12 @@ describe('Test of discussion object', function () {
         discussion.notificationMessage(3, 'test', true, user, function (err, msg) {
             if (err) return done(err);
             assert.isNull(err);
-            assert.equal('Notifications sent to users', msg);
+            assert.equal('Public msg notifications has been sent to users', msg);
             assert.isTrue(mail.sendEmail.calledOnce);
             assert.isTrue(mail.send.calledOnce);
             assert.isTrue(mail.generateContent.calledOnce);
             assert.isTrue(mail.setTo.calledOnce);
-            mail.sendEmail.restore();
-            mail.send.restore();
-            mail.generateContent.restore();
-            mail.setTo.restore();
+            assert.isTrue(mail.setTo.calledWith('ruestpierrestgermain@gmail.com'));
             inbox.getList(user, function (err, messages) {
                 if (err) return done(err);
                 assert.isNull(err);
@@ -239,7 +236,31 @@ describe('Test of discussion object', function () {
                     if (err) return done(err);
                     assert.isNull(err);
                     assert.equal(messages.length, 3);
-                    return done();
+                    discussion.notificationMessage(3, 'test2', true, user, function (err, msg) {
+                        if (err) return done(err);
+                        assert.isNull(err);
+                        assert.equal('Public msg notifications has been sent to users', msg);
+                        assert.isTrue(mail.sendEmail.calledTwice);
+                        assert.isTrue(mail.send.calledTwice);
+                        assert.isTrue(mail.generateContent.calledTwice);
+                        assert.isTrue(mail.setTo.calledTwice);
+                        assert.isTrue(mail.setTo.calledWith('ruestpierrestgermain@gmail.com'));
+                        mail.sendEmail.restore();
+                        mail.send.restore();
+                        mail.generateContent.restore();
+                        mail.setTo.restore();
+                        inbox.getList(user, function (err, messages) {
+                            if (err) return done(err);
+                            assert.isNull(err);
+                            assert.equal(messages.length, 0);
+                            inbox.getList(user_owner, function (err, messages) {
+                                if (err) return done(err);
+                                assert.isNull(err);
+                                assert.equal(messages.length, 4);
+                                return done();
+                            });
+                        });
+                    });
                 });
             });
         });
@@ -253,7 +274,7 @@ describe('Test of discussion object', function () {
         discussion.notificationMessage(2, 'test', false, user, function (err, msg) {
             if (err) return done(err);
             assert.isNull(err);
-            assert.equal('Notifications sent to users', msg);
+            assert.equal('Private msg notifications has been sent to users', msg);
             inbox.getList(user_owner, function (err, messages) {
                 if (err) return done(err);
                 assert.isNull(err);

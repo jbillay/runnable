@@ -98,9 +98,9 @@ discussion.prototype.getPublicUsers = function (journeyId) {
                     } else if (discussion.email) {
                         list.emails.push(discussion.email);
                     }
-                    list.users = _.uniq(list.users);
-                    list.emails = _.uniq(list.emails);
                 });
+                list.users = _.uniq(list.users);
+                list.emails = _.uniq(list.emails);
                 models.User.findAll({where: {id: list.users}})
                     .then(function (users) {
                         list.users = users;
@@ -209,27 +209,35 @@ discussion.prototype.notificationMessage = function (journeyId, message, is_publ
             if (is_public === false) {
                 that.getUsers(journeyId)
                     .then(function (discussionUsers) {
-                        var values = {
-                                    runName: journey.Run.name,
-                                    journeyId: journey.id,
-                                    username: user.firstname + ' ' + user.lastname,
-                                    text: message },
-                            template = 'JourneyPrivateMessage',
-                            privatePromises = [];
-                        if (discussionUsers) {
-                            discussionUsers.forEach(function (discussionUser) {
-                                if (discussionUser.id !== user.id) {
-                                    privatePromises.push(inbox.add(template, values, discussionUser.id));
-                                }
-                            });
-                        }
-                        q.all(privatePromises)
-                            .then(function(res) {
-                                done(null, 'Notifications sent to users');
-                            })
-                            .catch(function (err) {
-                                done(new Error('Discussion : ' + err), null);
-                            });
+                        var queue = async.queue(function (options, callback) {
+                            inbox.add(options.template, options.values, options.userId)
+                                .then(function (msg) {
+                                    callback(null, msg);
+                                })
+                                .catch(function (err) {
+                                    callback(err, null);
+                                });
+                        });
+                        var template = 'JourneyPrivateMessage',
+                            values = {
+                                runName: journey.Run.name,
+                                journeyId: journey.id,
+                                username: user.firstname + ' ' + user.lastname,
+                                text: message };
+                        discussionUsers.forEach(function (discussionUser) {
+                            if (discussionUser.id !== user.id) {
+                                queue.push({template: template, values: values, userId: discussionUser.id}, function (err, msg) {
+                                    if (err) {
+                                        console.log(new Error('Message not sent : ' + err));
+                                    } else {
+                                        console.log('Msg sent to journey user');
+                                    }
+                                });
+                            }
+                        });
+                        queue.drain = function () {
+                            done(null, 'Private msg notifications has been sent to users');
+                        };
                     })
                     .catch(function (err) {
                         done(new Error(err), null);
@@ -237,36 +245,59 @@ discussion.prototype.notificationMessage = function (journeyId, message, is_publ
             } else {
                 that.getPublicUsers(journeyId)
                     .then (function(list) {
-                        var values = {
+                        var queue = async.queue(function (options, callback) {
+                            if (options.userId && options.email === null) {
+                                inbox.add(options.template, options.values, options.userId)
+                                    .then(function (msg) {
+                                        callback(null, msg);
+                                    })
+                                    .catch(function (err) {
+                                        callback(err, null);
+                                    });
+                            } else if (options.email && options.userId === null) {
+                                that.mail.sendEmail(options.template, options.values, options.email)
+                                    .then(function (msg) {
+                                        callback(null, msg);
+                                    })
+                                    .catch(function (err) {
+                                        callback(err, null);
+                                    });
+                            }
+                        });
+                        var template = 'JourneyPublicMessage',
+                            values = {
                                 runName: journey.Run.name,
                                 journeyId: journey.id,
                                 username: 'Un utilisateur',
-                                text: message
-                            },
-                            template = 'JourneyPublicMessage',
-                            publicPromises = [];
+                                text: message };
                         if (user) {
                             values.username = user.firstname + ' ' + user.lastname;
                         }
-                        if (list.users) {
-                            list.users.forEach(function (discussionUser) {
-                                if (discussionUser.id !== user.id) {
-                                    publicPromises.push(inbox.add(template, values, discussionUser.id));
-                                }
-                            });
-                        }
-                        if (list.emails) {
-                            list.emails.forEach(function (discussionEmail) {
-                                publicPromises.push(that.mail.sendEmail(template, values, discussionEmail));
-                            });
-                        }
-                        q.all(publicPromises)
-                            .then(function(res) {
-                                done(null, 'Notifications sent to users');
-                            })
-                            .catch(function (err) {
-                                done(new Error('Discussion : ' + err), null);
-                            });
+                        list.users.forEach(function (discussionUser) {
+                            if (discussionUser.id !== user.id) {
+                                queue.push({template: template, values: values, userId: discussionUser.id, email: null},
+                                    function (err, msg) {
+                                        if (err) {
+                                            console.log(new Error('Message not sent : ' + err));
+                                        } else {
+                                            console.log('Public msg sent to journey user ' + discussionUser.id);
+                                        }
+                                    });
+                            }
+                        });
+                        list.emails.forEach(function (discussionEmail) {
+                            queue.push({template: template, values: values, userId: null, email: discussionEmail},
+                                function (err, msg) {
+                                    if (err) {
+                                        console.log(new Error('Message not sent : ' + err));
+                                    } else {
+                                        console.log('Public msg sent to email ' + discussionEmail);
+                                    }
+                                });
+                        });
+                        queue.drain = function () {
+                            done(null, 'Public msg notifications has been sent to users');
+                        };
                     })
                 .catch(function (err) {
                     done(new Error(err), null);
