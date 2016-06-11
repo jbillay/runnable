@@ -1183,10 +1183,14 @@ angular.module('runnable.controllers', []).
 			$scope.joinList = res[1];
             $scope.publicMessages = res[2];
 			$scope.joined = 0;
+			$scope.owned = 0;
 			$scope.reserved_outward = 0;
 			$scope.reserved_return = 0;
             $scope.messageFilter = false;
 
+            if ($rootScope.currentUser && $rootScope.currentUser.id === $scope.journey.UserId) {
+                $scope.owned = 1;
+            }
 			angular.forEach($scope.joinList, function (join) {
 				$scope.reserved_outward += join.nb_place_outward;
 				$scope.reserved_return += join.nb_place_return;

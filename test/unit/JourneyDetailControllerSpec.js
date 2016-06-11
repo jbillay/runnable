@@ -103,6 +103,7 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
             timeout.flush();
             expect(scope.joined).toBe(1);
+            expect(scope.owned).toBe(1);
             expect(scope.reserved_outward).toBe(3);
             expect(scope.reserved_return).toBe(0);
         });
@@ -113,6 +114,7 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
             timeout.flush();
             expect(scope.joined).toBe(1);
+            expect(scope.owned).toBe(1);
             expect(scope.reserved_outward).toBe(3);
             expect(scope.reserved_return).toBe(0);
             expect(scope.nbFreeSpaceOutward()).toBe(1);
@@ -124,6 +126,7 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
             timeout.flush();
             expect(scope.joined).toBe(1);
+            expect(scope.owned).toBe(1);
             expect(scope.reserved_outward).toBe(3);
             expect(scope.reserved_return).toBe(0);
             expect(scope.nbFreeSpaceReturn()).toBe(0);
