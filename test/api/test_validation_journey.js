@@ -4,6 +4,8 @@
 
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
 var assert = require('chai').assert;
 var models = require('../../server/models/index');
 var ValidationJourney = require('../../server/objects/validation_journey');
@@ -25,9 +27,9 @@ describe('Test of validation_journey object', function () {
         var val = new ValidationJourney();
         val.getUserFeedback(function (err, feedback) {
             if (err) return done(err);
-            assert.equal(feedback.length, 2);
-            assert.equal(feedback[0].rate_service, 5);
-            assert.equal(feedback[0].UserId, 1);
+            assert.equal(feedback.length, 3);
+            assert.equal(feedback[0].rate_service, 3);
+            assert.equal(feedback[0].UserId, 3);
             return done();
         });
     });
@@ -51,7 +53,9 @@ describe('Test of validation_journey object', function () {
             assert.equal(validation.rate_service, 5);
             val.getUserFeedback(function (err, feedback) {
                 if (err) return done(err);
-                assert.equal(feedback.length, 3);
+                assert.equal(feedback.length, 4);
+                assert.equal(feedback[0].rate_service, 5);
+                assert.equal(feedback[0].UserId, 2);
                 return done();
             });
         });

@@ -35,10 +35,10 @@ describe('Test of home API', function () {
                     if (err) {
                         return done(err);
                     }
-                    assert.equal(res.body.length, 2);
-                    assert.equal(res.body[0].rate_service, 5);
-                    assert.equal(res.body[0].rate_driver, 3);
-                    assert.equal(res.body[0].comment_service, 'Myruntrip est vraiment un service de qualité. Merci pour tout votre travail');
+                    assert.equal(res.body.length, 3);
+                    assert.equal(res.body[0].rate_service, 3);
+                    assert.equal(res.body[0].rate_driver, 4);
+                    assert.equal(res.body[0].comment_service, 'Un grand merci à l\'équipe Myruntrip pour la fin');
                     done();
                 });
         });

@@ -22,5 +22,41 @@
       "JoinId": 2,
       "UserId": 1
     }
+  },
+  {
+    "model": "ValidationJourney",
+    "data": {
+      "id": 3,
+      "comment_driver": null,
+      "comment_service": null,
+      "rate_driver": null,
+      "rate_service": null,
+      "JoinId": 1,
+      "UserId": 1
+    }
+  },
+  {
+    "model": "ValidationJourney",
+    "data": {
+      "id": 4,
+      "comment_driver": "Bon conducteur",
+      "comment_service": "Mieux que Cariocar mais il reste du boulot",
+      "rate_driver": 4,
+      "rate_service": 1,
+      "JoinId": 3,
+      "UserId": 1
+    }
+  },
+  {
+    "model": "ValidationJourney",
+    "data": {
+      "id": 5,
+      "comment_driver": "Bon conducteur",
+      "comment_service": "Un grand merci à l'équipe Myruntrip pour la fin",
+      "rate_driver": 4,
+      "rate_service": 3,
+      "JoinId": 5,
+      "UserId": 3
+    }
   }
 ]

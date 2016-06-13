@@ -80,8 +80,12 @@ validationJourney.prototype.create = function (done) {
 
 validationJourney.prototype.getUserFeedback = function (done) {
     'use strict';
-    // TODO: where rate_service >= 3 and limit to 3
-    models.ValidationJourney.findAll()
+    models.ValidationJourney.findAll({  where:
+                                            {
+                                                rate_service: {$gte: 3},
+                                                comment_service: {$ne: null}
+                                            },
+                                        order: 'updatedAt DESC'})
         .then(function (feedbacks) {
             done(null, feedbacks);
         })

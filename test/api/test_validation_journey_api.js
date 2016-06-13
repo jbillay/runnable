@@ -4,6 +4,8 @@
 
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
 var request = require('supertest'),
     models = require('../../server/models/index'),
     assert = require('chai').assert,
