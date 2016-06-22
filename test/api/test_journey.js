@@ -235,6 +235,8 @@ describe('Test of journey object', function () {
             journey.save(tmp, user.id, 'admin', function(err, newJourney) {
                 if (err) return done(err);
                 assert.equal(newJourney.id, 6);
+                assert.equal(newJourney.lat, 48.856614);
+                assert.equal(newJourney.lng, 2.3522219);
                 assert.equal(newJourney.distance, '25 km');
                 assert.equal(newJourney.journey_type, 'aller-retour');
                 assert.equal(newJourney.car_type, 'citadine');
@@ -282,6 +284,8 @@ describe('Test of journey object', function () {
             journey.save(newJourney, user.id, 'user', function(err, createdJourney) {
                 if (err) return done(err);
                 assert.equal(createdJourney.id, 6);
+                assert.equal(createdJourney.lat, 48.856614);
+                assert.equal(createdJourney.lng, 2.3522219);
                 assert.equal(createdJourney.distance, '25 km');
                 assert.equal(createdJourney.journey_type, 'aller-retour');
                 assert.equal(createdJourney.car_type, 'citadine');
@@ -331,6 +335,8 @@ describe('Test of journey object', function () {
                 // assert.equal(journeyKey, 'JNY425367');
                 journey.saveDraft(journeyKey, user.id, function (err, createdJourney) {
                     if (err) return done(err);
+                    assert.equal(createdJourney.lat, 48.856614);
+                    assert.equal(createdJourney.lng, 2.3522219);
                     assert.equal(createdJourney.distance, '25 km');
                     assert.equal(createdJourney.journey_type, 'aller-retour');
                     assert.equal(createdJourney.car_type, 'citadine');
@@ -438,6 +444,8 @@ describe('Test of journey object', function () {
             assert.equal(tmp.amount, 56);
             journey.getById(2, function (err, selectJourney) {
                 if (err) return done(err);
+                assert.equal(selectJourney.lat, null);
+                assert.equal(selectJourney.lng, null);
                 assert.equal(selectJourney.distance, '754 km');
                 assert.equal(selectJourney.journey_type, 'aller');
                 assert.equal(selectJourney.car_type, 'citadine');
@@ -447,6 +455,8 @@ describe('Test of journey object', function () {
                 journey.save(tmp, 2, 'user', function(err, updatedJourney) {
                     if (err) return done(err);
                     assert.equal(updatedJourney.id, 2);
+                    assert.equal(updatedJourney.lat, 48.856614);
+                    assert.equal(updatedJourney.lng, 2.3522219);
                     assert.equal(updatedJourney.distance, '654 km');
                     assert.equal(updatedJourney.journey_type, 'aller-retour');
                     assert.equal(updatedJourney.car_type, 'break');

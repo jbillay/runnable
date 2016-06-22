@@ -13,7 +13,7 @@ describe('GoogleMapApi Service', function() {
         maps: {
             Geocoder: function() {
                 this.geocode = function(input, fn) {
-                    fn([{geometry: {location: 1}}], window.google.maps.GeocoderStatus.OK);
+                    fn([{geometry: {location: {lat: 48.856614, lng: 2.3522219}}}], window.google.maps.GeocoderStatus.OK);
                 };
             },
             event: {
@@ -45,7 +45,7 @@ describe('GoogleMapApi Service', function() {
             },
             DirectionsService: function () {
                 this.route = function (request, fn) {
-                    fn([{geometry: {location: 1}}], window.google.maps.GeocoderStatus.OK);
+                    fn([{geometry: {location: {lat: 48.856614, lng: 2.3522219}}}], window.google.maps.GeocoderStatus.OK);
                 };
             },
             DistanceMatrixService: function () {
@@ -170,6 +170,30 @@ describe('GoogleMapApi Service', function() {
             rootScope.$digest();
         });
 
+        it('should get geo location where coordinate provided', function () {
+            var promise = service.getGeocode('Paris, France', 10, 25),
+                location = null;
+
+            promise.then(function(ret){
+                location = ret;
+            });
+            rootScope.$digest();
+            expect(location.lat).toEqual(10);
+            expect(location.lng).toEqual(25);
+        });
+
+        it('should get geo location based on address', function () {
+            var promise = service.getGeocode('Paris, France', null, null),
+                location = null;
+
+            promise.then(function(ret){
+                location = ret;
+            });
+            rootScope.$digest();
+            expect(location.lat).toEqual(48.856614);
+            expect(location.lng).toEqual(2.3522219);
+        });
+        
         it('should refresh map', function () {
             service.initMap('testRefresh');
             service.refresh('testRefresh');

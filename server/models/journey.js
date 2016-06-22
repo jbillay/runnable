@@ -7,6 +7,8 @@
 module.exports = function(sequelize, DataTypes) {
 	var Journey = sequelize.define('Journey', {
 		address_start:		{ type: DataTypes.STRING, allowNull: false },
+		lat: 	    		DataTypes.STRING,
+		lng:     			DataTypes.STRING,
 		distance: 			DataTypes.STRING,
 		duration: 			DataTypes.STRING,
 		journey_type:		{ type: DataTypes.ENUM, values: ['aller-retour', 'aller', 'retour'] },

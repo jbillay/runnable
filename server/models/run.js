@@ -10,7 +10,9 @@ module.exports = function(sequelize, DataTypes) {
 		slug:			DataTypes.STRING,
 		type: 			{ type: DataTypes.ENUM, values: ['trail', 'ultra', '10k', '20k', 'semi', 'marathon', 'triathlon'] },
 		address_start:	DataTypes.STRING,
-		date_start: 	DataTypes.DATE,
+        lat: 	    	DataTypes.STRING,
+        lng:     		DataTypes.STRING,
+        date_start: 	DataTypes.DATE,
 		time_start: 	DataTypes.STRING,
 		distances: 		DataTypes.STRING,
 		elevations: 	DataTypes.STRING,
@@ -21,7 +23,8 @@ module.exports = function(sequelize, DataTypes) {
 			associate: function(models) {
                 /*jshint -W030 */
 				Run.belongsTo(models.User),
-				Run.hasMany(models.Journey);
+                Run.belongsTo(models.Partner, {constraints: false}),
+                Run.hasMany(models.Journey);
                 /*jshint +W030 */
 			}
 		}

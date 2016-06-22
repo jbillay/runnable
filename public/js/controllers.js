@@ -868,12 +868,35 @@ angular.module('runnable.controllers', []).
 			$timeout( function() {
 				var obj = 'map_canvas_run';
 				GoogleMapApi.initMap(obj);
-                GoogleMapApi.addMaker(obj, $scope.run.address_start,
+                GoogleMapApi.addMaker(obj, $scope.run.address_start, $scope.run.lat, $scope.run.lng,
                     'Départ de la course', 'Départ de la course',
                     'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=flag|FFFFFF');
 				angular.forEach($scope.journeyList, function (journey) {
-                    GoogleMapApi.addMaker(obj, journey.address_start,
-                        null, null,
+                    var title = 'Départ de ' + journey.address_start,
+                        info = '<div id="content"><div id="siteNotice"></div>' +
+                            '<a href="/journey-' + journey.id + '">' +
+                            '<h4 id="firstHeading" class="firstHeading">Départ d\'un ' +
+                            journey.address_start + '</h4></a>' + '<div id="bodyContent">' +
+                            '<p><i class="fa fa-exchange"></i> ' + journey.journey_type +  '</p>';
+
+                    if (journey.date_start_outward) {
+                        var dateStart = new Date(journey.date_start_outward);
+                        info = info + '<p><i class="fa fa-calendar"></i> Aller : ' +
+                            dateStart.toLocaleDateString() + ' ' +
+                            journey.time_start_outward + '</p>';
+                    }
+                    if (journey.date_start_return) {
+                        var dateReturn = new Date(journey.date_start_return);
+                        info = info + '<p><i class="fa fa-calendar"></i> Retour : ' +
+                            dateReturn.toLocaleDateString() + ' ' +
+                            journey.time_start_return + '</p>';
+                    }
+                    info = info + '<p><i class="fa fa-arrows-h"></i> ' + journey.distance + '</p>' +
+                        '<p><i class="fa fa-history"></i> ' + journey.duration + '</p>' +
+                        '<p><i class="fa fa-car"></i> ' + journey.car_type + '</p>' +
+                        '<p><i class="fa fa-eur"></i> <strong>' + journey.amount + '</strong></p></div></div>';
+                    GoogleMapApi.addMaker(obj, journey.address_start, journey.lat, journey.lng,
+                        title, info,
                         'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=car-dealer|35a5a2')
                         .then(function (markerId) {
                             journey.markerId = markerId;
@@ -1399,6 +1422,7 @@ angular.module('runnable.controllers', []).
 			}
 		};
         $scope.submitJourney = function (journey) {
+            $('body').addClass('loading');
             var fb_titre = 'Mon voyage pour la course ' + journey.Run.name,
                 fb_desc = 'Je vous propose un ' + journey.journey_type;
             if (journey.journey_type.toLowerCase() === 'retour') {
@@ -1407,6 +1431,7 @@ angular.module('runnable.controllers', []).
                 fb_desc += ' au départ de ' + journey.address_start;
             }
             Journey.create(journey).then(function (newJourney) {
+                $('body').removeClass('loading');
                 if (!$rootScope.isAuthenticated) {
                     $rootScope.draftId = newJourney;
                     $location.path('/connect');
@@ -1826,7 +1851,7 @@ angular.module('runnable.controllers', []).
 					}
 					GoogleMapApi.initMap(value);
 					GoogleMapApi.showDirection(value, journey.address_start, journey.Run.address_start);
-                    GoogleMapApi.addMaker(journeysMap, journey.address_start, title, info);
+                    GoogleMapApi.addMaker(journeysMap, journey.address_start, journey.lat, journey.lng, title, info);
 				});
 			});
 		});

@@ -627,10 +627,26 @@ angular.module('runnable.services', ['ngResource']).
 					});
 				return deferred.promise;
 			},
-            addMaker: function (object, address, title, info, image) {
+            getGeocode: function (address, lat, lng) {
                 var deferred = $q.defer();
-                $rootScope[object].geocoder.geocode( { 'address': address}, function(results, status) {
-                    if (status === google.maps.GeocoderStatus.OK) {
+                if (lat && lng) {
+                    deferred.resolve({lat: parseFloat(lat), lng: parseFloat(lng)});
+                } else {
+                    var geocoder = new google.maps.Geocoder();
+                    geocoder.geocode( { 'address': address}, function(results, status) {
+                        if (status === google.maps.GeocoderStatus.OK) {
+                            deferred.resolve(results[0].geometry.location);
+                        } else {
+                            deferred.reject('Err: ' + status + ' for address ' + address);
+                        }
+                    });
+                }
+                return deferred.promise;
+            },
+            addMaker: function (object, address, lat, lng, title, info, image) {
+                var deferred = $q.defer();
+                this.getGeocode(address, lat, lng)
+                    .then(function (location) {
                         var markerIdx = null;
                         if (title) {
                             var infoWindowIdx = $rootScope[object].infoWindow.push(new google.maps.InfoWindow({
@@ -638,7 +654,7 @@ angular.module('runnable.services', ['ngResource']).
                                 })) - 1;
                             markerIdx = $rootScope[object].marker.push(new google.maps.Marker({
                                     map: $rootScope[object].map,
-                                    position: results[0].geometry.location,
+                                    position: location,
                                     draggable: false,
                                     animation: google.maps.Animation.DROP,
                                     title: title,
@@ -653,15 +669,12 @@ angular.module('runnable.services', ['ngResource']).
                                     map: $rootScope[object].map,
                                     draggable: false,
                                     animation: google.maps.Animation.DROP,
-                                    position: results[0].geometry.location,
+                                    position: location,
                                     icon: image
                                 })) - 1;
                             deferred.resolve(markerIdx);
                         }
-                    } else {
-                        deferred.reject('Not able to localized ' + address);
-                    }
-                });
+                    });
                 return deferred.promise;
             },
             toggleAnimation: function (object, id, animation, image_back, image_front) {

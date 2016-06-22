@@ -49,6 +49,7 @@
     "passport-local": "~1.0.0",
     "paypal-ipn": "~3.0.0",
     "q": "~1.4.1",
+    "qs": "^6.2.0",
     "redis": "~2.1.0",
     "request": "~2.40.0",
     "require-all": "0.0.8",

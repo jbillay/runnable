@@ -5,6 +5,7 @@ var distance = require('google-distance');
 var slug = require('slug');
 var _ = require('lodash');
 var q = require('q');
+var Utils = require('./utils');
 
 function run() {
     'use strict';
@@ -13,6 +14,8 @@ function run() {
 	this.slug = null;
 	this.type = null;
 	this.address_start = null;
+	this.lat = null;
+	this.lng = null;
     this.date_start= null;
     this.time_start = null;
 	this.distances = null;
@@ -76,29 +79,42 @@ run.prototype.isPast = function (run) {
 run.prototype.save = function (run, user, done) {
     'use strict';
 	var that = this;
-	console.log('try to save run : ' + run.name);
-	models.User.find({where: {id: user.id}})
-		.then(function (user) {
-            that.set(run, user);
-            models.Run.findOrCreate({where: {id: run.id}, defaults: that})
-                .spread(function (run, created) {
-                    if (created) {
-                        run.setUser(user)
-                            .then(function (newRun) {
-                                done(null, newRun);
-                            });
-                    } else {
-                        var updateRun = _.assign(run, that);
-                        updateRun.save()
-                            .then(function (updatedRun) {
-                                done(null, updatedRun);
-                            });
-                    }
-                })
-                .catch(function (err) {
-                    done(err, null);
+    var util = new Utils();
+
+    console.log('try to save run : ' + run.name);
+    util.geocode(run.address_start)
+        .then(function (location) {
+            run.lat = location.lat;
+            run.lng = location.lng;
+        })
+        .catch(function (err) {
+            run.lat = null;
+            run.lng = null;
+        })
+        .finally(function () {
+            models.User.find({where: {id: user.id}})
+                .then(function (user) {
+                    that.set(run, user);
+                    models.Run.findOrCreate({where: {id: run.id}, defaults: that})
+                        .spread(function (run, created) {
+                            if (created) {
+                                run.setUser(user)
+                                    .then(function (newRun) {
+                                        done(null, newRun);
+                                    });
+                            } else {
+                                var updateRun = _.assign(run, that);
+                                updateRun.save()
+                                    .then(function (updatedRun) {
+                                        done(null, updatedRun);
+                                    });
+                            }
+                        })
+                        .catch(function (err) {
+                            done(err, null);
+                        });
                 });
-		});
+        });
 };
 
 run.prototype.getActiveList = function (done) {

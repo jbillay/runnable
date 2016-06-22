@@ -5,6 +5,7 @@ var _ = require('lodash');
 var Join = require('./join');
 var Inbox = require('./inbox');
 var Partner = require('./partner');
+var Utils = require('./utils');
 var q = require('q');
 var async = require('async');
 var redis = require('redis');
@@ -19,6 +20,8 @@ function journey() {
     'use strict';
 	this.id = null;
 	this.address_start = null;
+	this.lat = null;
+	this.lng = null;
 	this.distance = null;
 	this.duration = null;
 	this.journey_type = null;
@@ -44,6 +47,10 @@ journey.prototype.setJourney = function (journey) {
 		this.id = journey.id; }
 	if (journey.address_start) {
 		this.address_start = journey.address_start; }
+	if (journey.lat) {
+		this.lat = journey.lat; }
+	if (journey.lng) {
+		this.lng = journey.lng; }
 	if (journey.distance) {
 		this.distance = journey.distance; }
 	if (journey.duration) {
@@ -99,54 +106,83 @@ journey.prototype.save = function (journey, userId, role, done) {
     'use strict';
     var that = this,
         partner = new Partner(),
-        inbox = new Inbox();
-    models.User.findOne({where: {id: userId}})
-        .then(function (user) {
-            that.setJourney(journey);
-            models.Run.findOne({where: {id: journey.Run.id}})
-                .then(function (run) {
-                    partner.getByToken(journey.token)
-                        .then(function (selectedPartner) {
-                            models.Journey.findOrCreate({where: {id: journey.id}, defaults: that})
-                                .spread(function (selectedJourney, created) {
-                                    if (created) {
-                                        var newJourney = _.assign(selectedJourney, that);
-                                        newJourney.setRun(run)
-                                            .then(function () {
-                                                newJourney.setUser(user)
-                                                    .then(function(newJourney) {
-                                                        var template = 'JourneyCreated',
-                                                            values = {
-                                                                runName: run.name,
-                                                                journeyId: newJourney.id
-                                                            };
-                                                        inbox.add(template, values, user.id)
-                                                            .then(function (msg) {
-                                                                if (selectedPartner) {
-                                                                    newJourney.setPartner(selectedPartner)
-                                                                        .then(function (newJourney) {
+        inbox = new Inbox(),
+        util = new Utils();
+    util.geocode(journey.address_start)
+        .then(function (location) {
+            journey.lat = location.lat;
+            journey.lng = location.lng;
+        })
+        .catch(function (err) {
+            journey.lat = null;
+            journey.lng = null;
+        })
+        .done(function () {
+            models.User.findOne({where: {id: userId}})
+                .then(function (user) {
+                    that.setJourney(journey);
+                    models.Run.findOne({where: {id: journey.Run.id}})
+                        .then(function (run) {
+                            partner.getByToken(journey.token)
+                                .then(function (selectedPartner) {
+                                    models.Journey.findOrCreate({where: {id: journey.id}, defaults: that})
+                                        .spread(function (selectedJourney, created) {
+                                            if (created) {
+                                                var newJourney = _.assign(selectedJourney, that);
+                                                newJourney.setRun(run)
+                                                    .then(function () {
+                                                        newJourney.setUser(user)
+                                                            .then(function(newJourney) {
+                                                                var template = 'JourneyCreated',
+                                                                    values = {
+                                                                        runName: run.name,
+                                                                        journeyId: newJourney.id
+                                                                    };
+                                                                inbox.add(template, values, user.id)
+                                                                    .then(function (msg) {
+                                                                        if (selectedPartner) {
+                                                                            newJourney.setPartner(selectedPartner)
+                                                                                .then(function (newJourney) {
+                                                                                    done(null, newJourney, run);
+                                                                                });
+                                                                        } else {
                                                                             done(null, newJourney, run);
-                                                                        });
-                                                                } else {
-                                                                    done(null, newJourney, run);
-                                                                }
-                                                            })
-                                                            .catch(function (err) {
-                                                                done(new Error(err), null, null);
+                                                                        }
+                                                                    })
+                                                                    .catch(function (err) {
+                                                                        done(new Error(err), null, null);
+                                                                    });
                                                             });
                                                     });
-                                            });
-                                    } else {
-                                        var updateJourney = _.assign(selectedJourney, that);
-                                        updateJourney.save()
-                                            .then(function (updatedJourney) {
-                                                updatedJourney.setRun(run)
-                                                    .then(function () {
-                                                        updatedJourney.setUser(user)
-                                                            .then(function(updatedJourney) {
-                                                                if (selectedPartner) {
-                                                                    updatedJourney.setPartner(selectedPartner)
-                                                                        .then(function (updatedJourney) {
+                                            } else {
+                                                var updateJourney = _.assign(selectedJourney, that);
+                                                updateJourney.save()
+                                                    .then(function (updatedJourney) {
+                                                        updatedJourney.setRun(run)
+                                                            .then(function () {
+                                                                updatedJourney.setUser(user)
+                                                                    .then(function(updatedJourney) {
+                                                                        if (selectedPartner) {
+                                                                            updatedJourney.setPartner(selectedPartner)
+                                                                                .then(function (updatedJourney) {
+                                                                                    if (role !== 'admin') {
+                                                                                        var template = 'DriverJourneyUpdated',
+                                                                                            values = {
+                                                                                                runName: run.name,
+                                                                                                journeyId: updatedJourney.id
+                                                                                            };
+                                                                                        inbox.add(template, values, user.id)
+                                                                                            .then(function (msg) {
+                                                                                                done(null, updatedJourney, run);
+                                                                                            });
+                                                                                    } else {
+                                                                                        done(null, updatedJourney, run);
+                                                                                    }
+                                                                                })
+                                                                                .catch(function (err) {
+                                                                                    done(new Error(err), null, null);
+                                                                                });
+                                                                        } else {
                                                                             if (role !== 'admin') {
                                                                                 var template = 'DriverJourneyUpdated',
                                                                                     values = {
@@ -160,36 +196,19 @@ journey.prototype.save = function (journey, userId, role, done) {
                                                                             } else {
                                                                                 done(null, updatedJourney, run);
                                                                             }
-                                                                        })
-                                                                        .catch(function (err) {
-                                                                            done(new Error(err), null, null);
-                                                                        });
-                                                                } else {
-                                                                    if (role !== 'admin') {
-                                                                        var template = 'DriverJourneyUpdated',
-                                                                            values = {
-                                                                                runName: run.name,
-                                                                                journeyId: updatedJourney.id
-                                                                            };
-                                                                        inbox.add(template, values, user.id)
-                                                                            .then(function (msg) {
-                                                                                done(null, updatedJourney, run);
-                                                                            });
-                                                                    } else {
-                                                                        done(null, updatedJourney, run);
-                                                                    }
-                                                                }
+                                                                        }
+                                                                    });
                                                             });
                                                     });
-                                            });
-                                    }
+                                            }
+                                        })
+                                        .catch(function (err) {
+                                            done(err, null, null);
+                                        });
                                 })
                                 .catch(function (err) {
                                     done(err, null, null);
                                 });
-                        })
-                        .catch(function (err) {
-                            done(err, null, null);
                         });
                 });
         });

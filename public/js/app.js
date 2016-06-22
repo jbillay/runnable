@@ -169,7 +169,6 @@ angular.module('runnable', [
                                 $location.path('/');
                             } else {
                                 // user is not logged in
-                                console.log('ici');
                                 $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
                                 $location.path('/connect');
                             }
