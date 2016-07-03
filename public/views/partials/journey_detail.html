@@ -49,7 +49,9 @@
                             </button>
                         </div>
                         <div class="pull-right">
-                            <button type="button" id="privDiscussionBtn" class="btn btn-primary" ng-if="joined || owned" ng-click="redirectToPrivateDiscussion()">
+                            <button type="button" id="privDiscussionBtn" class="btn btn-private-tchat"
+                                    ng-if="joined || owned" ng-click="redirectToPrivateDiscussion()">
+                                <i class="fa fa-comments-o fa-lg" aria-hidden="true"></i>
                                 Discussion privée au trajet
                             </button>
                             <button type="button" id="joinedBtn" class="btn btn-danger" ng-if="joined" ng-click="askValidationJoinCancelFromJourney()">

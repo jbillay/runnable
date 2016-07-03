@@ -10,6 +10,8 @@
 @text_apropos: #f5f5f5;
 @bg_main: #ffffff;
 @feedback_panel: #f5f5f5;
+@mrt_green: #35a5a2;
+@mrt_pink: #bc3790;
 @green: green;
 @red: red;
 @warning: orange;
@@ -357,34 +359,34 @@ body.loading .loadingModal {
   }
   .iconRunner {
     height: 30px;
-    color: #BC3790;
+    color: @mrt_pink;
   }
   .runSocialInfoFollower {
     display:inline-block;
     font-size:x-large;
     margin-right: 20px;
-    color: #BC3790;
+    color: @mrt_pink;
     text-align: center;
     .runSocialInfoFollowerToJoinBtn {
-      background-color: #BC3790;
-      border-color: #BC3790;
+      background-color: @mrt_pink;
+      border-color: @mrt_pink;
       color: white;
     }
     .runSocialInfoFollowerJoinedBtn {
       background-color: white;
       border-color: white;
-      color: #BC3790;
+      color: @mrt_pink;
     }
   }
   .runSocialInfoJourneyBtn {
-    background-color: #35a5a2;
-    border-color: #35a5a2;
+    background-color: @mrt_green;
+    border-color: @mrt_green;
     color: white;
   }
   .runSocialInfoJourney {
     display:inline-block;
     font-size:x-large;
-    color: #35a5a2;
+    color: @mrt_green;
     text-align: center;
     .runSocialInfoJourneyNumber {
       margin-right: 5px;
@@ -573,6 +575,11 @@ body.loading .loadingModal {
 
 // Journey detail
 .journey_detail {
+  .btn-private-tchat {
+    background-color: @mrt_green;
+    border-color: @mrt_green;
+    color: white;
+  }
   .journey_price {
     font-size: 36px;
     font-weight: bold;

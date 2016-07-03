@@ -1754,6 +1754,7 @@ angular.module('runnable.controllers', []).
             }
         };
         $scope.submitJourney = function (journey) {
+            $('body').addClass('loading');
             if (journey.journey_type === 'aller') {
                 journey.date_start_return = null;
                 journey.time_start_return = null;
@@ -1765,6 +1766,7 @@ angular.module('runnable.controllers', []).
             }
             Journey.update(journey)
                 .then(function (msg) {
+                    $('body').removeClass('loading');
                     $location.path('/journey');
                 });
         };
