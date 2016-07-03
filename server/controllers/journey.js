@@ -240,10 +240,8 @@ exports.notifyJoin = function (req, res) {
     journey.notifyJoin(req.invoice, function (err, result) {
         if (err) {
             console.log(new Error('User and Driver not notified : ' + err));
-            return res.send(401);
         } else  {
-            console.log('User and Driver notified');
-            return res.send(200);
+            console.log('User and Driver ' + result);
         }
     });
 };

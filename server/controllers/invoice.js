@@ -127,6 +127,7 @@ exports.confirm = function (req, res, next) {
 exports.complete = function (req, res, next) {
     'use strict';
     console.log('Force invoice completion');
+    res.send(200);
     var amount = parseFloat(req.body.amount),
         status = req.body.payment_status.toLowerCase(),
         invoice = new Invoice();
