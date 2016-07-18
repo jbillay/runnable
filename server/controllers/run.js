@@ -7,55 +7,67 @@ var async = require('async');
 exports.create = function (req, res) {
     'use strict';
 	var run = new Run(),
-        picture = new Picture();
-    // Transform fields array in string due to multipart mapping
-    var newRun = _.transform(req.fields, function (newRun, value, key) {
-        newRun[key] = value.toString();
-    });
-    console.log('Create the run : ' + newRun.name);
-	run.save(newRun, req.user, function (err, run) {
-        if (err) {
-            return res.jsonp({msg: err, type: 'error'});
-        }
-        if (req.files.file) {
-            var q = async.queue(function (options, callback) {
-                    picture.create(options.path, options.runId)
-                        .then(function (img) {
-                            if (options.isDefault === 'true') {
-                                picture.setDefault(img.id, options.runId)
-                                    .then(function (img) {
-                                        callback(null, img);
-                                    })
-                                    .catch(function (err) {
-                                        callback(err, null);
-                                    });
-                            } else {
-                                callback(null, img);
-                            }
-                        })
-                        .catch(function (err) {
-                            callback(err, null);
-                        });
-                }, 1),
-                fileInfo = newRun.fileInfo.split(','),
-                iterator = 0;
-            req.files.file.forEach(function (file) {
-                q.push({path: file.path, runId: run.id, isDefault: fileInfo[iterator]}, function (err, img) {
-                    if (err) {
-                        console.log(new Error('Not able to upload picture ' + file.originalFilename));
-                    } else {
-                        console.log('File ' + file.originalFilename + ' added');
-                    }
+        picture = new Picture(),
+        newRun = null,
+        checkout = null,
+        partner = req.body.apiKey || req.query.apiKey || req.headers['x-access-apiKey'];
+    if (req.fields) {
+        // Transform fields array in string due to multipart mapping
+        newRun = _.transform(req.fields, function (newRun, value, key) {
+            newRun[key] = value.toString();
+        });
+    } else if (req.body.run) {
+        newRun = req.body.run;
+    }
+    checkout = run.checkRunObject(newRun);
+    if (checkout.type === 'error') {
+        return res.jsonp(checkout);
+    } else {
+        console.log('Create the run : ' + newRun.name);
+        run.save(newRun, req.user, partner, function (err, createdRun) {
+            if (err) {
+                return res.jsonp({msg: err, type: 'error'});
+            }
+            if (req.files && req.files.file) {
+                var q = async.queue(function (options, callback) {
+                        picture.create(options.path, options.runId)
+                            .then(function (img) {
+                                if (options.isDefault === 'true') {
+                                    picture.setDefault(img.id, options.runId)
+                                        .then(function (img) {
+                                            callback(null, img);
+                                        })
+                                        .catch(function (err) {
+                                            callback(err, null);
+                                        });
+                                } else {
+                                    callback(null, img);
+                                }
+                            })
+                            .catch(function (err) {
+                                callback(err, null);
+                            });
+                    }, 1),
+                    fileInfo = newRun.fileInfo.split(','),
+                    iterator = 0;
+                req.files.file.forEach(function (file) {
+                    q.push({path: file.path, runId: createdRun.id, isDefault: fileInfo[iterator]}, function (err, img) {
+                        if (err) {
+                            console.log(new Error('Not able to upload picture ' + file.originalFilename + ' : ' + err));
+                        } else {
+                            console.log('File ' + file.originalFilename + ' added');
+                        }
+                    });
+                    iterator++;
                 });
-                iterator++;
-            });
-            q.drain = function () {
-                return res.jsonp({msg: 'runCreated', type: 'success'});
-            };
-        } else {
-            return res.jsonp({msg: 'runCreated', type: 'success'});
-        }
-	});
+                q.drain = function () {
+                    return res.jsonp({msg: 'runCreated', type: 'success', run: createdRun});
+                };
+            } else {
+                return res.jsonp({msg: 'runCreated', type: 'success', run: createdRun});
+            }
+        });
+    }
 };
 
 exports.search = function (req, res) {
@@ -136,9 +148,10 @@ exports.toggleActive = function (req, res) {
 
 exports.update = function (req, res) {
     'use strict';
+    var partner = req.body.apiKey|| req.query.apiKey || req.headers['x-access-apiKey'];
     console.log('Update the run ' + req.body.run.id);
     var run = new Run();
-    run.save(req.body.run, req.user, function (err, run) {
+    run.save(req.body.run, req.user, partner, function (err, run) {
         if (err) {
             return res.jsonp({msg: err, type: 'error'});
         }

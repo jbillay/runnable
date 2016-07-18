@@ -8,8 +8,10 @@
 
 angular.module('runnable', [
     'ngRoute',
+    'ui.ace',
     'ui.grid',
     'ui.grid.edit',
+    'textAngular',
     'ngSanitize',
     'ngMessages',
     'ngFacebook',

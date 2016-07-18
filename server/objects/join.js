@@ -134,7 +134,11 @@ join.prototype.getList = function (done) {
 join.prototype.toRefund = function () {
     'use strict';
     var deferred = q.defer();
-    models.Join.findAll({include: [ {model: models.Journey}, {model: models.User},
+    models.Join.findAll({include: [ {
+            model: models.Journey,
+            as: 'Journey',
+            include: [ models.Run ]
+        }, {model: models.User},
         {
             model: models.Invoice,
             where: {status: 'cancelled'}

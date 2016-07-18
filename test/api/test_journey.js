@@ -248,7 +248,7 @@ describe('Test of journey object', function () {
                     inbox.getList(user, function (err, messages) {
                         if (err) return done(err);
                         assert.equal(messages.length, 3);
-                        assert.equal(messages[0].message, 'Created Corrida de Saint Germain en Laye');
+                        assert.include(messages[0].message, 'Created Corrida de Saint Germain en Laye');
                         assert.include(messages[0].title, 'Corrida de Saint Germain en Laye');
                         return done();
                     });
@@ -297,7 +297,7 @@ describe('Test of journey object', function () {
                     inbox.getList(user, function (err, messages) {
                         if (err) return done(err);
                         assert.equal(messages.length, 3);
-                        assert.equal(messages[0].message, 'Created Corrida de Saint Germain en Laye');
+                        assert.include(messages[0].message, 'Created Corrida de Saint Germain en Laye');
                         assert.include(messages[0].title, 'Corrida de Saint Germain en Laye');
                         return done();
                     });
@@ -392,13 +392,13 @@ describe('Test of journey object', function () {
                                 inbox.getList(user2, function (err, messages) {
                                     if (err) return done(err);
                                     assert.equal(messages.length, 3);
-                                    assert.equal(messages[0].message, 'USER CANCEL Les templiers');
+                                    assert.include(messages[0].message, 'USER CANCEL Les templiers');
                                     assert.include(messages[0].title, 'Les templiers');
                                     var user = { id: journeyUpdated.UserId };
                                     inbox.getList(user, function (err, messages) {
                                         if (err) return done(err);
                                         assert.equal(messages.length, 3);
-                                        assert.equal(messages[0].message, 'Driver cancel journey Les templiers');
+                                        assert.include(messages[0].message, 'Driver cancel journey Les templiers');
                                         assert.include(messages[0].title, 'Les templiers');
                                         return done();
                                     });
@@ -473,7 +473,7 @@ describe('Test of journey object', function () {
                         assert.equal(selectedJourney.UserId, 2);
                         inbox.getList(user, function (err, messages) {
                             if (err) return done(err);
-                            assert.equal(messages[0].message, 'Updated Paris Saint Germain');
+                            assert.include(messages[0].message, 'Updated Paris Saint Germain');
                             assert.include(messages[0].title, 'Paris Saint Germain');
                             return done();
                         });
@@ -507,7 +507,7 @@ describe('Test of journey object', function () {
                     assert.equal(updatedJourney.PartnerId, 2);
                     inbox.getList(user, function (err, messages) {
                         if (err) return done(err);
-                        assert.equal(messages[0].message, 'Updated Les templiers');
+                        assert.include(messages[0].message, 'Updated Les templiers');
                         assert.include(messages[0].title, 'Les templiers');
                         return done();
                     });
@@ -533,13 +533,13 @@ describe('Test of journey object', function () {
                     inbox.getList(user, function (err, messages) {
                         if (err) return done(err);
                         assert.equal(messages.length, 3);
-                        assert.equal(messages[0].message, 'User join validated Corrida de Saint Germain en Laye');
+                        assert.include(messages[0].message, 'User join validated Corrida de Saint Germain en Laye');
                         assert.include(messages[0].title, 'Corrida de Saint Germain en Laye');
                         var driver = {id: invoice.Journey.UserId};
                         inbox.getList(driver, function (err, messages) {
                             if (err) return done(err);
                             assert.equal(messages.length, 3);
-                            assert.equal(messages[0].message, 'Driver join validated Corrida de Saint Germain en Laye');
+                            assert.include(messages[0].message, 'Driver join validated Corrida de Saint Germain en Laye');
                             assert.include(messages[0].title, 'Corrida de Saint Germain en Laye');
                             return done();
                         });
@@ -584,13 +584,13 @@ describe('Test of journey object', function () {
                         inbox.getList(user, function (err, messages) {
                             if (err) return done(err);
                             assert.equal(messages.length, 1);
-                            assert.equal(messages[0].message, 'Driver Updated Les templiers');
+                            assert.include(messages[0].message, 'Driver Updated Les templiers');
                             assert.include(messages[0].title, 'Email pour Les templiers');
                             var user2 = {id: 2};
                             inbox.getList(user2, function (err, messages) {
                                 if (err) return done(err);
                                 assert.equal(messages.length, 3);
-                                assert.equal(messages[0].message, 'Driver Updated Les templiers');
+                                assert.include(messages[0].message, 'Driver Updated Les templiers');
                                 assert.include(messages[0].title, 'Email pour Les templiers');
                                 return done();
                             });

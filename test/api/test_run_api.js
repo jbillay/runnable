@@ -307,6 +307,118 @@ describe('Test of run API', function () {
             });
         });
 
+        it('should create a run with an object', function (done) {
+            var run = {
+                id: 8,
+                name: 'Marathon de Chantilly',
+                type: 'marathon',
+                address_start: 'Chantilly, France',
+                date_start: '2017-01-27 00:00:00',
+                time_start: '09:58',
+                distances: '42km',
+                elevations: '124+',
+                info: 'http://www.marathondechantilly.fr'
+            };
+            agent
+                .post('http://localhost:' + settings.port + '/api/run')
+                .send({run: run})
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.statusCode, 200);
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg, 'runCreated');
+                    agent
+                        .get('http://localhost:' + settings.port + '/api/admin/runs')
+                        .end(function (err, res) {
+                            if (err) return done(err);
+                            assert.equal(res.body.type, 'success');
+                            assert.equal(res.body.msg.length, 5);
+                            agent
+                                .get('http://localhost:' + settings.port + '/api/run/8')
+                                .end(function (err, res) {
+                                    if (err) return done(err);
+                                    assert.equal(res.res.body.name, 'Marathon de Chantilly');
+                                    assert.equal(res.res.body.slug, 'marathon-de-chantilly');
+                                    assert.equal(res.res.body.type, 'marathon');
+                                    assert.equal(res.res.body.address_start, 'Chantilly, France');
+                                    assert.equal(res.res.body.time_start, '09:58');
+                                    assert.equal(res.res.body.distances, '42km');
+                                    assert.equal(res.res.body.elevations, '124+');
+                                    assert.equal(res.res.body.info, 'http://www.marathondechantilly.fr');
+                                    assert.equal(res.res.body.is_active, 0);
+                                    return done();
+                                });
+                        });
+                });
+        });
+
+        it('should fail to create a run due to missing name', function (done) {
+            var run = {
+                id: 7,
+                type: 'marathon',
+                address_start: 'Chantilly, France',
+                date_start: '2017-01-27 00:00:00',
+                time_start: '09:58',
+                distances: '42km',
+                elevations: '124+',
+                info: 'http://www.marathondechantilly.fr'
+            };
+            agent
+                .post('http://localhost:' + settings.port + '/api/run')
+                .send({run: run})
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.type, 'error');
+                    assert.equal(res.body.msg, 'At least one of the mandatory fields is missing (name, type, address_start, date_start)');
+                    return done();
+                });
+        });
+
+        it('should fail to create a run due to missing name', function (done) {
+            var run = {
+                id: 7,
+                type: 'marathon',
+                address_start: 'Chantilly, France',
+                date_start: '2017-01-27 00:00:00',
+                time_start: '09:58',
+                distances: '42km',
+                elevations: '124+',
+                info: 'http://www.marathondechantilly.fr'
+            };
+            agent
+                .post('http://localhost:' + settings.port + '/api/run')
+                .send({run: run})
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.type, 'error');
+                    assert.equal(res.body.msg, 'At least one of the mandatory fields is missing (name, type, address_start, date_start)');
+                    return done();
+                });
+        });
+
+        it('should fail to create a run due to wrong type', function (done) {
+            var run = {
+                id: 7,
+                name: 'Test',
+                type: '',
+                address_start: 'Chantilly, France',
+                date_start: '2017-01-27 00:00:00',
+                time_start: '09:58',
+                distances: '42km',
+                elevations: '124+',
+                info: 'http://www.marathondechantilly.fr'
+            };
+            agent
+                .post('http://localhost:' + settings.port + '/api/run')
+                .send({run: run})
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.type, 'error');
+                    assert.equal(res.body.msg, 'At least one of the mandatory fields is missing (name, type, address_start, date_start)');
+                    return done();
+                });
+        });
+
         it('should create a run with images', function (done) {
             sinon.clock.restore();
             this.timeout(15000);

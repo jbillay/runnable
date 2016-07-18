@@ -145,12 +145,12 @@ describe('Test of join object', function () {
                     inbox.getList(user, function (err, messages) {
                         if (err) return done(err);
                         assert.equal(messages.length, 3);
-                        assert.equal(messages[0].message, 'Cancel participation trajet Les templiers');
+                        assert.include(messages[0].message, 'Cancel participation trajet Les templiers');
                         assert.include(messages[0].title, 'Les templiers');
                         inbox.getList(driver, function (err, messages) {
                             if (err) return done(err);
                             assert.equal(messages.length, 3);
-                            assert.equal(messages[0].message, 'User cancel trajet Les templiers');
+                            assert.include(messages[0].message, 'User cancel trajet Les templiers');
                             assert.include(messages[0].title, 'Les templiers');
                             return done();
                         });

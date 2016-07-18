@@ -44,7 +44,7 @@ module.exports = function (app, passport, auth) {
     app.get('/api/user/journeys', auth.requiresLogin, controllers.user.showJourneys);
     app.get('/api/user/joins', auth.requiresLogin, controllers.user.showJoins);
 
-    app.post('/api/run', auth.requiresLogin, controllers.root.fileParser, controllers.run.create);
+    app.post('/api/run', cors(), auth.requiresLogin, controllers.root.fileParser, controllers.run.create);
     app.put('/api/run', auth.requiresLogin, controllers.run.update);
     app.post('/api/run/search', controllers.run.search);
     app.get('/api/run/list', cors(), controllers.run.activeList);
@@ -94,7 +94,7 @@ module.exports = function (app, passport, auth) {
     app.get('/api/join/cancel/:id', auth.requiresLogin, controllers.join.cancel);
 
     app.post('/api/participate/add', auth.requiresLogin, controllers.participate.add);
-    app.get('/api/participate/user/list', controllers.participate.userList);
+    app.get('/api/participate/user/list', auth.requiresLogin, controllers.participate.userList);
     app.get('/api/participate/run/user/list/:id', controllers.participate.userRunList);
 
 	app.get('/api/admin/users', auth.requireAdmin, controllers.user.list);
@@ -107,6 +107,7 @@ module.exports = function (app, passport, auth) {
     app.post('/api/admin/options', auth.requireAdmin, controllers.option.saveOptions);
 	app.get('/api/admin/option/:name', auth.requireAdmin, controllers.option.getOption);
     app.get('/api/admin/options', auth.requireAdmin, controllers.option.getOptions);
+    app.post('/api/admin/sendMail', auth.requireAdmin, controllers.root.sendTestMail);
 	app.post('/api/admin/page', auth.requireAdmin, controllers.page.save);
 	app.get('/api/admin/pages', auth.requireAdmin, controllers.page.getList);
 	app.get('/api/admin/user/bankaccount/:id', auth.requireAdmin, controllers.bank_account.getByUser);

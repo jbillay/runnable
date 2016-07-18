@@ -54,6 +54,9 @@ picture.prototype.create = function (filePath, runId) {
                             var fileName = 'Run_' + run.id + '_Picture_' + picture.id + '_' + process.env.NODE_ENV;
                             cloudinary.uploader.upload(filePath,
                                 function(result) {
+                                    if (result.error) {
+                                        console.error('ERROR TO UPLOAD IMG %s : %j', fileName, result.error);
+                                    }
                                     fs.unlink(filePath, function (err) { if (err) console.log(new Error(err)); });
                                     picture.link = result.url;
                                     picture.default = false;

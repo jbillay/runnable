@@ -120,7 +120,7 @@ describe('Test of Invoice object', function () {
                 inbox.getList(user, function (err, messages) {
                     if (err) return done(err);
                     assert.equal(messages.length, 3);
-                    assert.equal(messages[0].message, 'User join a journey for Corrida de Saint Germain en Laye');
+                    assert.include(messages[0].message, 'User join a journey for Corrida de Saint Germain en Laye');
                     assert.include(messages[0].title, 'Corrida de Saint Germain en Laye');
                     return done();
                 });

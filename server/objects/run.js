@@ -23,6 +23,7 @@ function run() {
 	this.info = null;
 	this.is_active = null;
 	this.user_id = null;
+	this.partner_token = null;
 }
 
 run.prototype.get = function () {
@@ -30,7 +31,7 @@ run.prototype.get = function () {
 	return this;
 };
 
-run.prototype.set = function (run, user) {
+run.prototype.set = function (run, user, partner) {
     'use strict';
 	if (run.id) {
 		this.id = run.id; }
@@ -63,6 +64,27 @@ run.prototype.set = function (run, user) {
     }
 	if (user.id) {
 		this.user_id = user.id; }
+	if (partner && partner.token) {
+		this.partner_token = partner.token; }
+};
+
+run.prototype.checkRunObject = function (run) {
+    'use strict';
+    if (run.name && run.type && run.address_start && run.date_start) {
+        if (run.name.length === 0) {
+            return {msg: 'Run name is a mandatory field', type: 'error'};
+        } else if (run.type.length === 0) {
+            return {msg: 'Run type is a mandatory field', type: 'error'};
+        } else if (run.address_start.length === 0) {
+            return {msg: 'Run address start point (address_start) is a mandatory field', type: 'error'};
+        } else if (run.date_start.length === 0) {
+            return {msg: 'Run start date (date_start) is a mandatory field', type: 'error'};
+        } else {
+            return {msg: 'Valid object', type: 'success'};
+        }
+    } else {
+        return {msg: 'At least one of the mandatory fields is missing (name, type, address_start, date_start)', type: 'error'};
+    }
 };
 
 run.prototype.isPast = function (run) {
@@ -76,7 +98,37 @@ run.prototype.isPast = function (run) {
     return true;
 };
 
-run.prototype.save = function (run, user, done) {
+run.prototype.getOwner = function (user, partner) {
+    'use strict';
+    var deferred = q.defer(),
+        userInfo = {};
+
+    if (user && user.id) {
+        models.User.find({where: {id: user.id}})
+            .then(function (user) {
+                userInfo.user = user;
+                deferred.resolve(userInfo);
+            });
+    } else if (partner) {
+        models.Partner.find({where: {token: partner}, include: [models.User]})
+            .then(function (partnerShip) {
+                if (partnerShip && partnerShip.User) {
+                    userInfo.partner = partnerShip;
+                    userInfo.user = partnerShip.User;
+                    deferred.resolve(userInfo);
+                } else {
+                    console.error('Problem with user of partnership : ' + partner);
+                    deferred.reject('Problem with user of partnership : ' + partner);
+                }
+            });
+    } else {
+        console.error('User or partner not found');
+        deferred.reject('User or partner not found');
+    }
+    return deferred.promise;
+};
+
+run.prototype.save = function (run, user, partner, done) {
     'use strict';
 	var that = this;
     var util = new Utils();
@@ -88,19 +140,27 @@ run.prototype.save = function (run, user, done) {
             run.lng = location.lng;
         })
         .catch(function (err) {
+            console.error(err);
             run.lat = null;
             run.lng = null;
         })
         .finally(function () {
-            models.User.find({where: {id: user.id}})
-                .then(function (user) {
-                    that.set(run, user);
+            that.getOwner(user, partner)
+                .then(function (userInfo) {
+                    that.set(run, userInfo.user, userInfo.partner);
                     models.Run.findOrCreate({where: {id: run.id}, defaults: that})
                         .spread(function (run, created) {
                             if (created) {
-                                run.setUser(user)
+                                run.setUser(userInfo.user)
                                     .then(function (newRun) {
-                                        done(null, newRun);
+                                        if (userInfo.partner) {
+                                            run.setPartner(userInfo.partner)
+                                                .then(function (newRun) {
+                                                    done(null, newRun);
+                                                });
+                                        } else {
+                                            done(null, newRun);
+                                        }
                                     });
                             } else {
                                 var updateRun = _.assign(run, that);
@@ -113,6 +173,9 @@ run.prototype.save = function (run, user, done) {
                         .catch(function (err) {
                             done(err, null);
                         });
+                })
+                .catch(function (err) {
+                    done(err, null);
                 });
         });
 };

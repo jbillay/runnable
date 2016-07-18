@@ -662,8 +662,8 @@ angular.module('runnable.services', ['ngResource']).
                                 })) - 1;
                             $rootScope[object].marker[markerIdx].addListener('click', function() {
                                 $rootScope[object].infoWindow[infoWindowIdx].open($rootScope[object].map, $rootScope[object].marker[markerIdx]);
-                                deferred.resolve(markerIdx);
                             });
+                            deferred.resolve(markerIdx);
                         } else {
                             markerIdx = $rootScope[object].marker.push(new google.maps.Marker({
                                     map: $rootScope[object].map,

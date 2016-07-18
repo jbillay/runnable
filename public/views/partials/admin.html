@@ -37,11 +37,15 @@
                         <table class="table userlist">
                             <thead>
                                 <tr>
-                                    <th>Email</th>
-                                    <th>Place Aller</th>
-                                    <th>Place Retour</th>
+                                    <th>Utilisateur</th>
+                                    <th>Course</th>
+                                    <th>Lieu départ</th>
+                                    <th>Nb Aller</th>
+                                    <th>Nb Retour</th>
                                     <th>Montant</th>
-                                    <th>Marges</th>
+                                    <th>Fees</th>
+                                    <th>Paiement</th>
+                                    <th>Ref Paiement</th>
                                     <th>Transaction</th>
                                     <th>Actions</th>
                                 </tr>
@@ -49,10 +53,14 @@
                             <tbody ng-repeat="toRefund in toRefundList">
                                 <tr>
                                     <td>{{toRefund.User.email}}</td>
+                                    <td><a href="/run-{{toRefund.Journey.Run.id}}">{{toRefund.Journey.Run.name}}</a></td>
+                                    <td><a href="/journey-{{toRefund.Journey.id}}">{{toRefund.Journey.address_start}}</a></td>
                                     <td>{{toRefund.nb_place_outward}}</td>
                                     <td>{{toRefund.nb_place_return}}</td>
                                     <td>{{toRefund.Invoice.amount | currency:'€ '}}</td>
                                     <td>{{toRefund.Invoice.fees | currency:'€ '}}</td>
+                                    <td>{{toRefund.Invoice.createdAt | date:'dd/MM/yyyy'}}</td>
+                                    <td>{{toRefund.Invoice.ref}}</td>
                                     <td>{{toRefund.Invoice.transaction}}</td>
                                     <td>
                                         <i class="fa fa-credit-card" ng-click="refundJoin(toRefund, $index)"></i>
@@ -362,9 +370,7 @@
                             <input type="text" ng-form="subForm" ng-model="template.title" class="form-control">
                         </div>
                         <div class="form-group">
-                            <textarea ng-form="subForm" ng-model="template.html" class="form-control optionsEmailTemplate">
-                                {{template.html}}
-                            </textarea>
+                            <div text-angular="text-angular" ng-form="subForm" ng-model="template.html" ta-disabled='disabled'></div>
                         </div>
                     </form>
                     <h2>Configuration email</h2>
@@ -407,6 +413,19 @@
                         <div class="form-group">
                             <label for="email_send">Send Email ?</label>
                             <input type="checkbox" id="email_send" ng-model="emailOption.mailConfig.send">
+                        </div>
+                        <div class="form-group">
+                            <label for="email_master_template">Email master template</label>
+                            <div ui-ace="{
+                                    useWrapMode : true,
+                                    showGutter: true,
+                                    theme:'cobalt',
+                                    mode: 'html'}"
+                                 id="email_master_template" name="masterTemplate"
+                                 ng-model="emailOption.mailConfig.template" >
+
+                            </div>
+                            <!--<div text-angular="text-angular" id="email_master_template" name="masterTemplate" ng-model="emailOption.mailConfig.template" ta-disabled='disabled'></div>-->
                         </div>
                     </div>
                     <button type="button" class="btn btn-default"

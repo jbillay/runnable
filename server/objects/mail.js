@@ -18,6 +18,7 @@ function mail() {
     this.bcc = null;
     this.toSend = null;
     this.subject = 'test';
+    this.masterTemplate = null;
     this.text = 'text';
     this.html = '<b>Test Email</b>';
     this.attachements = [];
@@ -44,6 +45,7 @@ mail.prototype.init = function () {
             that.from = settings.from;
             that.to = settings.to;
             that.bcc = settings.bcc;
+            that.masterTemplate = settings.template;
             that.toSend = settings.send;
 
             if (that.service) {
@@ -122,7 +124,12 @@ mail.prototype.generateContent = function (templateName, keys) {
             templates.forEach(function (template) {
                 if (template.name === templateName) {
                     find = 1;
-                    html = template.html;
+                    if (that.masterTemplate) {
+                        var master = new RegExp('{{content}}', 'g');
+                        html = that.masterTemplate.replace(master, template.html);
+                    } else {
+                        html = template.html;
+                    }
                     title = template.title;
                     Object.keys(keys).forEach(function (key) {
                         var tag = new RegExp('{{' + key + '}}', 'g');
@@ -131,6 +138,7 @@ mail.prototype.generateContent = function (templateName, keys) {
                     });
                     text = html.replace(/<br\/>/g, '\r\n');
                     text = text.replace(noHTML, '');
+                    text = text.trim();
                     that.html = html;
                     that.text = text;
                     that.subject = title;

@@ -186,7 +186,7 @@ describe('Runnable Controllers', function() {
                         status: 'completed'
                     }
                 }]);
-            $httpBackend.whenGET('/api/admin/journey/toPay').respond([
+            $httpBackend.whenGET('/api/admin/journey/toPay').respond({msg: [
                 {
                     id: 1,
                     address_start: 'Paris, France',
@@ -254,7 +254,7 @@ describe('Runnable Controllers', function() {
                                 id: 1,
                                 status: 'completed',
                                 amount: 50,
-                                fees: 0,
+                                fees: 5,
                                 ref: 'MRT20151202CIVGD',
                                 transaction: '822731012',
                                 driver_payed: false,
@@ -275,7 +275,6 @@ describe('Runnable Controllers', function() {
                                 JoinId: 1,
                                 UserId: 1
                             },
-                            validated: true,
                             User: {
                                 id: 1,
                                 firstname: 'Jeremy',
@@ -293,12 +292,48 @@ describe('Runnable Controllers', function() {
                                 createdAt: '2014-12-10T17:17:25.000Z',
                                 updatedAt: '2016-03-31T10:57:48.000Z'
                             }
+                        },
+                        {
+                            id: 2,
+                            nb_place_outward: 3,
+                            nb_place_return: null,
+                            createdAt: '2015-12-02T14:47:23.000Z',
+                            updatedAt: '2015-12-02T14:47:23.000Z',
+                            UserId: 2,
+                            JourneyId: 1,
+                            Invoice: {
+                                id: 2,
+                                status: 'completed',
+                                amount: 75,
+                                fees: 5,
+                                ref: 'MRT20151202CIVDK',
+                                transaction: '822731012',
+                                driver_payed: false,
+                                createdAt: '2015-12-02T14:47:23.000Z',
+                                updatedAt: '2015-12-02T14:52:34.000Z',
+                                UserId: 2,
+                                JourneyId: 1,
+                                JoinId: 2
+                            },
+                            User: {
+                                id: 2,
+                                firstname: 'Richard',
+                                lastname: 'Couret',
+                                address: 'Bouffemont',
+                                phone: null,
+                                email: 'richard.couret@free.fr',
+                                hashedPassword: '30I/772+OK6uQNdlaY8nriTbNSGznAk9un1zRIXmREB9nOjMz7wDDe2XpiS2ggk9En6lxR4SLqJyzAcW/rni3w==',
+                                provider: 'local',
+                                salt: 'T75xyNJfL19hzc778A08HQ==',
+                                itra: null,
+                                isActive: true,
+                                role: 'user',
+                                picture: null,
+                                createdAt: '2014-12-10T17:17:25.000Z',
+                                updatedAt: '2016-03-31T10:57:48.000Z'
+                            }
                         }
-                    ],
-                    dateToPay: '4 months ago',
-                    nbJourney: 1,
-                    nbValidatedJourney: 1,
-                    amountToPay: 50
+                    ]
                 },
                 {
                     id: 143,
@@ -377,8 +412,6 @@ describe('Runnable Controllers', function() {
                                 JourneyId: 143,
                                 JoinId: 12
                             },
-                            ValidationJourney: null,
-                            validated: false,
                             User: {
                                 id: 1,
                                 firstname: 'Jeremy',
@@ -397,11 +430,7 @@ describe('Runnable Controllers', function() {
                                 updatedAt: '2016-03-31T10:57:48.000Z'
                             }
                         }
-                    ],
-                    dateToPay: '12 days ago',
-                    nbJourney: 1,
-                    nbValidatedJourney: 0,
-                    amountToPay: 24
+                    ]
                 },
                 {
                     id: 149,
@@ -480,8 +509,6 @@ describe('Runnable Controllers', function() {
                                 JourneyId: 149,
                                 JoinId: 13
                             },
-                            ValidationJourney: null,
-                            validated: false,
                             User: {
                                 id: 1,
                                 firstname: 'Jeremy',
@@ -500,11 +527,7 @@ describe('Runnable Controllers', function() {
                                 updatedAt: '2016-03-31T10:57:48.000Z'
                             }
                         }
-                    ],
-                    dateToPay: '4 days ago',
-                    nbJourney: 1,
-                    nbValidatedJourney: 0,
-                    amountToPay: 36
+                    ]
                 },
                 {
                     id: 155,
@@ -583,8 +606,6 @@ describe('Runnable Controllers', function() {
                                 JourneyId: 155,
                                 JoinId: 14
                             },
-                            ValidationJourney: null,
-                            validated: false,
                             User: {
                                 id: 2,
                                 firstname: 'Richard',
@@ -603,13 +624,9 @@ describe('Runnable Controllers', function() {
                                 updatedAt: '2015-01-13T12:04:47.000Z'
                             }
                         }
-                    ],
-                    dateToPay: 'in 16 days',
-                    nbJourney: 1,
-                    nbValidatedJourney: 0,
-                    amountToPay: 39
+                    ]
                 }
-            ]);
+            ], type: 'success'});
             $httpBackend.whenGET('/api/admin/join/toRefund').respond({
                 msg: [
                     {
@@ -768,6 +785,15 @@ describe('Runnable Controllers', function() {
             scope.login(credentials);
             $httpBackend.flush();
             expect(location.path).toHaveBeenCalledWith('/');
+        });
+
+        it ('Check journey to pay calculated values', function () {
+            expect(scope.page).toEqual('Admin');
+            $httpBackend.flush();
+            rootScope.$digest();
+            expect(scope.journeyToPay[0].nbJourney).toBe(2);
+            expect(scope.journeyToPay[0].nbValidatedJourney).toBe(1);
+            expect(scope.journeyToPay[0].amountToPay).toBe(115);
         });
 
         it ('Toggle user activation', function () {

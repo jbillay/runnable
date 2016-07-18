@@ -6,11 +6,26 @@
  */
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
 var request = require('supertest'),
     models = require('../../server/models/index'),
     assert = require('chai').assert,
     app = require('../../server.js'),
-    settings = require('../../conf/config');
+    settings = require('../../conf/config'),
+    superagent = require('superagent');
+
+function loginUser(agent) {
+    return function(done) {
+        function onResponse(err, res) {
+            return done();
+        }
+        agent
+            .post('http://localhost:' + settings.port + '/login')
+            .send({ email: 'jbillay@gmail.com', password: 'noofs' })
+            .end(onResponse);
+    };
+}
 
 describe('Test of root API', function () {
     // Recreate the database after each test to ensure isolation
@@ -86,13 +101,37 @@ describe('Test of root API', function () {
         });
     });
 
-    describe('GET /api/send/mail', function () {
+    describe('POST /api/send/mail', function () {
         it('Should send an email', function (done) {
             request(app)
                 .post('/api/send/mail')
                 .send({ confirm: 'message envoyé', emails: 'jbillay@gmail.com,richard.couret@free.fr', message: 'test'})
                 .end(function (err, res) {
                     assert.equal(res.body.msg, 'message envoyé');
+                    return done();
+                });
+        });
+    });
+
+    describe('POST /api/admin/sendMail', function () {
+        var agent = superagent.agent();
+
+        before(loginUser(agent));
+
+        it('Should send an email', function (done) {
+            var template = {
+                name: 'mailTest',
+                values: {
+                    nom: 'Billay',
+                    prenom: 'Jeremy'
+                },
+                email: 'jeremy.billay@myruntrip.com'
+            };
+            agent
+                .post('http://localhost:' + settings.port + '/api/admin/sendMail')
+                .send({template: template})
+                .end(function (err, res) {
+                    assert.equal(res.body.msg, 'Message not sent as configured');
                     return done();
                 });
         });

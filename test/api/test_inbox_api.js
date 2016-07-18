@@ -96,7 +96,7 @@ describe('Test of Inbox API', function () {
                         return done(err);
                     }
                     assert.equal(res.body.title, 'Email pour 3');
-                    assert.equal(res.body.message, 'TEST message Inbox');
+                    assert.include(res.body.message, 'TEST message Inbox');
                     assert.equal(res.body.UserId, message.userId);
                     return done();
                 });

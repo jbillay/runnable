@@ -441,6 +441,7 @@ angular.module('runnable.controllers', []).
 			$scope.journeyList = res[2];
 			$scope.joinList = res[3];
 			$scope.emailOption = res[4];
+            $scope.masterTemplate = angular.copy($scope.emailOption.mailConfig.template);
 			$scope.pageList = res[5];
             $scope.version = res[6];
             $scope.partnersList = res[7];
@@ -451,6 +452,7 @@ angular.module('runnable.controllers', []).
             if ($scope.defaultFee.percentage) {
                 $scope.defaultFee.percentage = $scope.defaultFee.percentage * 100;
             }
+            // TODO: to be transfered to BO
             angular.forEach($scope.journeyToPay, function (journey) {
                 var dates=[];
                 dates.push(new Date(journey.date_start_outward));
@@ -458,8 +460,9 @@ angular.module('runnable.controllers', []).
                 journey.dateToPay = moment(new Date(Math.max.apply(null, dates))).fromNow();
                 journey.nbJourney = 0;
                 journey.nbValidatedJourney = 0;
+                journey.amountToPay = 0;
                 angular.forEach(journey.Joins, function (join) {
-                    journey.amountToPay = parseFloat(join.Invoice.amount) - parseFloat(join.Invoice.fees);
+                    journey.amountToPay += parseFloat(join.Invoice.amount) - parseFloat(join.Invoice.fees);
                     join.validated = false;
                     join.User = $scope.userList[_.findIndex($scope.userList, {'id': parseInt(join.UserId)})];
                     if (join.ValidationJourney) {
@@ -875,7 +878,7 @@ angular.module('runnable.controllers', []).
                     var title = 'Départ de ' + journey.address_start,
                         info = '<div id="content"><div id="siteNotice"></div>' +
                             '<a href="/journey-' + journey.id + '">' +
-                            '<h4 id="firstHeading" class="firstHeading">Départ d\'un ' +
+                            '<h4 id="firstHeading" class="firstHeading">Départ de ' +
                             journey.address_start + '</h4></a>' + '<div id="bodyContent">' +
                             '<p><i class="fa fa-exchange"></i> ' + journey.journey_type +  '</p>';
 

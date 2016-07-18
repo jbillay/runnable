@@ -58,7 +58,7 @@ describe('Tests of mail object', function () {
                             assert.equal(this.subject, 'Email pour user toto');
                             assert.equal(this.text, 'TEST Out of stock toto timekey HTML');
                         });
-                        assert.equal(mail.getContentHtml(), 'TEST Out of stock toto timekey HTML');
+                        assert.equal(mail.getContentHtml(), '<HTML> TEST Out of stock toto timekey HTML </HTML>');
                         assert.equal(mail.getSubject(), 'Email pour user toto');
                         // not in promise as function stub to check content
                         mail.send();

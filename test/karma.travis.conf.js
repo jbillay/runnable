@@ -27,6 +27,11 @@ module.exports = function(config) {
             'public/lib/noty/js/noty/packaged/jquery.noty.packaged.min.js',
             'public/lib/lodash/dist/lodash.min.js',
             'public/lib/angular-ui-grid/ui-grid.min.js',
+            'public/lib/textAngular/dist/textAngular-rangy.min.js',
+            'public/lib/textAngular/dist/textAngular-sanitize.min.js',
+            'public/lib/textAngular/dist/textAngular.min.js',
+            'public/lib/ace-builds/src-min-noconflict/ace.js',
+            'public/lib/angular-ui-ace/ui-ace.js',
             'public/js/*.js',
             'test/unit/*.js'
         ],

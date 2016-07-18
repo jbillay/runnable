@@ -37,7 +37,7 @@ describe('Test of option API', function () {
 
     describe('GET /api/admin/options', function () {
         var agent = superagent.agent(),
-            mailData = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false};
+            mailData = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false, template: '<HTML> {{content}} </HTML>'};
         before(loginUser(agent));
 
         it('should get all option values', function (done) {
@@ -57,7 +57,7 @@ describe('Test of option API', function () {
 
     describe('GET /api/admin/option/:name', function () {
         var agent = superagent.agent(),
-            mailData = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false};
+            mailData = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false, template: '<HTML> {{content}} </HTML>'};
         before(loginUser(agent));
 
         it('should get emailConfig value', function (done) {

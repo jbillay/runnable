@@ -25,7 +25,7 @@ describe('Tests of option object', function () {
 
     it('Should load options values', function (done) {
         var options = new Options(),
-            mailConfig = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false};
+            mailConfig = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false, template: '<HTML> {{content}} </HTML>'};
         options.load(function (err, options) {
             if (err) {
                 console.log('Error: ' + err);
@@ -41,7 +41,7 @@ describe('Tests of option object', function () {
 
     it('Should get mailConfig option value', function (done) {
         var options = new Options(),
-            mailConfig = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false};
+            mailConfig = {host: 'mail.gmail.com', user: 'jbillay@gmail.com', password: 'test', transport: 'SMTP', from: 'Service des ventes Inside Pole <ventes@insidepole.fr>', to: 'ventes@insidepole.fr', bcc: 'jbillay@gmail.com', send: false, template: '<HTML> {{content}} </HTML>'};
         options.get('mailConfig')
             .then(function (value) {
                 assert.deepEqual(value, mailConfig);

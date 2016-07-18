@@ -217,12 +217,12 @@ describe('Tests of run objects', function () {
             data_user = {
                 id: 1
             };
-        run.set(data_run, data_user);
+        run.set(data_run, data_user, null);
         var tmp = run.get();
         assert.equal(tmp.name, 'Marathon du Mont Blanc');
         assert.equal(tmp.type, 'marathon');
         assert.equal(tmp.address_start, 'Chamonix, France');
-        run.save(tmp, data_user, function (err, newRun) {
+        run.save(tmp, data_user, null, function (err, newRun) {
             if (err) return done(err);
             assert.equal(newRun.name, 'Marathon du Mont Blanc');
             assert.equal(newRun.slug, 'marathon-du-mont-blanc');
@@ -282,6 +282,104 @@ describe('Tests of run objects', function () {
                 'http://res.cloudinary.com/myruntrip/image/upload/v1453786210/Run_2_Picture_3_test'
             );
             return done();
+        });
+    });
+
+    it('Should create a run for a partner', function (done) {
+        var run = new Run(),
+            newRunData = {
+                id: 7,
+                name: 'Trail du partner',
+                type: 'ultra',
+                address_start: 'Sarcelles, France',
+                date_start: '2016-09-30 00:00:00',
+                time_start: '09:50',
+                distances: '180km',
+                elevations: '3+',
+                info: 'http://www.marathondupartner.fr',
+                is_active: 1
+            },
+            partnerId = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwNjcsImV4cCI6MTIwNTA5NDE5NzR9.fikQ6L2eYUBujEeV-OYMFfX_pER5eC2Z_nQJ0YVyb9w';
+
+        run.save(newRunData, null, partnerId, function (err, newRun) {
+            if (err) return done(err);
+            assert.equal(newRun.name, 'Trail du partner');
+            assert.equal(newRun.slug, 'trail-du-partner');
+            assert.equal(newRun.type, 'ultra');
+            assert.equal(newRun.address_start, 'Sarcelles, France');
+            assert.equal(newRun.UserId, 2);
+            return done();
+        });
+    });
+
+    describe('Test get owner on a run trip', function () {
+        it('Should take user info to select user', function (done) {
+            var run = new Run(),
+                user = { id: 1 };
+
+            run.getOwner(user, null)
+                .then(function (userInfo) {
+                    assert.equal(userInfo.user.email, 'jbillay@gmail.com');
+                    return done();
+                })
+                .catch(function (err) {
+                    return done(err);
+                });
+        });
+        it('Should take user info even if partner is defined', function (done) {
+            var run = new Run(),
+                user = { id: 2 },
+                partner = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwODgsImV4cCI6MTIwNTA5MjA1MTh9.w17cboqKDtjpsJzeu21C5OEwiei1_Ay2d_BO58mpFcs';
+
+            run.getOwner(user, partner)
+                .then(function (userInfo) {
+                    assert.equal(userInfo.user.email, 'richard.couret@free.fr');
+                    return done();
+                })
+                .catch(function (err) {
+                    return done(err);
+                });
+        });
+        it('Should take partner info to select user', function (done) {
+            var run = new Run(),
+                partner = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwODgsImV4cCI6MTIwNTA5MjA1MTh9.w17cboqKDtjpsJzeu21C5OEwiei1_Ay2d_BO58mpFcs';
+
+            run.getOwner(null, partner)
+                .then(function (userInfo) {
+                    assert.equal(userInfo.user.email, 'jbillay@gmail.com');
+                    assert.equal(userInfo.partner.token, partner);
+                    return done();
+                })
+                .catch(function (err) {
+                    return done(err);
+                });
+        });
+
+        it('Should failed to found the partner info', function (done) {
+            var run = new Run(),
+                partner = 'eyJ0eXAiOiJKV1QiLCJhbGc';
+
+            run.getOwner(null, partner)
+                .then(function (userInfo) {
+                    return done('Error');
+                })
+                .catch(function (err) {
+                    assert.include(err, 'Problem with user of partnership');
+                    return done();
+                });
+        });
+
+        it('Should failed if nothing is sent', function (done) {
+            var run = new Run();
+
+            run.getOwner(null, null)
+                .then(function (userInfo) {
+                    return done('Error');
+                })
+                .catch(function (err) {
+                    assert.equal(err, 'User or partner not found');
+                    return done();
+                });
         });
     });
 });

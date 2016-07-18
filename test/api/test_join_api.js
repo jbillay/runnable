@@ -123,7 +123,7 @@ describe('Test of join API', function () {
                                 .end(function (err, res) {
                                     if (err) return done(err);
                                     assert.equal(res.body.length, 3);
-                                    assert.equal(res.body[0].message, 'User join a journey for Corrida de Saint Germain en Laye');
+                                    assert.include(res.body[0].message, 'User join a journey for Corrida de Saint Germain en Laye');
                                     assert.include(res.body[0].title, 'Corrida de Saint Germain en Laye');
                                     return done();
                                 });

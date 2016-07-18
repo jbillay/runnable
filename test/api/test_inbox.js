@@ -104,7 +104,7 @@ describe('Test of inbox object', function () {
             .then(function (newMessage) {
                 assert.equal(newMessage.id, 5);
                 assert.equal(newMessage.title, 'Email pour 3');
-                assert.equal(newMessage.message, 'TEST message Inbox');
+                assert.include(newMessage.message, 'TEST message Inbox');
                 assert.equal(newMessage.is_read, false);
                 assert.equal(newMessage.UserId, userId);
                 assert.isTrue(mail.send.calledOnce);

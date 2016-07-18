@@ -98,3 +98,17 @@ exports.sendMail = function (req, res) {
         res.jsonp({msg: confirmation, type: 'success'});
     });
 };
+
+exports.sendTestMail = function (req, res) {
+    'use strict';
+
+    var templateName = req.body.template.name || 'mailTest',
+        values = req.body.template.values || {},
+        email = req.body.template.email || 'jbillay@gmail.com',
+        mail = new Mail();
+
+    mail.sendEmail(templateName, values, email)
+        .then(function (message) {
+            return res.jsonp({msg: message, type: 'success'});
+        });
+};
