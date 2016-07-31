@@ -148,7 +148,7 @@ describe('Runnable Controllers', function() {
             timeout.flush();
             expect(scope.publicMessages.length).toBe(2);
             angular.forEach(scope.publicMessages, function (message) {
-                expect(message.showDate).toEqual('a year ago');
+                expect(message.showDate).toEqual('2 years ago');
             });
         });
 
