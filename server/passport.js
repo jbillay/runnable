@@ -6,7 +6,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var LocalAPIKeyStrategy = require('passport-localapikey').Strategy;
 var jwt = require('jsonwebtoken');
 var User = require('./objects/user');
-var Partner = require('./objects/Partner');
+var Partner = require('./objects/partner');
 
 //Serialize sessions
 passport.serializeUser(function(user, done) {
