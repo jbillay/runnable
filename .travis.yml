@@ -12,6 +12,7 @@ before_install:
  - npm install -g karma
  - npm install -g phantomjs
  - npm install -g yo
+ - npm install -g apidoc
  - npm install karma-phantomjs-launcher
  - npm install sequelize
  - npm install sqlite3

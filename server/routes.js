@@ -11,8 +11,86 @@ module.exports = function (app, passport, auth) {
     // serve index and view partials
     app.get('/', controllers.root.default);
     app.get('/logout', controllers.root.logout);
-	app.post('/login', cors(), function(req, res, next) {
+    /**
+     * @api {post} /login User login
+     * @apiVersion 1.0.0
+     * @apiName AuthenticateUser
+     * @apiGroup Authenticate
+     *
+     * @apiParam {String} email User email
+     * @apiParam {String} password User password
+     *
+     * @apiSuccess {String} msg Confirmation message
+     * @apiSuccess {String} type Type of return
+     * @apiSuccess {String} token Authentication token
+     *
+     * @apiSuccessExample {jsonp} Success-Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *        "msg": {
+     *          "id": 2,
+     *          "firstname": "Richard",
+     *          "lastname": "Couret",
+     *          "address": "Bouffemont",
+     *          "phone": "0689876847",
+     *          "email": "richard.couret@couret.fr",
+     *          "itra": "?id=84500&nom=COURET#tab",
+     *          "isActive": true,
+     *          "role": "editor",
+     *          "picture": null,
+     *        },
+     *        "type": "success",
+     *        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiZmlyc3RuYW1lIjoiUmljaGFyZCIsImxhc3RuYW1lIjoiQ291cmV0IiwiYWRkcmVzcyI6IkJvdWZmZW1vbnQiLCJwaG9uZSI6IjA2ODk4NzY1NDciLCJlbWFpbCI6InJpY2hhcmQuY291cmV0QGZyZWUuZnIiLCJoYXNoZWRQYXNzd29yZCI6IlZNY0xFb1ZMdlhkb2xEbHNSekY4Y1ZqbzJzd0ZmVjFNbzc2eWNSS09iSTAwcFZmQnk3M0l3bFlqL21YM1orUEg4NzNrNTdHdTh2V0NiV285di9DeHV3PT0iLCJwcm92aWRlciI6ImxvY2FsIiwic2FsdCI6ImQzNk9HdnViZStqVU84bGNCcG1yK1E9PSIsIml0cmEiOiI_aWQ9ODQ1MDAmbm9tPUNPVVJFVCN0YWIiLCJpc0FjdGl2ZSI6dHJ1ZSwicm9sZSI6ImVkaXRvciIsInBpY3R1cmUiOm51bGwsImNyZWF0ZWRBdCI6IjIwMTUtMDItMDRUMTc6NTU6MzkuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMTYtMDYtMDVUMDg6MDY6NDUuMDAwWiJ9.fipmCkn4UVQD9J7VboZv3VEroGoDAQT1mWwHsTaMXKM"
+     *     }
+     *
+     */
+    app.post('/login', cors(), function(req, res, next) {
 		passport.authenticate('local', function(err, user, info) {
+			if (!user) {
+				res.jsonp({msg: err, type: 'error'});
+			} else {
+				req.logIn(user, function(err) {
+					if (err) { return next(err); }
+					res.jsonp({msg: user, type: 'success', token: user.token});
+				});
+			}
+		})(req, res, next);
+	});
+
+    /**
+     * @api {post} /api/authenticate Partner authentication
+     * @apiVersion 1.0.0
+     * @apiName AuthenticatePartner
+     * @apiGroup Authenticate
+     *
+     * @apiParam {String} apikey Partner identification key
+     *
+     * @apiSuccess {String} msg Confirmation message
+     * @apiSuccess {String} type Type of return
+     * @apiSuccess {String} token Authentication token
+     *
+     * @apiSuccessExample {jsonp} Success-Response:
+     *     HTTP/1.1 200 OK
+     *     {
+     *        "msg": {
+     *          "id": 2,
+     *          "firstname": "Richard",
+     *          "lastname": "Couret",
+     *          "address": "Bouffemont",
+     *          "phone": "0689876847",
+     *          "email": "richard.couret@couret.fr",
+     *          "itra": "?id=84500&nom=COURET#tab",
+     *          "isActive": true,
+     *          "role": "editor",
+     *          "picture": null,
+     *        },
+     *        "type": "success",
+     *        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiZmlyc3RuYW1lIjoiUmljaGFyZCIsImxhc3RuYW1lIjoiQ291cmV0IiwiYWRkcmVzcyI6IkJvdWZmZW1vbnQiLCJwaG9uZSI6IjA2ODk4NzY1NDciLCJlbWFpbCI6InJpY2hhcmQuY291cmV0QGZyZWUuZnIiLCJoYXNoZWRQYXNzd29yZCI6IlZNY0xFb1ZMdlhkb2xEbHNSekY4Y1ZqbzJzd0ZmVjFNbzc2eWNSS09iSTAwcFZmQnk3M0l3bFlqL21YM1orUEg4NzNrNTdHdTh2V0NiV285di9DeHV3PT0iLCJwcm92aWRlciI6ImxvY2FsIiwic2FsdCI6ImQzNk9HdnViZStqVU84bGNCcG1yK1E9PSIsIml0cmEiOiI_aWQ9ODQ1MDAmbm9tPUNPVVJFVCN0YWIiLCJpc0FjdGl2ZSI6dHJ1ZSwicm9sZSI6ImVkaXRvciIsInBpY3R1cmUiOm51bGwsImNyZWF0ZWRBdCI6IjIwMTUtMDItMDRUMTc6NTU6MzkuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMTYtMDYtMDVUMDg6MDY6NDUuMDAwWiJ9.fipmCkn4UVQD9J7VboZv3VEroGoDAQT1mWwHsTaMXKM"
+     *     }
+     *
+     */
+    app.post('/api/authenticate', cors(), function(req, res, next) {
+		passport.authenticate('localapikey', function(err, user, info) {
 			if (!user) {
 				res.jsonp({msg: err, type: 'error'});
 			} else {
@@ -94,7 +172,7 @@ module.exports = function (app, passport, auth) {
     app.get('/api/join/cancel/:id', auth.requiresLogin, controllers.join.cancel);
 
     app.post('/api/participate/add', auth.requiresLogin, controllers.participate.add);
-    app.get('/api/participate/user/list', auth.requiresLogin, controllers.participate.userList);
+    app.get('/api/participate/user/list', controllers.participate.userList);
     app.get('/api/participate/run/user/list/:id', controllers.participate.userRunList);
 
 	app.get('/api/admin/users', auth.requireAdmin, controllers.user.list);

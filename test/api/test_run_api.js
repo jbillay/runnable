@@ -190,6 +190,7 @@ describe('Test of run API', function () {
         before(loginUser(agent));
 
         it('should update a run', function (done) {
+            this.timeout(6000);
             var run = {
                 id: 1,
                 name: 'Maxicross',
@@ -256,6 +257,7 @@ describe('Test of run API', function () {
         before(loginUser(agent));
 
         it('should create a run without images', function (done) {
+            this.timeout(6000);
             var run = {
                 id: 7,
                 name: 'Marathon du Mont Blanc',
@@ -308,6 +310,7 @@ describe('Test of run API', function () {
         });
 
         it('should create a run with an object', function (done) {
+            this.timeout(6000);
             var run = {
                 id: 8,
                 name: 'Marathon de Chantilly',
@@ -321,10 +324,10 @@ describe('Test of run API', function () {
             };
             agent
                 .post('http://localhost:' + settings.port + '/api/run')
-                .send({run: run})
+                .send(run)
                 .end(function (err, res) {
                     if (err) return done(err);
-                    assert.equal(res.statusCode, 200);
+                    assert.equal(res.statusCode, 201);
                     assert.equal(res.body.type, 'success');
                     assert.equal(res.body.msg, 'runCreated');
                     agent
@@ -368,6 +371,7 @@ describe('Test of run API', function () {
                 .send({run: run})
                 .end(function (err, res) {
                     if (err) return done(err);
+                    assert.equal(res.statusCode, 400);
                     assert.equal(res.body.type, 'error');
                     assert.equal(res.body.msg, 'At least one of the mandatory fields is missing (name, type, address_start, date_start)');
                     return done();
@@ -390,6 +394,7 @@ describe('Test of run API', function () {
                 .send({run: run})
                 .end(function (err, res) {
                     if (err) return done(err);
+                    assert.equal(res.statusCode, 400);
                     assert.equal(res.body.type, 'error');
                     assert.equal(res.body.msg, 'At least one of the mandatory fields is missing (name, type, address_start, date_start)');
                     return done();

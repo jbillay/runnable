@@ -45,7 +45,10 @@ mail.prototype.init = function () {
             that.from = settings.from;
             that.to = settings.to;
             that.bcc = settings.bcc;
-            that.masterTemplate = settings.template;
+            if (settings.template) {
+                var masterTemplate = settings.template.replace(/(?:\r\n|\r|\n)/g, '');
+                that.masterTemplate = masterTemplate;
+            }
             that.toSend = settings.send;
 
             if (that.service) {

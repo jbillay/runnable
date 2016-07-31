@@ -44,7 +44,7 @@ describe('Test of picture object', function () {
         return done();
     });
     it('Create new image as default for the run 1', function (done) {
-        this.timeout(6000);
+        this.timeout(10000);
         var picture = new Picture(),
             fakeFile = path.normalize(path.join(__dirname, '/fixtures/myruntrip.jpg')),
             targetFile = path.normalize(path.join(__dirname, '../myruntrip.jpg'));

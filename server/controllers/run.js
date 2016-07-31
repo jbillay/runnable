@@ -4,29 +4,110 @@ var Picture = require('../objects/picture');
 var _ = require('lodash');
 var async = require('async');
 
+/**
+ * @api {post} /api/run Create a race
+ * @apiVersion 1.0.0
+ * @apiName CreateRun
+ * @apiGroup Run
+ *
+ * @apiParam {String} name Name of the race
+ * @apiParam {string="trail","ultra","10k","20k","semi","marathon","triathlon"} type Type of the race
+ * @apiParam {String} address_start Localization of the race start (google maps definition preferred)
+ * @apiParam {String} date_start Date of the race
+ * @apiParam {String} [distances] List of distance(s) of the race
+ * @apiParam {String} [elevations] List of elevation(s) of the race
+ * @apiParam {String} [info] Link of race website
+ * @apiParam {String} [token] Authenticate token
+ * @apiHeader {String} [x-access-token] Authenticate token
+ *
+ * @apiSuccess {String} msg Confirmation message
+ * @apiSuccess {String} type Type of return
+ * @apiSuccess {Object} run New race information
+ *
+ * @apiSuccessExample {jsonp} Success-Response:
+ *     HTTP/1.1 201 OK
+ *     {
+ *       "msg": "runCreated",
+ *       "type": "success",
+ *       "run": "{
+ *          "id": 108
+ *          "name": "Maxicross",
+ *          "slug": "maxicross",
+ *          "type": "trail",
+ *          "address_start": "Bouffemont, France",
+ *          "lat": null,
+ *          "lng": null,
+ *          "date_start": "2016-04-16T22:00:00.000Z",
+ *          "time_start": "09:15",
+ *          "distances": "15k - 30k - 7k",
+ *          "elevations": "500+ - 1400+",
+ *          "info": "http:\/\/www.maxicross.fr",
+ *          "is_active": false,
+ *          "createdAt": "2015-02-04 18:55:39",
+ *          "updatedAt": "2015-02-05 18:55:39",
+ *          "UserId": 2,
+ *          "PartnerId": 1,
+ *          "pictures": [],
+ *          "sticker": null
+ *       }"
+ *     }
+ *
+ * @apiError (400) {String} msg Error message
+ * @apiError (400) {String} type Type of return
+ *
+ * @apiErrorExample {jsonp} Error-Response:
+ *     HTTP/1.1 400 Bad Request
+ *     {
+ *       "msg": "At least one of the mandatory fields is missing",
+ *       "type": "error"
+ *     }
+ *
+ * @apiError (401) {String} msg Error message
+ * @apiError (401) {String} type Type of return
+ *
+ * @apiErrorExample {jsonp} Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "msg": "notAuthenticated",
+ *       "type": "error"
+ *     }
+ *
+ * @apiError (500) {String} msg Error message
+ * @apiError (500) {String} type Type of return
+ *
+ * @apiErrorExample {jsonp} Error-Response:
+ *     HTTP/1.1 500 Internal Server Error
+ *     {
+ *       "msg": "SQL problem",
+ *       "type": "error"
+ *     }
+ */
 exports.create = function (req, res) {
     'use strict';
 	var run = new Run(),
         picture = new Picture(),
         newRun = null,
-        checkout = null,
-        partner = req.body.apiKey || req.query.apiKey || req.headers['x-access-apiKey'];
+        checkout = null;
     if (req.fields) {
         // Transform fields array in string due to multipart mapping
         newRun = _.transform(req.fields, function (newRun, value, key) {
             newRun[key] = value.toString();
         });
-    } else if (req.body.run) {
-        newRun = req.body.run;
+    } else if (req.body) {
+        newRun = req.body;
     }
     checkout = run.checkRunObject(newRun);
     if (checkout.type === 'error') {
-        return res.jsonp(checkout);
+        return res.jsonp(400, checkout);
     } else {
         console.log('Create the run : ' + newRun.name);
-        run.save(newRun, req.user, partner, function (err, createdRun) {
+        run.save(newRun, req.user, req.partner, function (err, createdRun) {
             if (err) {
-                return res.jsonp({msg: err, type: 'error'});
+                if (err === 'Not authorized') {
+                    return res.jsonp(401, {msg: err, type: 'error'});
+                } else {
+                    return res.jsonp(500, {msg: err, type: 'error'});
+                }
             }
             if (req.files && req.files.file) {
                 var q = async.queue(function (options, callback) {
@@ -61,10 +142,10 @@ exports.create = function (req, res) {
                     iterator++;
                 });
                 q.drain = function () {
-                    return res.jsonp({msg: 'runCreated', type: 'success', run: createdRun});
+                    return res.jsonp(201, {msg: 'runCreated', type: 'success', run: createdRun});
                 };
             } else {
-                return res.jsonp({msg: 'runCreated', type: 'success', run: createdRun});
+                return res.jsonp(201, {msg: 'runCreated', type: 'success', run: createdRun});
             }
         });
     }
@@ -81,6 +162,75 @@ exports.search = function (req, res) {
     });
 };
 
+/**
+ * @api {get} /api/run/list Get list of active race
+ * @apiVersion 1.0.0
+ * @apiName GetActiveRun
+ * @apiGroup Run
+ *
+ * @apiSuccess {Object} msg List of active runs
+ * @apiSuccess {String} type Type of return
+ *
+ * @apiSuccessExample {jsonp} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "type": "success",
+ *       "msg": "[
+ *          {
+ *              "id": 108
+ *              "name": "Maxicross",
+ *              "slug": "maxicross",
+ *              "type": "trail",
+ *              "address_start": "Bouffemont, France",
+ *              "lat": null,
+ *              "lng": null,
+ *              "date_start": "2016-04-16T22:00:00.000Z",
+ *              "time_start": "09:15",
+ *              "distances": "15k - 30k - 7k",
+ *              "elevations": "500+ - 1400+",
+ *              "info": "http:\/\/www.maxicross.fr",
+ *              "is_active": false,
+ *              "createdAt": "2015-02-04 18:55:39",
+ *              "updatedAt": "2015-02-05 18:55:39",
+ *              "UserId": 2,
+ *              "PartnerId": 1,
+ *              "pictures": [],
+ *              "sticker": null
+ *          },{
+ *              "id": 109
+ *              "name": "UTPMA",
+ *              "slug": "utpma",
+ *              "type": "trail",
+ *              "address_start": "Aurillac, France",
+ *              "lat": null,
+ *              "lng": null,
+ *              "date_start": "2016-04-16T22:00:00.000Z",
+ *              "time_start": "06:20",
+ *              "distances": "16k - 44k - 101k",
+ *              "elevations": "500+ - 1400+ - 4500+",
+ *              "info": "http:\/\/www.utpma.fr",
+ *              "is_active": 1,
+ *              "createdAt": "2015-02-04 18:55:39",
+ *              "updatedAt": "2015-02-05 18:55:39",
+ *              "UserId": 1,
+ *              "PartnerId": null,
+ *              "pictures": [],
+ *              "sticker": null
+ *          }
+ *       ]"
+ *     }
+ *
+ * @apiError (500) {String} msg Error message
+ * @apiError (500) {String} type Type of return
+ *
+ * @apiErrorExample {jsonp} Error-Response:
+ *     HTTP/1.1 500 Bad Request
+ *     {
+ *       "msg": "Database connection problem",
+ *       "type": "error"
+ *     }
+ *
+ */
 // Function used in the widget don t change API without update widget code
 exports.activeList = function (req, res) {
     'use strict';
@@ -94,7 +244,51 @@ exports.activeList = function (req, res) {
 	});
 };
 
-// Function used in the widget don t change API without update widget code
+/**
+ * @api {get} /api/run/:id Get race information
+ * @apiVersion 1.0.0
+ * @apiName GetRun
+ * @apiGroup Run
+ *
+ * @apiParam {String} id Race identifier
+ *
+ * @apiSuccess {Object} body Race information
+ *
+ * @apiSuccessExample {jsonp} Success-Response:
+ *     HTTP/1.1 201 OK
+ *     {
+ *          "id": 108
+ *          "name": "Maxicross",
+ *          "slug": "maxicross",
+ *          "type": "trail",
+ *          "address_start": "Bouffemont, France",
+ *          "lat": null,
+ *          "lng": null,
+ *          "date_start": "2016-04-16T22:00:00.000Z",
+ *          "time_start": "09:15",
+ *          "distances": "15k - 30k - 7k",
+ *          "elevations": "500+ - 1400+",
+ *          "info": "http:\/\/www.maxicross.fr",
+ *          "is_active": false,
+ *          "createdAt": "2015-02-04 18:55:39",
+ *          "updatedAt": "2015-02-05 18:55:39",
+ *          "UserId": 2,
+ *          "PartnerId": 1,
+ *          "pictures": [],
+ *          "sticker": null
+ *     }
+ *
+ * @apiError (400) {String} msg Error message
+ * @apiError (400) {String} type Type of return
+ *
+ * @apiErrorExample {jsonp} Error-Response:
+ *     HTTP/1.1 400 Bad Request
+ *     {
+ *       "msg": "Wrong id format",
+ *       "type": "error"
+ *     }
+ *
+ */
 exports.detail = function (req, res) {
     'use strict';
 	console.log('Get info on run ' + req.params.id);
@@ -148,10 +342,9 @@ exports.toggleActive = function (req, res) {
 
 exports.update = function (req, res) {
     'use strict';
-    var partner = req.body.apiKey|| req.query.apiKey || req.headers['x-access-apiKey'];
     console.log('Update the run ' + req.body.run.id);
     var run = new Run();
-    run.save(req.body.run, req.user, partner, function (err, run) {
+    run.save(req.body.run, req.user, req.partner, function (err, run) {
         if (err) {
             return res.jsonp({msg: err, type: 'error'});
         }

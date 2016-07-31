@@ -66,10 +66,13 @@ module.exports = function (app, passport) {
                 // verifies secret and checks exp
                 jwt.verify(token, 'secretTokenKey4MyRunTrip$', function (err, decoded) {
                     if (err) {
-                        return res.json({success: false, message: 'Failed to authenticate token.'});
+                        return res.json(403, {success: false, message: 'Failed to authenticate token.'});
                     } else {
                         // if everything is good, save to request for use in other routes
-                        req.logIn(decoded, function(err) {
+                        if (decoded.partner) {
+                            req.partner = decoded.partner;
+                        }
+                        req.logIn(decoded.user, function(err) {
                             if (err) { return next(err); }
                             next();
                         });

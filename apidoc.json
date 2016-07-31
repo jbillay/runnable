@@ -1,0 +1,8 @@
+{
+  "name": "My Run Trip API",
+  "version": "1.0.0",
+  "description": "My Run Trip API description",
+  "title": "My Run Trip API",
+  "url": "http://www.myruntrip.com",
+  "sampleUrl": "https://myruntrip-staging.herokuapp.com"
+}

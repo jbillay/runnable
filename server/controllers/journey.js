@@ -40,6 +40,82 @@ exports.create = function (req, res, next) {
     }
 };
 
+/**
+ * @api {post} /api/journey/confirm Confirm journey created
+ * @apiVersion 1.0.0
+ * @apiName JourneyConfirm
+ * @apiGroup Journey
+ *
+ * @apiParam {String} key Key provide when the journey is created
+ * @apiParam {String} [token] Authenticate token
+ * @apiHeader {String} [x-access-token] Authenticate token
+ *
+ * @apiSuccess {String} msg Confirmation message
+ * @apiSuccess {String} type Type of return
+ * @apiSuccess {Object} run New race information
+ *
+ * @apiSuccessExample {jsonp} Success-Response:
+ *     HTTP/1.1 201 OK
+ *     {
+ *       "msg": "draftJourneySaved",
+ *       "type": "success",
+ *       "journey": "{
+ *          "id": 18,
+ *          "address_start": "64200 Biarritz, France",
+ *          "lat": "43.4831519",
+ *          "lng": "-1.558626",
+ *          "distance": "834 km",
+ *          "duration": "7 heures 31 minutes",
+ *          "journey_type": "aller-retour",
+ *          "date_start_outward": "2016-10-15T22:00:00.000Z",
+ *          "time_start_outward": "10:10",
+ *          "nb_space_outward": 6,
+ *          "date_start_return": "2016-10-22T22:00:00.000Z",
+ *          "time_start_return": "22:52",
+ *          "nb_space_return": 4,
+ *          "car_type": "monospace",
+ *          "amount": 34,
+ *          "is_payed": false,
+ *          "is_canceled": false,
+ *          "createdAt": "2016-06-22T11:37:31.000Z",
+ *          "updatedAt": "2016-06-22T11:37:31.000Z",
+ *          "RunId": 3,
+ *          "UserId": 1,
+ *          "PartnerId": null,
+ *          "Joins": []
+ *       }"
+ *     }
+ *
+ * @apiError (400) {String} msg Error message
+ * @apiError (400) {String} type Type of return
+ *
+ * @apiErrorExample {jsonp} Error-Response:
+ *     HTTP/1.1 400 Bad Request
+ *     {
+ *       "msg": "Missing key",
+ *       "type": "error"
+ *     }
+ *
+ * @apiError (401) {String} msg Error message
+ * @apiError (401) {String} type Type of return
+ *
+ * @apiErrorExample {jsonp} Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "msg": "notAuthenticated",
+ *       "type": "error"
+ *     }
+ *
+ * @apiError (500) {String} msg Error message
+ * @apiError (500) {String} type Type of return
+ *
+ * @apiErrorExample {jsonp} Error-Response:
+ *     HTTP/1.1 500 Internal Server Error
+ *     {
+ *       "msg": "SQL problem",
+ *       "type": "error"
+ *     }
+ */
 exports.confirm = function (req, res, next) {
     'use strict';
     console.log('Confirm the journey with key : ' + req.body.key);
@@ -119,6 +195,121 @@ exports.openList = function (req, res) {
     journey = null;
 };
 
+
+/**
+ * @api {get} /api/journey/run/:id Journeys for a race
+ * @apiVersion 1.0.0
+ * @apiName GetJourneyRun
+ * @apiGroup Journey
+ *
+ * @apiParam {String} id Race identifier
+ *
+ * @apiSuccess {Object} body List of journeys for the race
+ *
+ * @apiSuccessExample {jsonp} Success-Response:
+ *     HTTP/1.1 200 OK
+ *      [
+ *          {
+ *              "id": 5,
+ *              "address_start": "Toulon, France",
+ *              "lat": "43.124228",
+ *              "lng": "5.928",
+ *              "distance": "839 km",
+ *              "duration": "7 heures 31 minutes",
+ *              "journey_type": "aller",
+ *              "date_start_outward": "2016-11-01T23:00:00.000Z",
+ *              "time_start_outward": "03:00",
+ *              "nb_space_outward": 4,
+ *              "date_start_return": null,
+ *              "time_start_return": null,
+ *              "nb_space_return": null,
+ *              "car_type": "citadine",
+ *              "amount": 23,
+ *              "is_payed": true,
+ *              "is_canceled": false,
+ *              "createdAt": "2016-06-05T08:06:45.000Z",
+ *              "updatedAt": "2016-07-13T20:49:36.000Z",
+ *              "RunId": 3,
+ *              "UserId": 1,
+ *              "PartnerId": null,
+ *              "Joins": [],
+ *             "Run": {
+ *               "id": 3,
+ *               "name": "Paris Saint Germain",
+ *               "slug": "paris-saint-germain",
+ *               "type": "20k",
+ *               "address_start": "Paris, France",
+ *               "lat": null,
+ *               "lng": null,
+ *               "date_start": "2017-05-11T22:00:00.000Z",
+ *               "time_start": "08:00",
+ *               "distances": "20Km",
+ *               "elevations": "150+",
+ *               "info": "http:\/\/wwww.parisstgermain.fr",
+ *               "is_active": true,
+ *               "createdAt": "2015-02-20T17:55:39.000Z",
+ *               "updatedAt": "2016-06-05T08:06:45.000Z",
+ *               "UserId": 1,
+ *               "PartnerId": null
+ *             }
+ *           },
+ *           {
+ *             "id": 6,
+ *             "address_start": "19000 Tulle, France",
+ *             "lat": "45.26565",
+ *             "lng": "1.771697",
+ *             "distance": "478 km",
+ *             "duration": "4 heures 30 minutes",
+ *             "journey_type": "aller-retour",
+ *             "date_start_outward": "2017-07-01T22:00:00.000Z",
+ *             "time_start_outward": "11:10",
+ *             "nb_space_outward": 2,
+ *             "date_start_return": "2017-07-02T22:00:00.000Z",
+ *             "time_start_return": "09:30",
+ *             "nb_space_return": 4,
+ *             "car_type": "citadine",
+ *             "amount": 12,
+ *             "is_payed": false,
+ *             "is_canceled": false,
+ *             "createdAt": "2016-06-22T11:06:37.000Z",
+ *             "updatedAt": "2016-06-22T11:06:37.000Z",
+ *             "RunId": 3,
+ *             "UserId": 1,
+ *             "PartnerId": null,
+ *             "Joins": [],
+ *             "Run": {
+ *               "id": 3,
+ *               "name": "Paris Saint Germain",
+ *               "slug": "paris-saint-germain",
+ *               "type": "20k",
+ *               "address_start": "Paris, France",
+ *               "lat": null,
+ *               "lng": null,
+ *               "date_start": "2017-05-11T22:00:00.000Z",
+ *               "time_start": "08:00",
+ *               "distances": "20Km",
+ *               "elevations": "150+",
+ *               "info": "http:\/\/wwww.parisstgermain.fr",
+ *               "is_active": true,
+ *               "createdAt": "2015-02-20T17:55:39.000Z",
+ *               "updatedAt": "2016-06-05T08:06:45.000Z",
+ *               "UserId": 1,
+ *               "PartnerId": null
+ *             }
+ *           }
+ *      ]
+ *
+ * @apiError (500) {String} msg Error message
+ * @apiError (500) {String} type Type of return
+ *
+ * @apiErrorExample {jsonp} Error-Response:
+ *     HTTP/1.1 500 Bad Request
+ *     {
+ *       "msg": "Database connection problem",
+ *       "type": "error"
+ *     }
+ *
+ */
 exports.listForRun = function (req, res) {
     'use strict';
 	console.log('Get list of journey for run ' + req.params.id);

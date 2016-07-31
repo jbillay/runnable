@@ -47,6 +47,7 @@
     "orm": "~2.1.4",
     "passport": "~0.2.0",
     "passport-local": "~1.0.0",
+    "passport-localapikey": "0.0.3",
     "paypal-ipn": "~3.0.0",
     "q": "~1.4.1",
     "qs": "^6.2.0",
@@ -65,6 +66,7 @@
   },
   "devDependencies": {
     "form-data": "^1.0.0-rc3",
+    "grunt-apidoc": "^0.11.0",
     "grunt-cli": "~0.1.13",
     "grunt-concurrent": "~1.0.0",
     "grunt-contrib-concat": "~0.5.1",

@@ -87,14 +87,23 @@ module.exports = function(grunt) {
             travis: {
                 configFile: 'test/karma.travis.conf.js'
             }
+        },
+        apidoc: {
+            mrt: {
+                src: 'server/',
+                dest: 'coverage/doc'
+            }
         }
     });
 
     // Load NPM tasks
     require('load-grunt-tasks')(grunt);
 
+    // Build task(s).
+    grunt.registerTask('build', ['less:compile', 'apidoc']);
+
     // Lint task(s).
-    grunt.registerTask('lint', ['less:compile', 'jshint', 'csslint']);
+    grunt.registerTask('lint', ['jshint', 'csslint']);
 
     // Node Test task.
     grunt.registerTask('node-unit-test', ['env:test', 'mocha_istanbul:coverage']);
@@ -109,11 +118,11 @@ module.exports = function(grunt) {
     grunt.registerTask('e2e', ['env:test', 'protractor_webdriver', 'protractor']);
 
     // Test task(s).
-    grunt.registerTask('test', ['lint', 'node-unit-test', 'angular-unit-test']);
+    grunt.registerTask('test', ['build', 'lint', 'node-unit-test', 'angular-unit-test']);
 
     // Test task.
     grunt.registerTask('test-travis', ['env:travis', 'mocha_istanbul:coverage', 'karma:travis']);
 
     // Test task.
-    grunt.registerTask('travis', ['lint', 'test-travis']);
+    grunt.registerTask('travis', ['build', 'lint', 'test-travis']);
 };

@@ -62,10 +62,10 @@ run.prototype.set = function (run, user, partner) {
     else {
         this.is_active = false;
     }
-	if (user.id) {
+	if (user && user.id) {
 		this.user_id = user.id; }
-	if (partner && partner.token) {
-		this.partner_token = partner.token; }
+	if (partner && partner.id) {
+		this.partner_id = partner.id; }
 };
 
 run.prototype.checkRunObject = function (run) {
@@ -98,36 +98,6 @@ run.prototype.isPast = function (run) {
     return true;
 };
 
-run.prototype.getOwner = function (user, partner) {
-    'use strict';
-    var deferred = q.defer(),
-        userInfo = {};
-
-    if (user && user.id) {
-        models.User.find({where: {id: user.id}})
-            .then(function (user) {
-                userInfo.user = user;
-                deferred.resolve(userInfo);
-            });
-    } else if (partner) {
-        models.Partner.find({where: {token: partner}, include: [models.User]})
-            .then(function (partnerShip) {
-                if (partnerShip && partnerShip.User) {
-                    userInfo.partner = partnerShip;
-                    userInfo.user = partnerShip.User;
-                    deferred.resolve(userInfo);
-                } else {
-                    console.error('Problem with user of partnership : ' + partner);
-                    deferred.reject('Problem with user of partnership : ' + partner);
-                }
-            });
-    } else {
-        console.error('User or partner not found');
-        deferred.reject('User or partner not found');
-    }
-    return deferred.promise;
-};
-
 run.prototype.save = function (run, user, partner, done) {
     'use strict';
 	var that = this;
@@ -136,28 +106,31 @@ run.prototype.save = function (run, user, partner, done) {
     console.log('try to save run : ' + run.name);
     util.geocode(run.address_start)
         .then(function (location) {
-            run.lat = location.lat;
-            run.lng = location.lng;
+            that.lat = location.lat;
+            that.lng = location.lng;
         })
         .catch(function (err) {
             console.error(err);
-            run.lat = null;
-            run.lng = null;
+            that.lat = null;
+            that.lng = null;
         })
         .finally(function () {
-            that.getOwner(user, partner)
-                .then(function (userInfo) {
-                    that.set(run, userInfo.user, userInfo.partner);
+            models.User.find({where: {id: user.id}})
+                .then(function (selectUser) {
+                    that.set(run, selectUser, partner);
                     models.Run.findOrCreate({where: {id: run.id}, defaults: that})
                         .spread(function (run, created) {
                             if (created) {
-                                run.setUser(userInfo.user)
+                                run.setUser(selectUser)
                                     .then(function (newRun) {
-                                        if (userInfo.partner) {
-                                            run.setPartner(userInfo.partner)
-                                                .then(function (newRun) {
-                                                    done(null, newRun);
-                                                });
+                                        if (partner) {
+                                            models.Partner.find({where: {id: partner.id}})
+                                                .then(function (selectPartner) {
+                                                    run.setPartner(selectPartner)
+                                                        .then(function (newRun) {
+                                                            done(null, newRun);
+                                                        });
+                                                    });
                                         } else {
                                             done(null, newRun);
                                         }
@@ -175,7 +148,7 @@ run.prototype.save = function (run, user, partner, done) {
                         });
                 })
                 .catch(function (err) {
-                    done(err, null);
+                    done('Not authorized', null);
                 });
         });
 };
