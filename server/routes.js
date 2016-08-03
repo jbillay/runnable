@@ -68,6 +68,7 @@ module.exports = function (app, passport, auth) {
      * @apiSuccess {String} msg Confirmation message
      * @apiSuccess {String} type Type of return
      * @apiSuccess {String} token Authentication token
+     * @apiSuccess {Number} expiresIn Timestamp for expiration of token
      *
      * @apiSuccessExample {jsonp} Success-Response:
      *     HTTP/1.1 200 OK
@@ -85,7 +86,8 @@ module.exports = function (app, passport, auth) {
      *          "picture": null,
      *        },
      *        "type": "success",
-     *        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiZmlyc3RuYW1lIjoiUmljaGFyZCIsImxhc3RuYW1lIjoiQ291cmV0IiwiYWRkcmVzcyI6IkJvdWZmZW1vbnQiLCJwaG9uZSI6IjA2ODk4NzY1NDciLCJlbWFpbCI6InJpY2hhcmQuY291cmV0QGZyZWUuZnIiLCJoYXNoZWRQYXNzd29yZCI6IlZNY0xFb1ZMdlhkb2xEbHNSekY4Y1ZqbzJzd0ZmVjFNbzc2eWNSS09iSTAwcFZmQnk3M0l3bFlqL21YM1orUEg4NzNrNTdHdTh2V0NiV285di9DeHV3PT0iLCJwcm92aWRlciI6ImxvY2FsIiwic2FsdCI6ImQzNk9HdnViZStqVU84bGNCcG1yK1E9PSIsIml0cmEiOiI_aWQ9ODQ1MDAmbm9tPUNPVVJFVCN0YWIiLCJpc0FjdGl2ZSI6dHJ1ZSwicm9sZSI6ImVkaXRvciIsInBpY3R1cmUiOm51bGwsImNyZWF0ZWRBdCI6IjIwMTUtMDItMDRUMTc6NTU6MzkuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMTYtMDYtMDVUMDg6MDY6NDUuMDAwWiJ9.fipmCkn4UVQD9J7VboZv3VEroGoDAQT1mWwHsTaMXKM"
+     *        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiZmlyc3RuYW1lIjoiUmljaGFyZCIsImxhc3RuYW1lIjoiQ291cmV0IiwiYWRkcmVzcyI6IkJvdWZmZW1vbnQiLCJwaG9uZSI6IjA2ODk4NzY1NDciLCJlbWFpbCI6InJpY2hhcmQuY291cmV0QGZyZWUuZnIiLCJoYXNoZWRQYXNzd29yZCI6IlZNY0xFb1ZMdlhkb2xEbHNSekY4Y1ZqbzJzd0ZmVjFNbzc2eWNSS09iSTAwcFZmQnk3M0l3bFlqL21YM1orUEg4NzNrNTdHdTh2V0NiV285di9DeHV3PT0iLCJwcm92aWRlciI6ImxvY2FsIiwic2FsdCI6ImQzNk9HdnViZStqVU84bGNCcG1yK1E9PSIsIml0cmEiOiI_aWQ9ODQ1MDAmbm9tPUNPVVJFVCN0YWIiLCJpc0FjdGl2ZSI6dHJ1ZSwicm9sZSI6ImVkaXRvciIsInBpY3R1cmUiOm51bGwsImNyZWF0ZWRBdCI6IjIwMTUtMDItMDRUMTc6NTU6MzkuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMTYtMDYtMDVUMDg6MDY6NDUuMDAwWiJ9.fipmCkn4UVQD9J7VboZv3VEroGoDAQT1mWwHsTaMXKM",
+     *        "expiresIn": 1470225915727
      *     }
      *
      */
@@ -96,7 +98,7 @@ module.exports = function (app, passport, auth) {
 			} else {
 				req.logIn(user, function(err) {
 					if (err) { return next(err); }
-					res.jsonp({msg: user, type: 'success', token: user.token});
+					res.jsonp({msg: user, type: 'success', token: user.token, expiresIn: user.expiresIn});
 				});
 			}
 		})(req, res, next);

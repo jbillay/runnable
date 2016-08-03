@@ -56,6 +56,7 @@ passport.use(new LocalStrategy({
                 });
 				user.salt = user.hashedPassword = user.provider = null;
                 user.token = token;
+                user.expiresIn = new Date().getTime() + 86400;
 				console.log('Login (local) : { id: ' + user.id + ', email ' + user.email + ' }');
 				done(null, user);
 			}
@@ -84,6 +85,7 @@ passport.use(new LocalAPIKeyStrategy(
                 });
                 authPartner.User.salt = authPartner.User.hashedPassword = authPartner.User.provider = null;
                 authPartner.User.token = token;
+                authPartner.User.expiresIn = new Date().getTime() + 86400;
                 console.log('Login (localapikey) : { id: ' + authPartner.User.id + ', email ' + authPartner.User.email + ' }');
                 return done(null, authPartner.User);
             })

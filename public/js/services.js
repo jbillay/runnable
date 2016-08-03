@@ -1392,11 +1392,13 @@ angular.module('runnable.services', ['ngResource']).
 					});
                 return deferred.promise;
 			},
-            create: function (journey) {
+            create: function (journey, notif) {
                 var deferred = $q.defer();
                 $http.post('/api/journey', {journey: journey}).
                     success(function (result) {
-                        $rootScope.$broadcast('USER_MSG', result);
+                        if (notif) {
+                            $rootScope.$broadcast('USER_MSG', result);
+                        }
                         if (result.type === 'success') {
                             if (result.msg === 'journeyCreated') {
                                 deferred.resolve(result.journey);
@@ -1412,11 +1414,13 @@ angular.module('runnable.services', ['ngResource']).
                     });
                 return deferred.promise;
             },
-            confirm: function (key) {
+            confirm: function (key, notif) {
                 var deferred = $q.defer();
                 $http.post('/api/journey/confirm', {key: key}).
                     success(function (result) {
-                        $rootScope.$broadcast('USER_MSG', result);
+                        if (notif) {
+                            $rootScope.$broadcast('USER_MSG', result);
+                        }
                         if (result.type === 'success') {
                             deferred.resolve(result.journey);
                         } else  {

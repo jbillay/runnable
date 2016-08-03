@@ -428,7 +428,7 @@ describe('Journey Service', function() {
             expect(result).toContain('error');
         });
 
-        it('should create a journey', function () {
+        it('should create a journey with notification', function () {
             spyOn(rootScope, '$broadcast').and.callThrough();
             var journey = {
                     address_start: 'Nice',
@@ -454,7 +454,7 @@ describe('Journey Service', function() {
                                                             type: 'success',
                                                             journey: journey});
 
-            var promise = service.create(journey);
+            var promise = service.create(journey, true);
 
             promise.then(function(ret){
                 message = ret;
@@ -463,6 +463,43 @@ describe('Journey Service', function() {
             $httpBackend.flush();
             expect(message).toEqual(journey);
             expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('should create a journey without notification', function () {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            var journey = {
+                    address_start: 'Nice',
+                    distance: '300 km',
+                    duration: '3 heures 10 minutes',
+                    journey_type: 'aller-retour',
+                    date_start_outward: '2015-06-25 00:00:00',
+                    time_start_outward: '09:00',
+                    nb_space_outward: 1,
+                    date_start_return: '2015-06-26 00:00:00',
+                    time_start_return: '11:00',
+                    nb_space_return: 1,
+                    car_type: 'citadine',
+                    amount: 26,
+                    is_canceled: true,
+                    updatedAt: '2015-02-02 05:02:11',
+                    RunId: 4,
+                    UserId: 2
+                },
+                message = null;
+
+            $httpBackend.whenPOST('/api/journey').respond({ msg: 'journeyCreated',
+                                                            type: 'success',
+                                                            journey: journey});
+
+            var promise = service.create(journey, false);
+
+            promise.then(function(ret){
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message).toEqual(journey);
+            expect(rootScope.$broadcast).not.toHaveBeenCalled();
         });
 
         it('should create a journey with user not auth', function () {
@@ -491,7 +528,7 @@ describe('Journey Service', function() {
                                                             type: 'success',
                                                             journeyKey: 'JNY564738'});
 
-            var promise = service.create(journey);
+            var promise = service.create(journey, true);
 
             promise.then(function(ret){
                 message = ret;
@@ -527,7 +564,7 @@ describe('Journey Service', function() {
             $httpBackend.whenPOST('/api/journey').respond({ msg: 'journeyNotCreated',
                                                             type: 'error'});
 
-            var promise = service.create(journey);
+            var promise = service.create(journey, true);
 
             promise.then(function(ret){
                 message = ret;
@@ -563,7 +600,7 @@ describe('Journey Service', function() {
                 },
                 message = null;
 
-            var promise = service.create(journey);
+            var promise = service.create(journey, true);
 
             promise.then(function(ret) {
                 message = ret;
@@ -574,7 +611,7 @@ describe('Journey Service', function() {
             expect(message).toContain('error');
         });
 
-        it('should confirm a journey', function () {
+        it('should confirm a journey with notification', function () {
             spyOn(rootScope, '$broadcast').and.callThrough();
             var journeyKey = 'JNY567483',
                 message = null;
@@ -582,7 +619,7 @@ describe('Journey Service', function() {
             $httpBackend.whenPOST('/api/journey/confirm').respond({msg: 'draftJourneySaved', type: 'success',
                 journey: { id: 1, Run: { name: 'Maxicross' }}});
 
-            var promise = service.confirm(journeyKey);
+            var promise = service.confirm(journeyKey, true);
 
             promise.then(function(ret){
                 message = ret;
@@ -593,6 +630,25 @@ describe('Journey Service', function() {
             expect(rootScope.$broadcast).toHaveBeenCalled();
         });
 
+        it('should confirm a journey without notification', function () {
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            var journeyKey = 'JNY567483',
+                message = null;
+
+            $httpBackend.whenPOST('/api/journey/confirm').respond({msg: 'draftJourneySaved', type: 'success',
+                journey: { id: 1, Run: { name: 'Maxicross' }}});
+
+            var promise = service.confirm(journeyKey, false);
+
+            promise.then(function(ret){
+                message = ret;
+            });
+
+            $httpBackend.flush();
+            expect(message.Run.name).toEqual('Maxicross');
+            expect(rootScope.$broadcast).not.toHaveBeenCalled();
+        });
+
         it('should confirm a journey but failed in back-end side', function () {
             spyOn(rootScope, '$broadcast').and.callThrough();
             var journeyKey = 'JNY567483',
@@ -601,7 +657,7 @@ describe('Journey Service', function() {
             $httpBackend.whenPOST('/api/journey/confirm').respond({msg: 'draftJourneyNotSaved', type: 'error',
                 journey: { id: 1, Run: { name: 'Maxicross' }}});
 
-            var promise = service.confirm(journeyKey);
+            var promise = service.confirm(journeyKey, true);
 
             promise.then(function(ret){
                 message = ret;
@@ -620,7 +676,7 @@ describe('Journey Service', function() {
 
             $httpBackend.whenPOST('/api/journey/confirm').respond(500);
 
-            var promise = service.confirm(journeyKey);
+            var promise = service.confirm(journeyKey, true);
 
             promise.then(function(ret){
                 message = ret;

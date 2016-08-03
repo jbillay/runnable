@@ -96,9 +96,10 @@ exports.create = function(req, res) {
                     expiresIn: 86400 // expires in 24 hours
                 });
                 newUser.token = token;
+                newUser.expiresIn = new Date().getTime() + 86400;
                 req.logIn(newUser, function(err) {
                     if (err) { console.log(err); }
-                    return res.jsonp({msg: newUser, type: 'success', token: newUser.token});
+                    return res.jsonp({msg: newUser, type: 'success', token: newUser.token, expiresIn: newUser.expiresIn});
                 });
             }
 		});

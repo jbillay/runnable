@@ -52,7 +52,7 @@ angular.module('runnable.controllers', []).
                 });
                 $scope.setCurrentUser(user, unread);
                 if ($rootScope.draftId) {
-                    Journey.confirm($rootScope.draftId).then(function (journey) {
+                    Journey.confirm($rootScope.draftId, true).then(function (journey) {
                         $location.path('/journey');
                     });
                 } else if ($rootScope.referer) {
@@ -67,7 +67,7 @@ angular.module('runnable.controllers', []).
                 var unread = 0;
                 $scope.setCurrentUser(newUser, unread);
                 if ($rootScope.draftId) {
-                    Journey.confirm($rootScope.draftId).then(function (journey) {
+                    Journey.confirm($rootScope.draftId, true).then(function (journey) {
                         $location.path('/journey');
                     });
                 } else if ($rootScope.referer) {
@@ -1433,7 +1433,7 @@ angular.module('runnable.controllers', []).
             } else {
                 fb_desc += ' au départ de ' + journey.address_start;
             }
-            Journey.create(journey).then(function (newJourney) {
+            Journey.create(journey, true).then(function (newJourney) {
                 $('body').removeClass('loading');
                 if (!$rootScope.isAuthenticated) {
                     $rootScope.draftId = newJourney;
@@ -1882,4 +1882,131 @@ angular.module('runnable.controllers', []).
         $scope.createJourney = function () {
             $location.path('/journey-create');
         };
+    }).
+    controller('RunnableWidgetJourneyController', function ($scope, $q, $timeout, $routeParams, Run, Journey,
+                                                            AuthService, User, GoogleMapApi) {
+        $scope.runId = parseInt($routeParams.runId);
+        $scope.journey = {};
+        $scope.journeyConfirmCode = null;
+        $scope.newJourney = null;
+        $scope.steps = {
+            creation: 1,
+            auth: 0,
+            confirm: 0
+        };
+        var runPromise = Run.getDetail($scope.runId),
+            all = $q.all([runPromise]);
+        all.then(function (res) {
+            $scope.runDetail = res[0];
+            $scope.destination = $scope.runDetail.address_start;
+            $scope.outward = true;
+            $scope.return = true;
+            $scope.parcoursModeList = [
+                {code: 'aller-retour', name: 'Aller-Retour'},
+                {code: 'aller', name: 'Aller'},
+                {code: 'retour', name: 'Retour'} ];
+            $scope.carTypeList = [
+                {code: 'citadine', name: 'Citadine'},
+                {code: 'berline', name: 'Berline'},
+                {code: 'break', name: 'Break'},
+                {code: 'monospace', name: 'Monospace'},
+                {code: 'suv', name: '4x4, SUV'},
+                {code: 'coupe', name: 'Coupé'},
+                {code: 'cabriolet', name: 'Cabriolet'}
+            ];
+            $scope.journey = {};
+            $scope.journey.journey_type = $scope.parcoursModeList[0].code;
+            $scope.journey.car_type = $scope.carTypeList[0].code;
+            $timeout( function() {
+                $('#clockpicker_outward').clockpicker();
+                $('#clockpicker_return').clockpicker();
+            });
+            $scope.today = new Date();
+            $scope.calendar = {
+                opened: {},
+                dateFormat: 'dd/MM/yyyy',
+                dateOptions: {
+                    formatYear: 'yy',
+                    startingDay: 1
+                },
+                open: function($event, which) {
+                    $event.preventDefault();
+                    $event.stopPropagation();
+                    $scope.calendar.opened[which] = true;
+                }
+            };
+            $scope.saveJourney = function (form) {
+                var journey = form;
+                journey.Run = $scope.runDetail;
+                $('body').addClass('loading');
+                Journey.create(form, false)
+                    .then(function (confirmCode) {
+                        $('body').removeClass('loading');
+                        $scope.journeyConfirmCode = confirmCode;
+                        $scope.steps.creation = 0;
+                        $scope.steps.auth = 1;
+                    });
+            };
+            $scope.widgetLogin = function (credentials) {
+                $('body').addClass('loading');
+                AuthService.login(credentials)
+                    .then(function (user) {
+                        Journey.confirm($scope.journeyConfirmCode, false)
+                            .then(function (newJourney) {
+                                $('body').removeClass('loading');
+                                $scope.newJourney = newJourney;
+                                $scope.steps.auth = 0;
+                                $scope.steps.confirm = 1;
+                            });
+                    });
+            };
+            $scope.widgetCreateUser = function (user) {
+                $('body').addClass('loading');
+                User.create(user)
+                    .then(function (newUser) {
+                        Journey.confirm($scope.journeyConfirmCode, false)
+                            .then(function (newJourney) {
+                                $('body').removeClass('loading');
+                                $scope.newJourney = newJourney;
+                                $scope.steps.auth = 0;
+                                $scope.steps.confirm = 1;
+                            });
+                    });
+            };
+            $scope.getLocation = function(val) {
+                return GoogleMapApi.getLocation(val);
+            };
+            $scope.selectSource = function (address) {
+                $scope.source = address;
+                if ($scope.destination) {
+                    GoogleMapApi.getDistance($scope.source, $scope.destination)
+                        .then(function (result) {
+                            $scope.journey.distance = result.distance;
+                            $scope.journey.duration = result.duration;
+                        });
+                }
+            };
+            $scope.journeyTypeChange = function () {
+                if ($scope.journey.journey_type ===  'aller-retour') {
+                    $scope.outward = true;
+                    $scope.return = true;
+                    $timeout( function() {
+                        $('#clockpicker_outward').clockpicker();
+                        $('#clockpicker_return').clockpicker();
+                    });
+                } else if ($scope.journey.journey_type ===  'aller') {
+                    $scope.outward = true;
+                    $scope.return = false;
+                    $timeout( function() {
+                        $('#clockpicker_outward').clockpicker();
+                    });
+                } else if ($scope.journey.journey_type ===  'retour') {
+                    $scope.outward = false;
+                    $scope.return = true;
+                    $timeout( function() {
+                        $('#clockpicker_return').clockpicker();
+                    });
+                }
+            };
+        });
 });

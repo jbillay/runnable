@@ -203,6 +203,7 @@ describe('Test of journey object', function () {
 
     describe('Creation of Journey', function () {
         it('Create a new journey', function (done) {
+            this.timeout(15000);
             var journey = new Journey(),
                 inbox = new Inbox(),
                 newJourney = {

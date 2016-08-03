@@ -137,6 +137,10 @@ angular.module('runnable', [
                 templateUrl: 'partials/page',
                 controller: 'RunnablePageController'
             }).
+            when('/widget-journey-:runId', {
+                templateUrl: 'partials/widget_journey',
+                controller: 'RunnableWidgetJourneyController'
+            }).
             otherwise({
                 redirectTo: '/'
             });

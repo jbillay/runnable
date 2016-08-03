@@ -1,0 +1,289 @@
+<div ng-if="steps.creation" id="mrtFormCreation" class="col-xs-12 col-sm-12 col-md-12">
+    <form role="form" name="createJourney" ng-submit="saveJourney(journey)">
+        <div id="mrtTitleForm" class="col-xs-12 col-sm-12 col-md-12">
+            <p>
+                <strong>Création d'un trajet pour la course {{runDetail.name}}</strong>
+            </p>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="form-group" ng-class="{ 'has-success' : createJourney.address_start.$valid && createJourney.address_start.$dirty,
+                            'has-error' : createJourney.address_start.$invalid && createJourney.address_start.$dirty }">
+                <input type="text" ng-model="journey.address_start" placeholder="Lieu de départ"
+                       typeahead="address for address in getLocation($viewValue)"
+                       typeahead-loading="loadingLocations" name="journey[address_start]" id="address_start"
+                       class="form-control"  tabindex="2" typeahead-on-select='selectSource($item)' required>
+                <div class="help-block text-danger"
+                     ng-if="createJourney.address_start.$dirty"
+                     ng-messages="createJourney.address_start.$error">
+                    <div ng-message="required">Définir le lieu de départ est obligatoire.</div>
+                </div>
+                <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6">
+            <div class="form-group">
+                <input type="text" name="journey[distance]" id="distance" class="form-control"
+                       ng-model="journey.distance" placeholder="Distance estimée" readonly>
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6">
+            <div class="form-group">
+                <input type="text" name="journey[duration]" id="duration" class="form-control"
+                       ng-model="journey.duration" placeholder="Temps estimé" readonly>
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6">
+            <div class="form-group" ng-class="{ 'has-success' : createJourney.journey_type_select.$valid && createJourney.journey_type_select.$dirty,
+                            'has-error' : createJourney.journey_type_select.$invalid && createJourney.journey_type_select.$dirty }">
+                <select class="form-control" name="journey[journey_type_select]" id="journey_type_select"
+                        placeholder="Type de parcours" tabindex="3" ng-model="journey.journey_type"
+                        ng-options="parcoursMode.code as parcoursMode.name for parcoursMode in parcoursModeList"
+                        ng-change="journeyTypeChange()" required>
+                </select>
+                <div class="help-block text-danger"
+                     ng-if="createJourney.journey_type_select.$dirty"
+                     ng-messages="createJourney.journey_type_select.$error">
+                    <div ng-message="required">Définir le type de parcours est obligatoire.</div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="journey[journey_type]" id="journey_type" value="{{journey.journey_type}}" >
+        <div class="row-fluid" ng-if=outward>
+            <div class="col-xs-12 col-sm-12 col-md-12"><p>Aller</p></div>
+            <div class="col-xs-12 col-sm-4 col-md-4">
+                <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="calendar.open($event, 'outward')">
+                                        <i class="glyphicon glyphicon-calendar"></i>
+                                    </button>
+                                </span>
+                    <div class="form-group" ng-class="{ 'has-success' : createJourney.date_start_outward.$valid && createJourney.date_start_outward.$dirty,
+                                'has-error' : createJourney.date_start_outward.$invalid && createJourney.date_start_outward.$dirty }">
+                        <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
+                               ng-model="journey.date_start_outward" name="journey[date_start_outward]"
+                               is-open="calendar.opened.outward" min-date="today"
+                               datepicker-options="calendar.dateOptions" close-text="Fermer"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="Date aller" tabindex="4" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4">
+                <div class="form-group" ng-class="{ 'has-success' : createJourney.time_start_outward.$valid && createJourney.time_start_outward.$dirty,
+                                'has-error' : createJourney.time_start_outward.$invalid && createJourney.time_start_outward.$dirty }">
+                    <div class="input-group clockpicker" id="clockpicker_outward" data-autoclose="true">
+                        <input type="text" class="form-control" id="time_start_outward"
+                               name="journey[time_start_outward]" ng-model="journey.time_start_outward"
+                               placeholder="Heure" tabindex="5" required>
+                        <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-time"></span>
+                                    </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4">
+                <div class="form-group" ng-class="
+                            { 	'has-success' : createJourney.nb_space_outward.$valid && createJourney.nb_space_outward.$dirty,
+                                'has-error' : createJourney.nb_space_outward.$invalid && createJourney.nb_space_outward.$dirty }">
+                    <input type="number" name="journey[nb_space_outward]" id="nb_space_outward" class="form-control"
+                           ng-model="journey.nb_space_outward" placeholder="Nombre de place" tabindex="6"
+                           min="0" required>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid return" ng-if=return>
+            <div class="col-xs-12 col-sm-12 col-md-12"><p>Retour</p></div>
+            <div class="col-xs-12 col-sm-4 col-md-4">
+                <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="calendar.open($event, 'return')">
+                                        <i class="glyphicon glyphicon-calendar"></i>
+                                    </button>
+                                </span>
+                    <div class="form-group" ng-class="
+                                { 	'has-success' : createJourney.date_start_return.$valid && createJourney.date_start_return.$dirty,
+                                    'has-error' : createJourney.date_start_return.$invalid && createJourney.date_start_return.$dirty }">
+                        <input type="text" class="form-control" datepicker-popup="{{calendar.dateFormat}}"
+                               ng-model="journey.date_start_return" name="journey[date_start_return]"
+                               is-open="calendar.opened.return" min-date="today"
+                               datepicker-options="calendar.dateOptions" close-text="Fermer"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="Date retour" tabindex="7" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4">
+                <div class="form-group" ng-class="
+                            { 	'has-success' : createJourney.time_start_return.$valid && createJourney.time_start_return.$dirty,
+                                'has-error' : createJourney.time_start_return.$invalid && createJourney.time_start_return.$dirty }">
+                    <div class="input-group clockpicker" id="clockpicker_return" data-autoclose="true">
+                        <input type="text" class="form-control" id="time_start_return"
+                               name="journey[time_start_return]" ng-model="journey.time_start_return"
+                               placeholder="Heure" tabindex="8" required>
+                        <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-time"></span>
+                                    </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4">
+                <div class="form-group" ng-class="
+                            { 	'has-success' : createJourney.nb_space_return.$valid && createJourney.nb_space_return.$dirty,
+                                'has-error' : createJourney.nb_space_return.$invalid && createJourney.nb_space_return.$dirty }">
+                    <input type="number" name="journey[nb_space_return]" id="nb_space_return" class="form-control"
+                           ng-model="journey.nb_space_return" placeholder="Nombre de place" tabindex="9"
+                           min="0" required>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="col-xs-12 col-sm-6 col-md-6">
+                <div class="form-group" ng-class="{ 'has-success' : createJourney.car_type.$valid && createJourney.car_type.$dirty,
+                                'has-error' : createJourney.car_type.$invalid && createJourney.car_type.$dirty }">
+                    <select class="form-control" name="journey[car_type]" id="car_type"
+                            ng-options="carType.code as carType.name for carType in carTypeList"
+                            ng-model="journey.car_type" placeholder="Type de course" tabindex="10" required>
+                    </select>
+                    <div class="help-block text-danger"
+                         ng-if="createJourney.car_type.$dirty"
+                         ng-messages="createJourney.car_type.$error">
+                        <div ng-message="required">Définir le type de véhicule est obligatoire.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6">
+                <div class="form-group">
+                    <div class="input-group" ng-class="{ 'has-success' : createJourney.amount.$valid && createJourney.amount.$dirty,
+                                'has-error' : createJourney.amount.$invalid && createJourney.amount.$dirty }">
+                        <input type="number" name="journey[amount]" id="amount" class="form-control"
+                               ng-model="journey.amount" placeholder="Montant par place" tabindex="11"
+                               min="0" required>
+                        <span class="input-group-addon">€</span>
+                        <div class="help-block text-danger"
+                             ng-if="createJourney.amount.$dirty"
+                             ng-messages="createJourney.amount.$error">
+                            <div ng-message="required">Définir le montant par place est obligatoire.</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <span class='green' ng-if="journey.journey_type === 'aller-retour' && journey.amount">
+                        Soit {{journey.amount * 2 | currency: '€ '}} l'aller-retour
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 pull-right">
+            <button type="submit" class="btn btn-primary btn-block" tabindex="13">
+                Suivant
+            </button>
+        </div>
+    </form>
+</div>
+<div ng-if="steps.auth" id="mrtFormAuth" class="col-xs-12 col-sm-12 col-md-12">
+    <div class="col-xs-12 col-sm-offset-2 col-md-offset-2 col-sm-4 col-md-4"
+         ng-controller="RunnableLoginController">
+        <h2>Se connecter</h2>
+        <form name="loginForm" ng-submit="widgetLogin(credentials)" novalidate ng-if='forLogin'>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+                <input class="form-control credentials_email" type="text" ng-model="credentials.email"
+                       placeholder="Email">
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                <input class="form-control credentials_password" type="password" ng-model="credentials.password"
+                       placeholder="Mot de passe">
+            </div>
+            <div class="modal-footer">
+                <button id="connection" type="submit" class="btn btn-primary">Connection</button>
+            </div>
+        </form>
+        <form name="loginForm"
+              ng-submit="reset(reset.email)" novalidate ng-if='forReset'>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+                <input class="form-control" type="text" ng-model="reset.email"
+                       placeholder="Email">
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Réinitialiser le mot de passe</button>
+            </div>
+        </form>
+        <div>
+            <a href="#" ng-if='forLogin' ng-click="toggleLogin()">Vous avez perdu votre mot de passe ?</a>
+            <a href="#" ng-if='forReset' ng-click="toggleLogin()">Essayer de se connecter ?</a>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-4 col-md-4">
+        <h2>Créer un compte</h2>
+        <form name="userCreateForm" id="userCreate" role="form" ng-model="userCreate" ng-submit="widgetCreateUser(userCreate)">
+            <div class="row">
+                <div class="col-xs-6 col-sm-6 col-md-6 inscription-form-left">
+                    <div class="form-group inscription-form-group">
+                        <input type="text" name="userCreate.firstname" id="userCreateFirstname" ng-model="userCreate.firstname"
+                               class="form-control input-sm" placeholder="Prénom" tabindex="1">
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 inscription-form-right">
+                    <div class="form-group inscription-form-group">
+                        <input type="text" name="userCreate.lastname" id="userCreateLastname" ng-model="userCreate.lastname"
+                               class="form-control input-sm" placeholder="Nom" tabindex="2">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group inscription-form-group">
+                        <input type="text" name="user[address]" id="userCreateAddress" ng-model="userCreate.address"
+                               typeahead="address for address in getLocation($viewValue)"
+                               class="form-control input-sm" placeholder="Ville" tabindex="3">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group inscription-form-group">
+                        <input type="email" name="user[email]" id="userCreateEmail" ng-model="userCreate.email"
+                               class="form-control input-sm" placeholder="Email" tabindex="4">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-sm-6 col-md-6 inscription-form-left">
+                    <div class="form-group inscription-form-group">
+                        <input type="password" name="user[password]" id="userCreatePassword" ng-model="userCreate.password"
+                               class="form-control input-sm" placeholder="Mot de passe" tabindex="5">
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 inscription-form-right">
+                    <div class="form-group inscription-form-group">
+                        <input type="password" name="user[password_confirmation]" id="userCreatePassword_confirmation"
+                               ng-model="userCreate.password_confirmation" class="form-control input-sm"
+                               placeholder="Confirmation" tabindex="6">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-12 text-center">
+                    <input type="submit" value="Inscription" class="btn btn-primary btn-block btn-sm"
+                           tabindex="7">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-12 text-center validationCGVBlack">
+                    <p>En validant votre inscription, vous acceptez les <a href="http://www.myruntrip.com/page-cgv">CGV</a></p>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div ng-if="steps.confirm" id="mrtFormConfirm" class="col-xs-12 col-sm-12 col-md-12 text-center">
+    <h3>Merci, votre voyage a bien été créé sur le site My Run Trip.</h3>
+    <h3>Vous pouvez le visualiser en cliquant sur le lien ci-dessous</h3>
+    <h3><a href="http://www.myrunrtip.com/journey-{{newJourney.id}}">Mon voyage</a></h3>
+</div>
+<div class="col-xs-12 col-md-12 text-center">
+    <a href="http://www.myruntrip.com"><img src=""></a>
+</div>
+<div class="loadingModal"></div>

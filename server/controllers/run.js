@@ -14,11 +14,11 @@ var async = require('async');
  * @apiParam {string="trail","ultra","10k","20k","semi","marathon","triathlon"} type Type of the race
  * @apiParam {String} address_start Localization of the race start (google maps definition preferred)
  * @apiParam {String} date_start Date of the race
+ * @apiParam {String} [time_start] Hour of race start
  * @apiParam {String} [distances] List of distance(s) of the race
  * @apiParam {String} [elevations] List of elevation(s) of the race
  * @apiParam {String} [info] Link of race website
  * @apiParam {String} [token] Authenticate token
- * @apiHeader {String} [x-access-token] Authenticate token
  *
  * @apiSuccess {String} msg Confirmation message
  * @apiSuccess {String} type Type of return
