@@ -141,6 +141,10 @@ angular.module('runnable', [
                 templateUrl: 'partials/widget_journey',
                 controller: 'RunnableWidgetJourneyController'
             }).
+            when('/widget-map-:runId', {
+                templateUrl: 'partials/widget_map',
+                controller: 'RunnableWidgetMapController'
+            }).
             otherwise({
                 redirectTo: '/'
             });

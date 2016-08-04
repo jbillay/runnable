@@ -1883,6 +1883,55 @@ angular.module('runnable.controllers', []).
             $location.path('/journey-create');
         };
     }).
+    controller('RunnableWidgetMapController', function ($scope, $q, $timeout, $routeParams, Journey, Run, GoogleMapApi) {
+        $scope.runId = parseInt($routeParams.runId);
+        var journeysPromise = Journey.getListForRun($scope.runId),
+            runPromise = Run.getDetail($scope.runId),
+            all = $q.all([journeysPromise, runPromise]);
+        all.then(function (res) {
+            $scope.journeyList = res[0];
+            $scope.runDetail = res[1];
+            $timeout( function() {
+                var obj = 'map_canvas_journey';
+                GoogleMapApi.initMap(obj);
+                GoogleMapApi.addMaker(obj, $scope.runDetail.address_start, $scope.runDetail.lat, $scope.runDetail.lng,
+                    'Départ de la course', 'Départ de la course',
+                    'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=flag|FFFFFF');
+                angular.forEach($scope.journeyList, function (journey) {
+                    var address = journey.address_start;
+                    var title = 'D&eacute;part pour la course ' + journey.Run.name;
+                    var info = '<div id="content"><div id="siteNotice"></div>' +
+                        '<a href="http://www.myruntrip.com/journey-' + journey.id + '">' +
+                        '<h4 id="firstHeading" class="firstHeading">D&eacute;part pour la course ' +
+                        journey.Run.name + '</h4></a>' + '<div id="bodyContent">' +
+                        '<p><i class="fa fa-exchange"></i> ' + journey.journey_type + '</p>';
+
+                    if (journey.date_start_outward) {
+                        var dateStart = new Date(journey.date_start_outward);
+                        info = info + '<p><i class="fa fa-calendar"></i> Aller : ' +
+                            dateStart.toLocaleDateString() + ' ' +
+                            journey.time_start_outward + '</p>';
+                    }
+                    if (journey.date_start_return) {
+                        var dateReturn = new Date(journey.date_start_return);
+                        info = info + '<p><i class="fa fa-calendar"></i> Retour : ' +
+                            dateReturn.toLocaleDateString() + ' ' +
+                            journey.time_start_return + '</p>';
+                    }
+                    info = info + '<p><i class="fa fa-arrows-h"></i> ' + journey.distance + '</p>' +
+                        '<p><i class="fa fa-history"></i> ' + journey.duration + '</p>' +
+                        '<p><i class="fa fa-car"></i> ' + journey.car_type + '</p>' +
+                        '<p><i class="fa fa-eur"></i> <strong>' + journey.amount + '</strong></p></div></div>';
+                    GoogleMapApi.addMaker(obj, journey.address_start, journey.lat, journey.lng,
+                        title, info,
+                        'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=car-dealer|35a5a2')
+                        .then(function (markerId) {
+                            journey.markerId = markerId;
+                        });
+                });
+            });
+        });
+    }).
     controller('RunnableWidgetJourneyController', function ($scope, $q, $timeout, $routeParams, Run, Journey,
                                                             AuthService, User, GoogleMapApi) {
         $scope.runId = parseInt($routeParams.runId);
