@@ -204,10 +204,18 @@ describe('Test of run API', function () {
                 info: 'Test Maxicross',
                 is_active: 1
             };
-            agent
-                .put('http://localhost:' + settings.port + '/api/run')
-                .send({run: run})
-                .end(function (err, res) {
+            var req = agent.put('http://localhost:' + settings.port + '/api/run');
+            req.field('id', run.id);
+            req.field('name', run.name);
+            req.field('type', run.type);
+            req.field('address_start', run.address_start);
+            req.field('date_start', run.date_start);
+            req.field('time_start', run.time_start);
+            req.field('distances', run.distances);
+            req.field('elevations', run.elevations);
+            req.field('info', run.info);
+            req.field('is_active', run.is_active);
+            req.end(function (err, res) {
                     if (err) return done(err);
                     assert.equal(res.body.type, 'success');
                     assert.equal(res.body.msg, 'runUpdated');
@@ -269,9 +277,7 @@ describe('Test of run API', function () {
                 elevations: '3214+',
                 info: 'dkqsd lqldsj lqkjdsllq ksjdlq'
             };
-            var fileInfo = '[]',
-                req = agent.post('http://localhost:' + settings.port + '/api/run');
-            req.field('fileInfo', fileInfo);
+            var req = agent.post('http://localhost:' + settings.port + '/api/run');
             req.field('name', run.name);
             req.field('type', run.type);
             req.field('address_start', run.address_start);
@@ -438,11 +444,9 @@ describe('Test of run API', function () {
                 elevations: '7283+ - 3214+',
                 info: 'http://www.traildeladrome.fr'
             };
-            var fileInfo = 'true',
-                filename = 'myruntrip.jpg',
+            var filename = 'myruntrip.jpg',
                 boundary = Math.random(),
                 req = agent.post('http://localhost:' + settings.port + '/api/run');
-            req.field('fileInfo', fileInfo);
             req.field('name', run.name);
             req.field('type', run.type);
             req.field('address_start', run.address_start);
@@ -451,7 +455,7 @@ describe('Test of run API', function () {
             req.field('distances', run.distances);
             req.field('elevations', run.elevations);
             req.field('info', run.info);
-            req.attach('file', path.normalize(path.join(__dirname, '/fixtures/' + filename)));
+            req.attach('file', path.normalize(path.join(__dirname, '/fixtures/' + filename)), 'logo');
             req.end(function (err, res) {
                 if (err) return done(err);
                 assert.equal(res.body.type, 'success');
@@ -460,6 +464,7 @@ describe('Test of run API', function () {
                     .get('http://localhost:' + settings.port + '/api/run/7')
                     .end(function (err, res) {
                         if (err) return done(err);
+                        console.log(res.res.body);
                         assert.equal(res.res.body.name, 'Trail de la Drôme');
                         assert.equal(res.res.body.slug, 'trail-de-la-drome');
                         assert.equal(res.res.body.type, 'trail');
@@ -468,7 +473,8 @@ describe('Test of run API', function () {
                         assert.equal(res.res.body.distances, '164km - 82km');
                         assert.equal(res.res.body.elevations, '7283+ - 3214+');
                         assert.equal(res.res.body.info, 'http://www.traildeladrome.fr');
-                        assert.isNotNull(res.res.body.sticker);
+                        assert.isNull(res.res.body.sticker);
+                        assert.equal(res.res.body.pictures.length, 1);
                         assert.equal(res.res.body.is_active, 0);
                         cloudinary.uploader.destroy('Run_7_Picture_4_test', function(result) {
                             return done();

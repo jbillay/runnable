@@ -125,7 +125,7 @@ module.exports = function (app, passport, auth) {
     app.get('/api/user/joins', auth.requiresLogin, controllers.user.showJoins);
 
     app.post('/api/run', cors(), auth.requiresLogin, controllers.root.fileParser, controllers.run.create);
-    app.put('/api/run', auth.requiresLogin, controllers.run.update);
+    app.put('/api/run', auth.requiresLogin, controllers.root.fileParser, controllers.run.update);
     app.post('/api/run/search', controllers.run.search);
     app.get('/api/run/list', cors(), controllers.run.activeList);
     app.get('/api/run/:id', cors(), controllers.run.detail);

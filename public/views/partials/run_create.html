@@ -137,36 +137,65 @@
                         </div>
                     </div>
 				</div>
-				<div class="fluid">
-                    <div class="col-xs-12 col-sm-12 col-md-12" style="padding: 0px;">
-                        <div class="col-xs-12 col-sm-12 col-md-4" style="padding: 0px;">
-                            <button type="button" class="btn btn-success"
-                                    ngf-select="uploadFile($file, $invalidFiles)"
-                                    accept="image/*" ngf-max-size="3MB">
-                                <i class="fa fa-floppy-o"></i> Ajouter une photo
-                            </button>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-8" style="padding: 0px;">
-                            <p class="text-info">Selectionnez une de vos images comme vignette de la course en cliquant simplement dessus</p>
-                        </div>
-                        <div class="row-fluid" ng-show="errFile">
+                <div class="fluid">
+                    <div class="logo_area">
+                        <p class="text-info">Logo de la course</p>
+                        <div class="row-fluid" ng-show="logo.errFile">
                             <div class="alert alert-danger" role="alert">
-                                Le fichier {{errFile.name}} dépasse la taille maximum ({{errFile.$errorParam}}) !
+                                Le fichier {{logo.errFile.name}} dépasse la taille maximum ({{logo.errFile.$errorParam}}) !
                             </div>
                         </div>
-                        <div class="row-fluid" ng-show="maxFile">
+                        <div>
+                            <button type="button" class="btn btn-success"
+                                    ngf-select="uploadFile('logo', $file, $invalidFiles)"
+                                    accept="image/*" ngf-max-size="1MB">
+                                <i class="fa fa-floppy-o"></i> Choisir photo
+                            </button>
+                            <button type="button" class="btn btn-danger" ng-click="removeLogo()">
+                                <i class="fa fa-trash"></i> Supprimer
+                            </button>
+                        </div>
+                        <div>
+                            <div ng-hide="logo.src" class="empty_logo">
+                                <img src="/img/trail_default.jpg" alt="emptyLogo" class="img-circle runDetailLogoSize">
+                                <img src="/img/trail_default.jpg" alt="emptyLogo" class="img-rounded runListLogoSize">
+                            </div>
+                            <div ng-show="logo.src" class="logo">
+                                <img ng-src="{{logo.src}}" class="img-circle runDetailLogoSize"/>
+                                <img ng-src="{{logo.src}}" class="img-rounded runListLogoSize"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fluid">
+                    <div class="pictures_area">
+                        <p class="text-info">Image(s) de fond</p>
+                        <p class="text-info">Texte à modifier</p>
+                        <button type="button" class="btn btn-success"
+                                ngf-select="uploadFile('pictures', $file, $invalidFiles)"
+                                accept="image/*" ngf-max-size="3MB">
+                            <i class="fa fa-floppy-o"></i> Ajouter une photo
+                        </button>
+                        <div class="row-fluid" ng-show="pictures.errFile">
+                            <div class="alert alert-danger" role="alert">
+                                Le fichier {{pictures.errFile.name}} dépasse la taille maximum ({{pictures.errFile.$errorParam}}) !
+                            </div>
+                        </div>
+                        <div class="row-fluid" ng-show="pictures.maxFile">
                             <div class="alert alert-warning" role="warning">
                                 Le nombre maximum de 6 images a été atteint !
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12 pictures_area">
-                        <div ng-show="runListImg" ng-repeat="img in runListImg" class="picture_area">
-                                <img  ng-src="{{img.src}}" ng-click="defaultImg($index)" ng-class="{selected_picture: img.default}" class="img-rounded picture"/>
-                                <button class="btn btn-danger btn-xs delete_btn" ng-click="removePicture($index)">Supprimer</button>
+                        <div class="col-xs-12 col-sm-12 col-md-12 show_pictures">
+                            <div ng-show="runListImg" ng-repeat="img in runListImg" class="picture_area">
+                                <div class="display_image">
+                                    <img  ng-src="{{img.src}}" class="img-rounded picture"/>
+                                    <img class="removePicture" src='/img/icons/delete.png' ng-click="removePicture($index)">
+                                </div>
+                            </div>
                         </div>
                     </div>
-				</div>
+                </div>
                 <div class="row">
 					<div class="col-xs-3 col-md-3 pull-right">
                         <input type="hidden" name="run[owner_id]" value="{{user.id}}">

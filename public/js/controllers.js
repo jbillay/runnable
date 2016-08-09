@@ -957,8 +957,7 @@ angular.module('runnable.controllers', []).
             }
         };
     }).
-    controller('RunnableRunCreateController', function ($scope, $q, $timeout, $location, Run, GoogleMapApi,
-                                                        fileReader, Upload) {
+    controller('RunnableRunCreateController', function ($scope, $q, $timeout, $location, Run, GoogleMapApi, fileReader) {
         $scope.page = 'Run';
         var maxImgByRace = 6;
 		var runPromise = Run.getActiveList(),
@@ -977,6 +976,8 @@ angular.module('runnable.controllers', []).
 			GoogleMapApi.selectedAddress('map_canvas', address);
 		};
         $scope.newRun = {};
+        $scope.logo = {};
+        $scope.pictures = {};
         $scope.newRun.type = 'trail';
         $scope.runListImg = [];
         $scope.today = new Date();
@@ -993,59 +994,62 @@ angular.module('runnable.controllers', []).
                 $scope.calendar.opened = true;
             }
         };
-        $scope.uploadFile = function (file, errFiles) {
-            $scope.errFile = errFiles && errFiles[0];
-            if (file) {
-                $scope.getFile(file);
+        $scope.uploadFile = function (type, file, errFiles) {
+            if (type === 'logo') {
+                $scope.logo.errFile = errFiles && errFiles[0];
+                if (file) {
+                    $scope.getFile(type, file);
+                }
+            } else if (type === 'pictures') {
+                $scope.pictures.errFile = errFiles && errFiles[0];
+                if (file) {
+                    $scope.getFile(type, file);
+                }
             }
         };
-        $scope.getFile = function (file) {
+        $scope.getFile = function (type, file) {
             fileReader.readAsDataUrl(file, $scope)
                 .then(function(result) {
-                    var img = {
-                        name: file.name,
-                        default: false,
-                        src: result,
-                        file: file
-                    };
-                    if ($scope.runListImg.length < maxImgByRace) {
-                        if (_.findIndex($scope.runListImg, function (o) { return o.name === file.name; }) === -1) {
-                            $scope.runListImg.push(img);
-                            $scope.errFile = $scope.maxFile = null;
+                    if (type === 'logo') {
+                        $scope.logo = {
+                            name: file.name,
+                            src: result,
+                            file: file
+                        };
+                        $scope.logo.errFile = null;
+                    } else if (type === 'pictures') {
+                        var img = {
+                            name: file.name,
+                            src: result,
+                            file: file
+                        };
+                        if ($scope.runListImg.length < maxImgByRace) {
+                            if (_.findIndex($scope.runListImg, function (o) { return o.name === file.name; }) === -1) {
+                                $scope.runListImg.push(img);
+                                $scope.pictures.errFile = $scope.pictures.maxFile = null;
+                            }
+                        } else {
+                            $scope.pictures.maxFile = 1;
                         }
-                    } else {
-                        $scope.maxFile = 1;
                     }
                 });
+        };
+        $scope.removeLogo = function () {
+            $scope.logo = {};
         };
         $scope.removePicture = function (idx) {
             $scope.runListImg.splice(idx, 1);
         };
-        $scope.defaultImg = function (idx) {
-            var iterator = 0;
-            angular.forEach($scope.runListImg, function (img) {
-                if (iterator === idx) {
-                    img.default = true;
-                } else {
-                    img.default = false;
-                }
-                iterator++;
-            });
-        };
         $scope.submitRun = function (form, newRun) {
             if (form.$valid) {
                 $('body').addClass('loading');
-                var runForm = new FormData(),
-                    fileInfo = [];
+                var runForm = new FormData();
                 angular.forEach($scope.runListImg, function (image) {
-                    runForm.append('file', image.file);
-                    if (image.default) {
-                        fileInfo.push(true);
-                    } else {
-                        fileInfo.push(false);
-                    }
+                    runForm.append('file', image.file, 'pictures');
                 });
-                runForm.append('fileInfo', fileInfo);
+                if ($scope.logo.file) {
+                    runForm.append('file', $scope.logo.file, 'logo');
+                }
                 runForm.append('name', newRun.name);
                 runForm.append('type', newRun.type);
                 runForm.append('address_start', newRun.address_start);
@@ -1062,16 +1066,45 @@ angular.module('runnable.controllers', []).
         };
     }).
     controller('RunnableRunUpdateController', function ($scope, $q, $timeout, $routeParams, $rootScope, $location,
-                                                        Run, GoogleMapApi) {
+                                                        Run, GoogleMapApi, fileReader) {
         $scope.page = 'Run';
         $scope.runId = parseInt($routeParams.runId);
+        var maxImgByRace = 6;
 		var runPromise = Run.getDetail($scope.runId),
             all = $q.all([runPromise]);
         all.then(function (res) {
 			$scope.currentRun = res[0];
+            $scope.logo = {};
+            $scope.pictures = {};
             if (!$rootScope.currentUser &&
                 !($rootScope.currentUser.role === 'admin' || $rootScope.currentUser.id === $scope.currentRun.UserId)) {
                 $location.path('/run');
+            }
+            if ($scope.currentRun.sticker) {
+                $('.logo_area').addClass('masked');
+                fileReader.getOnlineFile($scope.currentRun.sticker)
+                    .then(function (info) {
+                        $scope.logo = {
+                            name: $scope.currentRun.sticker,
+                            src: info.src,
+                            file: info.file
+                        };
+                        $('.logo_area').removeClass('masked');
+                    })
+                    .catch(function (err) {
+                        $('.logo_area').removeClass('masked');
+                    });
+            }
+            if ($scope.currentRun.pictures.length > 0) {
+                $('.pictures_area').addClass('masked');
+                $scope.loadImages($scope.currentRun.pictures)
+                    .then(function (images) {
+                        $scope.runListImg = images;
+                        $('.pictures_area').removeClass('masked');
+                    })
+                    .catch(function (err) {
+                        $('.pictures_area').removeClass('masked');
+                    });
             }
             $timeout( function() {
                 $('#clockpicker').clockpicker();
@@ -1079,6 +1112,74 @@ angular.module('runnable.controllers', []).
                 GoogleMapApi.selectedAddress('map_canvas', $scope.currentRun.address_start);
 			});
 		});
+        $scope.loadImages = function (images) {
+            var deferred = $q.defer();
+            var promises = [];
+            var tabImages = [];
+
+            images.forEach(function (image) {
+                promises.push(fileReader.getOnlineFile(image));
+            });
+            var all = $q.all(promises);
+            all.then(
+                function (res) {
+                    res.forEach(function (imageInfo) {
+                        tabImages.push({src: imageInfo.src, file: imageInfo.file});
+                    });
+                    deferred.resolve(tabImages);
+                },
+                function (err) {
+                    deferred.reject(err);
+                });
+            return deferred.promise;
+        };
+        $scope.uploadFile = function (type, file, errFiles) {
+            if (type === 'logo') {
+                $scope.logo.errFile = errFiles && errFiles[0];
+                if (file) {
+                    $scope.getFile(type, file);
+                }
+            } else if (type === 'pictures') {
+                $scope.pictures.errFile = errFiles && errFiles[0];
+                if (file) {
+                    $scope.getFile(type, file);
+                }
+            }
+        };
+        $scope.getFile = function (type, file) {
+            fileReader.readAsDataUrl(file, $scope)
+                .then(function(result) {
+                    if (type === 'logo') {
+                        $scope.logo = {
+                            name: file.name,
+                            src: result,
+                            file: file
+                        };
+                        $scope.logo.errFile = null;
+                    } else if (type === 'pictures') {
+                        var img = {
+                            name: file.name,
+                            src: result,
+                            file: file
+                        };
+                        if ($scope.runListImg.length < maxImgByRace) {
+                            if (_.findIndex($scope.runListImg, function (o) { return o.name === file.name; }) === -1) {
+                                $scope.runListImg.push(img);
+                                $scope.pictures.errFile = $scope.pictures.maxFile = null;
+                            }
+                        } else {
+                            $scope.pictures.maxFile = 1;
+                        }
+                    }
+                });
+        };
+        $scope.removeLogo = function () {
+            $scope.logo = {};
+        };
+        $scope.removePicture = function (idx) {
+            $scope.runListImg.splice(idx, 1);
+        };
+
         $scope.getLocation = function(val) {
 			return GoogleMapApi.getLocation(val);
 		};
@@ -1102,10 +1203,31 @@ angular.module('runnable.controllers', []).
         $scope.submitRun = function (form, updatedRun) {
             if (form.$valid) {
                 $('body').addClass('loading');
-                Run.update(updatedRun).then(function () {
-                    $('body').removeClass('loading');
-                    $location.path('/run');
+                var updatedRunForm = new FormData();
+                angular.forEach($scope.runListImg, function (image) {
+                    updatedRunForm.append('file', image.file, 'pictures');
                 });
+                if ($scope.logo && $scope.logo.file) {
+                    updatedRunForm.append('file', $scope.logo.file, 'logo');
+                }
+                updatedRunForm.append('id', updatedRun.id);
+                updatedRunForm.append('name', updatedRun.name);
+                updatedRunForm.append('type', updatedRun.type);
+                updatedRunForm.append('address_start', updatedRun.address_start);
+                updatedRunForm.append('date_start', updatedRun.date_start);
+                updatedRunForm.append('time_start', updatedRun.time_start);
+                updatedRunForm.append('distances', updatedRun.distances);
+                updatedRunForm.append('elevations', updatedRun.elevations);
+                updatedRunForm.append('info', updatedRun.info);
+                updatedRunForm.append('is_active', updatedRun.is_active);
+                Run.update(updatedRunForm)
+                    .then(function () {
+                        $('body').removeClass('loading');
+                        $location.path('/run');
+                    })
+                    .catch(function (err) {
+                        $('body').removeClass('loading');
+                    });
             }
         };
     }).

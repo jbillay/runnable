@@ -6,8 +6,10 @@
 
 var models = require('../models');
 var q = require('q');
-var cloudinary = require('cloudinary');
 var fs = require('fs');
+var _ = require('lodash');
+var async = require('async');
+var cloudinary = require('cloudinary');
 var settings    = require('../../conf/config');
 
 function picture() {
@@ -87,10 +89,17 @@ picture.prototype.create = function (filePath, runId) {
 
 picture.prototype.remove = function (id) {
     var deferred = q.defer();
+
+    cloudinary.config({
+        cloud_name: settings.cloudinary.cloud_name,
+        api_key: settings.cloudinary.api_key,
+        api_secret: settings.cloudinary.api_secret
+    });
     models.Picture.find({where: {id: id}})
         .then(function (picture) {
             if (picture) {
                 var fileName = 'Run_' + picture.RunId + '_Picture_' + id + '_' + process.env.NODE_ENV;
+                console.log(fileName);
                 cloudinary.uploader.destroy(fileName,
                     function(result) {
                         picture.destroy()
@@ -103,6 +112,44 @@ picture.prototype.remove = function (id) {
                     });
             } else {
                 deferred.reject(new Error('not found'));
+            }
+        })
+        .catch(function (err) {
+            deferred.reject(new Error(err));
+        });
+    return deferred.promise;
+};
+
+// Based on image to keep the function will remove images that will not be used anymore
+picture.prototype.removeForRun = function (runId) {
+    var deferred = q.defer(),
+        self = this;
+    models.Picture.findAll({where: {RunId: runId}})
+        .then(function (pictures) {
+            if (pictures.length) {
+                var removeQueue = async.queue(function (id, callback) {
+                    self.remove(id)
+                        .then(function (res) {
+                            callback(null, res);
+                        })
+                        .catch(function (err) {
+                            callback(new Error(err), null);
+                        });
+                });
+                pictures.forEach(function (picture) {
+                    removeQueue.push(picture.id, function (err, res) {
+                        if (err) {
+                            console.log(new Error('Not able to picture remove ' + picture.link + ' : ' + err));
+                        } else {
+                            console.log('File ' + picture.link + ' removed');
+                        }
+                    });
+                });
+                removeQueue.drain = function () {
+                    deferred.resolve(true);
+                };
+            } else {
+                deferred.resolve(true);
             }
         })
         .catch(function (err) {

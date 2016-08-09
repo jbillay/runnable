@@ -133,7 +133,7 @@ describe('Test of user API', function () {
             supertest(app)
                 .post('/api/user')
                 .send(user)
-                .expect(200, done);
+                .expect(201, done);
         });
         it('should return a new user', function (done) {
             var user = {

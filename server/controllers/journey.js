@@ -1,6 +1,98 @@
 
 var Journey = require('../objects/journey');
 
+/**
+ * @api {post} /api/journey Create journey
+ * @apiVersion 1.0.0
+ * @apiName JourneyCreation
+ * @apiGroup Journey
+ *
+ * @apiDescription Create a journey for a user
+ *  if the user is not yet authenticate, the journey will be saved as draft and must be confirm after authentication
+ *  if the user is authenticate, the journey is created and returned as response
+ *
+ * @apiParam {Object} journey Journey information - detail below
+ * @apiParam {String} [token] User or partner authenticate token
+ *
+ * @apiParam (journey) {String} address_start Address start of the journey
+ * @apiParam (journey) {String="aller-retour", "aller", "retour"} journey_type Address start of the journey
+ * @apiParam (journey) {Number} amount Amount to pay for one way journey
+ * @apiParam (journey) {String} [date_start_outward] Start date for the outward journey
+ * @apiParam (journey) {String} [time_start_outward] Start time for the outward journey
+ * @apiParam (journey) {Number} [nb_space_outward] Number of space available for the outward journey
+ * @apiParam (journey) {String} [date_start_return] Start date for the return journey
+ * @apiParam (journey) {String} [time_start_return] Start time for the return journey
+ * @apiParam (journey) {Number} [nb_space_return] Number of space available for the return journey
+ * @apiParam (journey) {String="citadine","berline","break","monospace","suv","coupe","cabriolet"} car_type Type of car use during the journey
+ * @apiParam (journey) {String} [distance] Distance between start address and race address
+ * @apiParam (journey) {String} [duration] Estimated journey duration
+ * @apiParam (journey) {Object} Run Race information - detail below
+ * @apiParam (run) {String} id Run identifier
+ *
+ * @apiSuccess {Object} msg New user information
+ * @apiSuccess {String} type Type of return
+ * @apiSuccess {String} [journeyKey] Key to confirm journey after authentication
+ * @apiSuccess {String} [journey] Journey information
+ *
+ * @apiSuccessExample {jsonp} [Not authenticate user] Success-Response:
+ *     HTTP/1.1 201 OK
+ *     {
+ *        "msg": "draftJourneyCreated",
+ *        "type": "success",
+ *        "journeyKey": "JNY82651"
+ *     }
+ *
+ * @apiSuccessExample {jsonp} [Authenticate user] Success-Response:
+ *     HTTP/1.1 201 OK
+ *     {
+ *        "msg": "journeyCreated",
+ *        "type": "success",
+ *        "journey": "{
+ *              "id": 5,
+ *              "address_start": "Toulon, France",
+ *              "lat": "43.124228",
+ *              "lng": "5.928",
+ *              "distance": "839 km",
+ *              "duration": "7 heures 31 minutes",
+ *              "journey_type": "aller",
+ *              "date_start_outward": "2016-11-01T23:00:00.000Z",
+ *              "time_start_outward": "03:00",
+ *              "nb_space_outward": 4,
+ *              "date_start_return": null,
+ *              "time_start_return": null,
+ *              "nb_space_return": null,
+ *              "car_type": "citadine",
+ *              "amount": 23,
+ *              "is_payed": true,
+ *              "is_canceled": false,
+ *              "createdAt": "2016-06-05T08:06:45.000Z",
+ *              "updatedAt": "2016-07-13T20:49:36.000Z",
+ *              "RunId": 3,
+ *              "UserId": 1,
+ *              "PartnerId": null,
+ *              "Run": {
+ *                "id": 3,
+ *                "name": "Paris Saint Germain",
+ *                "slug": "paris-saint-germain",
+ *                "type": "20k",
+ *                "address_start": "Paris, France",
+ *                "lat": null,
+ *                "lng": null,
+ *                "date_start": "2017-05-11T22:00:00.000Z",
+ *                "time_start": "08:00",
+ *                "distances": "20Km",
+ *                "elevations": "150+",
+ *                "info": "sdfsdf",
+ *                "is_active": true,
+ *                "createdAt": "2015-02-20T17:55:39.000Z",
+ *                "updatedAt": "2016-06-05T08:06:45.000Z",
+ *                "UserId": null,
+ *                "PartnerId": null
+ *              }
+ *          }"
+ *     }
+ *
+ */
 exports.create = function (req, res, next) {
     'use strict';
 	console.log('Create a journey for run : ' + req.body.journey.Run.id);
@@ -12,10 +104,10 @@ exports.create = function (req, res, next) {
         journey.draft(req.body.journey, function (err, journeyKey) {
             if (err) {
                 console.log('Draft Journey not created ' + err);
-                return res.jsonp({msg: 'draftJourneyNotCreated', type: 'error'});
+                return res.jsonp(500, {msg: 'draftJourneyNotCreated', type: 'error'});
             } else {
                 console.log('Draft Journey created with key : ', journeyKey);
-                res.jsonp({msg: 'draftJourneyCreated', type: 'success', journeyKey: journeyKey});
+                res.jsonp(201, {msg: 'draftJourneyCreated', type: 'success', journeyKey: journeyKey});
             }
             err = null;
             journeyKey = null;
@@ -25,10 +117,10 @@ exports.create = function (req, res, next) {
         journey.save(req.body.journey, req.user.id, req.user.role, function (err, journey, run) {
             if (err) {
                 console.log('Journey not created ' + err);
-                return res.jsonp({msg: 'journeyNotCreated', type: 'error'});
+                return res.jsonp(500, {msg: 'journeyNotCreated', type: 'error'});
             } else {
                 console.log('Journey created');
-                res.jsonp({msg: 'journeyCreated', type: 'success', journey: journey});
+                res.jsonp(201, {msg: 'journeyCreated', type: 'success', journey: journey});
                 req.Run = run;
                 req.Journey = journey;
                 next();
@@ -48,7 +140,6 @@ exports.create = function (req, res, next) {
  *
  * @apiParam {String} key Key provide when the journey is created
  * @apiParam {String} [token] Authenticate token
- * @apiHeader {String} [x-access-token] Authenticate token
  *
  * @apiSuccess {String} msg Confirmation message
  * @apiSuccess {String} type Type of return

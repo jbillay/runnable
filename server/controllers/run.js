@@ -11,7 +11,7 @@ var async = require('async');
  * @apiGroup Run
  *
  * @apiParam {String} name Name of the race
- * @apiParam {string="trail","ultra","10k","20k","semi","marathon","triathlon"} type Type of the race
+ * @apiParam {String="trail","ultra","10k","20k","semi","marathon","triathlon"} type Type of the race
  * @apiParam {String} address_start Localization of the race start (google maps definition preferred)
  * @apiParam {String} date_start Date of the race
  * @apiParam {String} [time_start] Hour of race start
@@ -110,10 +110,11 @@ exports.create = function (req, res) {
                 }
             }
             if (req.files && req.files.file) {
+                // type if defined in originalFilename ==> logo is default picture : pictures is not
                 var q = async.queue(function (options, callback) {
                         picture.create(options.path, options.runId)
                             .then(function (img) {
-                                if (options.isDefault === 'true') {
+                                if (options.isDefault === true) {
                                     picture.setDefault(img.id, options.runId)
                                         .then(function (img) {
                                             callback(null, img);
@@ -128,18 +129,19 @@ exports.create = function (req, res) {
                             .catch(function (err) {
                                 callback(err, null);
                             });
-                    }, 1),
-                    fileInfo = newRun.fileInfo.split(','),
-                    iterator = 0;
+                    }, 1);
                 req.files.file.forEach(function (file) {
-                    q.push({path: file.path, runId: createdRun.id, isDefault: fileInfo[iterator]}, function (err, img) {
+                    var isDefault = false;
+                    if (file.originalFilename === 'logo') {
+                        isDefault = true;
+                    }
+                    q.push({path: file.path, runId: createdRun.id, isDefault: isDefault}, function (err, img) {
                         if (err) {
                             console.log(new Error('Not able to upload picture ' + file.originalFilename + ' : ' + err));
                         } else {
                             console.log('File ' + file.originalFilename + ' added');
                         }
                     });
-                    iterator++;
                 });
                 q.drain = function () {
                     return res.jsonp(201, {msg: 'runCreated', type: 'success', run: createdRun});
@@ -342,12 +344,75 @@ exports.toggleActive = function (req, res) {
 
 exports.update = function (req, res) {
     'use strict';
-    console.log('Update the run ' + req.body.run.id);
-    var run = new Run();
-    run.save(req.body.run, req.user, req.partner, function (err, run) {
-        if (err) {
-            return res.jsonp({msg: err, type: 'error'});
-        }
-        return res.jsonp({msg: 'runUpdated', type: 'success'});
-    });
+    var run = new Run(),
+        picture = new Picture(),
+        updatedRun = null;
+    if (req.fields) {
+        // Transform fields array in string due to multipart mapping
+        updatedRun = _.transform(req.fields, function (newRun, value, key) {
+            newRun[key] = value.toString();
+        });
+    } else if (req.body) {
+        updatedRun = req.body;
+    }
+    var checkout = run.checkRunObject(updatedRun);
+    console.log('Update the run ' + updatedRun.id);
+    if (checkout.type === 'error') {
+        console.error(checkout.msg);
+        return res.jsonp(400, checkout);
+    } else {
+        run.save(updatedRun, req.user, req.partner, function (err, run) {
+            if (err) {
+                if (err === 'Not authorized') {
+                    return res.jsonp(401, {msg: err, type: 'error'});
+                } else {
+                    return res.jsonp(500, {msg: err, type: 'error'});
+                }
+            }
+            picture.removeForRun(updatedRun.id)
+                .then(function (deleted) {
+                    if (req.files && req.files.file) {
+                        console.log('Old files has been deleted : ' + deleted);
+                        // type if defined in originalFilename ==> logo is default picture : pictures is not
+                        var q = async.queue(function (options, callback) {
+                            picture.create(options.path, options.runId)
+                                .then(function (img) {
+                                    if (options.isDefault === true) {
+                                        picture.setDefault(img.id, options.runId)
+                                            .then(function (img) {
+                                                callback(null, img);
+                                            })
+                                            .catch(function (err) {
+                                                callback(err, null);
+                                            });
+                                    } else {
+                                        callback(null, img);
+                                    }
+                                })
+                                .catch(function (err) {
+                                    callback(err, null);
+                                });
+                        }, 1);
+                        req.files.file.forEach(function (file) {
+                            var isDefault = false;
+                            if (file.originalFilename === 'logo') {
+                                isDefault = true;
+                            }
+                            q.push({path: file.path, runId: updatedRun.id, isDefault: isDefault}, function (err, img) {
+                                if (err) {
+                                    console.log(new Error('Not able to upload picture ' + file.originalFilename + ' : ' + err));
+                                } else {
+                                    console.log('File ' + file.originalFilename + ' added');
+                                }
+                            });
+                        });
+                        q.drain = function () {
+                            return res.jsonp(201, {msg: 'runUpdated', type: 'success', run: updatedRun});
+                        };
+                    } else {
+                        return res.jsonp(201, {msg: 'runUpdated', type: 'success', run: updatedRun});
+                    }
+                });
+        });
+    }
 };

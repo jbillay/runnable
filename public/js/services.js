@@ -803,7 +803,10 @@ angular.module('runnable.services', ['ngResource']).
             },
             update: function (run) {
                 var deferred = $q.defer();
-                $http.put('/api/run', {run: run}).
+                $http.put('/api/run', run, {
+                    transformRequest: [],
+                    headers: {'Content-Type': undefined}
+                }).
                     success(function (result) {
                         $rootScope.$broadcast('USER_MSG', result);
                         deferred.resolve(result);
@@ -1288,6 +1291,25 @@ angular.module('runnable.services', ['ngResource']).
             reader.readAsDataURL(file);
             return deferred.promise;
         };
+        var getOnlineFile = function (link) {
+            var deferred = $q.defer();
+            $http({
+                    method: 'GET',
+                    url: link,
+                    responseType: 'blob'
+                })
+                .success(function (file) {
+                    var reader = new FileReader();
+                    reader.onload = function() {
+                        deferred.resolve({file: file, src: reader.result});
+                    };
+                    reader.readAsDataURL(file);
+                })
+                .error(function (err) {
+                    deferred.reject(err);
+                });
+            return deferred.promise;
+        };
         var deletePicture = function () {
             var deferred = $q.defer();
             $http.get('/api/user/remove/picture').
@@ -1302,6 +1324,7 @@ angular.module('runnable.services', ['ngResource']).
         };
         return {
             readAsDataUrl: readAsDataURL,
+            getOnlineFile: getOnlineFile,
             deletePicture: deletePicture
         };
     }).

@@ -70,6 +70,46 @@ exports.update = function(req, res) {
 	user = null;
 };
 
+/**
+ * @api {post} /api/user Create user
+ * @apiVersion 1.0.0
+ * @apiName UserCreation
+ * @apiGroup User
+ *
+ * @apiParam {String} [firstname] User firstname
+ * @apiParam {String} [lastname] User lastname
+ * @apiParam {String} [address] User address
+ * @apiParam {String} [phone] User phone number
+ * @apiParam {String} email User email
+ * @apiParam {String} password User password
+ * @apiParam {String} password_confirmation User password confirmation
+ *
+ * @apiSuccess {Object} msg New user information
+ * @apiSuccess {String} type Type of return
+ * @apiSuccess {String} token Authentication token
+ * @apiSuccess {Number} expiresIn Timestamp for expiration of token
+ *
+ * @apiSuccessExample {jsonp} Success-Response:
+ *     HTTP/1.1 201 OK
+ *     {
+     *        "msg": {
+     *          "id": 2,
+     *          "firstname": "Richard",
+     *          "lastname": "Couret",
+     *          "address": "Bouffemont",
+     *          "phone": "0689876847",
+     *          "email": "richard.couret@couret.fr",
+     *          "itra": "?id=84500&nom=COURET#tab",
+     *          "isActive": true,
+     *          "role": "editor",
+     *          "picture": null,
+     *        },
+     *        "type": "success",
+     *        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiZmlyc3RuYW1lIjoiUmljaGFyZCIsImxhc3RuYW1lIjoiQ291cmV0IiwiYWRkcmVzcyI6IkJvdWZmZW1vbnQiLCJwaG9uZSI6IjA2ODk4NzY1NDciLCJlbWFpbCI6InJpY2hhcmQuY291cmV0QGZyZWUuZnIiLCJoYXNoZWRQYXNzd29yZCI6IlZNY0xFb1ZMdlhkb2xEbHNSekY4Y1ZqbzJzd0ZmVjFNbzc2eWNSS09iSTAwcFZmQnk3M0l3bFlqL21YM1orUEg4NzNrNTdHdTh2V0NiV285di9DeHV3PT0iLCJwcm92aWRlciI6ImxvY2FsIiwic2FsdCI6ImQzNk9HdnViZStqVU84bGNCcG1yK1E9PSIsIml0cmEiOiI_aWQ9ODQ1MDAmbm9tPUNPVVJFVCN0YWIiLCJpc0FjdGl2ZSI6dHJ1ZSwicm9sZSI6ImVkaXRvciIsInBpY3R1cmUiOm51bGwsImNyZWF0ZWRBdCI6IjIwMTUtMDItMDRUMTc6NTU6MzkuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMTYtMDYtMDVUMDg6MDY6NDUuMDAwWiJ9.fipmCkn4UVQD9J7VboZv3VEroGoDAQT1mWwHsTaMXKM",
+     *        "expiresIn": 1470225915727
+     *     }
+ *
+ */
 exports.create = function(req, res) {
     'use strict';
     var mail = new Mail();
@@ -80,7 +120,7 @@ exports.create = function(req, res) {
 		user.save(function (err, newUser) {
 			if (err) {
 				console.log('Account not created ' + err);
-				return res.jsonp({msg: 'existingAccount', type: 'error'});
+				return res.jsonp(500, {msg: 'existingAccount', type: 'error'});
 			} else {
 				console.log('Account created');
 				user.getItraCode(newUser, function (err, code) {
@@ -99,7 +139,7 @@ exports.create = function(req, res) {
                 newUser.expiresIn = new Date().getTime() + 86400;
                 req.logIn(newUser, function(err) {
                     if (err) { console.log(err); }
-                    return res.jsonp({msg: newUser, type: 'success', token: newUser.token, expiresIn: newUser.expiresIn});
+                    return res.jsonp(201, {msg: newUser, type: 'success', token: newUser.token, expiresIn: newUser.expiresIn});
                 });
             }
 		});

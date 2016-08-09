@@ -21,15 +21,29 @@ describe('Runnable Controllers', function() {
             $httpBackend.whenGET('/api/run/4').respond({
                 id: 4,
                 name: 'Maxicross',
+                slug: 'maxicross',
+                lat: '43.2939345',
+                lng: '5.386939099999999',
                 type: 'trail',
                 address_start: 'Bouffémont, France',
                 date_start: '2015-02-02 00:00:00',
                 time_start: '09:15',
                 distances: '15k - 30k - 7k',
                 elevations: '500+ - 1400+',
-                info: 'Toutes les infos sur le maxicross',
+                info: 'http://www.maxicross.fr',
+                pictures: [],
+                sticker: null,
                 is_active: 1,
-                UserId: 4
+                UserId: 4,
+                PartnerId: null,
+                createdAt: '2016-08-07T12:15:00.000Z',
+                updatedAt: '2016-08-07T12:15:00.000Z',
+            });
+            $httpBackend.whenGET('http://res.cloudinary.com/myruntrip/image/upload/v1470754457/Run_4_Picture_38_development.jpg').respond({
+
+            });
+            $httpBackend.whenGET('http://res.cloudinary.com/myruntrip/image/upload/v1470754457/Run_4_Picture_39_development.jpg').respond({
+
             });
             $httpBackend.whenPUT('/api/run').respond({msg: 'runUpdated', type: 'success'});
             $httpBackend.whenGET('/api/user/me').respond({
