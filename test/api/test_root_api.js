@@ -58,6 +58,116 @@ describe('Test of root API', function () {
         });
     });
 
+    describe('POST /login', function () {
+        var token = null;
+        it('Should log in a user', function (done) {
+            superagent
+                .post('http://localhost:' + settings.port + '/login')
+                .send({ email: 'jbillay@gmail.com', password: 'noofs' })
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg.id, 1);
+                    assert.equal(res.body.msg.firstname, 'Jeremy');
+                    assert.equal(res.body.msg.lastname, 'Billay');
+                    assert.equal(res.body.msg.address, 'Saint Germain en laye');
+                    assert.equal(res.body.msg.phone, '0689876547');
+                    assert.equal(res.body.msg.email, 'jbillay@gmail.com');
+                    assert.isNotNull(res.body.token);
+                    token = res.body.token;
+                    return done();
+                });
+        });
+
+        it('Should create a run with provided token', function (done) {
+            superagent
+                .post('http://localhost:' + settings.port + '/api/run')
+                .send({ name: 'test', type: 'trail', address_start: 'Chantilly', date_start: '2016-02_09', token: token })
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg, 'runCreated');
+                    return done();
+                });
+        });
+
+        it('Should create a run with a wrong token', function (done) {
+            superagent
+                .post('http://localhost:' + settings.port + '/api/run')
+                .send({ name: 'test', type: 'trail', address_start: 'Chantilly', date_start: '2016-02_09', token: 'tot' })
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.statusCode, 403);
+                    assert.equal(res.body.success, false);
+                    assert.equal(res.body.message, 'Failed to authenticate token.');
+                    return done();
+                });
+        });
+
+        it('Should try to log in with a non active user', function (done) {
+            superagent
+                .post('http://localhost:' + settings.port + '/login')
+                .send({ email: 'richard.couret@free.fr', password: 'richard' })
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    console.log(res.body);
+                    assert.equal(res.body.type, 'error');
+                    assert.equal(res.body.msg, 'accountNotActive');
+                    assert.isNotNull(res.body.token);
+                    return done();
+                });
+        });
+    });
+
+    describe('POST /api/authenticate', function () {
+        var token = null;
+        it('Should log in a partner', function (done) {
+            superagent
+                .post('http://localhost:' + settings.port + '/api/authenticate')
+                .send({ apikey: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiU3QtWW9ycmUiLCJpYXQiOjE0NDYwMDkwNDgsImV4cCI6MTIwNTA5NjA2NjF9.-vmI9gHnCFX30N2oVhQLiADX-Uz2XHzrHjWjJpvSERo' })
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg.id, 1);
+                    assert.equal(res.body.msg.firstname, 'Jeremy');
+                    assert.equal(res.body.msg.lastname, 'Billay');
+                    assert.equal(res.body.msg.address, 'Saint Germain en laye');
+                    assert.equal(res.body.msg.phone, '0689876547');
+                    assert.equal(res.body.msg.email, 'jbillay@gmail.com');
+                    assert.isNotNull(res.body.token);
+                    assert.isNotNull(res.body.expiresIn);
+                    token = res.body.token;
+                    return done();
+                });
+        });
+
+        it('Should create a run with provided token', function (done) {
+            superagent
+                .post('http://localhost:' + settings.port + '/api/run')
+                .send({ name: 'test', type: 'trail', address_start: 'Chantilly', date_start: '2016-02_09', token: token })
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    assert.equal(res.body.type, 'success');
+                    assert.equal(res.body.msg, 'runCreated');
+                    return done();
+                });
+        });
+
+        it('Should log in with wrong api key', function (done) {
+            superagent
+                .post('http://localhost:' + settings.port + '/api/authenticate')
+                .send({ apikey: 'toto' })
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    console.log(res.body);
+                    assert.equal(res.body.type, 'error');
+                    assert.deepEqual(res.body.msg, {});
+                    return done();
+                });
+        });
+
+    });
+
     describe('GET /logout', function () {
         it('should return code 302', function (done) {
             request(app)

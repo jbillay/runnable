@@ -82,7 +82,8 @@ describe('Test of picture API', function () {
 
         before(loginUser(agent));
 
-        it('should create picture run 1', function(done) {
+        // TODO: to be transfered to integration test suit
+        it.skip('should create picture run 1', function(done) {
             var filename = 'myruntrip.jpg',
                 boundary = Math.random();
             var req = agent.post('http://localhost:' + settings.port + '/api/picture/1');
@@ -131,7 +132,8 @@ describe('Test of picture API', function () {
                 });
         });
 
-        it('should delete picture 4', function(done) {
+        // TODO: to be transfered to integration test suit
+        it.skip('should delete picture 4', function(done) {
             request(app)
                 .get('/api/pictures/1')
                 .end(function (err, res) {

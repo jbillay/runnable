@@ -222,7 +222,7 @@ run.prototype.search = function (searchInfo, done) {
                             destinations: destinations
                         };
                         distance.get(options, function(err, data) {
-                            if (err) return done(err);
+                            if (err) return done(err, null);
                             if (data.length) {
                                 var searchDistance = parseFloat(searchInfo.run_adv_distance);
                                 data.forEach(function (journey, index) {

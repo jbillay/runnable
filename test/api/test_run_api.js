@@ -464,7 +464,6 @@ describe('Test of run API', function () {
                     .get('http://localhost:' + settings.port + '/api/run/7')
                     .end(function (err, res) {
                         if (err) return done(err);
-                        console.log(res.res.body);
                         assert.equal(res.res.body.name, 'Trail de la Drôme');
                         assert.equal(res.res.body.slug, 'trail-de-la-drome');
                         assert.equal(res.res.body.type, 'trail');

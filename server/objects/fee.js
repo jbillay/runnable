@@ -203,11 +203,11 @@ fee.prototype.attachUser = function (fee, userId) {
                     deferred.resolve(fee);
                 })
                 .catch(function (err) {
-                    deferred.resolve(new Error(err));
+                    deferred.reject(new Error(err));
                 });
         })
         .catch(function (err) {
-            deferred.resolve(new Error(err));
+            deferred.reject(new Error(err));
         });
     return deferred.promise;
 };
@@ -222,11 +222,11 @@ fee.prototype.attachRun = function (fee, runId) {
                     deferred.resolve(fee);
                 })
                 .catch(function (err) {
-                    deferred.resolve(new Error(err));
+                    deferred.reject(new Error(err));
                 });
         })
         .catch(function (err) {
-            deferred.resolve(new Error(err));
+            deferred.reject(new Error(err));
         });
     return deferred.promise;
 };
@@ -263,7 +263,7 @@ fee.prototype.add = function (code, percentage, value, discount, isDefault, rema
                         }
                     })
                     .catch(function (err) {
-                        deferred.resolve(new Error(err));
+                        deferred.reject(new Error(err));
                     });
             } else if (runId) {
                 self.attachRun(newFee, runId)
@@ -312,20 +312,16 @@ fee.prototype.update = function (id, code, percentage, value, discount, isDefaul
                             if (userId && fee.UserId !== userId) {
                                 self.attachUser(fee, userId)
                                     .then(function (newFee) {
-                                        if (newFee.RunId !== runId) {
-                                            self.attachRun(newFee, runId)
-                                                .then(function (fee) {
-                                                    deferred.resolve(fee);
-                                                })
-                                                .catch(function (err) {
-                                                    deferred.reject(new Error(err));
-                                                });
-                                        } else {
-                                            deferred.resolve(newFee);
-                                        }
+                                        self.attachRun(newFee, runId)
+                                            .then(function (fee) {
+                                                deferred.resolve(fee);
+                                            })
+                                            .catch(function (err) {
+                                                deferred.reject(new Error(err));
+                                            });
                                     })
                                     .catch(function (err) {
-                                        deferred.resolve(new Error(err));
+                                        deferred.reject(new Error(err));
                                     });
                             } else if (fee.RunId !== runId) {
                                 self.attachRun(fee, runId)

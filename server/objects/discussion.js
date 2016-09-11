@@ -173,7 +173,7 @@ discussion.prototype.addMessage = function (message, journeyId, isPublic, user, 
                                                         });
                                                 })
                                                 .catch(function (err) {
-                                                    done(err, null);
+                                                    done(new Error(err), null);
                                                 });
                                     });
                                 } else {

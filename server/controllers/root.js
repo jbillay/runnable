@@ -25,11 +25,6 @@ exports.logout = function (req, res) {
     return res.jsonp({msg: 'userLogoff', type: 'success'});
 };
 
-exports.auth = function (req, res) {
-    'use strict';
-	res.jsonp(req.user || null);
-};
-
 // for dev purpose only -- To be removed
 exports.sync = function (req, res) {
     'use strict';

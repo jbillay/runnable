@@ -183,7 +183,6 @@ exports.showJourneys = function (req, res) {
 		} else {
 			return res.jsonp(journeyList);
 		}
-		err = null;
 	});
 	id = null;
 	journey = null;
@@ -359,7 +358,7 @@ exports.publicDriverInfo = function (req, res) {
 
 exports.uploadPicture = function (req, res) {
     'use strict';
-    if (req.files.file) {
+    if (req.files && req.files.file) {
         var userId = req.user.id,
             path = req.files.file[0].path,
             user = new User();

@@ -10,6 +10,8 @@ var assert = require('chai').assert;
 var models = require('../../server/models/index');
 var ValidationJourney = require('../../server/objects/validation_journey');
 var settings = require('../../conf/config');
+var proxyquire = require('proxyquire');
+var q = require('q');
 
 describe('Test of validation_journey object', function () {
     // Recreate the database after each test to ensure isolation
@@ -42,8 +44,11 @@ describe('Test of validation_journey object', function () {
                 comment_driver: 'Revoir la musique !',
                 comment_service: 'Service au top comme à chaque fois',
                 rate_driver: 4,
-                rate_service: 5
+                rate_service: 5,
+                updatedAt: '2017-09-21',
+                createdAt: '2017-09-21'
             };
+        val.set({});
         val.set(validationObj);
         var tmp = val.get();
         assert.equal(tmp.rate_driver, 4);
@@ -58,6 +63,19 @@ describe('Test of validation_journey object', function () {
                 assert.equal(feedback[0].UserId, 2);
                 return done();
             });
+        });
+    });
+    it('Should get list of user feedback which fail', function (done) {
+        var stubModel = { ValidationJourney: { findAll: function (params) { var deferred = q.defer(); deferred.reject('Mock to fail'); return deferred.promise; } } };
+        var ValidationJourney = proxyquire('../../server/objects/validation_journey', {'../models': stubModel});
+        var validationJourney = new ValidationJourney();
+        validationJourney.getUserFeedback(function (err, feedback) {
+            if (err) {
+                assert.include(err, 'Mock to fail');
+                return done();
+            } else {
+                return done('Should not get user feedback !');
+            }
         });
     });
 });
