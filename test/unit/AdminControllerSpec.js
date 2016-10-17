@@ -7,9 +7,9 @@ describe('Runnable Controllers', function() {
     beforeEach(module('runnable.services'));
 
     describe('RunnableAdminController', function(){
-        var scope, rootScope, ctrl, ctrlLogin, ctrlMain, location, $httpBackend, AUTH_EVENTS;
+        var scope, rootScope, ctrl, ctrlLogin, ctrlMain, location, $httpBackend, AUTH_EVENTS, element;
 
-        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $location, $controller) {
+        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $location, $controller, $compile) {
             $httpBackend = _$httpBackend_;
             rootScope = _$rootScope_;
             scope = _$rootScope_.$new();
@@ -22,6 +22,7 @@ describe('Runnable Controllers', function() {
                 notAuthenticated: 'auth-not-authenticated',
                 notAuthorized: 'auth-not-authorized'
             };
+            spyOn(rootScope, '$broadcast').and.callThrough();
             var user = {
                 id: 2,
                 firstname: 'Richard',
@@ -754,6 +755,7 @@ describe('Runnable Controllers', function() {
             $httpBackend.whenPOST('/api/admin/page').respond({msg: 'pageSaved', type: 'success'});
             $httpBackend.whenPOST('/api/admin/run/active').respond({msg: 'done', type: 'success'});
             $httpBackend.whenPOST('/api/admin/partner/info').respond({msg: 'Partner info sent', type: 'success'});
+            $httpBackend.whenPOST('/api/admin/invoice/complete').respond(200);
             $httpBackend.whenPOST('/api/admin/partner').respond({msg: {
                 UserId: 1,
                 createdAt: '2015-12-21T08:37:49.000Z',
@@ -766,6 +768,11 @@ describe('Runnable Controllers', function() {
             }, type: 'success'});
             $httpBackend.whenGET('/api/admin/user/bankaccount/1').respond(
                 { id: 1, owner: 'Jeremy Billay', agency_name: 'Crédit Agricole', IBAN: 'FR7618206000576025840255308', BIC: 'AGRIFRPP882', UserId: 1 });
+
+            element = angular.element('<div class="usertab" id="usertab"><tr><td>1</td><td>2</td></tr></div>');
+            element.appendTo(document.body);
+            element = $compile(element)(scope);
+            scope.$digest();
 
             ctrlMain = $controller('RunnableMainController',
                 {$scope: scope, $rootScope: rootScope});
@@ -1232,6 +1239,379 @@ describe('Runnable Controllers', function() {
             scope.addTemplateEmail(newTemplate);
             expect(scope.emailOption.emailTemplate.length).toEqual(2);
             expect(scope.createTemplateEmail).toBeFalsy();
+        });
+
+        it('should force completion of a join', function () {
+            var join = {
+                Invoice: {
+                    amount: 12,
+                    ref: '3UHI3H33892HE3'
+                }
+            };
+            scope.forceComplete(join);
+            $httpBackend.flush();
+            expect(rootScope.$broadcast).toHaveBeenCalled();
+        });
+
+        it('Should save default fee in percentage', function () {
+            var fee = {
+                percentage: 19,
+                value: 0
+            };
+            scope.saveDefaultFee(fee);
+        });
+        it('Should save default fee in value', function () {
+            var fee = {
+                percentage: 0,
+                value: 18
+            };
+            scope.saveDefaultFee(fee);
+        });
+        it('Should export users', function () {
+            // TODO: simulate MouseEventConstructor is not a constructor (evaluating 'new MouseEvent('click')')$
+            // scope.exportUsers();
+        });
+        it('Should close admin journey', function () {
+            scope.journeyToPay = [1, 2, 3];
+            scope.selectedJourney = {};
+            scope.selectedJourney.is_payed = true;
+            scope.selectedJourney.idx = 1;
+            expect(scope.journeyToPay.length).toBe(3);
+            scope.closeAdminJourney();
+            expect(scope.journeyToPay.length).toBe(2);
+        });
+        it('Should refund a join', function () {
+            $httpBackend.whenPOST('/api/admin/join/refund').respond({msg: {id: 1}, type: 'success'});
+            $httpBackend.flush();
+            expect(scope.toRefundList.length).toBe(1);
+            scope.refundJoin({id: 1}, 0);
+            $httpBackend.flush();
+            expect(scope.toRefundList.length).toBe(0);
+        });
+        it('Should switch fee creation from off to on and on to off', function () {
+            scope.switchFeesCreation();
+            expect(scope.feesCreation).toBeTruthy();
+            scope.switchFeesCreation();
+            expect(scope.feesCreation).toBeFalsy();
+        });
+        it('Should switch code creation from off to on and on to off', function () {
+            scope.switchCodeCreation();
+            expect(scope.codeCreation).toBeTruthy();
+            scope.switchCodeCreation();
+            expect(scope.codeCreation).toBeFalsy();
+        });
+        it('Should create fee discount', function () {
+            $httpBackend.whenPOST('/api/admin/fee', {fee: {id: null, code: null, percentage: 0.2, value: 1, discount: 0.8, default: false, remaining: null, start_date: '2016-02-09', end_date: null, RunId: 1, UserId: 1}}).respond({msg: {
+                RunId: 1,
+                UserId: 1,
+                code: null,
+                createdAt: new Date(),
+                default: false,
+                discount: 0.2,
+                end_date: null,
+                id: 9,
+                percentage: 0.2,
+                remaining: null,
+                start_date: new Date(),
+                value: 1}, type: 'success'});
+            var newFee= {
+                percentage: 20,
+                value: 1,
+                discount: 80,
+                start_date: '2016-02-09',
+                end_date: null,
+                user: {
+                    id: 1
+                },
+                run: {
+                    id: 1
+                }
+            };
+            $httpBackend.flush();
+            expect(scope.feeList.fees.length).toBe(2);
+            scope.createFee(newFee);
+            $httpBackend.flush();
+            expect(scope.feeList.fees.length).toBe(3);
+        });
+        it('Should create an empty fee discount', function () {
+            $httpBackend.whenPOST('/api/admin/fee').respond({msg: {
+                code: null,
+                createdAt: new Date(),
+                default: false,
+                discount: 0.2,
+                end_date: null,
+                id: 9,
+                percentage: 0.2,
+                remaining: null,
+                start_date: new Date(),
+                value: 1}, type: 'success'});
+            var newFee= {};
+            $httpBackend.flush();
+            expect(scope.feeList.fees.length).toBe(2);
+            scope.createFee(newFee);
+            $httpBackend.flush();
+            expect(scope.feeList.fees.length).toBe(3);
+        });
+        it('Should update fee discount with user and run', function () {
+            $httpBackend.whenPUT('/api/admin/fee', {fee: {id: 2, code: null, percentage: null, value: null, discount: 0.2, default: false, remaining: null, start_date: '0000-00-00 00:00:00', end_date: '2016-12-06T00:00:00.000Z', RunId: 1, UserId: null, createdAt: '0000-00-00 00:00:00', updatedAt: '0000-00-00 00:00:00'}}).respond({msg: {
+                RunId: 1,
+                UserId: 1,
+                code: null,
+                createdAt: '0000-00-00 00:00:00',
+                default: false,
+                discount: 0.2,
+                end_date: '2016-12-06T00:00:00.000Z',
+                id: 5,
+                percentage: null,
+                remaining: null,
+                start_date: '0000-00-00 00:00:00',
+                updatedAt: '0000-00-00 00:00:00',
+                value: null}, type: 'success'});
+            $httpBackend.flush();
+            expect(scope.feeList.fees[0].discount).toBe(0.05);
+            expect(scope.feeList.fees.length).toBe(2);
+            scope.updateFees(2, 'discount', 0.05, 0.2);
+            $httpBackend.flush();
+            expect(scope.feeList.fees[scope.feeList.fees.length - 1].discount).toBe(0.2);
+            expect(scope.feeList.fees.length).toBe(2);
+        });
+        it('Should update fee discount', function () {
+            $httpBackend.whenPUT('/api/admin/fee', {fee: {id: 2, code: null, percentage: null, value: null, discount: 0.2, default: false, remaining: null, start_date: '0000-00-00 00:00:00', end_date: '2016-12-06T00:00:00.000Z', RunId: 1, UserId: null, createdAt: '0000-00-00 00:00:00', updatedAt: '0000-00-00 00:00:00'}}).respond({msg: {
+                RunId: null,
+                UserId: null,
+                code: null,
+                createdAt: '0000-00-00 00:00:00',
+                default: false,
+                discount: 0.2,
+                end_date: '2016-12-06T00:00:00.000Z',
+                id: 5,
+                percentage: null,
+                remaining: null,
+                start_date: '0000-00-00 00:00:00',
+                updatedAt: '0000-00-00 00:00:00',
+                value: null}, type: 'success'});
+            $httpBackend.flush();
+            expect(scope.feeList.fees[0].discount).toBe(0.05);
+            expect(scope.feeList.fees.length).toBe(2);
+            scope.updateFees(2, 'discount', 0.05, 0.2);
+            $httpBackend.flush();
+            expect(scope.feeList.fees[scope.feeList.fees.length - 1].discount).toBe(0.2);
+            expect(scope.feeList.fees.length).toBe(2);
+        });
+        it('Should update fee discount with the same value', function () {
+            $httpBackend.flush();
+            expect(scope.feeList.fees[0].discount).toBe(0.05);
+            scope.updateFees(2, 'discount:', 0.05, 0.05);
+            expect(scope.feeList.fees[0].discount).toBe(0.05);
+        });
+        it('Should be check grid update fee', function () {
+            $httpBackend.whenPUT('/api/admin/fee').respond({msg: {
+                RunId: 1,
+                UserId: 1,
+                code: null,
+                createdAt: '0000-00-00 00:00:00',
+                default: false,
+                discount: 0.2,
+                end_date: '2016-12-06T00:00:00.000Z',
+                id: 5,
+                percentage: null,
+                remaining: null,
+                start_date: '0000-00-00 00:00:00',
+                updatedAt: '0000-00-00 00:00:00',
+                value: null}, type: 'success'});
+            $httpBackend.flush();
+            var grip = { edit: { on: { afterCellEdit: function (scope, callback) { return callback({id: 2}, {field: 'discount'}, 0.05, 0.2); } } } };
+            scope.feesGridOptions.onRegisterApi(grip);
+            $httpBackend.flush();
+            expect(scope.feeList.fees[scope.feeList.fees.length - 1].discount).toBe(0.2);
+            expect(scope.feeList.fees.length).toBe(2);
+        });
+        it('Should create code discount', function () {
+            $httpBackend.whenPOST('/api/admin/fee', {fee: {id: null, code: 'TEST', percentage: null, value: null, discount: 0.2, default: false, remaining: 50, start_date: '2016-09-02', end_date: null, RunId: 1, UserId: 1}}).respond({msg: {
+                RunId: 1,
+                UserId: 1,
+                code: 'TEST',
+                createdAt: new Date(),
+                default: false,
+                discount: 0.2,
+                end_date: null,
+                id: 9,
+                percentage: 0.2,
+                remaining: null,
+                start_date: new Date(),
+                value: 1}, type: 'success'});
+            var newCode= {
+                code: 'TEST',
+                reduction: 20,
+                remaining: 50,
+                start_date: '2016-09-02',
+                end_date: null,
+                user: {
+                    id: 1
+                },
+                run: {
+                    id: 1
+                }
+            };
+            $httpBackend.flush();
+            expect(scope.feeList.code.length).toBe(1);
+            scope.createCode(newCode);
+            $httpBackend.flush();
+            expect(scope.feeList.code.length).toBe(2);
+        });
+        it('Should create an empty code discount', function () {
+            $httpBackend.whenPOST('/api/admin/fee').respond({msg: {
+                code: null,
+                createdAt: new Date(),
+                default: false,
+                discount: 0.2,
+                end_date: null,
+                id: 9,
+                percentage: 0.2,
+                remaining: null,
+                start_date: new Date(),
+                value: 1}, type: 'success'});
+            var newCode= {};
+            $httpBackend.flush();
+            expect(scope.feeList.code.length).toBe(1);
+            scope.createCode(newCode);
+            $httpBackend.flush();
+            expect(scope.feeList.code.length).toBe(2);
+        });
+        it('Should update code discount with user and run', function () {
+            $httpBackend.whenPUT('/api/admin/fee', {fee: {RunId: null, UserId: null, code: 'MRT-JR-2016', createdAt: '2016-04-21T00:00:00.000Z', default: false, discount: 0.5, end_date: null, id: 8, percentage: null, remaining: 5, start_date: '2015-12-08T00:00:00.000Z', updatedAt: '2016-04-21T00:00:00.000Z', value: null}}).respond({msg: {
+                RunId: 1,
+                UserId: 1,
+                code: null,
+                createdAt: '0000-00-00 00:00:00',
+                default: false,
+                discount: 0.5,
+                end_date: '2016-12-06T00:00:00.000Z',
+                id: 5,
+                percentage: null,
+                remaining: null,
+                start_date: '0000-00-00 00:00:00',
+                updatedAt: '0000-00-00 00:00:00',
+                value: null}, type: 'success'});
+            $httpBackend.flush();
+            expect(scope.feeList.code[0].discount).toBe(0.2);
+            expect(scope.feeList.code.length).toBe(1);
+            scope.updateCode(8, 'discount', 0.2, 0.5);
+            $httpBackend.flush();
+            expect(scope.feeList.code[scope.feeList.code.length - 1].discount).toBe(0.5);
+            expect(scope.feeList.code.length).toBe(1);
+        });
+        it('Should update code discount', function () {
+            $httpBackend.whenPUT('/api/admin/fee', {fee: {RunId: null, UserId: null, code: 'MRT-JR-2016', createdAt: '2016-04-21T00:00:00.000Z', default: false, discount: 0.5, end_date: null, id: 8, percentage: null, remaining: 5, start_date: '2015-12-08T00:00:00.000Z', updatedAt: '2016-04-21T00:00:00.000Z', value: null}}).respond({msg: {
+                RunId: null,
+                UserId: null,
+                code: 'MRT-JR-2016',
+                createdAt: '0000-00-00 00:00:00',
+                default: false,
+                discount: 0.5,
+                end_date: '2016-12-06T00:00:00.000Z',
+                id: 5,
+                percentage: null,
+                remaining: null,
+                start_date: '0000-00-00 00:00:00',
+                updatedAt: '0000-00-00 00:00:00',
+                value: null}, type: 'success'});
+            $httpBackend.flush();
+            expect(scope.feeList.code[0].discount).toBe(0.2);
+            expect(scope.feeList.code.length).toBe(1);
+            scope.updateCode(8, 'discount', 0.2, 0.5);
+            $httpBackend.flush();
+            expect(scope.feeList.code[scope.feeList.code.length - 1].discount).toBe(0.5);
+            expect(scope.feeList.code.length).toBe(1);
+        });
+        it('Should update code discount with the same value', function () {
+            $httpBackend.flush();
+            expect(scope.feeList.code[0].discount).toBe(0.2);
+            scope.updateCode(8, 'discount', 0.2, 0.2);
+            expect(scope.feeList.code[0].discount).toBe(0.2);
+        });
+        it('Should be check grid update code', function () {
+            $httpBackend.whenPUT('/api/admin/fee').respond({msg: {
+                RunId: null,
+                UserId: null,
+                code: 'MRT-JR-2016',
+                createdAt: '0000-00-00 00:00:00',
+                default: false,
+                discount: 0.5,
+                end_date: '2016-12-06T00:00:00.000Z',
+                id: 10,
+                percentage: null,
+                remaining: null,
+                start_date: '0000-00-00 00:00:00',
+                updatedAt: '0000-00-00 00:00:00',
+                value: null}, type: 'success'});
+            $httpBackend.flush();
+            var grip = { edit: { on: { afterCellEdit: function (scope, callback) { return callback({id: 8}, {field: 'discount'}, 0.05, 0.2); } } } };
+            scope.codeGridOptions.onRegisterApi(grip);
+            $httpBackend.flush();
+            expect(scope.feeList.code[scope.feeList.code.length - 1].discount).toBe(0.5);
+            expect(scope.feeList.code.length).toBe(1);
+        });
+    });
+    describe('AdminController with failure on join completion', function () {
+        var scope, rootScope, ctrl, ctrlLogin, ctrlMain, location, $httpBackend, AUTH_EVENTS;
+
+        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $location, $controller) {
+            $httpBackend = _$httpBackend_;
+            rootScope = _$rootScope_;
+            scope = _$rootScope_.$new();
+            location = $location;
+            AUTH_EVENTS = {
+                loginSuccess: 'auth-login-success',
+                loginFailed: 'auth-login-failed',
+                logoutSuccess: 'auth-logout-success',
+                sessionTimeout: 'auth-session-timeout',
+                notAuthenticated: 'auth-not-authenticated',
+                notAuthorized: 'auth-not-authorized'
+            };
+            spyOn(rootScope, '$broadcast').and.callThrough();
+            $httpBackend.whenGET('/api/user/me').respond({
+                id: 2,
+                firstname: 'Richard',
+                lastname: 'Couret',
+                address: 'Bouffemont',
+                phone: '0689876547',
+                email: 'richard.couret@free.fr',
+                itra: '?id=84500&nom=COURET#tab',
+                isActive: 0,
+                role: 'editor',
+                picture: 'test'
+            });
+            $httpBackend.whenGET('/api/inbox/unread/nb/msg').respond(200, 2);
+            $httpBackend.whenGET('/api/admin/users').respond(500);
+            $httpBackend.whenGET('/api/admin/runs').respond(500);
+            $httpBackend.whenGET('/api/admin/journeys').respond(500);
+            $httpBackend.whenGET('/api/admin/journey/toPay').respond(500);
+            $httpBackend.whenGET('/api/admin/join/toRefund').respond(500);
+            $httpBackend.whenGET('/api/admin/joins').respond(500);
+            $httpBackend.whenGET('/api/admin/options').respond(500);
+            $httpBackend.whenGET('/api/admin/pages').respond(500);
+            $httpBackend.whenGET('/api/admin/partners').respond(500);
+            $httpBackend.whenGET('/api/admin/fees').respond(500);
+            $httpBackend.whenGET('/api/admin/default/fee').respond(500);
+            $httpBackend.whenGET('/api/version').respond(500);
+
+            ctrlMain = $controller('RunnableMainController', {$scope: scope, $rootScope: rootScope});
+            ctrlLogin = $controller('RunnableLoginController', {$scope: scope, $rootScope: rootScope, AUTH_EVENTS: AUTH_EVENTS});
+            ctrl = $controller('RunnableAdminController', {$scope: scope, $rootScope: rootScope, $location: location});
+        }));
+
+        it('should fail to force join completion', function () {
+            var join = {
+                Invoice: {
+                    amount: 12,
+                    ref: '3UHI3H33892HE3'
+                }
+            };
+            $httpBackend.whenPOST('/api/admin/invoice/complete').respond(500);
+            scope.forceComplete(join);
+            $httpBackend.flush();
+            expect(rootScope.$broadcast).toHaveBeenCalled();
         });
     });
 });

@@ -403,6 +403,16 @@ describe('Runnable Controllers', function() {
             scope.sendMessage(discussion);
             expect(scope.publicMessages.length).toBe(2);
         });
+
+        it ('Should check the redirection to private discussion', function () {
+            spyOn(location, 'path');
+            expect(scope.page).toEqual('Journey');
+            expect(scope.journeyId).toBe(4);
+            $httpBackend.flush();
+            timeout.flush();
+            scope.redirectToPrivateDiscussion();
+            expect(location.path).toHaveBeenCalledWith('/myjourney-discussion-4');
+        });
     });
 
     describe('RunnableJourneyDetailController user not logging with various journey', function(){

@@ -92,7 +92,6 @@ describe('Runnable Controllers', function() {
         });
 
         it ('get a file', function () {
-            // TODO: Test when readAsDataUrl has been called
             spyOn(FileReader, 'readAsDataUrl').and.callFake(function() {
                 return { then: function(callback) { return callback('File Read'); } }; });
             spyOn(MyUpload, 'upload').and.callFake(function() {

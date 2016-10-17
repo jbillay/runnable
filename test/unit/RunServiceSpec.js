@@ -185,6 +185,20 @@ describe('Run Service', function() {
             expect(runList[0].is_active).toBe(1);
         });
 
+        it('should get next run list with error', function() {
+            $httpBackend.whenGET('/api/run/next/1').respond({msg: 'Mock to fail', type: 'error'});
+            var promise = service.getNextList(1),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toBe('error : Mock to fail');
+        });
+
         it('should fail to get next list', function() {
             $httpBackend.whenGET('/api/run/next/1').respond(500);
             var promise = service.getNextList(1),

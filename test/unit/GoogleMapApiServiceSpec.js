@@ -19,6 +19,9 @@ describe('GoogleMapApi Service', function() {
             event: {
                 trigger: function (maps, obj) { return true; }
             },
+            marker: {
+                setMap: function (params) { return true; }
+            },
             Map: function(element, options) {
                 this.setCenter = function (location) { return location; };
                 this.setZoom = function (zoom) { return true; };
@@ -27,7 +30,7 @@ describe('GoogleMapApi Service', function() {
             },
             Marker: function (options) {
                 var active = true;
-                this.addListener = function  (event, done) { return event; };
+                this.addListener = function  (event, fn) { return event; };
                 this.getAnimation = function (obj) { return this.active; };
                 this.setAnimation = function (obj) { this.active = null; };
                 this.setIcon = function (icon) { return true; };
@@ -80,7 +83,7 @@ describe('GoogleMapApi Service', function() {
                 };
             },
             TravelMode: { DRIVING: 1 },
-            GeocoderStatus: { OK: 1 },
+            GeocoderStatus: { OK: 1, KO: 2 },
             DirectionsStatus: { OK: 1 },
             DistanceMatrixStatus: { OK: 1 }
         }
@@ -174,7 +177,7 @@ describe('GoogleMapApi Service', function() {
             var promise = service.getGeocode('Paris, France', 10, 25),
                 location = null;
 
-            promise.then(function(ret){
+            promise.then(function(ret) {
                 location = ret;
             });
             rootScope.$digest();
@@ -186,14 +189,183 @@ describe('GoogleMapApi Service', function() {
             var promise = service.getGeocode('Paris, France', null, null),
                 location = null;
 
-            promise.then(function(ret){
+            promise.then(function(ret) {
                 location = ret;
             });
             rootScope.$digest();
             expect(location.lat).toEqual(48.856614);
             expect(location.lng).toEqual(2.3522219);
         });
-        
+
+        it('should get geo location based on address fail', function () {
+            window.google = {
+                maps: {
+                    Geocoder: function() {
+                        this.geocode = function(input, fn) {
+                            fn([{geometry: null}], window.google.maps.GeocoderStatus.KO);
+                        };
+                    },
+                    event: {
+                        trigger: function (maps, obj) { return true; }
+                    },
+                    marker: {
+                        setMap: function (params) { return true; }
+                    },
+                    Map: function(element, options) {
+                        this.setCenter = function (location) { return location; };
+                        this.setZoom = function (zoom) { return true; };
+                        this.getCenter = function () { return this.center || 0; };
+                        this.setCenter = function (center) { this.center = center; };
+                    },
+                    Marker: function (options) {
+                        var active = true;
+                        this.addListener = function  (event, done) { return event; };
+                        this.getAnimation = function (obj) { return this.active; };
+                        this.setAnimation = function (obj) { this.active = null; };
+                        this.setIcon = function (icon) { return true; };
+                    },
+                    DirectionsRenderer: function() {
+                        this.setMap = function (location) { return location; };
+                        this.setDirections = function (response) { return response; };
+                    },
+                    InfoWindow: function (object) {
+                        this.open = function (map, marker) { return marker; };
+                    },
+                    Animation: function () {
+                        this.DROP = 1;
+                        this.BOUNCE = 1;
+                    },
+                    DirectionsService: function () {
+                        this.route = function (request, fn) {
+                            fn([{geometry: {location: {lat: 48.856614, lng: 2.3522219}}}], window.google.maps.GeocoderStatus.OK);
+                        };
+                    },
+                    DistanceMatrixService: function () {
+                        this.getDistanceMatrix = function (options, fn) {
+                            fn({
+                                origin_addresses: [ 'Greenwich, Greater London, UK', '13 Great Carleton Square, Edinburgh, City of Edinburgh EH16 4, UK' ],
+                                destination_addresses: [ 'Stockholm County, Sweden', 'Dlouhá 609/2, 110 00 Praha-Staré Město, Česká republika' ],
+                                rows: [ {
+                                    elements: [ {
+                                        status: 'OK',
+                                        duration: {
+                                            value: 96000,
+                                            text: '1 day 3 hours'
+                                        },
+                                        distance: {
+                                            value: 2566737,
+                                            text: '1595 mi'
+                                        }
+                                    }, {
+                                        status: 'OK',
+                                        duration: {
+                                            value: 69698,
+                                            text: '19 hours 22 mins'
+                                        },
+                                        distance: {
+                                            value: 1942009,
+                                            text: '1207 mi'
+                                        }
+                                    } ]
+                                } ]
+                            }, window.google.maps.GeocoderStatus.OK);
+                        };
+                    },
+                    TravelMode: { DRIVING: 1 },
+                    GeocoderStatus: { OK: 1, KO: 2 },
+                    DirectionsStatus: { OK: 1 },
+                    DistanceMatrixStatus: { OK: 1 }
+                }
+            };
+            var promise = service.getGeocode('Paris, France', null, null),
+                location = null;
+
+            promise.catch(function(err) {
+                location = err;
+            });
+            rootScope.$digest();
+            expect(location).toBe('Err: 2 for address Paris, France');
+            window.google = {
+                maps: {
+                    Geocoder: function() {
+                        this.geocode = function(input, fn) {
+                            fn([{geometry: {location: {lat: 48.856614, lng: 2.3522219}}}], window.google.maps.GeocoderStatus.OK);
+                        };
+                    },
+                    event: {
+                        trigger: function (maps, obj) { return true; }
+                    },
+                    marker: {
+                        setMap: function (params) { return true; }
+                    },
+                    Map: function(element, options) {
+                        this.setCenter = function (location) { return location; };
+                        this.setZoom = function (zoom) { return true; };
+                        this.getCenter = function () { return this.center || 0; };
+                        this.setCenter = function (center) { this.center = center; };
+                    },
+                    Marker: function (options) {
+                        var active = true;
+                        this.addListener = function  (event, done) { return event; };
+                        this.getAnimation = function (obj) { return this.active; };
+                        this.setAnimation = function (obj) { this.active = null; };
+                        this.setIcon = function (icon) { return true; };
+                    },
+                    DirectionsRenderer: function() {
+                        this.setMap = function (location) { return location; };
+                        this.setDirections = function (response) { return response; };
+                    },
+                    InfoWindow: function (object) {
+                        this.open = function (map, marker) { return marker; };
+                    },
+                    Animation: function () {
+                        this.DROP = 1;
+                        this.BOUNCE = 1;
+                    },
+                    DirectionsService: function () {
+                        this.route = function (request, fn) {
+                            fn([{geometry: {location: {lat: 48.856614, lng: 2.3522219}}}], window.google.maps.GeocoderStatus.OK);
+                        };
+                    },
+                    DistanceMatrixService: function () {
+                        this.getDistanceMatrix = function (options, fn) {
+                            fn({
+                                origin_addresses: [ 'Greenwich, Greater London, UK', '13 Great Carleton Square, Edinburgh, City of Edinburgh EH16 4, UK' ],
+                                destination_addresses: [ 'Stockholm County, Sweden', 'Dlouhá 609/2, 110 00 Praha-Staré Město, Česká republika' ],
+                                rows: [ {
+                                    elements: [ {
+                                        status: 'OK',
+                                        duration: {
+                                            value: 96000,
+                                            text: '1 day 3 hours'
+                                        },
+                                        distance: {
+                                            value: 2566737,
+                                            text: '1595 mi'
+                                        }
+                                    }, {
+                                        status: 'OK',
+                                        duration: {
+                                            value: 69698,
+                                            text: '19 hours 22 mins'
+                                        },
+                                        distance: {
+                                            value: 1942009,
+                                            text: '1207 mi'
+                                        }
+                                    } ]
+                                } ]
+                            }, window.google.maps.GeocoderStatus.OK);
+                        };
+                    },
+                    TravelMode: { DRIVING: 1 },
+                    GeocoderStatus: { OK: 1, KO: 2 },
+                    DirectionsStatus: { OK: 1 },
+                    DistanceMatrixStatus: { OK: 1 }
+                }
+            };
+        });
+
         it('should refresh map', function () {
             service.initMap('testRefresh');
             service.refresh('testRefresh');

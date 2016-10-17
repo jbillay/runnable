@@ -1305,8 +1305,8 @@ angular.module('runnable.services', ['ngResource']).
                     };
                     reader.readAsDataURL(file);
                 })
-                .error(function (err) {
-                    deferred.reject(err);
+                .error(function (data, status) {
+                    deferred.reject('error ' + status + ' : ' + data);
                 });
             return deferred.promise;
         };

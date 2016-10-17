@@ -26,6 +26,29 @@ describe('testing config block', function() {
         });
     });
 
+    describe('Move to connect from existing page', function() {
+        it('should move to connect to connect page by saving run-16 as referer', function() {
+            $httpBackend.whenGET('/api/user/me').respond({});
+            $httpBackend.whenGET('partials/run_detail').respond({});
+            $httpBackend.whenGET('partials/connect').respond({});
+            location.path('/run-16');
+            rootScope.$digest();
+            location.path('/connect');
+            rootScope.$digest();
+            expect(rootScope.referer.path).toBe('/run-16');
+        });
+    });
+
+    describe('Move directly to connect', function() {
+        it('should move to page /connect wihtout saving referer', function() {
+            $httpBackend.whenGET('/api/user/me').respond({});
+            $httpBackend.whenGET('partials/connect').respond({});
+            location.path('/connect');
+            rootScope.$digest();
+            expect(rootScope.referer).toBeUndefined();
+        });
+    });
+
     describe('Test Run', function() {
         it('should load a page with authentification check', function() {
             spyOn(rootScope, '$broadcast').and.callThrough();

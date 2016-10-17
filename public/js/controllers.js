@@ -231,7 +231,7 @@ angular.module('runnable.controllers', []).
                     $scope.promoCode.promoCodeValid = 0;
                     $scope.promoCode.codeError = 0;
                     $scope.promoCode.codeErrorMsg = '';
-                    if ($scope.promoCode.code.length) {
+                    if ($scope.promoCode.code && $scope.promoCode.code.length) {
                         MyRunTripFees.checkCode(_.toString($scope.promoCode.code))
                             .then(function (code) {
                                 if (code.id) {
@@ -254,6 +254,10 @@ angular.module('runnable.controllers', []).
                                 $scope.promoCode.codeError = 1;
                                 $scope.promoCode.codeErrorMsg = 'En raison d\'un problème nous pouvons pas vérifier votre code';
                             });
+                    } else {
+                        $scope.promoCode.promoCodeValid = 0;
+                        $scope.promoCode.codeError = 1;
+                        $scope.promoCode.codeErrorMsg = 'Aucun code promotion n\'a été renseigner !';
                     }
                 };
             });
@@ -714,7 +718,7 @@ angular.module('runnable.controllers', []).
         $scope.updateFees = function (id, field, oldValue, newValue) {
             if (oldValue !== newValue) {
                 var idx = _.findIndex($scope.feeList.fees, ['id', id]);
-                $scope.feeList.code[idx].field = newValue;
+                $scope.feeList.fees[idx][field] = newValue;
                 MyRunTripFees.update($scope.feeList.fees[idx])
                     .then(function (newFee) {
                         if (newFee.UserId) {
@@ -797,7 +801,7 @@ angular.module('runnable.controllers', []).
         $scope.updateCode = function (id, field, oldValue, newValue) {
             if (oldValue !== newValue) {
                 var idx = _.findIndex($scope.feeList.code, ['id', id]);
-                $scope.feeList.code[idx].field = newValue;
+                $scope.feeList.code[idx][field] = newValue;
                 MyRunTripFees.update($scope.feeList.code[idx])
                     .then(function (newFee) {
                         if (newFee.UserId) {
@@ -1076,7 +1080,7 @@ angular.module('runnable.controllers', []).
 			$scope.currentRun = res[0];
             $scope.logo = {};
             $scope.pictures = {};
-            if (!$rootScope.currentUser &&
+            if (!$rootScope.currentUser ||
                 !($rootScope.currentUser.role === 'admin' || $rootScope.currentUser.id === $scope.currentRun.UserId)) {
                 $location.path('/run');
             }
@@ -1112,6 +1116,7 @@ angular.module('runnable.controllers', []).
                 GoogleMapApi.selectedAddress('map_canvas', $scope.currentRun.address_start);
 			});
 		});
+        $scope.runListImg = [];
         $scope.loadImages = function (images) {
             var deferred = $q.defer();
             var promises = [];
@@ -2168,12 +2173,18 @@ angular.module('runnable.controllers', []).
                 } else if ($scope.journey.journey_type ===  'aller') {
                     $scope.outward = true;
                     $scope.return = false;
+                    $scope.journey.date_start_return = null;
+                    $scope.journey.time_start_return = null;
+                    $scope.journey.nb_space_return = null;
                     $timeout( function() {
                         $('#clockpicker_outward').clockpicker();
                     });
                 } else if ($scope.journey.journey_type ===  'retour') {
                     $scope.outward = false;
                     $scope.return = true;
+                    $scope.journey.date_start_outward = null;
+                    $scope.journey.time_start_outward = null;
+                    $scope.journey.nb_space_outward = null;
                     $timeout( function() {
                         $('#clockpicker_return').clockpicker();
                     });

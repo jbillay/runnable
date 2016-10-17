@@ -1,5 +1,6 @@
 'use strict';
 
+
 /* jasmine specs for controllers go here */
 describe('Runnable Controllers', function() {
 
@@ -7,14 +8,15 @@ describe('Runnable Controllers', function() {
     beforeEach(module('runnable.services'));
 
     describe('RunnableMainController', function(){
-        var scope, rootScope, ctrl, $httpBackend, Auth, Window, AUTH_EVENTS, USER_ROLES, USER_MSG;
+        var scope, rootScope, ctrl, $httpBackend, Auth, location, AUTH_EVENTS, USER_ROLES, USER_MSG;
 
-        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $routeParams, $controller, $window, _AuthService_) {
+        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $routeParams, $controller, $window, $location, _AuthService_) {
+            var fakeWindow = { location: { reload: function () { return true; } } };
             $httpBackend = _$httpBackend_;
             rootScope = _$rootScope_;
             scope = _$rootScope_.$new();
             Auth = _AuthService_;
-            Window = $window;
+            location = $location;
             spyOn(rootScope, '$broadcast').and.callThrough();
             AUTH_EVENTS = {
                 loginSuccess: 'auth-login-success',
@@ -106,7 +108,7 @@ describe('Runnable Controllers', function() {
                 journey: { id: 1, Run: { name: 'Maxicross' }}});
 
             ctrl = $controller('RunnableMainController',
-                {$scope: scope, $rootScope: rootScope, $window: Window, AUTH_EVENTS: AUTH_EVENTS,
+                {$scope: scope, $rootScope: rootScope, $window: fakeWindow, AUTH_EVENTS: AUTH_EVENTS,
                     USER_ROLES: USER_ROLES, USER_MSG: USER_MSG});
         }));
 
@@ -138,14 +140,13 @@ describe('Runnable Controllers', function() {
             scope.showLogin();
         });
 
-        it ('Try to logout user', function () {
-            // TODO: Handle location reload to avoid blocking test
-            // spyOn(Window.location, 'reload').and.callFake(function() { console.log('reload !!'); });
-            // spyOn(Auth, 'logout').and.callFake(function() {
-            //     return { then: function(callback) { return callback('logoff'); } }; });
-            // scope.logout();
-            // rootScope.$digest();
-            // expect(Auth.logout).toHaveBeenCalled();
+        it('Try to logout user', function () {
+            //spyOn(Window.location, 'reload').and.callFake(function() { return true; });
+            spyOn(Auth, 'logout').and.callFake(function() {
+                return { then: function(callback) { return callback('logoff'); } }; });
+            scope.logout();
+            rootScope.$digest();
+            expect(Auth.logout).toHaveBeenCalled();
         });
 
         it ('Invite friend', function () {
@@ -168,6 +169,22 @@ describe('Runnable Controllers', function() {
             $httpBackend.flush();
         });
 
+        it ('Create user with referer', function () {
+            rootScope.referer = '/test/a/la/con';
+            spyOn(location, 'path').and.callFake(function() { return '/test/a/la/con'; });
+            var user = {
+                firstname : 'Test',
+                lastname : 'Creation',
+                address : 'Saint Germain en Laye',
+                email : 'test.creation@user.fr',
+                password : 'test',
+                password_confirmation : 'test'
+            };
+            scope.createUser(user);
+            $httpBackend.flush();
+            expect(location.path).toHaveBeenCalled();
+        });
+
         it ('Create user and confirm a journey', function () {
             var user = {
                 firstname : 'Test',
@@ -188,6 +205,19 @@ describe('Runnable Controllers', function() {
             rootScope.draftId = 'JNY364573';
             scope.createUser(user);
             $httpBackend.flush();
+        });
+
+        it ('Should login in the page', function () {
+            rootScope.referer = '/test/a/la/con';
+            spyOn(location, 'path').and.callFake(function() { return '/test/a/la/con'; });
+            spyOn(Auth, 'login').and.callFake(function() {
+                return { then: function(callback) { return callback('login'); } }; });
+            expect(rootScope.currentUser).toEqual(null);
+            expect(rootScope.isAuthenticated).not.toBeTruthy();
+            expect(rootScope.isAdmin).not.toBeTruthy();
+            scope.login({email: 'tit@myruntrip.com', password: 'test'});
+            expect(Auth.login).toHaveBeenCalled();
+            expect(location.path).toHaveBeenCalled();
         });
     });
 });

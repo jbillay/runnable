@@ -196,5 +196,86 @@ describe('Join Service', function() {
             $httpBackend.flush();
             expect(result).toContain('error');
         });
+
+        it('should get join to refund', function() {
+            $httpBackend.whenGET('/api/admin/join/toRefund').respond({msg: [{id: 1}, {id: 2}], type: 'success'});
+            var promise = service.toRefund(),
+                joinList= null;
+
+            promise.then(function(list){
+                joinList = list;
+            });
+
+            $httpBackend.flush();
+            expect(joinList.length).toBe(2);
+        });
+
+        it('should get join to refund with error', function() {
+            $httpBackend.whenGET('/api/admin/join/toRefund').respond({msg: 'Mock to fail', type: 'error'});
+            var promise = service.toRefund(),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toBe('Mock to fail');
+        });
+
+        it('should fail to get join to refund', function() {
+            $httpBackend.whenGET('/api/admin/join/toRefund').respond(500);
+            var promise = service.toRefund(),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toContain('error');
+        });
+        it('should refund a join', function() {
+            $httpBackend.whenPOST('/api/admin/join/refund').respond({msg: {id: 2}, type: 'success'});
+            var promise = service.refund(2),
+                joinList= null;
+
+            promise.then(function(list){
+                joinList = list;
+            });
+
+            $httpBackend.flush();
+            expect(joinList.id).toBe(2);
+        });
+
+        it('should refund a join with error', function() {
+            $httpBackend.whenPOST('/api/admin/join/refund').respond({msg: 'Mock to fail', type: 'error'});
+            var promise = service.refund(2),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toBe('Mock to fail');
+        });
+
+        it('should fail to get join to refund', function() {
+            $httpBackend.whenPOST('/api/admin/join/refund').respond(500);
+            var promise = service.refund(2),
+                result = null;
+
+            promise.then(function(ret) {
+                result = ret;
+            }).catch(function(reason) {
+                result = reason;
+            });
+            $httpBackend.flush();
+            expect(result).toContain('error');
+        });
     });
 });

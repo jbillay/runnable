@@ -277,5 +277,14 @@ describe('Runnable Controllers', function() {
             scope.sendMessage();
             expect(scope.discussionMessages.length).toBe(3);
         });
+
+        it ('Should check the redirection to private discussion', function () {
+            spyOn(location, 'path');
+            expect(scope.page).toEqual('MyJourney');
+            $httpBackend.flush();
+            timeout.flush();
+            scope.redirectToPrivateDiscussion(4);
+            expect(location.path).toHaveBeenCalledWith('/myjourney-discussion-4');
+        });
     });
 });

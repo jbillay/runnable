@@ -206,6 +206,19 @@ describe('Runnable Controllers', function() {
             expect(scope.promoCode.codeError).toBe(0);
             expect(scope.promoCode.codeErrorMsg).toEqual('');
         });
+
+        it ('Try to check promo code not existing', function () {
+            $httpBackend.whenGET('/api/fee/check/TOTO').respond({msg: { id: 7, discount: 0.8 }, type: 'success'});
+            $httpBackend.whenGET('/api/version').respond('TOTO');
+            $httpBackend.flush();
+            scope.promoCode = {
+                code: null
+            };
+            scope.checkPromoCode();
+            expect(scope.promoCode.promoCodeValid).toBe(0);
+            expect(scope.promoCode.codeError).toBe(1);
+            expect(scope.promoCode.codeErrorMsg).toEqual('Aucun code promotion n\'a été renseigner !');
+        });
     });
 
     describe('RunnableCheckoutController existing checkout', function(){
@@ -240,7 +253,7 @@ describe('Runnable Controllers', function() {
                 .respond({msg: {
                     percentage: 0.18,
                     value: 2,
-                    discount: 0.2
+                    discount: null
                 }, type: 'success'});
             $httpBackend.whenGET('/api/journey/4').respond({
                 id: 4,
@@ -276,6 +289,45 @@ describe('Runnable Controllers', function() {
             rootScope.$digest();
             expect(scope.selectedJourneyId).toBe(4);
             expect(location.path).toHaveBeenCalledWith('/journey');
+        });
+
+        it ('Should redirect to connect page', function () {
+            spyOn(location, 'path').and.callFake(function() { return true; });
+            $httpBackend.whenGET('/api/user/me').respond(500);
+            $httpBackend.whenGET('/api/version').respond('DEV');
+            $httpBackend.flush();
+            expect(scope.selectedJourneyId).toBe(4);
+            expect(location.path).toHaveBeenCalled();
+        });
+    });
+
+    describe('RunnableCheckoutController user redirect to connection page', function(){
+        var scope, rootScope, timeout, service, location, ctrl, ctrlMain, $httpBackend, q, sce, routeParams;
+
+        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $routeParams, $timeout, $location, _$q_, _$sce_, $controller, $compile, Session) {
+            $httpBackend = _$httpBackend_;
+            rootScope = _$rootScope_;
+            scope = _$rootScope_.$new();
+            timeout = $timeout;
+            service = Session;
+            location = $location;
+            routeParams = $routeParams;
+            routeParams.journeyId = 4;
+            q = _$q_;
+            sce = _$sce_;
+
+            $httpBackend.whenGET('/api/user/me').respond(500);
+            $httpBackend.whenGET('/api/inbox/unread/nb/msg').respond(500);
+
+            spyOn(location, 'path').and.callFake(function() { return true; });
+            ctrlMain = $controller('RunnableMainController', {$scope: scope, $rootScope: rootScope});
+            rootScope.isAuthenticated = false;
+            ctrl = $controller('RunnableCheckoutController',
+                {$rootScope: rootScope, $scope: scope, 'Session': service, $location: location, $routeParams: routeParams});
+        }));
+
+        it ('Should redirect to connect page', function () {
+            expect(location.path).toHaveBeenCalled();
         });
     });
 });

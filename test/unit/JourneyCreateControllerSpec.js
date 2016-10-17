@@ -275,4 +275,79 @@ describe('Runnable Controllers', function() {
             expect(Journey.create).toHaveBeenCalled();
         });
     });
+
+    describe('RunnableJourneyCreateController with a not connected user', function(){
+        var scope, rootScope, timeout, service, location, ctrl, ctrlMain, $httpBackend, Journey;
+
+        beforeEach(inject(function(_$httpBackend_, _$rootScope_, $timeout, $location, $controller, Session, _Journey_) {
+            $httpBackend = _$httpBackend_;
+            rootScope = _$rootScope_;
+            scope = _$rootScope_.$new();
+            Journey = _Journey_;
+            timeout = $timeout;
+            service = Session;
+            location = $location;
+            $httpBackend.whenGET('/api/run/list').respond({msg: [{
+                id: 1,
+                name: 'Maxicross',
+                type: 'trail',
+                address_start: 'Bouffémont, France',
+                date_start: '2015-02-02 00:00:00',
+                time_start: '09:15',
+                distances: '15k - 30k - 7k',
+                elevations: '500+ - 1400+',
+                info: 'Toutes les infos sur le maxicross',
+                is_active: 1
+            },
+                {
+                    id: 2,
+                    name: 'Les templiers',
+                    type: 'trail',
+                    address_start: 'Millau, France',
+                    date_start: '2015-09-15 00:00:00',
+                    time_start: '06:30',
+                    distances: '72km',
+                    elevations: '2500+',
+                    info: 'ksdjlsdjlf jsdlfjl sjdflj',
+                    is_active: 1
+                }], type: 'success'});
+
+            ctrl = $controller('RunnableJourneyCreateController', {$rootScope: rootScope, $scope: scope, 'Session': service, $location: location});
+        }));
+
+        it ('Start controller', function () {
+            var journey = {
+                address_start: 'Nice',
+                distance: '300 km',
+                duration: '3 heures 10 minutes',
+                journey_type: 'retour',
+                date_start_outward: null,
+                time_start_outward: null,
+                nb_space_outward: 0,
+                date_start_return: '2015-06-26 00:00:00',
+                time_start_return: '11:00',
+                nb_space_return: 1,
+                car_type: 'citadine',
+                amount: 26,
+                is_canceled: true,
+                updatedAt: '2015-02-02 05:02:11',
+                RunId: 4,
+                UserId: 2,
+                Run: {
+                    name: 'test'
+                }
+            };
+            rootScope.isAuthenticated = false;
+            spyOn(location, 'path');
+            spyOn(Journey, 'create').and.callFake(function() {
+                return { then: function(callback) { return callback(journey); } }; });
+            expect(scope.page).toEqual('Journey');
+            $httpBackend.flush();
+            timeout.flush();
+            scope.submitJourney(journey);
+            rootScope.$digest();
+            expect(rootScope.draftId).toEqual(journey);
+            expect(location.path).toHaveBeenCalledWith('/connect');
+        });
+    });
 });

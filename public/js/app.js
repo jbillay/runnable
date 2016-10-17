@@ -170,17 +170,13 @@ angular.module('runnable', [
             if (next.data) {
                 AuthService.init()
                     .then(function () {
-                        var authorizedRoles = next.data.authorizedRoles;
-                        if (!AuthService.isAuthorized(authorizedRoles)) {
-                            event.preventDefault();
-                            if (AuthService.isAuthenticated()) {
+                        event.preventDefault();
+                        if (AuthService.isAuthenticated()) {
+                            var authorizedRoles = next.data.authorizedRoles;
+                            if (!AuthService.isAuthorized(authorizedRoles)) {
                                 // user is not allowed
                                 $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
                                 $location.path('/');
-                            } else {
-                                // user is not logged in
-                                $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
-                                $location.path('/connect');
                             }
                         }
                     })

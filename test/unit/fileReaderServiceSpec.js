@@ -79,5 +79,39 @@ describe('fileReader Service', function() {
             $httpBackend.flush();
             expect(message).toContain('error');
         });
+
+        it('should fail to get online file', function () {
+            $httpBackend.whenGET('http://www.myruntrip.fr/logo.jpg').respond(500);
+            var message = null;
+            var promise = service.getOnlineFile('http://www.myruntrip.fr/logo.jpg');
+
+            promise.then(function(ret) {
+                message = ret;
+            }).catch(function(reason) {
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            expect(message).toContain('error');
+        });
+
+        it('should get online file', function () {
+            var file = new Blob();
+            $httpBackend.whenGET('http://www.myruntrip.fr/logo.jpg').respond(file);
+            var message = null;
+            var promise = service.getOnlineFile('http://www.myruntrip.fr/logo.jpg');
+
+            promise.then(function(ret) {
+                console.log('Success: ' + ret);
+                message = ret;
+            }).catch(function(reason) {
+                console.log('Error: ' + reason);
+                message = reason;
+            });
+
+            $httpBackend.flush();
+            // TODO: problem as the file is never read so promise never resolved
+            //expect(message).toContain('error');
+        });
     });
 });

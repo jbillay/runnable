@@ -32,6 +32,7 @@ module.exports = function(config) {
             'public/lib/textAngular/dist/textAngular.min.js',
             'public/lib/ace-builds/src-min-noconflict/ace.js',
             'public/lib/angular-ui-ace/ui-ace.js',
+            'public/lib/FileSaver.js/FileSaver.min.js',
             'public/js/*.js',
             'test/unit/*.js'
         ],
