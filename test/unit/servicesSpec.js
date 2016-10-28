@@ -10,9 +10,9 @@ describe('service', function() {
         rootScope;
 
     // Test service availability
-    it('check version of Jasmine', function () {
-        expect(jasmine.version).toContain('2.3');
-    });
+    //it('check version of Jasmine', function () {
+    //    expect(jasmine.version).toContain('2.3');
+    //});
 
     describe('Technical Service', function() {
 
