@@ -68,6 +68,9 @@ module.exports = function (app, passport) {
                     if (err) {
                         return res.json(403, {success: false, message: 'Failed to authenticate token.'});
                     } else {
+                        if (!decoded.user) {
+                            decoded.user = decoded;
+                        }
                         // if everything is good, save to request for use in other routes
                         if (decoded.partner) {
                             req.partner = decoded.partner;
