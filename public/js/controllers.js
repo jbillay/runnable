@@ -112,16 +112,18 @@ angular.module('runnable.controllers', []).
         } else {
             $scope.selectedJourneyId = $routeParams.journeyId;
             var journeyPromise = Journey.getDetail($scope.selectedJourneyId),
+                joinPromise = Join.getListForJourney($scope.selectedJourneyId),
                 feePromise = MyRunTripFees.getFee($scope.selectedJourneyId),
                 versionPromise = Technical.version(),
-                all = $q.all([journeyPromise, feePromise, versionPromise]);
+                all = $q.all([journeyPromise, feePromise, joinPromise, versionPromise]);
             all.then(function (res) {
                 $scope.journey = res[0];
                 if ($scope.journey.is_canceled) {
                     $location.path('/journey');
                 }
                 $scope.fees = res[1];
-                $scope.version = res[2];
+                $scope.joinList = res[2];
+                $scope.version = res[3];
                 if ($scope.version === 'DEV') {
                     $scope.url_paypal = $sce.trustAsResourceUrl('https://www.sandbox.paypal.com/cgi-bin/webscr');
                     $scope.key_paypal = '622WFSZHPNBH4';
@@ -133,6 +135,10 @@ angular.module('runnable.controllers', []).
                 }
                 $scope.reserved_outward = 0;
                 $scope.reserved_return = 0;
+                angular.forEach($scope.joinList, function (join) {
+                    $scope.reserved_outward += join.nb_place_outward;
+                    $scope.reserved_return += join.nb_place_return;
+                });
                 $scope.discount = 0;
                 $scope.discountOld = 0;
                 if ($scope.fees.discount) {

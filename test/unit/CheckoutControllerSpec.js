@@ -67,6 +67,20 @@ describe('Runnable Controllers', function() {
                 RunId: 2,
                 UserId: 1
             });
+            $httpBackend.whenGET('/api/join/journey/4').respond([{
+                id: 1,
+                nb_place_outward: 1,
+                nb_place_return: null,
+                UserId: 1,
+                JourneyId: 4
+            },
+            {
+                id: 2,
+                nb_place_outward: null,
+                nb_place_return: 2,
+                UserId: 2,
+                JourneyId: 4
+            }]);
 
             var formElem = angular.element('<form ng-form-commit name="form"><input type="text" name="number"></form>');
             $compile(formElem)(scope);
@@ -109,12 +123,16 @@ describe('Runnable Controllers', function() {
             $httpBackend.whenGET('/api/version').respond('TOTO');
             $httpBackend.whenPOST('/api/join').respond('userJoined');
             $httpBackend.flush();
+            expect(scope.reserved_outward).toBe(1);
+            expect(scope.reserved_return).toBe(2);
+            expect(scope.nbFreeSpaceListOutward.length).toBe(1);
+            expect(scope.nbFreeSpaceListReturn.length).toBe(1);
             expect(scope.selectedJourneyId).toBe(4);
             scope.joinJourney(1, 0, form);
             $httpBackend.flush();
             expect(scope.joined).toBe(1);
-            expect(scope.reserved_outward).toBe(1);
-            expect(scope.reserved_return).toBe(0);
+            expect(scope.reserved_outward).toBe(2);
+            expect(scope.reserved_return).toBe(2);
             expect(form.commit).toHaveBeenCalled();
         });
 
@@ -274,6 +292,20 @@ describe('Runnable Controllers', function() {
                 RunId: 2,
                 UserId: 1
             });
+            $httpBackend.whenGET('/api/join/journey/4').respond([{
+                id: 1,
+                nb_place_outward: 1,
+                nb_place_return: null,
+                UserId: 1,
+                JourneyId: 4
+            },
+                {
+                    id: 2,
+                    nb_place_outward: null,
+                    nb_place_return: 2,
+                    UserId: 2,
+                    JourneyId: 4
+                }]);
 
             ctrlMain = $controller('RunnableMainController',
                 {$scope: scope, $rootScope: rootScope});
