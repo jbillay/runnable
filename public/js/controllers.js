@@ -203,6 +203,7 @@ angular.module('runnable.controllers', []).
                 };
 
                 $scope.joinJourney = function (placeOutward, placeReturn, form) {
+                    $('body').addClass('loading');
                     var prices = $scope.calculatePrices(),
                         amount = prices.totalAmount,
                         fees = prices.fees;
