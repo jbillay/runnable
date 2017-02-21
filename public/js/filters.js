@@ -17,6 +17,11 @@ angular.module('runnable.filters', []).
             return (!!input) ? input.replace('.', ',') : '';
         };
     }).
+    filter('paypalPointAmount', function () {
+        return function(input) {
+            return (!!input) ? input.replace(',', '.') : '';
+        };
+    }).
     filter('showInPercentage', function () {
         return function(input) {
             return (!!input) ? '' + (_.toNumber(input) * 100).toFixed(0) + '%' : '-';

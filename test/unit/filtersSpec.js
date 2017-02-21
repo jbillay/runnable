@@ -23,6 +23,15 @@ describe('filter', function() {
                 expect(paypalAmountFilter('')).toBe('');
             }));
     });
+    describe('paypalPointAmount', function() {
+        it('should modify the amount from , to .',
+            inject(function(paypalPointAmountFilter) {
+                expect(paypalPointAmountFilter('good')).toBe('good');
+                expect(paypalPointAmountFilter('9,13')).toBe('9.13');
+                expect(paypalPointAmountFilter('10.76')).toBe('10.76');
+                expect(paypalPointAmountFilter('')).toBe('');
+            }));
+    });
     describe('showInPercentage', function() {
         it('should show amount in %  or - if nothing',
             inject(function(showInPercentageFilter) {

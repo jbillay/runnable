@@ -96,7 +96,7 @@
             <input type="hidden" name="lc" value="FR">
             <input type="hidden" name="notify_url" value="{{url_website}}/api/paypal/ipn">
             <input type="hidden" name="item_name" value="Parcours My Run Trip">
-            <input type="hidden" name="amount" value="{{journeyPrice.totalAmount | number:2}}">
+            <input type="hidden" name="amount" value="{{journeyPrice.totalAmount | number:2 | paypalPointAmount}}">
             <button type="button" class="btn btn-primary btn-block" ng-disabled="!cgv_validation"
                     ng-click="joinJourney(selectedPlaceOutward, selectedPlaceReturn, paypalForm)">
                 Procéder au paiement
